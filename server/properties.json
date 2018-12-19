@@ -1,0 +1,8 @@
+{
+    "serverName": "WebClash Server",
+    "clientName": "WebClash Client",
+    
+    "port": 5315,
+    
+    "maxPlayers": 100
+}
