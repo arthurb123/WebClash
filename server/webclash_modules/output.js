@@ -7,5 +7,5 @@ exports.give = function(message)
 
 exports._timeFormat = function()
 {
-    return "WebClash @ " + new Date().toString().substr(16, 8) + " - ";
+    return "[WebClash @ " + new Date().toString().substr(16, 8) + "] - ";
 };

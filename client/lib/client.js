@@ -57,6 +57,8 @@ const client = {
             
              //Check what data is present
             
+             if (data.remove)
+                 game.removePlayer(id);
              if (data.pos !== undefined) 
                  game.players[id].POS = data.pos;
              if (data.movement !== undefined) 

@@ -1,0 +1,10 @@
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\bin\Debug\WebClashServer.exe.config
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\bin\Debug\WebClashServer.exe
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\bin\Debug\WebClashServer.pdb
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.csprojAssemblyReference.cache
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Main.resources
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Properties.Resources.resources
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.csproj.GenerateResource.cache
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.csproj.CoreCompileInputs.cache
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.exe
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.pdb

@@ -9,7 +9,8 @@ exports.addPlayer = function(socket)
     
     //Grab player stats
     
-    let player = databases.stats.findOne({ name: socket.name });
+    let player = databases.stats(socket.name).object();
+    player.name = socket.name;
     
     //Add player
     
@@ -24,24 +25,25 @@ exports.addPlayer = function(socket)
     server.syncPlayer(this.players.length-1, socket, false);
 };
 
-exports.removePlayer = function(name)
+exports.removePlayer = function(socket)
 {
     //Check if socket is valid
     
-    if (name == undefined)
+    if (socket === undefined || socket.name === undefined)
         return;
     
     //Cycle through all players
     
     for (let i = 0; i < this.players.length; i++)
-        if (this.players[i].name == name) {
+        if (this.players[i].name == socket.name) {
             this.players.splice(i, 1);
             
             break;
         }
     
     //Notify others
-    //..
+    
+    server.removePlayer(this.players.length-1, socket);
 };
 
 exports.getPlayerIndex = function(name)

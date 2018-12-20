@@ -50,6 +50,7 @@ const view = {
                         break;
                     case 'loggedin':
                         document.getElementById('windowErrorText').innerHTML = 'You are already logged in';
+                        break;
                 }
             });
         };

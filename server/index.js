@@ -5,7 +5,7 @@ const fs = require('fs'),
       app = express(),
       http = require('http').Server(app),
       path = require('path'),
-      loki = require('lokijs');
+      db = require('origindb');
 
 global.io = require('socket.io')(http);
 
@@ -15,17 +15,13 @@ global.server = require('./webclash_modules/server');
 global.game = require('./webclash_modules/game');
 global.output = require('./webclash_modules/output');
 
-//Server Database (Loki)
-
-global.db = new loki('database.json');
-db.autoload = true;
-
 //Server Properties
 
 global.properties = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
+
 global.databases = {
-    accounts: db.addCollection('accounts'),
-    stats: db.addCollection('stats')
+    accounts: db('data/accounts'),
+    stats: db('data/stats')
 };
 
 //Setup Express
@@ -51,7 +47,8 @@ function exitHandler() {
     
     //Save database
     
-    db.saveDatabase();
+    databases.accounts.save();
+    databases.stats.save();
 }
 
 //On close event listeners

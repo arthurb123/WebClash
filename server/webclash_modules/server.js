@@ -20,20 +20,25 @@ exports.handleSocket = function(socket)
             
             //Output
             
-            output.give('\'' + socket.name + '\' has logged out.');
+            output.give('User \'' + socket.name + '\' has logged out.');
         }
     });
     
     //Socket event listeners
     
     socket.on('CLIENT_LOGIN', function(data, callback) {
+        //Check if valid package
+        
+        if (data === undefined || data.name === undefined)
+            return;
+        
         //Grab entry with username
         
-        let user = databases.accounts.findOne({ name: data.name });
+        let pass = databases.accounts(data.name).get('pass', undefined);
         
         //Check if username exists
         
-        if (user == null)
+        if (pass === undefined)
         {
             callback('none');
             return;
@@ -41,7 +46,7 @@ exports.handleSocket = function(socket)
         
         //Check if password matches
         
-        if (user.pass != data.pass)
+        if (pass != data.pass)
         {
             callback('wrong');
             return;
@@ -69,9 +74,14 @@ exports.handleSocket = function(socket)
     });
     
     socket.on('CLIENT_REGISTER', function(data, callback) {
-        //Check if username has been taken
+        //Check if valid package
         
-        if (databases.accounts.findOne({ name: data.name }) != null)
+        if (data === undefined || data.name === undefined)
+            return;
+        
+        //Check if account already exists
+        
+        if (databases.accounts(data.name).has('pass'))
         {
             callback('taken');
             return;
@@ -79,24 +89,19 @@ exports.handleSocket = function(socket)
         
         //Insert account
         
-        databases.accounts.insert({
-            name: data.name,
-            pass: data.pass
-        });
+        databases.accounts(data.name).set('pass', data.pass);
         
         //Insert default stats
         
-        databases.stats.insert({
-            name: data.name,
-            pos: { X: 0, Y: 0 },
-            movement: { VX: 0, VY: 0 },
-            direction: 0,
-            src: 'res/characters/player.png'
-        });
+        databases.stats(data.name).set('pos', { X: 0, Y: 0 });
+        databases.stats(data.name).set('movement', { VX: 0, VY: 0 });
+        databases.stats(data.name).set('direction', 0);
+        databases.stats(data.name).set('src', 'res/characters/player.png');
+
+        //Save databases
         
-        //Save database
-        
-        db.saveDatabase();
+        databases.accounts.save();
+        databases.stats.save();
         
         //Ouput
         
@@ -154,6 +159,10 @@ exports.handleSocket = function(socket)
             game.players[id].movement = data.movement;
             type = 'movement';
         }
+        if (data.pos !== undefined) {
+            game.players[id].pos = data.pos;
+            return;
+        }
         
         //Sync across all
         
@@ -162,7 +171,7 @@ exports.handleSocket = function(socket)
     });
 };
 
-//Sync player partially function, if socket is undefined it will be broadcast
+//Sync player partially function, if socket is undefined it will be globally emitted
 
 exports.syncPlayerPartially = function(id, type, socket, broadcast)
 {
@@ -190,7 +199,8 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
         io.sockets.emit('GAME_PLAYER_UPDATE', data);
     else {
         if (broadcast === undefined || !broadcast) {
-            data.isPlayer = true;
+            if (socket.name == data.name)
+                data.isPlayer = true;
             
             socket.emit('GAME_PLAYER_UPDATE', data);
         }
@@ -199,7 +209,7 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
     }
 };
 
-//Sync whole player function, if socket is undefined it will be broadcast
+//Sync whole player function, if socket is undefined it will be globally emitted
 
 exports.syncPlayer = function(id, socket, broadcast)
 {
@@ -208,3 +218,17 @@ exports.syncPlayer = function(id, socket, broadcast)
     this.syncPlayerPartially(id, 'direction', socket, broadcast);
     this.syncPlayerPartially(id, 'src', socket, broadcast);
 };
+
+//Sync player remove function, will be broadcast by default
+
+exports.removePlayer = function(id, socket)
+{
+    //Check if valid
+    
+    if (socket === undefined || socket.name === undefined)
+        return;
+    
+    //Broadcast player removal
+    
+    socket.broadcast.emit('GAME_PLAYER_UPDATE', { name: socket.name, remove: true });
+}

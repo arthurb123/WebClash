@@ -25,6 +25,20 @@ const game = {
         
         this.players.push(go.Show(2));  
     },
+    removePlayer: function(id) {
+        //Check if valid
+        
+        if (id === undefined || this.players[id] === undefined)
+            return;
+        
+        //Hide target GameObject
+        
+        this.players[id].Hide();
+        
+        //Remove target
+        
+        this.players.splice(id, 1);
+    },
     initialize: function() {
         //Initialize and start Lynx2D
         
