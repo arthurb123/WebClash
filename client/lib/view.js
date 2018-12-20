@@ -1,6 +1,6 @@
 const view = {
     dom: document.getElementById('overlay'),
-    loadLandingPage: function() {
+    loadLanding: function() {
         //Load landing page scene
         
         lx.LoadScene(landingScene);
@@ -48,7 +48,8 @@ const view = {
                     case 'wrong':
                         document.getElementById('windowErrorText').innerHTML = 'Wrong password';
                         break;
-                    //...
+                    case 'loggedin':
+                        document.getElementById('windowErrorText').innerHTML = 'You are already logged in';
                 }
             });
         };
@@ -81,7 +82,6 @@ const view = {
                     case 'taken':
                         document.getElementById('windowErrorText').innerHTML = 'Username has been taken';
                         break;
-                    //...
                 }
             });
         };
@@ -89,7 +89,13 @@ const view = {
         b.innerHTML = 'Register';
         sw.appendChild(b);
     },
-    loadGamePage: function() {
+    loadGame: function() {
+        //Clear innerHTML
         
+        view.dom.innerHTML = '';
+        
+        //Load game scene
+        
+        lx.LoadScene(gameScene);
     }
 };

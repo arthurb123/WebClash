@@ -5,13 +5,14 @@ const fs = require('fs'),
       app = express(),
       http = require('http').Server(app),
       path = require('path'),
-      io = require('socket.io')(http),
       loki = require('lokijs');
+
+global.io = require('socket.io')(http);
 
 //Unique Modules
 
-const server = require('./webclash_modules/server');
-
+global.server = require('./webclash_modules/server');
+global.game = require('./webclash_modules/game');
 global.output = require('./webclash_modules/output');
 
 //Server Database (Loki)
@@ -23,7 +24,8 @@ db.autoload = true;
 
 global.properties = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
 global.databases = {
-    accounts: db.addCollection('accounts')
+    accounts: db.addCollection('accounts'),
+    stats: db.addCollection('stats')
 };
 
 //Setup Express

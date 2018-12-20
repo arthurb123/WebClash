@@ -26,6 +26,7 @@ function loadAllScripts()
     addScript('misc/prototypes.js');
     
     addScript('scenes/landing.js');
+    addScript('scenes/game.js');
 }
 
 function finishLoading()
