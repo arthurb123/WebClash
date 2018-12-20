@@ -93,6 +93,7 @@ exports.handleSocket = function(socket)
         
         //Insert default stats
         
+        databases.stats(data.name).set('map', 0);
         databases.stats(data.name).set('pos', { X: 0, Y: 0 });
         databases.stats(data.name).set('movement', { VX: 0, VY: 0 });
         databases.stats(data.name).set('direction', 0);

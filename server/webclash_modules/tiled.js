@@ -15,15 +15,23 @@ exports.loadAllMaps = function() {
 exports.loadMap = function(name) {
     try 
     {
-        if (!fs.existsSync(name))
-            return;
-
-        this.maps.push(JSON.parse(fs.readFileSync(name, 'utf-8')));
+        let location = 'maps/' + name;
+        
+        let map = JSON.parse(fs.readFileSync(location, 'utf-8'))
+        map.name = name.substr(0, name.lastIndexOf('.'));
+        
+        this.maps.push(map);
     }
     catch(err)
     {
         output.give(err);
-        
-        return;
     }
+};
+
+exports.mapWithName = function(name)
+{   
+    this.maps.forEach(function(map) {
+        if (map.name == name)
+            return map;
+    });
 };

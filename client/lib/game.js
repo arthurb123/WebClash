@@ -1,6 +1,7 @@
 const game = {
     player: -1,
     players: [],
+    tilesets: [],
     getPlayerIndex: function(name) {
         //Grab the player index by checking for the player name
         
@@ -38,6 +39,74 @@ const game = {
         //Remove target
         
         this.players.splice(id, 1);
+    },
+    loadMap: function(map) {
+        //Clear the OnLayerDraw events
+        
+        lx.ResetLayerDraw();
+        
+        //Add OnLayerDraw events based on
+        //the map content
+        
+        for (let l = 0; l < map.layers.length; l++) {
+            const data = map.layers[l].data,
+                  width = map.layers[l].width,
+                  height = map.layers[l].height;
+            
+            lx.OnLayerDraw(l, function(gfx) {
+                for (let t = 0; t < data.length; t++)
+                {
+                    //Skip empty tiles
+                    
+                    if (data[t] == 0)
+                        continue;
+                    
+                    //Get corresponding tile sprite
+                    
+                    let sprite;
+                    
+                    for (let i = 0; i < map.tilesets.length; i++) {
+                        const tileset = map.tilesets[i];
+                        
+                        if (data[t] >= tileset.firstgid) {
+                            let s = tileset.source.lastIndexOf('/')+1;
+                            
+                            sprite = game.getTileset('res/tilesets/' + tileset.source.substr(s, tileset.source.lastIndexOf('.')-s) + '.png');
+                        }
+                    }
+                    
+                    //Check if sprite is valid
+                    
+                    if (sprite === undefined)
+                        continue;
+                    
+                    //Calculate tile coordinates
+                    
+                    let tp = {
+                        x: (data[t]-(Math.floor(data[t]/sprite.Size().W)*sprite.Size().W)-1)*map.tilewidth,
+                        y: Math.floor(data[t]/sprite.Size().H)*map.tileheight
+                    }
+                    
+                    //Draw tile
+                    
+                    lx.DrawSprite(
+                        sprite.Clip(tp.x, tp.y, map.tilewidth, map.tileheight),
+                        (t - Math.floor(t/width)*width) * map.tilewidth,
+                        Math.floor(t/height) * map.tileheight,
+                        map.tilewidth,
+                        map.tileheight
+                    );
+                }
+            });
+        }
+    },
+    getTileset: function(src) {
+        if (this.tilesets[src] === undefined)
+            this.tilesets[src] = new lx.Sprite(src);
+        
+        this.tilesets[src].CLIP = undefined;
+        
+        return this.tilesets[src];
     },
     initialize: function() {
         //Initialize and start Lynx2D

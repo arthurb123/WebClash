@@ -23,6 +23,10 @@ exports.addPlayer = function(socket)
     //Sync to player
     
     server.syncPlayer(this.players.length-1, socket, false);
+    
+    //Load current world
+    
+    this.loadMap(socket, player.map);
 };
 
 exports.removePlayer = function(socket)
@@ -53,4 +57,16 @@ exports.getPlayerIndex = function(name)
             return i;
     
     return -1;
-}
+};
+
+exports.loadMap = function(socket, id)
+{
+    //Check if valid
+    
+    if (tiled.maps[id] === undefined)
+        return;
+    
+    //Send the corresponding map
+    
+    socket.emit('GAME_MAP_UPDATE', tiled.maps[id]);
+};

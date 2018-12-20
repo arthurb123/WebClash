@@ -68,5 +68,8 @@ const client = {
              if (data.src !== undefined) 
                  game.players[id].SPRITE = new lx.Sprite(data.src);
         });
+        socket.on('GAME_MAP_UPDATE', function (data) {
+            game.loadMap(data); 
+        });
     }
 }
