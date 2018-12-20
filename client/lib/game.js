@@ -82,17 +82,23 @@ const game = {
                     
                     //Calculate tile coordinates
                     
-                    let tp = {
-                        x: (data[t]-(Math.floor(data[t]/sprite.Size().W)*sprite.Size().W)-1)*map.tilewidth,
-                        y: Math.floor(data[t]/sprite.Size().H)*map.tileheight
-                    }
+                    let tc = {
+                        x: (data[t] % Math.round(sprite.Size().W/map.tilewidth) - 1) * map.tilewidth,
+                        y: (Math.ceil(data[t] / Math.round(sprite.Size().W/map.tilewidth)) -1) * map.tileheight
+                    },
+                        tp = {
+                        x: (t % width - 1) * map.tilewidth,
+                        y: Math.floor(t / width) * map.tileheight       
+                    };
                     
                     //Draw tile
                     
                     lx.DrawSprite(
-                        sprite.Clip(tp.x, tp.y, map.tilewidth, map.tileheight),
-                        (t - Math.floor(t/width)*width) * map.tilewidth,
-                        Math.floor(t/height) * map.tileheight,
+                        sprite.Clip(tc.x, tc.y, map.tilewidth, map.tileheight),
+                        
+                        tp.x,
+                        tp.y, 
+                        
                         map.tilewidth,
                         map.tileheight
                     );
