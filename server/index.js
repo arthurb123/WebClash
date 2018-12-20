@@ -41,3 +41,20 @@ http.listen(properties.port, function(){
 //Handle socket interaction
 
 io.on('connection', server.handleSocket);
+
+//Exit handler
+
+function exitHandler() {
+    //Output
+    
+    output.give('Shutting down server..');
+    
+    //Save database
+    
+    db.saveDatabase();
+}
+
+//On close event listeners
+
+process.on('exit', exitHandler.bind(null, {cleanup:true}));
+process.on('SIGINT', exitHandler.bind(null, {exit:true}));

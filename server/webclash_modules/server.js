@@ -13,8 +13,15 @@ exports.handleSocket = function(socket)
     //Disconnect event listener
     
     socket.on('disconnect', function() {
-        if (socket.playing)
+        if (socket.playing) {
+            //Remove player
+            
             game.removePlayer(socket);
+            
+            //Output
+            
+            output.give('\'' + socket.name + '\' has logged out.');
+        }
     });
     
     //Socket event listeners
@@ -26,7 +33,7 @@ exports.handleSocket = function(socket)
         
         //Check if username exists
         
-        if (user === null)
+        if (user == null)
         {
             callback('none');
             return;
@@ -113,28 +120,59 @@ exports.handleSocket = function(socket)
         //Send standard data
 
         for (let i = 0; i < game.players.length; i++)
-            server.syncPlayer(i, socket);
+            server.syncPlayer(i, socket, false);
         
         //Add client as player
         
-        game.addPlayer(socket.name);
+        game.addPlayer(socket);
 
         //Set playing
 
         socket.playing = true;
     });
+    
+    socket.on('CLIENT_PLAYER_UPDATE', function(data) {
+        //Check if valid player
+        
+        if (socket.playing === undefined || !socket.playing)
+            return;
+        
+        //Get player id
+        
+        let id = game.getPlayerIndex(socket.name);
+        
+        //Check if valid player id
+        
+        if (id == -1)
+            return;
+        
+        //Check data
+        
+        let type = '';
+        
+        if (data.movement !== undefined) {
+            game.players[id].movement = data.movement;
+            type = 'movement';
+        }
+        
+        //Sync across all
+        
+        if (type.length > 0)
+            server.syncPlayerPartially(id, type, socket, true);
+    });
 };
 
 //Sync player partially function, if socket is undefined it will be broadcast
 
-exports.syncPlayerPartially = function(id, type, socket)
+exports.syncPlayerPartially = function(id, type, socket, broadcast)
 {
     let data = {
         name: game.players[id].name
     };
     
     if (socket !== undefined && data.name == socket.name)
-        data.isPlayer = true;
+        if (broadcast === undefined || !broadcast) 
+            data.isPlayer = true;
     
     switch (type)
     {
@@ -153,15 +191,20 @@ exports.syncPlayerPartially = function(id, type, socket)
     }
     
     if (socket === undefined) io.sockets.emit('GAME_PLAYER_UPDATE', data);
-    else socket.emit('GAME_PLAYER_UPDATE', data);
+    else {
+        if (broadcast === undefined || !broadcast)
+            socket.emit('GAME_PLAYER_UPDATE', data);
+        else
+            socket.broadcast.emit('GAME_PLAYER_UPDATE', data);
+    }
 };
 
 //Sync whole player function, if socket is undefined it will be broadcast
 
-exports.syncPlayer = function(id, socket)
+exports.syncPlayer = function(id, socket, broadcast)
 {
-    this.syncPlayerPartially(id, 'position', socket);
-    this.syncPlayerPartially(id, 'movement', socket);
-    this.syncPlayerPartially(id, 'direction', socket);
-    this.syncPlayerPartially(id, 'src', socket);
+    this.syncPlayerPartially(id, 'position', socket, broadcast);
+    this.syncPlayerPartially(id, 'movement', socket, broadcast);
+    this.syncPlayerPartially(id, 'direction', socket, broadcast);
+    this.syncPlayerPartially(id, 'src', socket, broadcast);
 };

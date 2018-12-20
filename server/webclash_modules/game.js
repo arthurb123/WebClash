@@ -1,15 +1,15 @@
 exports.players = [];
 
-exports.addPlayer = function(name)
+exports.addPlayer = function(socket)
 {
     //Check if socket is valid
     
-    if (name == undefined)
+    if (socket.name == undefined)
         return;
     
     //Grab player stats
     
-    let player = databases.stats.findOne({ name: name });
+    let player = databases.stats.findOne({ name: socket.name });
     
     //Add player
     
@@ -17,7 +17,11 @@ exports.addPlayer = function(name)
     
     //Sync across server
     
-    server.syncPlayer(this.players.length-1);
+    server.syncPlayer(this.players.length-1, socket, true);
+    
+    //Sync to player
+    
+    server.syncPlayer(this.players.length-1, socket, false);
 };
 
 exports.removePlayer = function(name)

@@ -43,7 +43,8 @@ const client = {
                  game.instantiatePlayer();
                  
                  id = game.player;
-             } else if (id == -1) {
+             }
+             else if (id == -1) {
                  game.instantiateOther();
                  
                  id = game.players.length-1;

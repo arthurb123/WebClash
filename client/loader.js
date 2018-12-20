@@ -21,6 +21,7 @@ function loadAllScripts()
     addScript('lib/lynx2d.js');
     addScript('lib/game.js');
     addScript('lib/client.js');
+    addScript('lib/player.js');
     addScript('lib/view.js');
     
     addScript('misc/prototypes.js');

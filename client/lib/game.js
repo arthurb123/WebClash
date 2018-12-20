@@ -12,12 +12,7 @@ const game = {
     instantiatePlayer: function() {
         //Instantiate Lynx2D GameObject for player
         
-        this.players.push(
-            new lx.GameObject(undefined, 0, 0, 64, 64)
-                .SetTopDownController(.25, .25, 2.5)
-                .Focus()
-                .Show(2)
-        );  
+        player.instantiate();
         
         this.player = this.players.length-1;
     },
