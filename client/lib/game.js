@@ -9,20 +9,21 @@ const game = {
         
         return -1;
     },
-    instantiatePlayer: function() {
+    instantiatePlayer: function(name) {
         //Instantiate Lynx2D GameObject for player
         
-        player.instantiate();
+        player.instantiate(name);
         
         this.player = this.players.length-1;
     },
-    instantiateOther: function() {
+    instantiateOther: function(name) {
         //Instantiate Lynx2D GameObject for other player
         
-        this.players.push(
-            new lx.GameObject(undefined, 0, 0, 64, 64)
-                .Show(2)
-        );  
+        let go = new lx.GameObject(undefined, 0, 0, 64, 64);
+        
+        go.name = name;
+        
+        this.players.push(go.Show(2));  
     },
     initialize: function() {
         //Initialize and start Lynx2D

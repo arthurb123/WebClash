@@ -35,17 +35,22 @@ const client = {
             
              //Get the id of the player's data
             
-             let id = game.getPlayerIndex(data.name);
+             let id;
+            
+             if (data.isPlayer) 
+                 id = game.player;
+             else 
+                 id = game.getPlayerIndex(data.name);
             
              //If the player does not yet exist, create it
             
              if (id == -1 && data.isPlayer) {
-                 game.instantiatePlayer();
+                 game.instantiatePlayer(data.name);
                  
                  id = game.player;
              }
              else if (id == -1) {
-                 game.instantiateOther();
+                 game.instantiateOther(data.name);
                  
                  id = game.players.length-1;
              }

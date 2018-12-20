@@ -169,11 +169,7 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
     let data = {
         name: game.players[id].name
     };
-    
-    if (socket !== undefined && data.name == socket.name)
-        if (broadcast === undefined || !broadcast) 
-            data.isPlayer = true;
-    
+
     switch (type)
     {
         case 'position':
@@ -190,10 +186,14 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
             break;
     }
     
-    if (socket === undefined) io.sockets.emit('GAME_PLAYER_UPDATE', data);
+    if (socket === undefined) 
+        io.sockets.emit('GAME_PLAYER_UPDATE', data);
     else {
-        if (broadcast === undefined || !broadcast)
+        if (broadcast === undefined || !broadcast) {
+            data.isPlayer = true;
+            
             socket.emit('GAME_PLAYER_UPDATE', data);
+        }
         else
             socket.broadcast.emit('GAME_PLAYER_UPDATE', data);
     }
