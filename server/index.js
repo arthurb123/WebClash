@@ -13,9 +13,10 @@ global.io = require('socket.io')(http);
 
 global.server = require('./webclash_modules/server');
 global.game = require('./webclash_modules/game');
+global.tiled = require('./webclash_modules/tiled');
 global.output = require('./webclash_modules/output');
 
-//Server Properties
+//(Setup/load) Server Properties
 
 global.properties = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
 
@@ -23,6 +24,8 @@ global.databases = {
     accounts: db('data/accounts'),
     stats: db('data/stats')
 };
+
+tiled.loadAllMaps();
 
 //Setup Express
 

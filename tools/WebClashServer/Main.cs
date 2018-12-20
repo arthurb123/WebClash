@@ -27,17 +27,9 @@ namespace WebClashServer
         private void startButton_Click(object sender, EventArgs e)
         {
             if (!running)
-            {
                 AttemptStartServer();
-
-                startButton.Text = "Stop";
-            }
             else
-            {
                 AttemptStopServer();
-
-                startButton.Text = "Start";
-            }
         }
 
         private void AttemptStartServer()
@@ -45,7 +37,10 @@ namespace WebClashServer
             if (p != null)
                 return;
 
-            CheckServerLocation();
+            if (!CheckServerLocation())
+                return;
+
+            startButton.Text = "Stop";
 
             running = true;
             
@@ -74,6 +69,8 @@ namespace WebClashServer
             {
                 AddOutput(e.Data);
             });
+
+            status.Text = "Server has been started.";
         }
 
         private void AttemptStopServer()
@@ -82,30 +79,57 @@ namespace WebClashServer
             {
                 running = false;
 
+                startButton.Text = "Start";
+
                 KillProcessAndChildrens(p.Id);
 
+                status.Text = "Server has been stopped.";
+
                 output.Text = "";
+
+                p = null;
             }
         }
 
-        private void CheckServerLocation()
+        private bool CheckServerLocation()
         {
-            if (!Directory.Exists(location) ||
+            if (Directory.Exists(location) ||
+                File.Exists(location + "/index.js"))
+                return true;
+
+            while (!Directory.Exists(location) ||
                 !File.Exists(location + "/index.js"))
             {
-                RequestServerLocation();
+                status.Text = "Server folder not located.";
 
-                return;
+                MessageBox.Show("Server folder could not be located, please select the server location.", "WebClash Server - Error");
+
+                if (RequestServerLocation())
+                {
+                    status.Text = "Server folder located.";
+
+                    return true;
+                }
+                else
+                    break;
             }
+
+            return false;
         }
 
-        private void RequestServerLocation()
+        private bool RequestServerLocation()
         {
             using (FolderBrowserDialog dialog = new FolderBrowserDialog())
             {
                 if (dialog.ShowDialog() == DialogResult.OK)
+                {
                     location = dialog.SelectedPath;
+
+                    return true;
+                }
             }
+
+            return false;
         }
 
         public void AddOutput(string msg)
@@ -114,7 +138,7 @@ namespace WebClashServer
                 return;
 
             if (!InvokeRequired)
-                output.Text += msg;
+                output.Text += msg + "\n";
             else
                 Invoke(new Action<string>(AddOutput), msg);
         }
@@ -142,6 +166,14 @@ namespace WebClashServer
                     KillProcessAndChildrens(Convert.ToInt32(mo["ProcessID"])); //kill child processes(also kills childrens of childrens etc.)
                 }
             }
+        }
+
+        private void settings_Click(object sender, EventArgs e)
+        {
+            if (!CheckServerLocation())
+                return;
+
+            Process.Start(new ProcessStartInfo(location + "/properties.json"));
         }
     }
 }
