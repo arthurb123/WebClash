@@ -43,32 +43,39 @@ namespace WebClashServer
             startButton.Text = "Stop";
 
             running = true;
-            
-            ProcessStartInfo pi = new ProcessStartInfo("cmd.exe", "/c node index.js");
-            p = new Process();
 
-            pi.CreateNoWindow = true;
-            pi.UseShellExecute = false;
-
-            pi.WorkingDirectory = location;
-
-            pi.RedirectStandardError = true;
-            pi.RedirectStandardOutput = true;
-
-            p = Process.Start(pi);
-
-            p.BeginOutputReadLine();
-            p.BeginErrorReadLine();
-
-            p.OutputDataReceived += ((object sender, DataReceivedEventArgs e) =>
+            try
             {
-                AddOutput(e.Data);
-            });
+                ProcessStartInfo pi = new ProcessStartInfo("cmd.exe", "/c node index.js");
+                p = new Process();
 
-            p.ErrorDataReceived += ((object sender, DataReceivedEventArgs e) =>
+                pi.CreateNoWindow = true;
+                pi.UseShellExecute = false;
+
+                pi.WorkingDirectory = location;
+
+                pi.RedirectStandardError = true;
+                pi.RedirectStandardOutput = true;
+
+                p = Process.Start(pi);
+
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
+
+                p.OutputDataReceived += ((object sender, DataReceivedEventArgs e) =>
+                {
+                    AddOutput(e.Data);
+                });
+
+                p.ErrorDataReceived += ((object sender, DataReceivedEventArgs e) =>
+                {
+                    AddOutput(e.Data);
+                });
+            }
+            catch (Exception e)
             {
-                AddOutput(e.Data);
-            });
+                MessageBox.Show(e.Message, "WebClash Server - Error");
+            }
 
             status.Text = "Server has been started.";
         }
@@ -173,7 +180,17 @@ namespace WebClashServer
             if (!CheckServerLocation())
                 return;
 
-            Process.Start(new ProcessStartInfo(location + "/properties.json"));
+            try
+            {
+                if (location.IndexOf("\\") == -1)
+                    location = Application.StartupPath + "/" + location;
+
+                Process.Start(new ProcessStartInfo(location + "/properties.json"));
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message, "WebClash Server - Error");
+            }
         }
     }
 }

@@ -51,7 +51,9 @@ const game = {
         for (let l = 0; l < map.layers.length; l++) {
             const data = map.layers[l].data,
                   width = map.layers[l].width,
-                  height = map.layers[l].height;
+                  height = map.layers[l].height,
+                  offset_width = -map.width*map.tilewidth/2,
+                  offset_height = -map.height*map.tileheight/2;
             
             lx.OnLayerDraw(l, function(gfx) {
                 for (let t = 0; t < data.length; t++)
@@ -87,7 +89,7 @@ const game = {
                         y: (Math.ceil(data[t] / Math.round(sprite.Size().W/map.tilewidth)) -1) * map.tileheight
                     },
                         tp = {
-                        x: (t % width - 1) * map.tilewidth,
+                        x: t % width * map.tilewidth,
                         y: Math.floor(t / width) * map.tileheight       
                     };
                     
@@ -96,8 +98,8 @@ const game = {
                     lx.DrawSprite(
                         sprite.Clip(tc.x, tc.y, map.tilewidth, map.tileheight),
                         
-                        tp.x,
-                        tp.y, 
+                        tp.x+offset_width,
+                        tp.y+offset_height, 
                         
                         map.tilewidth,
                         map.tileheight
@@ -117,7 +119,9 @@ const game = {
     initialize: function() {
         //Initialize and start Lynx2D
         
-        lx.Initialize(document.title);
-        lx.Start(60);
+        lx
+            .Initialize(document.title)
+            .Smoothing(false)
+            .Start(60);
     }
 };
