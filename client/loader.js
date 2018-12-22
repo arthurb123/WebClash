@@ -23,6 +23,7 @@ function loadAllScripts()
     addScript('lib/client.js');
     addScript('lib/player.js');
     addScript('lib/view.js');
+    addScript('lib/animation.js');
     
     addScript('misc/prototypes.js');
     

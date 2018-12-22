@@ -160,9 +160,13 @@ exports.handleSocket = function(socket)
             game.players[id].movement = data.movement;
             type = 'movement';
         }
+        if (data.direction !== undefined) {
+            game.players[id].direction = data.direction;
+            type = 'direction';
+        }
         if (data.pos !== undefined) {
             game.players[id].pos = data.pos;
-            return;
+            type = 'position';
         }
         
         //Sync across all
