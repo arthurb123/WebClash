@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Management;
+using WebClashServer.Editors;
 
 namespace WebClashServer
 {
@@ -10,7 +11,7 @@ namespace WebClashServer
     {
         private bool running = false;
 
-        private string location = "server";
+        public string location = "server";
 
         private Process p = null;
 
@@ -191,6 +192,16 @@ namespace WebClashServer
             {
                 MessageBox.Show(exc.Message, "WebClash Server - Error");
             }
+        }
+
+        private void charactersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!CheckServerLocation())
+                return;
+
+            Characters characters = new Characters();
+
+            characters.ShowDialog();
         }
     }
 }

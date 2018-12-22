@@ -8,3 +8,8 @@ C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClas
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.csproj.CoreCompileInputs.cache
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.exe
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.pdb
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\bin\Debug\Newtonsoft.Json.pdb
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.Characters.resources
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.csproj.CopyComplete
