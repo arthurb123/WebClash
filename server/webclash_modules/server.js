@@ -54,7 +54,7 @@ exports.handleSocket = function(socket)
         
         //Check if already logged in
         
-        if (socket.playing)
+        if (game.getPlayerIndex(data.name) != -1)
         {
             callback('loggedin');
             return;

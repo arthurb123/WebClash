@@ -24,6 +24,11 @@ const game = {
         
         go.name = name;
         
+        go._nameplate = new lx.UIText(name, 32, -12, 14)
+            .Alignment('center')
+            .Follows(go)
+            .Show();
+        
         this.players.push(go.Show(2));  
     },
     removePlayer: function(id) {
@@ -35,6 +40,7 @@ const game = {
         //Hide target GameObject
         
         this.players[id].Hide();
+        this.players[id]._nameplate.Hide();
         
         //Remove target
         
