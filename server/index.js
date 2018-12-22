@@ -26,6 +26,7 @@ global.databases = {
 };
 
 tiled.loadAllMaps();
+game.loadAllCharacters();
 
 //Setup Express
 

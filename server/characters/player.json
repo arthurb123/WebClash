@@ -1,0 +1,9 @@
+{
+    "src": "res/characters/player.png",
+    "width": 64,
+    "height": 64,
+    "animation": {
+        "speed": 8,
+        "direction": "horizontal"
+    }
+}

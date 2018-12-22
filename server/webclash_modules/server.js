@@ -97,7 +97,7 @@ exports.handleSocket = function(socket)
         databases.stats(data.name).set('pos', { X: 0, Y: 0 });
         databases.stats(data.name).set('movement', { VX: 0, VY: 0 });
         databases.stats(data.name).set('direction', 0);
-        databases.stats(data.name).set('src', 'res/characters/player.png');
+        databases.stats(data.name).set('char_name', 'player');
 
         //Save databases
         
@@ -191,8 +191,8 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
         case 'direction':
             data.direction = game.players[id].direction;
             break;
-        case 'src':
-            data.src = game.players[id].src;
+        case 'character':
+            data.character = game.players[id].character;
             break;
     }
     
@@ -217,7 +217,7 @@ exports.syncPlayer = function(id, socket, broadcast)
     this.syncPlayerPartially(id, 'position', socket, broadcast);
     this.syncPlayerPartially(id, 'movement', socket, broadcast);
     this.syncPlayerPartially(id, 'direction', socket, broadcast);
-    this.syncPlayerPartially(id, 'src', socket, broadcast);
+    this.syncPlayerPartially(id, 'character', socket, broadcast);
 };
 
 //Sync player remove function, will be broadcast by default

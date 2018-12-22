@@ -1,4 +1,9 @@
+//Game module for WebClash
+
+const fs = require('fs');
+
 exports.players = [];
+exports.characters = [];
 
 exports.addPlayer = function(socket)
 {
@@ -11,6 +16,7 @@ exports.addPlayer = function(socket)
     
     let player = databases.stats(socket.name).object();
     player.name = socket.name;
+    player.character = this.characters[player.char_name];
     
     //Add player
     
@@ -69,4 +75,26 @@ exports.loadMap = function(socket, id)
     //Send the corresponding map
     
     socket.emit('GAME_MAP_UPDATE', tiled.maps[id]);
+};
+
+exports.loadAllCharacters = function()
+{
+    let location = 'characters';
+    
+    fs.readdir(location, (err, files) => {
+      files.forEach(file => {
+          game.characters[file.substr(0, file.lastIndexOf('.'))] = game.loadCharacter(location + '/' + file);
+      });
+    });
+};
+
+exports.loadCharacter = function(location)
+{
+    try {
+        return JSON.parse(fs.readFileSync(location, 'utf-8'));
+    }
+    catch (err)
+    {
+        output.give(err);
+    }
 };

@@ -65,8 +65,13 @@ const client = {
                  game.players[id].Movement(data.movement.VX, data.movement.VY);
              if (data.direction !== undefined) 
                  game.players[id]._direction = data.direction;
-             if (data.src !== undefined) 
-                 game.players[id].SPRITE = new lx.Sprite(data.src);
+             if (data.character !== undefined) {
+                 game.players[id].SPRITE = new lx.Sprite(data.character.src);
+                 game.players[id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
+                 
+                 game.players[id]._animation = data.character.animation;
+                 game.players[id]._animation.cur = 0;
+             }
         });
         socket.on('GAME_MAP_UPDATE', function (data) {
             game.loadMap(data); 
