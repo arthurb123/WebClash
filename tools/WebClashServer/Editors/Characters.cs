@@ -16,6 +16,8 @@ namespace WebClashServer.Editors
 
         Image charImage;
 
+        private Pen colliderPen = new Pen(Brushes.Purple, 2);
+
         public Characters()
         {
             InitializeComponent();
@@ -76,6 +78,11 @@ namespace WebClashServer.Editors
 
             speed.Value = current.animation.speed;
 
+            collX.Value = current.collider.x;
+            collY.Value = current.collider.y;
+            collWidth.Value = current.collider.width;
+            collHeight.Value = current.collider.height;
+
             canvas.Invalidate();
         }
 
@@ -88,7 +95,20 @@ namespace WebClashServer.Editors
             if (charImage == null)
                 return;
 
-            g.DrawImage(charImage, new Rectangle(0, 0, canvas.Width, canvas.Height), animFrame * current.width, 0, current.width, current.height, GraphicsUnit.Pixel);
+            Point sp = new Point(canvas.Width / 2 - current.width / 2, canvas.Height / 2 - current.height / 2);
+
+            //Draw sprite
+
+            g.DrawImage(charImage, new Rectangle(sp.X, sp.Y, current.width, current.height), animFrame * current.width, 0, current.width, current.height, GraphicsUnit.Pixel);
+
+            //Draw collider
+
+            g.DrawRectangle(colliderPen, new Rectangle(
+                sp.X + current.collider.x,
+                sp.Y + current.collider.y,
+                current.collider.width,
+                current.collider.height
+            ));
         }
 
         private void AttemptSetCharImage(string src)
@@ -234,6 +254,7 @@ namespace WebClashServer.Editors
                 src = temp.src;
 
                 animation = temp.animation;
+                collider = temp.collider;
             }
             catch (Exception e)
             {
@@ -251,6 +272,10 @@ namespace WebClashServer.Editors
         //Animation
 
         public Animation animation = new Animation();
+
+        //Collider
+
+        public Collider collider = new Collider();
     }
 
     public class Animation
@@ -258,5 +283,14 @@ namespace WebClashServer.Editors
         public string direction = "horizontal";
 
         public int speed = 8;
+    }
+
+    public class Collider
+    {
+        public int x = 0,
+                   y = 0;
+
+        public int width = 64,
+                   height = 64;
     }
 }

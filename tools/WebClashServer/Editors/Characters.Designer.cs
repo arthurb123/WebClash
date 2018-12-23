@@ -51,12 +51,26 @@
             this.canvas = new System.Windows.Forms.PictureBox();
             this.animation = new System.Windows.Forms.Timer(this.components);
             this.save = new System.Windows.Forms.LinkLabel();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.collHeight = new System.Windows.Forms.NumericUpDown();
+            this.collWidth = new System.Windows.Forms.NumericUpDown();
+            this.collY = new System.Windows.Forms.NumericUpDown();
+            this.collX = new System.Windows.Forms.NumericUpDown();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.speed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
+            this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.collHeight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.collWidth)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.collY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.collX)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -286,7 +300,7 @@
             // canvas
             // 
             this.canvas.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.canvas.Location = new System.Drawing.Point(98, 204);
+            this.canvas.Location = new System.Drawing.Point(104, 269);
             this.canvas.Name = "canvas";
             this.canvas.Size = new System.Drawing.Size(200, 200);
             this.canvas.TabIndex = 6;
@@ -304,7 +318,7 @@
             this.save.AutoSize = true;
             this.save.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.save.LinkColor = System.Drawing.Color.Blue;
-            this.save.Location = new System.Drawing.Point(356, 394);
+            this.save.Location = new System.Drawing.Point(360, 456);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(32, 13);
             this.save.TabIndex = 7;
@@ -313,11 +327,148 @@
             this.save.VisitedLinkColor = System.Drawing.Color.Blue;
             this.save.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.save_LinkClicked);
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.label11);
+            this.groupBox3.Controls.Add(this.label10);
+            this.groupBox3.Controls.Add(this.label9);
+            this.groupBox3.Controls.Add(this.label8);
+            this.groupBox3.Controls.Add(this.collY);
+            this.groupBox3.Controls.Add(this.collX);
+            this.groupBox3.Controls.Add(this.collHeight);
+            this.groupBox3.Controls.Add(this.collWidth);
+            this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox3.Location = new System.Drawing.Point(15, 196);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(373, 63);
+            this.groupBox3.TabIndex = 11;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Collider";
+            // 
+            // collHeight
+            // 
+            this.collHeight.Location = new System.Drawing.Point(295, 26);
+            this.collHeight.Maximum = new decimal(new int[] {
+            640,
+            0,
+            0,
+            0});
+            this.collHeight.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.collHeight.Name = "collHeight";
+            this.collHeight.Size = new System.Drawing.Size(64, 21);
+            this.collHeight.TabIndex = 10;
+            this.collHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.collHeight.Value = new decimal(new int[] {
+            64,
+            0,
+            0,
+            0});
+            // 
+            // collWidth
+            // 
+            this.collWidth.Location = new System.Drawing.Point(206, 26);
+            this.collWidth.Maximum = new decimal(new int[] {
+            640,
+            0,
+            0,
+            0});
+            this.collWidth.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.collWidth.Name = "collWidth";
+            this.collWidth.Size = new System.Drawing.Size(64, 21);
+            this.collWidth.TabIndex = 9;
+            this.collWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.collWidth.Value = new decimal(new int[] {
+            64,
+            0,
+            0,
+            0});
+            // 
+            // collY
+            // 
+            this.collY.Location = new System.Drawing.Point(113, 26);
+            this.collY.Maximum = new decimal(new int[] {
+            640,
+            0,
+            0,
+            0});
+            this.collY.Minimum = new decimal(new int[] {
+            640,
+            0,
+            0,
+            -2147483648});
+            this.collY.Name = "collY";
+            this.collY.Size = new System.Drawing.Size(64, 21);
+            this.collY.TabIndex = 14;
+            this.collY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // collX
+            // 
+            this.collX.Location = new System.Drawing.Point(27, 26);
+            this.collX.Maximum = new decimal(new int[] {
+            640,
+            0,
+            0,
+            0});
+            this.collX.Minimum = new decimal(new int[] {
+            640,
+            0,
+            0,
+            -2147483648});
+            this.collX.Name = "collX";
+            this.collX.Size = new System.Drawing.Size(64, 21);
+            this.collX.TabIndex = 13;
+            this.collX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(9, 28);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(15, 15);
+            this.label8.TabIndex = 8;
+            this.label8.Text = "X";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(95, 28);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(14, 15);
+            this.label9.TabIndex = 15;
+            this.label9.Text = "Y";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(183, 28);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(18, 15);
+            this.label10.TabIndex = 16;
+            this.label10.Text = "W";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(276, 28);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(16, 15);
+            this.label11.TabIndex = 17;
+            this.label11.Text = "H";
+            // 
             // Characters
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 416);
+            this.ClientSize = new System.Drawing.Size(404, 481);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.save);
             this.Controls.Add(this.canvas);
             this.Controls.Add(this.groupBox2);
@@ -328,8 +479,8 @@
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(420, 455);
-            this.MinimumSize = new System.Drawing.Size(420, 455);
+            this.MaximumSize = new System.Drawing.Size(420, 520);
+            this.MinimumSize = new System.Drawing.Size(420, 520);
             this.Name = "Characters";
             this.Text = "WebClash Server - Characters";
             this.Load += new System.EventHandler(this.Characters_Load);
@@ -341,6 +492,12 @@
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.speed)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.collHeight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.collWidth)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.collY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.collX)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -369,5 +526,14 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Timer animation;
         private System.Windows.Forms.LinkLabel save;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.NumericUpDown collY;
+        private System.Windows.Forms.NumericUpDown collX;
+        private System.Windows.Forms.NumericUpDown collHeight;
+        private System.Windows.Forms.NumericUpDown collWidth;
     }
 }

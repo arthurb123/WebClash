@@ -12,19 +12,16 @@ const player = {
         
         game.players.push(go.Show(3));  
     },
-    createCollider: function() {
-        if (game.players[game.player] === undefined)
-            return;
-            
-        let go = game.players[game.player];
-        
-        game.players[game.player].ApplyCollider(new lx.Collider(
-            go.Size().W*.2875, 
-            go.Size().H*.5, 
-            go.Size().W*.425, 
-            go.Size().H*.5, 
-            false
-        ));  
+    setCollider: function(collider) {
+        game.players[game.player].ApplyCollider(
+            new lx.Collider(
+                collider.x, 
+                collider.y, 
+                collider.width, 
+                collider.height, 
+                false
+            )
+        );  
     },
     update: function() {
         if (this.MOVEMENT.VX != 0 || this.MOVEMENT.VY != 0) {
