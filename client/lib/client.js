@@ -4,7 +4,7 @@ const client = {
         //Try to make a connection
         
         window['socket'] = io.connect(
-            (properties.address.length > 0 ? (properties.address + ":" + properties.port)
+            (properties.address.length > 0 ? (properties.address + ":" + properties.port) : undefined)
         );
         
         //Setup possible server requests

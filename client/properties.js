@@ -1,6 +1,6 @@
 //WebClash Client Properties
 
 const properties = {
-    address: "",
+    address: "http://localhost",
     port: 5315
 };
