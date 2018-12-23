@@ -19,6 +19,7 @@ function loadAllScripts()
     
     addScript('lib/socket.io.js');
     addScript('lib/lynx2d.js');
+    addScript('lib/tiled.js');
     addScript('lib/game.js');
     addScript('lib/client.js');
     addScript('lib/player.js');

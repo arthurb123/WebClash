@@ -15,7 +15,14 @@ const client = {
     },
     joinGame: function() {
         if (this.inGame)
-            return;
+        {
+            //Clear any cached game elements
+            
+            game.players = [];
+            game.player = -1;
+            
+            game.tilesets = [];
+        }
  
         this.inGame = true;
         

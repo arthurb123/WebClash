@@ -199,7 +199,17 @@ namespace WebClashServer
             if (!CheckServerLocation())
                 return;
 
+            int amount = 0;
+
             Characters characters = new Characters();
+            characters.VisibleChanged += (object s, EventArgs ea) =>
+            {
+                amount = characters.GetAmount();
+            };
+            characters.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                if (amount != characters.GetAmount())
+                    AddOutput("The amount of characters has changed, changes will be visible after a server restart.");
+            };
 
             characters.ShowDialog();
         }

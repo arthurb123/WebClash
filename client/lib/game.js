@@ -50,72 +50,9 @@ const game = {
         this.players.splice(id, 1);
     },
     loadMap: function(map) {
-        //Clear the OnLayerDraw events
+        tiled.convertAndLoadMap(map);
         
-        lx.ResetLayerDraw();
-        
-        //Add OnLayerDraw events based on
-        //the map content
-        
-        for (let l = 0; l < map.layers.length; l++) {
-            const data = map.layers[l].data,
-                  width = map.layers[l].width,
-                  height = map.layers[l].height,
-                  offset_width = -map.width*map.tilewidth/2,
-                  offset_height = -map.height*map.tileheight/2;
-            
-            lx.OnLayerDraw(l, function(gfx) {
-                for (let t = 0; t < data.length; t++)
-                {
-                    //Skip empty tiles
-                    
-                    if (data[t] == 0)
-                        continue;
-                    
-                    //Get corresponding tile sprite
-                    
-                    let sprite;
-                    
-                    for (let i = 0; i < map.tilesets.length; i++) {
-                        const tileset = map.tilesets[i];
-                        
-                        if (data[t] >= tileset.firstgid) {
-                            let s = tileset.source.lastIndexOf('/')+1;
-                            
-                            sprite = game.getTileset('res/tilesets/' + tileset.source.substr(s, tileset.source.lastIndexOf('.')-s) + '.png');
-                        }
-                    }
-                    
-                    //Check if sprite is valid
-                    
-                    if (sprite === undefined)
-                        continue;
-                    
-                    //Calculate tile coordinates
-                    
-                    let tc = {
-                        x: (data[t] % Math.round(sprite.Size().W/map.tilewidth) - 1) * map.tilewidth,
-                        y: (Math.ceil(data[t] / Math.round(sprite.Size().W/map.tilewidth)) -1) * map.tileheight
-                    },
-                        tp = {
-                        x: t % width * map.tilewidth,
-                        y: Math.floor(t / width) * map.tileheight       
-                    };
-                    
-                    //Draw tile
-                    
-                    lx.DrawSprite(
-                        sprite.Clip(tc.x, tc.y, map.tilewidth, map.tileheight),
-                        
-                        tp.x+offset_width,
-                        tp.y+offset_height, 
-                        
-                        map.tilewidth,
-                        map.tileheight
-                    );
-                }
-            });
-        }
+        //...
     },
     getTileset: function(src) {
         if (this.tilesets[src] === undefined)

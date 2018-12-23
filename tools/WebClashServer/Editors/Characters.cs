@@ -208,6 +208,11 @@ namespace WebClashServer.Editors
             if (charSelect.Items.Count > 0)
                 charSelect.SelectedItem = charSelect.Items[0];
         }
+
+        public int GetAmount()
+        {
+            return charSelect.Items.Count; 
+        }
     }
 
     public class Character
