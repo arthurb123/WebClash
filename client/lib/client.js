@@ -1,5 +1,5 @@
 const client = {
-    ingame: false,
+    inGame: false,
     connect: function(cb) {
         //Try to make a connection
         
@@ -14,12 +14,12 @@ const client = {
         cb();
     },
     joinGame: function() {
-        if (this.ingame)
+        if (this.inGame)
             return;
+ 
+        this.inGame = true;
         
         socket.emit('CLIENT_JOIN_GAME');
-        
-        this.ingame = true;
     },
     setup: function() {
         socket.on('UPDATE_CLIENT_NAME', function(t) { document.title = t; });
@@ -31,6 +31,10 @@ const client = {
              //Check if the recieved data is valid
             
              if (data === undefined || data.name === undefined)
+                 return;
+            
+             //Check if in-game
+             if (!client.inGame)
                  return;
             
              //Get the id of the player's data
@@ -61,8 +65,8 @@ const client = {
                  game.removePlayer(id);
              if (data.pos !== undefined) 
                  game.players[id].POS = data.pos;
-             if (data.movement !== undefined) 
-                 game.players[id].Movement(data.movement.VX, data.movement.VY);
+             if (data.moving !== undefined) 
+                 game.players[id]._moving = data.moving;
              if (data.direction !== undefined) 
                  game.players[id]._direction = data.direction;
              if (data.character !== undefined) {
@@ -74,6 +78,18 @@ const client = {
              }
         });
         socket.on('GAME_MAP_UPDATE', function (data) {
+             //Check if data is valid
+            
+             if (data === undefined)
+                 return;
+            
+             //Check if in-game
+            
+             if (!client.inGame)
+                 return;
+            
+            //Load map
+            
             game.loadMap(data); 
         });
     }

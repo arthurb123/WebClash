@@ -95,7 +95,7 @@ exports.handleSocket = function(socket)
         
         databases.stats(data.name).set('map', 0);
         databases.stats(data.name).set('pos', { X: 0, Y: 0 });
-        databases.stats(data.name).set('movement', { VX: 0, VY: 0 });
+        databases.stats(data.name).set('moving', false);
         databases.stats(data.name).set('direction', 0);
         databases.stats(data.name).set('char_name', 'player');
 
@@ -156,9 +156,9 @@ exports.handleSocket = function(socket)
         
         let type = '';
         
-        if (data.movement !== undefined) {
-            game.players[id].movement = data.movement;
-            type = 'movement';
+        if (data.moving !== undefined) {
+            game.players[id].moving = data.moving;
+            type = 'moving';
         }
         if (data.direction !== undefined) {
             game.players[id].direction = data.direction;
@@ -189,8 +189,8 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
         case 'position':
             data.pos = game.players[id].pos;
             break;
-        case 'movement':
-            data.movement = game.players[id].movement;
+        case 'moving':
+            data.moving = game.players[id].moving;
             break;
         case 'direction':
             data.direction = game.players[id].direction;
@@ -219,7 +219,7 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
 exports.syncPlayer = function(id, socket, broadcast)
 {
     this.syncPlayerPartially(id, 'position', socket, broadcast);
-    this.syncPlayerPartially(id, 'movement', socket, broadcast);
+    this.syncPlayerPartially(id, 'moving', socket, broadcast);
     this.syncPlayerPartially(id, 'direction', socket, broadcast);
     this.syncPlayerPartially(id, 'character', socket, broadcast);
 };

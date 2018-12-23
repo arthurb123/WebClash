@@ -162,6 +162,13 @@ namespace WebClashServer.Editors
 
         private void save_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            if (name.Text.Length == 0)
+            {
+                MessageBox.Show("This character cannot be saved as it has an invalid name.", "WebClash Server - Error");
+
+                return;
+            }
+
             File.WriteAllText(Program.main.location + "/characters/" + name.Text + ".json", JsonConvert.SerializeObject(current));
 
             MessageBox.Show("Character has been saved!", "WebClash Server - Message");
@@ -180,9 +187,9 @@ namespace WebClashServer.Editors
 
         private void delete_Click(object sender, EventArgs e)
         {
-            if (name.Text.Length == 0 || !File.Exists(Program.main.location + "/characters/" + name.Text + ".json"))
+            if (!File.Exists(Program.main.location + "/characters/" + name.Text + ".json"))
             {
-                MessageBox.Show("This character cannot be deleted as it is invalid.", "WebClash Server - Error");
+                MessageBox.Show("This character cannot be deleted as it does not exist yet.", "WebClash Server - Error");
 
                 return;
             }

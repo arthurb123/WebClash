@@ -8,6 +8,7 @@ const player = {
         
         go.name = name;
         go._direction = 0;
+        go._moving = false;
         
         game.players.push(go.Show(2));  
     },
@@ -27,8 +28,19 @@ const player = {
             if (oldDir != this._direction)
                 player.sync('direction');
             
-            player.sync('movement');
+            if (!game.players[game.player]._moving) {
+                game.players[game.player]._moving = true;
+                
+                player.sync('moving');
+            }
+            
             player.sync('position');
+        } else {         
+            if (game.players[game.player]._moving) {
+                game.players[game.player]._moving = false;
+                
+                player.sync('moving');
+            }
         }
         
         animation.animateMoving(this);
@@ -39,8 +51,8 @@ const player = {
         
         switch(type)
         {
-            case 'movement':
-                data.movement = game.players[game.player].Movement();
+            case 'moving':
+                data.moving = game.players[game.player]._moving;
                 break;
             case 'position':
                 data.pos = game.players[game.player].Position();

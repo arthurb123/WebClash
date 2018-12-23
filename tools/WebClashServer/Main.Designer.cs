@@ -111,14 +111,14 @@
             // charactersToolStripMenuItem
             // 
             this.charactersToolStripMenuItem.Name = "charactersToolStripMenuItem";
-            this.charactersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.charactersToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.charactersToolStripMenuItem.Text = "Characters";
             this.charactersToolStripMenuItem.Click += new System.EventHandler(this.charactersToolStripMenuItem_Click);
             // 
             // mapsToolStripMenuItem
             // 
             this.mapsToolStripMenuItem.Name = "mapsToolStripMenuItem";
-            this.mapsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mapsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.mapsToolStripMenuItem.Text = "Maps";
             // 
             // Main
@@ -132,12 +132,12 @@
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.output);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(420, 280);
             this.MinimumSize = new System.Drawing.Size(420, 280);
             this.Name = "Main";
-            this.ShowIcon = false;
             this.Text = "WebClash Server";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

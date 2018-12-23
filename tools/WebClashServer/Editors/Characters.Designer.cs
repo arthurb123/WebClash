@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Characters));
             this.label1 = new System.Windows.Forms.Label();
             this.charSelect = new System.Windows.Forms.ComboBox();
             this.add = new System.Windows.Forms.Button();
@@ -325,11 +326,11 @@
             this.Controls.Add(this.add);
             this.Controls.Add(this.charSelect);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(420, 455);
             this.MinimumSize = new System.Drawing.Size(420, 455);
             this.Name = "Characters";
-            this.ShowIcon = false;
             this.Text = "WebClash Server - Characters";
             this.Load += new System.EventHandler(this.Characters_Load);
             this.groupBox1.ResumeLayout(false);

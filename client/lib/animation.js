@@ -5,13 +5,13 @@ const animation = {
         
         if (target._animation === undefined ||
             target._direction === undefined ||
+            target._moving === undefined ||
             target.SPRITE === undefined)
             return;
         
         //Check if moving
         
-        if (target.MOVEMENT.VX == 0 &&
-            target.MOVEMENT.VY == 0)
+        if (!target._moving)
         {
             target.SPRITE.CLIP.X = 0;
             
