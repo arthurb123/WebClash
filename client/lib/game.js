@@ -20,7 +20,7 @@ const game = {
     instantiateOther: function(name) {
         //Instantiate Lynx2D GameObject for other player
         
-        let go = new lx.GameObject(undefined, 0, 0, 64, 64)
+        let go = new lx.GameObject(undefined, 0, 0, 0, 0)
             .Loops(function() {
                 animation.animateMoving(go);
             });

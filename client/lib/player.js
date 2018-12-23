@@ -1,6 +1,6 @@
 const player = {
     instantiate: function(name) {
-        let go = new lx.GameObject(undefined, 0, 0, 64, 64);
+        let go = new lx.GameObject(undefined, 0, 0, 0, 0);
         
         go.SetTopDownController(.25, .25, 2.5)
           .Loops(player.update)
@@ -10,7 +10,21 @@ const player = {
         go._direction = 0;
         go._moving = false;
         
-        game.players.push(go.Show(2));  
+        game.players.push(go.Show(3));  
+    },
+    createCollider: function() {
+        if (game.players[game.player] === undefined)
+            return;
+            
+        let go = game.players[game.player];
+        
+        game.players[game.player].ApplyCollider(new lx.Collider(
+            go.Size().W*.2875, 
+            go.Size().H*.5, 
+            go.Size().W*.425, 
+            go.Size().H*.5, 
+            false
+        ));  
     },
     update: function() {
         if (this.MOVEMENT.VX != 0 || this.MOVEMENT.VY != 0) {

@@ -52,6 +52,15 @@ exports.handleSocket = function(socket)
             return;
         }
         
+        //Check if there is place available
+        
+        if (properties.maxPlayers != 0 &&
+            game.players.length >= properties.maxPlayers)
+        {
+            callback('full');
+            return;
+        }
+        
         //Check if already logged in
         
         if (game.getPlayerIndex(data.name) != -1)
@@ -84,6 +93,15 @@ exports.handleSocket = function(socket)
         if (databases.accounts(data.name).has('pass'))
         {
             callback('taken');
+            return;
+        }
+        
+        //Check if there is place available
+        
+        if (properties.maxPlayers != 0 &&
+            game.players.length >= properties.maxPlayers)
+        {
+            callback('full');
             return;
         }
         

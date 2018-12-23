@@ -80,6 +80,11 @@ const client = {
                  game.players[id].SPRITE = new lx.Sprite(data.character.src);
                  game.players[id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
                  
+                 game.players[id].SIZE = game.players[id].SPRITE.Size();
+                 
+                 if (id == game.player)
+                     player.createCollider();
+                 
                  game.players[id]._animation = data.character.animation;
                  game.players[id]._animation.cur = 0;
              }

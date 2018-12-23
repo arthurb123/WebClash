@@ -45,6 +45,9 @@ const view = {
                     case 'none':
                         document.getElementById('windowErrorText').innerHTML = 'Username does not exist';
                         break;
+                    case 'full':
+                        document.getElementById('windowErrorText').innerHTML = 'The server is full';
+                        break;
                     case 'wrong':
                         document.getElementById('windowErrorText').innerHTML = 'Wrong password';
                         break;
@@ -82,6 +85,9 @@ const view = {
                 {
                     case 'taken':
                         document.getElementById('windowErrorText').innerHTML = 'Username has been taken';
+                        break;
+                    case 'full':
+                        document.getElementById('windowErrorText').innerHTML = 'The server is full';
                         break;
                 }
             });
