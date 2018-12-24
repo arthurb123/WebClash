@@ -211,13 +211,29 @@ exports.handleSocket = function(socket)
         if (socket.playing === undefined || !socket.playing)
             return;
         
+        let msg = '';
+        
         //TODO:
         //Check correct length
         //Check if spamming
         
-        //Format chat message
+        //Check if command
         
-        let msg = socket.name + ': ' + input.filterText(data);
+        if (data[0] === '/')
+        {
+            //Check command and handle output
+            
+            let output = input.handleCommand(socket, data);
+            
+            if (output === 'invalid')
+                msg = 'This command is invalid.';
+            else if (output == 'wrong')
+                msg = 'Wrong command syntax.';
+            else
+                return;
+        } 
+        else
+            msg = socket.name + ': ' + input.filterText(data);
         
         //Send chat message to all other players
         

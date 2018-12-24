@@ -4,8 +4,14 @@ const ui = {
     },
     chat: {
         create: function() {
-            if (this.dom !== undefined)
-                return;
+            if (this.dom !== undefined) {
+                if (this.dom.box.parentNode === undefined)
+                    return;
+                
+                this.dom.box.parentNode.removeChild(this.dom.box);
+                
+                this.dom = undefined;
+            }
             
             view.dom.innerHTML += 
                 '<div id="chat_box" class="box" style="position: absolute; top: 100%; left: 35px; margin-top: -235px; width: 340px; height: 180px;">' +
@@ -15,6 +21,7 @@ const ui = {
                 '</div>';
             
             this.dom = {
+                box: document.getElementById('chat_box'),
                 content: document.getElementById('chat_box_content'),
                 message: document.getElementById('chat_box_message')
             };

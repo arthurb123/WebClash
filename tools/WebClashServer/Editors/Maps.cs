@@ -180,8 +180,6 @@ namespace WebClashServer.Editors
                     {
                         Image temp;
 
-                        MessageBox.Show(ts.image);
-
                         if (File.Exists(startLocation + ts.image))
                             temp = Image.FromFile(startLocation + ts.image);
                         else if (File.Exists(ts.image))
