@@ -19,13 +19,13 @@ namespace WebClashServer.Editors
 
         private void Maps_Load(object sender, EventArgs e)
         {
-            LoadMaps();
+            LoadMapsList();
 
             if (mapList.Items.Count > 0)
                 mapList.SelectedIndex = 0;
         }
 
-        private void LoadMaps()
+        private void LoadMapsList()
         {
             mapList.Items.Clear();
 
@@ -97,12 +97,50 @@ namespace WebClashServer.Editors
 
         private void import_Click(object sender, EventArgs e)
         {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Title = "WebClash Server - Import Map";
+            ofd.Filter = "Tiled JSON Map|*.json";
 
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    current = new Map(ofd.FileName);
+                    for (int i = 0; i < current.tilesets.Length; i++)
+                        current.tilesets[i].image = Path.GetDirectoryName(ofd.FileName) + "/" + current.tilesets[i].image;
+
+                    string startLocation = Program.main.location + "\\maps\\";
+
+                    File.Copy(ofd.FileName, startLocation + ofd.SafeFileName, true);
+
+                    ImportTilesets();
+
+                    LoadMapsList();
+
+                    mapList.SelectedItem = ofd.SafeFileName.Substring(0, ofd.SafeFileName.IndexOf('.'));
+                }
+                catch (Exception exc)
+                {
+                    MessageBox.Show(exc.Message, "WebClash Server - Error");
+                }
+            }
         }
 
         private void delete_Click(object sender, EventArgs e)
         {
+            string path = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".json";
 
+            if (mapList.Items.Count == 1)
+            {
+                MessageBox.Show("This map cannot be removed as there must always be one map present.", "WebClash Server - Error");
+
+                return;
+            }
+
+            if (File.Exists(path))
+                File.Delete(path);
+
+            LoadMapsList();
         }
 
         private void help_Click(object sender, EventArgs e)
@@ -133,22 +171,36 @@ namespace WebClashServer.Editors
             if (current == null)
                 return;
 
-            string startLocation = Program.main.location + "/maps/";
+            try
+            {
+                string startLocation = Program.main.location + "/maps/";
 
-            foreach (Tileset ts in current.tilesets)
-                if (!CheckTileset(ts) &&
-                    File.Exists(startLocation + ts.image))
-                {
-                    Image temp = Image.FromFile(startLocation + ts.image);
+                foreach (Tileset ts in current.tilesets)
+                    if (!CheckTileset(ts))
+                    {
+                        Image temp;
 
-                    string clientLocation = Program.main.location + "/../client/res/tilesets/";
+                        MessageBox.Show(ts.image);
 
-                    int s = ts.image.LastIndexOf("/") + 1;
+                        if (File.Exists(startLocation + ts.image))
+                            temp = Image.FromFile(startLocation + ts.image);
+                        else if (File.Exists(ts.image))
+                            temp = Image.FromFile(ts.image);
+                        else continue;
 
-                    temp.Save(clientLocation + ts.image.Substring(s, ts.image.Length - s));
-                }
+                        string clientLocation = Program.main.location + "/../client/res/tilesets/";
 
-            CheckTilesets();
+                        int s = ts.image.LastIndexOf("/") + 1;
+
+                        temp.Save(clientLocation + ts.image.Substring(s, ts.image.Length - s));
+                    }
+
+                CheckTilesets();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "WebClash Server - Error");
+            }
         }
     }
 

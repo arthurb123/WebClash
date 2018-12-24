@@ -32,7 +32,7 @@ exports.addPlayer = function(socket)
     
     //Load current world
     
-    this.loadMap(socket, player.map);
+    this.loadMap(socket, player.map); 
 };
 
 exports.removePlayer = function(socket)

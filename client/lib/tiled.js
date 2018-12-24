@@ -101,6 +101,11 @@ const tiled = {
                     tileset = map.tilesets[i];
                 }
 
+                //Check if tileset has objects
+                 
+                if (tileset.tiles === undefined)
+                    continue;
+                 
                 //Calculate tile coordinates
 
                 let tp = {
