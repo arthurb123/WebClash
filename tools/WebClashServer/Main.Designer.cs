@@ -118,8 +118,9 @@
             // mapsToolStripMenuItem
             // 
             this.mapsToolStripMenuItem.Name = "mapsToolStripMenuItem";
-            this.mapsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.mapsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.mapsToolStripMenuItem.Text = "Maps";
+            this.mapsToolStripMenuItem.Click += new System.EventHandler(this.mapsToolStripMenuItem_Click);
             // 
             // Main
             // 

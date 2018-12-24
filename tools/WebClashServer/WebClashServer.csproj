@@ -60,6 +60,12 @@
     <Compile Include="Editors\Characters.Designer.cs">
       <DependentUpon>Characters.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\Maps.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\Maps.Designer.cs">
+      <DependentUpon>Maps.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,6 +76,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Editors\Characters.resx">
       <DependentUpon>Characters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\Maps.resx">
+      <DependentUpon>Maps.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>

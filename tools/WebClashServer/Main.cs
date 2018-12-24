@@ -213,5 +213,25 @@ namespace WebClashServer
 
             characters.ShowDialog();
         }
+
+        private void mapsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!CheckServerLocation())
+                return;
+
+            int amount = 0;
+
+            Maps maps = new Maps();
+            maps.VisibleChanged += (object s, EventArgs ea) =>
+            {
+                amount = maps.GetAmount();
+            };
+            maps.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                if (amount != maps.GetAmount())
+                    AddOutput("The amount of maps has changed, changes will be visible after a server restart.");
+            };
+
+            maps.ShowDialog();
+        }
     }
 }
