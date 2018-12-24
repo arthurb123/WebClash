@@ -11,7 +11,7 @@ const view = {
             '<div id="sceneWindow" class="box" style="text-align: center; position: absolute; top: 50%; left: 50%; width: 200px; height: 220px; margin-left: -100px; margin-top: -110px;">' +
                 '<p id="windowTitle" class="header">Login</p><br>' +
                 '<p>Username</p>' +
-                '<input id="windowName" type="textbox"></input><br>' +
+                '<input id="windowName" type="text"></input><br>' +
                 '<p>Password</p>' +
                 '<input id="windowPassword" type="password"></input><br>' +
                 '<p id="windowErrorText" style="margin: 10px; height: 20px; color: red; font-size: 11px;"></p>' +
@@ -83,6 +83,9 @@ const view = {
             socket.emit('CLIENT_REGISTER', { name: name, pass: pass.hashCode() }, function(data) {
                 switch (data)
                 {
+                    case 'invalid':
+                        document.getElementById('windowErrorText').innerHTML = 'Username not allowed';
+                        break;
                     case 'taken':
                         document.getElementById('windowErrorText').innerHTML = 'Username has been taken';
                         break;

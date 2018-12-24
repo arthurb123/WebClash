@@ -25,6 +25,7 @@ function loadAllScripts()
     addScript('lib/player.js');
     addScript('lib/view.js');
     addScript('lib/animation.js');
+    addScript('lib/ui.js');
     
     addScript('misc/prototypes.js');
     

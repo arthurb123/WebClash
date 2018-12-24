@@ -106,5 +106,8 @@ const client = {
             
             game.loadMap(data); 
         });
+        socket.on('GAME_CHAT_UPDATE', function (data) {
+            ui.chat.addMessage(data);
+        })
     }
 }

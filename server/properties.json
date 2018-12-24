@@ -4,5 +4,7 @@
     
     "port": 5315,
     
-    "maxPlayers": 0
+    "maxPlayers": 0,
+    
+    "welcomeMessage": "<b>Welcome to WebClash!</b>"
 }

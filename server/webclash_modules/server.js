@@ -88,6 +88,14 @@ exports.handleSocket = function(socket)
         if (data === undefined || data.name === undefined)
             return;
         
+        //Check profanity
+        
+        if (input.filterText(data.name).indexOf('*') != -1)
+        {
+            callback('invalid');
+            return;
+        }
+        
         //Check if account already exists
         
         if (databases.accounts(data.name).has('pass'))
@@ -149,6 +157,10 @@ exports.handleSocket = function(socket)
         //Add client as player
         
         game.addPlayer(socket);
+        
+        //Send MOTD message
+        
+        socket.emit('GAME_CHAT_UPDATE', properties.welcomeMessage);
 
         //Set playing
 
@@ -191,6 +203,25 @@ exports.handleSocket = function(socket)
         
         if (type.length > 0)
             server.syncPlayerPartially(id, type, socket, true);
+    });
+    
+    socket.on('CLIENT_NEW_CHAT', function(data) {
+        //Check if valid player
+        
+        if (socket.playing === undefined || !socket.playing)
+            return;
+        
+        //TODO:
+        //Check correct length
+        //Check if spamming
+        
+        //Format chat message
+        
+        let msg = socket.name + ': ' + input.filterText(data);
+        
+        //Send chat message to all other players
+        
+        io.sockets.emit('GAME_CHAT_UPDATE', msg);
     });
 };
 

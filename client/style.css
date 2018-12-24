@@ -21,6 +21,22 @@ button {
     margin-right: 4px;
 }
 
+input[type=password],input[type=text] {
+    font-size: 14px;
+    background-color: rgba(125, 125, 125, 0.75);
+    border-radius: 1px;
+    outline: none;
+    border: none;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5);
+    cursor: pointer;
+    padding: 3px;
+    color: whitesmoke;
+}
+
+input[type=password],input[type=text]:hover {
+    background-color: rgba(125, 125, 125, 0.825);
+}
+
 button:hover {
     opacity: .85;
 }
@@ -46,10 +62,22 @@ canvas {
     text-shadow: 0px 2px 1px rgba(0,0,0,0.5);
 }
 
+.info {
+    font-size: 14px;
+    text-shadow: 0px 1px 1px rgba(0,0,0,0.25);
+}
+
 .box {
     border-radius: 2px;
     background-color: rgba(48, 48, 48, .85);
     padding: 12px;
+}
+
+.content {
+    border-radius: 2px;
+    background-color: rgba(65, 65, 65, .85);
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.25);
+    padding: 2px;
 }
 
 #overlay {

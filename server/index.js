@@ -15,10 +15,12 @@ global.server = require('./webclash_modules/server');
 global.game = require('./webclash_modules/game');
 global.tiled = require('./webclash_modules/tiled');
 global.output = require('./webclash_modules/output');
+global.input = require('./webclash_modules/input');
 
-//(Setup/load) Server Properties
+//(Setup/load) Server settings
 
 global.properties = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
+global.permissions = JSON.parse(fs.readFileSync('permissions.json', 'utf-8'));
 
 global.databases = {
     accounts: db('data/accounts'),
