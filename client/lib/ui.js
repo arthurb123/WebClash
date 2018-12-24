@@ -56,6 +56,15 @@ const ui = {
             socket.emit('CLIENT_NEW_CHAT', this.dom.message.value);
             
             this.dom.message.value = '';
+        },
+        isTyping: function() {  
+            if (this.dom === undefined)
+                return false;
+            
+            if (document.activeElement === this.dom.message)
+                return true;
+            
+            return false;
         }
     }  
 };

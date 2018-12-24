@@ -1099,10 +1099,10 @@ function Lynx2D() {
         
         this.SetTopDownController = function(x_speed, y_speed, max_vel) {    
             lx.CONTEXT.CONTROLLER.TARGET = this;
-            lx.OnKey('W', function() { lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(0, -y_speed); });
-            lx.OnKey('A', function() { lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(-x_speed, 0); });
-            lx.OnKey('S', function() { lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(0, y_speed); });
-            lx.OnKey('D', function() { lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(x_speed, 0); });
+            lx.OnKey('W', function() { if (ui === undefined || !ui.chat.isTyping()) lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(0, -y_speed); });
+            lx.OnKey('A', function() { if (ui === undefined || !ui.chat.isTyping()) lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(-x_speed, 0); });
+            lx.OnKey('S', function() { if (ui === undefined || !ui.chat.isTyping()) lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(0, y_speed); });
+            lx.OnKey('D', function() { if (ui === undefined || !ui.chat.isTyping()) lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(x_speed, 0); });
             
             this.MaxVelocity(max_vel);
             
