@@ -45,9 +45,17 @@ const game = {
         this.players[id].Hide();
         this.players[id]._nameplate.Hide();
         
+        //Get player name
+        
+        let name = game.players[game.player].name;
+        
         //Remove target
         
         this.players.splice(id, 1);
+        
+        //Reset player ID
+        
+        this.player = this.getPlayerIndex(name);
     },
     loadMap: function(map) {
         tiled.convertAndLoadMap(map);
