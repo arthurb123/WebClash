@@ -233,6 +233,34 @@ namespace WebClashServer.Editors
         {
             return charSelect.Items.Count; 
         }
+
+        private void collY_ValueChanged(object sender, EventArgs e)
+        {
+            current.collider.x = (int)collX.Value;
+
+            canvas.Invalidate();
+        }
+
+        private void collX_ValueChanged(object sender, EventArgs e)
+        {
+            current.collider.y = (int)collY.Value;
+
+            canvas.Invalidate();
+        }
+
+        private void collWidth_ValueChanged(object sender, EventArgs e)
+        {
+            current.collider.width = (int)collWidth.Value;
+
+            canvas.Invalidate();
+        }
+
+        private void collHeight_ValueChanged(object sender, EventArgs e)
+        {
+            current.collider.height = (int)collHeight.Value;
+
+            canvas.Invalidate();
+        }
     }
 
     public class Character
