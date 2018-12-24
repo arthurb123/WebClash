@@ -145,7 +145,7 @@ namespace WebClashServer.Editors
 
         private void help_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show("You can import maps created with Tiled (www.mapeditor.org) in the JSON format. The tilemaps must also have the used tilesets embedded into them.\n\nTileset images are imported automatically, as long as they have not been moved before importing the map.", "WebClash Server - Help");
         }
 
         private void mapList_SelectedIndexChanged(object sender, EventArgs e)
