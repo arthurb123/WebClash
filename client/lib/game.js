@@ -23,11 +23,13 @@ const game = {
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
             .Loops(function() {
                 animation.animateMoving(go);
+                
+                go._nameplate.Position(go.Size().W/2, -12);
             });
         
         go.name = name;
         
-        go._nameplate = new lx.UIText(name, 32, -12, 14)
+        go._nameplate = new lx.UIText(name, 0, 0, 14)
             .Alignment('center')
             .Follows(go)
             .Show();

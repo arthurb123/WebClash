@@ -226,14 +226,14 @@ exports.handleSocket = function(socket)
             let output = input.handleCommand(socket, data);
             
             if (output === 'invalid')
-                msg = 'This command is invalid.';
+                msg = 'Invalid command.';
             else if (output == 'wrong')
-                msg = 'Wrong command syntax.';
+                msg = 'Incorrect command syntax.';
             else
                 return;
         } 
         else
-            msg = socket.name + ': ' + input.filterText(data);
+            msg = '<b>' + socket.name + '</b>: ' + input.filterText(data);
         
         //Send chat message to all other players
         
