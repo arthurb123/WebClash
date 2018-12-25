@@ -80,8 +80,7 @@ exports.handleSocket = function(socket)
         //Request game page
         
         socket.emit('REQUEST_GAME');
-    });
-    
+    }); 
     socket.on('CLIENT_REGISTER', function(data, callback) {
         //Check if valid package
         
@@ -149,11 +148,6 @@ exports.handleSocket = function(socket)
         if (socket.playing != undefined && socket.playing)
             return;
         
-        //Send standard data
-
-        for (let i = 0; i < game.players.length; i++)
-            server.syncPlayer(i, socket, false);
-        
         //Add client as player
         
         game.addPlayer(socket);
@@ -205,10 +199,52 @@ exports.handleSocket = function(socket)
             server.syncPlayerPartially(id, type, socket, true);
     });
     
+    socket.on('CLIENT_REQUEST_MAP', function(data) {
+        //Check if valid
+        
+        if (socket.name === undefined || data === undefined)
+            return;
+        
+        //Check if client may request map (check object) ...
+        //For now just load the map
+        
+        //Get player index
+        
+        let id = game.getPlayerIndex(socket.name);
+        
+        //Check if valid player and if
+        //the player is on a different map
+        
+        if (id == -1 || game.players[id].map == data)
+            return;
+        
+        //Remove player from all other players
+        //on the same map
+        
+        server.removePlayer(id, socket);
+        
+        //Set player map stat
+        
+        game.players[id].map = data;
+        
+        //Send map to player
+        
+        game.loadMap(socket, game.players[id].map);
+    });
+    
     socket.on('CLIENT_NEW_CHAT', function(data) {
         //Check if valid player
         
         if (socket.playing === undefined || !socket.playing)
+            return;
+        
+        //Get player id
+        
+        let id = game.getPlayerIndex(socket.name);
+        
+        //Check if valid
+        
+        if (id == -1)
             return;
         
         let msg = '';
@@ -237,7 +273,7 @@ exports.handleSocket = function(socket)
         
         //Send chat message to all other players
         
-        io.sockets.emit('GAME_CHAT_UPDATE', msg);
+        io.to(game.players[id].map).emit('GAME_CHAT_UPDATE', msg);
     });
 };
 
@@ -266,7 +302,7 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
     }
     
     if (socket === undefined) 
-        io.sockets.emit('GAME_PLAYER_UPDATE', data);
+        io.to(game.players[id].map).emit('GAME_PLAYER_UPDATE', data);
     else {
         if (broadcast === undefined || !broadcast) {
             if (socket.name == data.name)
@@ -275,7 +311,7 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
             socket.emit('GAME_PLAYER_UPDATE', data);
         }
         else
-            socket.broadcast.emit('GAME_PLAYER_UPDATE', data);
+            socket.broadcast.to(game.players[id].map).emit('GAME_PLAYER_UPDATE', data);
     }
 };
 
@@ -300,5 +336,5 @@ exports.removePlayer = function(id, socket)
     
     //Broadcast player removal
     
-    socket.broadcast.emit('GAME_PLAYER_UPDATE', { name: socket.name, remove: true });
+    socket.broadcast.to(game.players[id].map).emit('GAME_PLAYER_UPDATE', { name: socket.name, remove: true });
 }

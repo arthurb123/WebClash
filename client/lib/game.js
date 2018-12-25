@@ -41,7 +41,7 @@ const game = {
     removePlayer: function(id) {
         //Check if valid
         
-        if (id === undefined || this.players[id] === undefined)
+        if (id === undefined || this.players[id] === undefined || this.player == id)
             return;
         
         //Hide target GameObject
@@ -60,6 +60,35 @@ const game = {
         //Reset player ID
         
         this.player = this.getPlayerIndex(name);
+    },
+    resetPlayers: function() {
+        //Cycle through all online players and
+        //remove all, except for the player itself
+        
+        for (let i = 0; i < this.players.length; i++)
+            if (i != this.player) 
+                this.removePlayer(i);
+    },
+    resetColliders: function() {
+        if (this.players === undefined || 
+            this.player === undefined ||
+            this.players[this.player] === undefined)
+            return;
+        
+        if (this.players[this.player].COLLIDER !== undefined)
+        {
+            //Save player's collider
+        
+            const c = this.players[this.player].COLLIDER.Disable();
+            
+            //Reset colliders
+            
+            lx.GAME.COLLIDERS = [];
+        
+            //Apply collider to player
+
+            this.players[this.player].COLLIDER = c.Enable();
+        }
     },
     loadMap: function(map) {
         tiled.convertAndLoadMap(map);

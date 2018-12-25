@@ -19,20 +19,21 @@ exports.addPlayer = function(socket)
     player.character = this.characters[player.char_name];
     
     //Add player
-    
-    this.players.push(player);
-    
-    //Sync across server
-    
-    server.syncPlayer(this.players.length-1, socket, true);
-    
-    //Sync to player
-    
-    server.syncPlayer(this.players.length-1, socket, false);
+
+    let id = this.players.length;
+    this.players[id] = player;
     
     //Load current world
     
     this.loadMap(socket, player.map); 
+    
+    //Sync across server
+    
+    server.syncPlayer(id, socket, true);
+    
+    //Sync to player
+    
+    server.syncPlayer(id, socket, false);
 };
 
 exports.removePlayer = function(socket)
@@ -46,14 +47,12 @@ exports.removePlayer = function(socket)
     
     for (let i = 0; i < this.players.length; i++)
         if (this.players[i].name == socket.name) {
+            server.removePlayer(i, socket);
+            
             this.players.splice(i, 1);
             
             break;
         }
-    
-    //Notify others
-    
-    server.removePlayer(this.players.length-1, socket);
 };
 
 exports.getPlayerIndex = function(name)
@@ -65,16 +64,56 @@ exports.getPlayerIndex = function(name)
     return -1;
 };
 
+exports.sendPlayers = function(socket)
+{
+    //Check if valid
+    
+    if (socket === undefined || socket.name === undefined)
+        return;
+    
+    //Get player id
+    
+    let id = this.getPlayerIndex(socket.name);
+    
+    //Check if valid player
+    
+    if (id == -1)
+        return;
+    
+    //Send all players in the same map
+    
+    for (let i = 0; i < this.players.length; i++)
+            if (i != id && this.players[id].map == this.players[i].map) 
+                server.syncPlayer(i, socket, false);
+}
+
 exports.loadMap = function(socket, id)
 {
     //Check if valid
     
-    if (tiled.maps[id] === undefined)
+    if (tiled.maps[id] === undefined) {
+        output.give('Map with ID ' + id + ' does not exist.');
+        
         return;
+    }
+    
+    //Leave old room, if it is available
+    
+    if (socket.currentRoom !== undefined)
+        socket.leave(socket.currentRoom);
+    
+    //Join map specific room
+    
+    socket.join(id);
+    socket.currentRoom = id;
     
     //Send the corresponding map
     
     socket.emit('GAME_MAP_UPDATE', tiled.maps[id]);
+    
+    //Send all players in the same map
+    
+    this.sendPlayers(socket);
 };
 
 exports.loadAllCharacters = function()

@@ -72,8 +72,12 @@ const client = {
             
              if (data.remove)
                  game.removePlayer(id);
-             if (data.pos !== undefined) 
+             if (data.pos !== undefined) {
                  game.players[id].POS = data.pos;
+                 
+                 if (data.isPlayer)
+                     game.players[id].Movement(0, 0);
+             }
              if (data.moving !== undefined) 
                  game.players[id]._moving = data.moving;
              if (data.direction !== undefined) 
@@ -84,7 +88,7 @@ const client = {
                  
                  game.players[id].SIZE = game.players[id].SPRITE.Size();
                  
-                 if (id == game.player) 
+                 if (data.isPlayer) 
                  {
                      player.setCollider(data.character.collider);
                      player.setMovement(data.character.movement);
