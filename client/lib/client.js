@@ -84,8 +84,11 @@ const client = {
                  
                  game.players[id].SIZE = game.players[id].SPRITE.Size();
                  
-                 if (id == game.player)
+                 if (id == game.player) 
+                 {
                      player.setCollider(data.character.collider);
+                     player.setMovement(data.character.movement);
+                 }
                  
                  game.players[id]._animation = data.character.animation;
                  game.players[id]._animation.cur = 0;

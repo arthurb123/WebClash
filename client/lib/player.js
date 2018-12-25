@@ -2,8 +2,7 @@ const player = {
     instantiate: function(name) {
         let go = new lx.GameObject(undefined, 0, 0, 0, 0);
         
-        go.SetTopDownController(.25, .25, 0)
-          .Loops(player.update)
+        go.Loops(player.update)
           .Focus();
         
         go.name = name;
@@ -23,10 +22,14 @@ const player = {
             )
         );  
     },
+    setMovement: function(movement) {
+        game.players[game.player].SetTopDownController(
+            movement.acceleration, 
+            movement.acceleration, 
+            movement.max
+        );  
+    },
     update: function() {
-        if (this.MaxVelocity() == 0)
-            this.MaxVelocity((this.Size().W+this.Size().H)/50);
-        
         if (this.MOVEMENT.VX != 0 || this.MOVEMENT.VY != 0) {
             var oldDir = this._direction;
             

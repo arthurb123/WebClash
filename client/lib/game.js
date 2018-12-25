@@ -24,7 +24,9 @@ const game = {
             .Loops(function() {
                 animation.animateMoving(go);
                 
-                go._nameplate.Position(go.Size().W/2, -12);
+                if (go._nameplate.Position().X == 0 &&
+                    go._nameplate.Position().Y == 0)
+                    go._nameplate.Position(go.Size().W/2, -Math.floor(go.Size().H/5));
             });
         
         go.name = name;

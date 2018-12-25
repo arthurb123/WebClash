@@ -2033,4 +2033,4 @@ function Lynx2D() {
     };
 }
 
-var lx = new Lynx2D();
+const lx = new Lynx2D();

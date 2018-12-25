@@ -83,6 +83,9 @@ namespace WebClashServer.Editors
             collWidth.Value = current.collider.width;
             collHeight.Value = current.collider.height;
 
+            acceleration.Value = (decimal)current.movement.acceleration;
+            maxVelocity.Value = (decimal)current.movement.max;
+
             canvas.Invalidate();
         }
 
@@ -166,11 +169,15 @@ namespace WebClashServer.Editors
         private void width_ValueChanged(object sender, EventArgs e)
         {
             current.width = (int)width.Value;
+
+            canvas.Invalidate();
         }
 
         private void height_ValueChanged(object sender, EventArgs e)
         {
             current.width = (int)height.Value;
+
+            canvas.Invalidate();
         }
 
         private void speed_ValueChanged(object sender, EventArgs e)
@@ -234,14 +241,14 @@ namespace WebClashServer.Editors
             return charSelect.Items.Count; 
         }
 
-        private void collY_ValueChanged(object sender, EventArgs e)
+        private void collX_ValueChanged(object sender, EventArgs e)
         {
             current.collider.x = (int)collX.Value;
 
             canvas.Invalidate();
         }
 
-        private void collX_ValueChanged(object sender, EventArgs e)
+        private void collY_ValueChanged(object sender, EventArgs e)
         {
             current.collider.y = (int)collY.Value;
 
@@ -260,6 +267,22 @@ namespace WebClashServer.Editors
             current.collider.height = (int)collHeight.Value;
 
             canvas.Invalidate();
+        }
+
+        private void acceleration_ValueChanged(object sender, EventArgs e)
+        {
+            if (acceleration.Text == "0.00")
+                return;
+
+            current.movement.acceleration = float.Parse(acceleration.Text, System.Globalization.NumberStyles.Any);
+        }
+
+        private void maxVelocity_ValueChanged(object sender, EventArgs e)
+        {
+            if (maxVelocity.Text == "0.00")
+                return;
+
+            current.movement.max = float.Parse(maxVelocity.Text, System.Globalization.NumberStyles.Any);
         }
     }
 
@@ -283,6 +306,7 @@ namespace WebClashServer.Editors
 
                 animation = temp.animation;
                 collider = temp.collider;
+                movement = temp.movement;
             }
             catch (Exception e)
             {
@@ -304,6 +328,10 @@ namespace WebClashServer.Editors
         //Collider
 
         public Collider collider = new Collider();
+
+        //Movement
+
+        public Movement movement = new Movement();
     }
 
     public class Animation
@@ -320,5 +348,12 @@ namespace WebClashServer.Editors
 
         public int width = 64,
                    height = 64;
+    }
+
+    public class Movement
+    {
+        public float acceleration = .25f;
+
+        public float max = 2.0f;
     }
 }

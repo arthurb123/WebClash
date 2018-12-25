@@ -60,6 +60,11 @@
             this.collX = new System.Windows.Forms.NumericUpDown();
             this.collHeight = new System.Windows.Forms.NumericUpDown();
             this.collWidth = new System.Windows.Forms.NumericUpDown();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.maxVelocity = new System.Windows.Forms.NumericUpDown();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.acceleration = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).BeginInit();
@@ -71,6 +76,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.collX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.collHeight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.collWidth)).BeginInit();
+            this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.maxVelocity)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.acceleration)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -300,7 +308,7 @@
             // canvas
             // 
             this.canvas.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.canvas.Location = new System.Drawing.Point(104, 269);
+            this.canvas.Location = new System.Drawing.Point(104, 331);
             this.canvas.Name = "canvas";
             this.canvas.Size = new System.Drawing.Size(200, 200);
             this.canvas.TabIndex = 6;
@@ -318,7 +326,7 @@
             this.save.AutoSize = true;
             this.save.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.save.LinkColor = System.Drawing.Color.Blue;
-            this.save.Location = new System.Drawing.Point(360, 456);
+            this.save.Location = new System.Drawing.Point(360, 518);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(32, 13);
             this.save.TabIndex = 7;
@@ -467,11 +475,84 @@
             0});
             this.collWidth.ValueChanged += new System.EventHandler(this.collWidth_ValueChanged);
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.maxVelocity);
+            this.groupBox4.Controls.Add(this.label12);
+            this.groupBox4.Controls.Add(this.label15);
+            this.groupBox4.Controls.Add(this.acceleration);
+            this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox4.Location = new System.Drawing.Point(15, 262);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(373, 63);
+            this.groupBox4.TabIndex = 18;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Movement";
+            // 
+            // maxVelocity
+            // 
+            this.maxVelocity.DecimalPlaces = 2;
+            this.maxVelocity.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.maxVelocity.Location = new System.Drawing.Point(265, 25);
+            this.maxVelocity.Maximum = new decimal(new int[] {
+            640,
+            0,
+            0,
+            0});
+            this.maxVelocity.Name = "maxVelocity";
+            this.maxVelocity.Size = new System.Drawing.Size(76, 21);
+            this.maxVelocity.TabIndex = 15;
+            this.maxVelocity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.maxVelocity.ValueChanged += new System.EventHandler(this.maxVelocity_ValueChanged);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(184, 27);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(75, 15);
+            this.label12.TabIndex = 14;
+            this.label12.Text = "Max Velocity";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(24, 27);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(74, 15);
+            this.label15.TabIndex = 8;
+            this.label15.Text = "Acceleration";
+            // 
+            // acceleration
+            // 
+            this.acceleration.DecimalPlaces = 2;
+            this.acceleration.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.acceleration.Location = new System.Drawing.Point(99, 25);
+            this.acceleration.Maximum = new decimal(new int[] {
+            640,
+            0,
+            0,
+            0});
+            this.acceleration.Name = "acceleration";
+            this.acceleration.Size = new System.Drawing.Size(76, 21);
+            this.acceleration.TabIndex = 13;
+            this.acceleration.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.acceleration.ValueChanged += new System.EventHandler(this.acceleration_ValueChanged);
+            // 
             // Characters
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 481);
+            this.ClientSize = new System.Drawing.Size(404, 541);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.save);
             this.Controls.Add(this.canvas);
@@ -483,8 +564,8 @@
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(420, 520);
-            this.MinimumSize = new System.Drawing.Size(420, 520);
+            this.MaximumSize = new System.Drawing.Size(420, 580);
+            this.MinimumSize = new System.Drawing.Size(420, 580);
             this.Name = "Characters";
             this.Text = "WebClash Server - Characters";
             this.Load += new System.EventHandler(this.Characters_Load);
@@ -502,6 +583,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.collX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.collHeight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.collWidth)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.maxVelocity)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.acceleration)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -539,5 +624,10 @@
         private System.Windows.Forms.NumericUpDown collX;
         private System.Windows.Forms.NumericUpDown collHeight;
         private System.Windows.Forms.NumericUpDown collWidth;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.NumericUpDown acceleration;
+        private System.Windows.Forms.NumericUpDown maxVelocity;
     }
 }
