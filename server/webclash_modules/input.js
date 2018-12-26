@@ -1,5 +1,7 @@
 //Input module for WebClash
 
+const fs = require('fs');
+
 exports.filterText = function(text)
 {
     //Cycle through all censored words
@@ -51,6 +53,14 @@ exports.handleCommand = function(socket, text)
         
         switch (command)
         {
+            //Help command
+            case 'help':
+                fs.readFile('commands.txt', 'utf8', function(err, data) {
+                    if (err) throw err;
+                    socket.emit('GAME_CHAT_UPDATE', data);
+                });
+                
+                return 'success';
             //Load map command, requires map ID
             case 'loadMap':
                 if (argument.length == 0)

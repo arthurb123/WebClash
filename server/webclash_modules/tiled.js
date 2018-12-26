@@ -3,6 +3,7 @@
 const fs = require('fs');
 
 exports.maps = [];
+exports.maps_properties = [];
 
 exports.loadAllMaps = function() {
     fs.readdir('maps', (err, files) => {
@@ -21,6 +22,8 @@ exports.loadMap = function(name) {
         map.name = name.substr(0, name.lastIndexOf('.'));
         
         this.maps.push(map);
+        
+        this.cacheMapProperties(map);
     }
     catch(err)
     {
@@ -34,4 +37,103 @@ exports.mapWithName = function(name)
         if (map.name == name)
             return map;
     });
+};
+
+exports.getMapIndex = function(name)
+{
+    for (let i = 0; i < this.maps.length; i++)
+        if (this.maps[i].name == name) 
+            return i;
+    
+    return -1;
+};
+
+exports.getMapTilePropertyDimensions = function(map, id) 
+{
+    let dimensions = [];
+    
+    for (let l = 0; l < map.layers.length; l++) {
+         let offset_width = -map.width*map.tilewidth/2,
+             offset_height = -map.height*map.tileheight/2;
+
+        if (map.layers[l].offsetx !== undefined) offset_width += map.layers[l].offsetx;
+        if (map.layers[l].offsety !== undefined) offset_height += map.layers[l].offsety;  
+        
+        for (let t = 0; t < map.layers[l].data.length; t++)
+            if (map.layers[l].data[t] == id+1)
+                dimensions.push({
+                    x: t % map.layers[l].width * map.tilewidth + offset_width,
+                    y: Math.floor(t / map.layers[l].width) * map.tileheight + offset_height,
+                    w: map.tilewidth*2,
+                    h: map.tileheight*2
+                });
+    }
+    
+    return dimensions;
+}
+
+exports.cacheMapProperties = function(map)
+{
+    let id = this.getMapIndex(map.name);
+    
+    this.maps_properties[id] = [];
+    
+    if (map.tilesets === undefined)
+        return;
+    
+    for (let t = 0; t < map.tilesets.length; t++)
+    {
+        let tileset = map.tilesets[t];
+        
+        if (tileset.tiles === undefined)
+            continue;
+        
+        for (let i = 0; i < tileset.tiles.length; i++) {
+            if (tileset.tiles[i].properties === undefined)
+                continue;
+            
+            for (let p = 0; p < tileset.tiles[i].properties.length; p++)
+            {
+                let property = tileset.tiles[i].properties[p];
+                
+                this.maps_properties[id].push({
+                    value: property.name,
+                    dimensions: this.getMapTilePropertyDimensions(map, tileset.tiles[i].id)
+                });
+            }
+        }
+    }
+};
+
+exports.checkPropertyAtPosition = function(id, property_value, pos)
+{
+    if (this.maps_properties[id] === undefined ||
+        this.maps_properties[id].length == 0)
+        return false;
+    
+    let valid = false;
+    
+    this.maps_properties[id].forEach(function(property) {
+        if (valid)
+            return;
+        
+        if (property.value == property_value)
+            property.dimensions.forEach(function(dimension) {
+                if (tiled.checkPositionInDimension(dimension, pos.X, pos.Y)) {
+                    valid = true;
+                    
+                    return;
+                }
+            });
+    });
+    
+    return valid;
+};
+                                     
+exports.checkPositionInDimension = function(dimension, x, y) {
+    if (Math.abs(x-dimension.x) <= dimension.w &&
+        Math.abs(y-dimension.y) <= dimension.h)
+        return true;
+    
+    return false;
 };

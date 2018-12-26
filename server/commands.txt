@@ -1,0 +1,2 @@
+Available commands:<br>
+/loadMap <i>ID</i> -> Loads map with ID

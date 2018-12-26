@@ -8,6 +8,10 @@ const tiled = {
         
         game.resetColliders();
         
+        //Make sure certain player stats are reset
+        
+        game.resetPlayer();
+        
         //Clear the OnLayerDraw events
         
         lx.ResetLayerDraw();
@@ -133,7 +137,7 @@ const tiled = {
 
                 //Check properties
 
-                this.checkProperties(tp, tileset, data[t]);
+                this.checkProperties(tp, offset_width, offset_height, tileset, data[t]);
              }
          }
     },
@@ -159,21 +163,47 @@ const tiled = {
             }
         }
     },
-    checkProperties: function(tile_coordinates, tileset, id)
+    checkProperties: function(tile_coordinates, offset_width, offset_height, tileset, id)
     {
         for (let i = 0; i < tileset.tiles.length; i++) {
             if (tileset.tiles[i].id+1 == id) {
                 if (tileset.tiles[i].properties === undefined)
                     continue;
                 
-                const properties = tileset.tiles[i].properties;
+                const properties = tileset.tiles[i].properties,
+                      callbacks = [];
                 
                 for (let p = 0; p < properties.length; p++)
-                    this.handleProperty(tile_coordinates, tileset, properties[p]);
+                    callbacks.push(this.handleProperty(properties[p], tileset, offset_width, offset_height));
+                
+                if (callbacks.length > 0) {
+                    if (tileset.tiles[i].objectgroup === undefined)
+                        new lx.Collider(
+                            tile_coordinates.x,
+                            tile_coordinates.y,
+                            tileset.tilewidth,
+                            tileset.tileheight,
+                            true,
+                            function(data) {
+                                let go = lx.FindGameObjectWithCollider(data.trigger);
+
+                                if (go === undefined)
+                                    return;
+
+                                callbacks.forEach(function(cb) { 
+                                    if (cb !== undefined)
+                                        cb(go);
+                                });
+                            }
+                        ).Solid(false);
+                    else {
+                        //Add callbacks to objectgroup colliders
+                    }
+                }
             }
         }
     },
-    handleProperty: function(tile_coordinates, tileset, property)
+    handleProperty: function(property, tileset, offset_width, offset_height)
     {
         if (property === undefined)
             return;
@@ -181,26 +211,26 @@ const tiled = {
         switch (property.name)
         {
             case "loadMap":
-                new lx.Collider(
-                    tile_coordinates.x,
-                    tile_coordinates.y,
-                    tileset.tilewidth,
-                    tileset.tileheight,
-                    true,
-                    function(data) { 
-                        let go = lx.FindGameObjectWithCollider(data.trigger);
-                        
-                        if (go === undefined)
-                            return;
-                        
-                        if (go === game.players[game.player])
-                            socket.emit('CLIENT_REQUEST_MAP', property.value);
+                return function(go) {
+                    if (go === game.players[game.player])
+                        socket.emit('CLIENT_REQUEST_MAP', property.value);
+                };
+            case "positionX":
+                return function(go) {
+                    if (go === game.players[game.player])
+                    {
+                        go.POS.X = Math.floor(property.value*tileset.tilewidth+offset_width);
+                        player.sync('pos');
                     }
-                ).Solid(false);
-                break;
-            case "NPC":
-                //Create NPC according to the ID
-                break;
+                };
+            case "positionY":
+                return function(go) {
+                    if (go === game.players[game.player])
+                    {
+                        go.POS.Y = Math.floor(property.value*tileset.tileheight+offset_height)-go.Size().H/2;
+                        player.sync('pos');
+                    }
+                };
         }
     }
 };

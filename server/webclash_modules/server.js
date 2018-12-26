@@ -162,41 +162,48 @@ exports.handleSocket = function(socket)
     });
     
     socket.on('CLIENT_PLAYER_UPDATE', function(data) {
-        //Check if valid player
-        
-        if (socket.playing === undefined || !socket.playing)
-            return;
-        
-        //Get player id
-        
-        let id = game.getPlayerIndex(socket.name);
-        
-        //Check if valid player id
-        
-        if (id == -1)
-            return;
-        
-        //Check data
-        
-        let type = '';
-        
-        if (data.moving !== undefined) {
-            game.players[id].moving = data.moving;
-            type = 'moving';
+        try {
+            //Check if valid player
+
+            if (socket.playing === undefined || !socket.playing)
+                return;
+
+            //Get player id
+
+            let id = game.getPlayerIndex(socket.name);
+
+            //Check if valid player id
+
+            if (id == -1)
+                return;
+
+            //Check data
+
+            let type = '';
+
+            if (data.moving !== undefined) {
+                game.players[id].moving = data.moving;
+                type = 'moving';
+            }
+            if (data.direction !== undefined) {
+                game.players[id].direction = data.direction;
+                type = 'direction';
+            }
+            if (data.pos !== undefined) {
+                game.players[id].pos.X = Math.round(data.pos.X);
+                game.players[id].pos.Y = Math.round(data.pos.Y);
+                type = 'position';
+            }
+
+            //Sync across all
+
+            if (type.length > 0)
+                server.syncPlayerPartially(id, type, socket, true);
         }
-        if (data.direction !== undefined) {
-            game.players[id].direction = data.direction;
-            type = 'direction';
+        catch (err)
+        {
+            output.give('Error while handling player data: ' + err);
         }
-        if (data.pos !== undefined) {
-            game.players[id].pos = data.pos;
-            type = 'position';
-        }
-        
-        //Sync across all
-        
-        if (type.length > 0)
-            server.syncPlayerPartially(id, type, socket, true);
     });
     
     socket.on('CLIENT_REQUEST_MAP', function(data) {
@@ -204,9 +211,6 @@ exports.handleSocket = function(socket)
         
         if (socket.name === undefined || data === undefined)
             return;
-        
-        //Check if client may request map (check object) ...
-        //For now just load the map
         
         //Get player index
         
@@ -216,6 +220,11 @@ exports.handleSocket = function(socket)
         //the player is on a different map
         
         if (id == -1 || game.players[id].map == data)
+            return;
+        
+        //Check if player has access to property
+        
+        if (!tiled.checkPropertyAtPosition(game.players[id].map, 'loadMap', game.players[id].pos))
             return;
         
         //Remove player from all other players

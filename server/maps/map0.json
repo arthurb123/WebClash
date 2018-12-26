@@ -88,6 +88,16 @@
                          "name":"loadMap",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"positionX",
+                         "type":"int",
+                         "value":9
+                        }, 
+                        {
+                         "name":"positionY",
+                         "type":"int",
+                         "value":5
                         }]
                 }, 
                 {

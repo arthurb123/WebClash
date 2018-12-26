@@ -16,23 +16,22 @@ the rectangular form.
 The custom properties available for Tiled 
 tileset objects are as follows:
 
-[Map Design]
-
-* "NPC" 	-> Spawns a NPC with the 
-		   specified ID (int value)
-
 [Events]
 
 * "loadMap" 	-> Loads a map with the 
 		   specified ID (int value)
+* "positionX"   -> Set player position tile X
+                   (int value)
+* "positionY"   -> Set player position tile Y
+		           (int value)
 
 
 	        -- Commands --
 
 WebClash allows chat commands when the said
 player has admin priviliges.
-Admin priviliges can be granted in the Permissions
-interface.
+Admin priviliges can be granted in the permissions
+file, located in the server folder.
 
 To see the list of available commands type
 /help in the chat.
