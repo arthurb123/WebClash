@@ -1,5 +1,17 @@
 const tiled = {
+    loading: false,
+    queue: [],
+    executeAfterLoad: function(cb, parameter) {
+        this.queue.push({
+            cb: cb,
+            parameter: parameter
+        });
+    },
     convertAndLoadMap: function(map) {
+        //Set loading
+        
+        this.loading = true;
+        
         //Remove all (online) players
         
         game.resetPlayers();
@@ -87,6 +99,17 @@ const tiled = {
                 }
             });
         }
+        
+        //Execute after load queue
+        
+        this.queue.forEach(function(cb) {
+            cb.cb(cb.parameter); 
+        });
+        this.queue = [];
+        
+        //Set loading to false
+        
+        this.loading = false;
     },
     checkObjects: function(map)
     {        
@@ -191,8 +214,12 @@ const tiled = {
                                     return;
 
                                 callbacks.forEach(function(cb) { 
-                                    if (cb !== undefined)
-                                        cb(go);
+                                    if (cb !== undefined) {
+                                        if (!tiled.loading)
+                                            cb(go);
+                                        else
+                                            tiled.executeAfterLoad(cb, go);
+                                    }
                                 });
                             }
                         ).Solid(false);
@@ -212,8 +239,11 @@ const tiled = {
         {
             case "loadMap":
                 return function(go) {
-                    if (go === game.players[game.player])
+                    if (go === game.players[game.player]) {
+                        tiled.loading = true;
+                        
                         socket.emit('CLIENT_REQUEST_MAP', property.value);
+                    }
                 };
             case "positionX":
                 return function(go) {

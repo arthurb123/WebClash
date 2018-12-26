@@ -232,13 +232,9 @@ exports.handleSocket = function(socket)
         
         server.removePlayer(id, socket);
         
-        //Set player map stat
-        
-        game.players[id].map = data;
-        
         //Send map to player
         
-        game.loadMap(socket, game.players[id].map);
+        game.loadMap(socket, data);
     });
     
     socket.on('CLIENT_NEW_CHAT', function(data) {
@@ -328,8 +324,8 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
 
 exports.syncPlayer = function(id, socket, broadcast)
 {
-    this.syncPlayerPartially(id, 'position', socket, broadcast);
     this.syncPlayerPartially(id, 'moving', socket, broadcast);
+    this.syncPlayerPartially(id, 'position', socket, broadcast);
     this.syncPlayerPartially(id, 'direction', socket, broadcast);
     this.syncPlayerPartially(id, 'character', socket, broadcast);
 };

@@ -87,29 +87,40 @@ exports.sendPlayers = function(socket)
                 server.syncPlayer(i, socket, false);
 }
 
-exports.loadMap = function(socket, id)
+exports.loadMap = function(socket, map)
 {
     //Check if valid
     
-    if (tiled.maps[id] === undefined) {
-        output.give('Map with ID ' + id + ' does not exist.');
+    if (socket.name === undefined)
+        return;
+    
+    if (tiled.maps[map] === undefined) {
+        output.give('Map with ID ' + map + ' does not exist.');
         
         return;
     }
     
+    //Get player ID
+    
+    let id = this.getPlayerIndex(socket.name);
+    if (id == -1)
+        return;
+    
     //Leave old room, if it is available
     
-    if (socket.currentRoom !== undefined)
-        socket.leave(socket.currentRoom);
+    socket.leave(game.players[id].map);
+    
+    //Set new map
+    
+    game.players[id].map = map;
     
     //Join map specific room
     
-    socket.join(id);
-    socket.currentRoom = id;
+    socket.join(map);
     
     //Send the corresponding map
     
-    socket.emit('GAME_MAP_UPDATE', tiled.maps[id]);
+    socket.emit('GAME_MAP_UPDATE', tiled.maps[map]);
     
     //Send all players in the same map
     
