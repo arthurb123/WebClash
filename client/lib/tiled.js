@@ -250,7 +250,7 @@ const tiled = {
                     if (go === game.players[game.player])
                     {
                         go.POS.X = Math.floor(property.value*tileset.tilewidth+offset_width);
-                        player.sync('pos');
+                        player.sync('position');
                     }
                 };
             case "positionY":
@@ -258,7 +258,7 @@ const tiled = {
                     if (go === game.players[game.player])
                     {
                         go.POS.Y = Math.floor(property.value*tileset.tileheight+offset_height)-go.Size().H/2;
-                        player.sync('pos');
+                        player.sync('position');
                     }
                 };
         }

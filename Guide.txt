@@ -23,7 +23,7 @@ tileset objects are as follows:
 * "positionX"   -> Set player position tile X
                    (int value)
 * "positionY"   -> Set player position tile Y
-		           (int value)
+		   (int value)
 
 
 	        -- Commands --

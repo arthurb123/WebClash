@@ -112,7 +112,7 @@ exports.loadMap = function(socket, map)
     
     //Set new map
     
-    game.players[id].map = map;
+    this.players[id].map = map;
     
     //Join map specific room
     
@@ -121,6 +121,10 @@ exports.loadMap = function(socket, map)
     //Send the corresponding map
     
     socket.emit('GAME_MAP_UPDATE', tiled.maps[map]);
+    
+    //Send player to all players in the same map
+    
+    server.syncPlayer(id, socket, true);
     
     //Send all players in the same map
     
