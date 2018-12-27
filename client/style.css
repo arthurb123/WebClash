@@ -71,6 +71,7 @@ canvas {
     border-radius: 2px;
     background-color: rgba(48, 48, 48, .85);
     padding: 12px;
+    line-height: 19px;
 }
 
 .content {

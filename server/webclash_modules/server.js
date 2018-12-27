@@ -227,11 +227,6 @@ exports.handleSocket = function(socket)
         if (!tiled.checkPropertyAtPosition(game.players[id].map, 'loadMap', game.players[id].pos))
             return;
         
-        //Remove player from all other players
-        //on the same map
-        
-        server.removePlayer(id, socket);
-        
         //Send map to player
         
         game.loadMap(socket, data);

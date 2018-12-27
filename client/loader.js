@@ -1,3 +1,26 @@
+//Scripts that need to be loaded
+
+const scripts = [
+    'properties.js',
+    
+    'lib/socket.io.js',
+    'lib/lynx2d.js',
+    'lib/tiled.js',
+    'lib/game.js',
+    'lib/client.js',
+    'lib/player.js',
+    'lib/view.js',
+    'lib/animation.js',
+    'lib/ui.js',
+    
+    'misc/prototypes.js',
+    
+    'scenes/landing.js',
+    'scenes/game.js'
+];
+
+//Loader for WebClash Client
+
 function addScript(src)
 {
     let s = document.createElement('script');
@@ -13,24 +36,10 @@ function loadAllScripts()
     
     window.onload = finishLoading;
     
-    //Load all script files
+    //Load all scripts
     
-    addScript('properties.js');
-    
-    addScript('lib/socket.io.js');
-    addScript('lib/lynx2d.js');
-    addScript('lib/tiled.js');
-    addScript('lib/game.js');
-    addScript('lib/client.js');
-    addScript('lib/player.js');
-    addScript('lib/view.js');
-    addScript('lib/animation.js');
-    addScript('lib/ui.js');
-    
-    addScript('misc/prototypes.js');
-    
-    addScript('scenes/landing.js');
-    addScript('scenes/game.js');
+    for (let i = 0; i < scripts.length; i++)
+        addScript(scripts[i]);
 }
 
 function finishLoading()

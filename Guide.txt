@@ -16,10 +16,15 @@ the rectangular form.
 The custom properties available for Tiled 
 tileset objects are as follows:
 
+[Design]
+
+* "NPC"		-> Spawns a NPC with the specified 
+		   name (string value)
+
 [Events]
 
-* "loadMap" 	-> Loads a map with the 
-		   specified ID (int value)
+* "loadMap" 	-> Loads a map with the specified 
+		   ID (int value)
 * "positionX"   -> Set player position tile X
                    (int value)
 * "positionY"   -> Set player position tile Y

@@ -14,3 +14,4 @@ C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\bin\Debug\Newtons
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.Characters.resources
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.csproj.CopyComplete
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.Maps.resources
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.NPCs.resources

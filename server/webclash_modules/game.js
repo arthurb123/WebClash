@@ -106,6 +106,11 @@ exports.loadMap = function(socket, map)
     if (id == -1)
         return;
     
+    //Remove player from others on the
+    //same map
+    
+    server.removePlayer(id, socket);
+    
     //Leave old room, if it is available
     
     socket.leave(game.players[id].map);

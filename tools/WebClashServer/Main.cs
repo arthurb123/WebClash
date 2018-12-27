@@ -233,5 +233,25 @@ namespace WebClashServer
 
             maps.ShowDialog();
         }
+
+        private void NPCsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!CheckServerLocation())
+                return;
+
+            int amount = 0;
+
+            NPCs npcs = new NPCs();
+            npcs.VisibleChanged += (object s, EventArgs ea) =>
+            {
+                amount = npcs.GetAmount();
+            };
+            npcs.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                if (amount != npcs.GetAmount())
+                    AddOutput("The amount of NPCs has changed, changes will be visible after a server restart.");
+            };
+
+            npcs.ShowDialog();
+        }
     }
 }
