@@ -102,7 +102,10 @@ namespace WebClashServer.Editors
 
             //Draw sprite
 
-            g.DrawImage(charImage, new Rectangle(sp.X, sp.Y, current.width, current.height), animFrame * current.width, 0, current.width, current.height, GraphicsUnit.Pixel);
+            if (current.animation.direction == "horizontal")
+                g.DrawImage(charImage, new Rectangle(sp.X, sp.Y, current.width, current.height), animFrame * current.width, 0, current.width, current.height, GraphicsUnit.Pixel);
+            else if (current.animation.direction == "vertical")
+                g.DrawImage(charImage, new Rectangle(sp.X, sp.Y, current.width, current.height), 0, animFrame * current.height, current.width, current.height, GraphicsUnit.Pixel);
 
             //Draw collider
 
@@ -283,6 +286,13 @@ namespace WebClashServer.Editors
                 return;
 
             current.movement.max = float.Parse(maxVelocity.Text, System.Globalization.NumberStyles.Any);
+        }
+
+        private void direction_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            current.animation.direction = direction.SelectedItem.ToString().ToLower();
+
+            canvas.Invalidate();
         }
     }
 

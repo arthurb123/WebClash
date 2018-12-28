@@ -290,11 +290,13 @@
             this.direction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.direction.FormattingEnabled = true;
             this.direction.Items.AddRange(new object[] {
-            "Horizontal"});
+            "Horizontal",
+            "Vertical"});
             this.direction.Location = new System.Drawing.Point(90, 25);
             this.direction.Name = "direction";
             this.direction.Size = new System.Drawing.Size(110, 23);
             this.direction.TabIndex = 9;
+            this.direction.SelectedIndexChanged += new System.EventHandler(this.direction_SelectedIndexChanged);
             // 
             // label6
             // 

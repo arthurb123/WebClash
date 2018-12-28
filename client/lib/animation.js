@@ -13,14 +13,20 @@ const animation = {
         
         if (!target._moving)
         {
-            target.SPRITE.CLIP.X = 0;
+            if (target._animation.direction == 'horizontal')
+                target.SPRITE.CLIP.X = 0;
+            else if (target._animation.direction == 'vertical')
+                target.SPRITE.CLIP.Y = 0;
             
             return;
         }
         
         //Check facing direction
         
-        target.SPRITE.CLIP.Y = target._direction*target.SIZE.H;
+        if (target._animation.direction == 'horizontal')
+            target.SPRITE.CLIP.Y = target._direction*target.SIZE.H;
+        else if (target._animation.direction == 'vertical')
+            target.SPRITE.CLIP.X = target._direction*target.SIZE.W;
         
         //Evaluate
         
@@ -36,6 +42,13 @@ const animation = {
                 
                 if (target.SPRITE.CLIP.X >= target.SPRITE.IMG.width)
                     target.SPRITE.CLIP.X = 0;
+            }
+            else if (target._animation.direction == 'vertical')
+            {
+                target.SPRITE.CLIP.Y+=target.SIZE.H;
+                
+                if (target.SPRITE.CLIP.Y >= target.SPRITE.IMG.height)
+                    target.SPRITE.CLIP.Y = 0;
             }
             
             target._animation.cur = 0;
