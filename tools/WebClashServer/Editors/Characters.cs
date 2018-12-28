@@ -27,8 +27,6 @@ namespace WebClashServer.Editors
         {
             canvas.Paint += new PaintEventHandler(PaintCharacter);
 
-            direction.SelectedItem = "Horizontal";
-
             ReloadCharacters();
 
             if (charSelect.Items.Count > 0)
@@ -74,7 +72,7 @@ namespace WebClashServer.Editors
 
             src.Text = current.src;
 
-            //Set direction
+            direction.SelectedItem = current.animation.direction.First().ToString().ToUpper() + current.animation.direction.Substring(1);
 
             speed.Value = current.animation.speed;
 
