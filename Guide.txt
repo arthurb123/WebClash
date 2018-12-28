@@ -3,6 +3,12 @@
 This version of WebClash is work-in-progress,
 and may thus contain bugs and glitches.
 
+An account with administrator privileges should 
+already exist:
+
+user: admin
+pass: password
+
 
 		 -- Maps --
 

@@ -129,7 +129,7 @@ exports.loadMap = function(socket, map)
     
     //Leave old room, if it is available
     
-    socket.leave(map_id);
+    socket.leave(tiled.getMapIndex(game.players[id].map));
     
     //Set new map
     
