@@ -200,8 +200,12 @@ const tiled = {
                 const properties = tileset.tiles[i].properties,
                       callbacks = [];
                 
-                for (let p = 0; p < properties.length; p++)
-                    callbacks.push(this.handleProperty(properties[p], tileset, offset_width, offset_height));
+                for (let p = 0; p < properties.length; p++) {
+                    let f = this.handleProperty(properties[p], tileset, offset_width, offset_height);
+                    
+                    if (f !== undefined)
+                        callbacks.push(f);
+                }
                 
                 if (callbacks.length > 0) {
                     if (tileset.tiles[i].objectgroup === undefined)

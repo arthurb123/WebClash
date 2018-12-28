@@ -43,6 +43,9 @@ const animation = {
                 if (target.SPRITE.CLIP.X >= target.SPRITE.IMG.width)
                     target.SPRITE.CLIP.X = 0;
             }
+            
+            //Vertical animating
+            
             else if (target._animation.direction == 'vertical')
             {
                 target.SPRITE.CLIP.Y+=target.SIZE.H;
@@ -50,6 +53,8 @@ const animation = {
                 if (target.SPRITE.CLIP.Y >= target.SPRITE.IMG.height)
                     target.SPRITE.CLIP.Y = 0;
             }
+            
+            //Reset
             
             target._animation.cur = 0;
         }
