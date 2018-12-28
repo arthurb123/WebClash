@@ -167,13 +167,13 @@ exports.updateNPC = function(map, id)
                 //Check and add distance
                 
                 if (Math.abs(this.onMap[map][id].movement.vel.x) > Math.abs(this.onMap[map][id].movement.vel.y)) {
-                    if (this.onMap[map][id].movement.distance >= tiled.maps[map].tilewidth*this.onMap[map][id].movement.range.x)
+                    if (this.onMap[map][id].movement.distance >= tiled.maps[map].tilewidth)
                             this.onMap[map][id].moving = false;
                     else 
                         this.onMap[map][id].movement.distance += Math.abs(this.onMap[map][id].movement.vel.x);
                 }
                 else {
-                    if (this.onMap[map][id].movement.distance >= tiled.maps[map].tileheight*this.onMap[map][id].movement.range.y)
+                    if (this.onMap[map][id].movement.distance >= tiled.maps[map].tileheight)
                             this.onMap[map][id].moving = false;
                     else
                         this.onMap[map][id].movement.distance += Math.abs(this.onMap[map][id].movement.vel.y);
