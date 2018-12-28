@@ -5,11 +5,20 @@ const fs = require('fs');
 exports.maps = [];
 exports.maps_properties = [];
 
-exports.loadAllMaps = function() {
+exports.loadAllMaps = function(cb) {
     fs.readdir('maps', (err, files) => {
-      files.forEach(file => {
-          tiled.loadMap(file);
-      });
+        let count = 0;
+        
+        files.forEach(file => {
+            tiled.loadMap(file);
+            
+            count++;
+        });
+        
+        output.give('Loaded ' + count + ' map(s).');
+        
+        if (cb !== undefined)
+            cb();
     });
 };
 

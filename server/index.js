@@ -28,22 +28,33 @@ global.databases = {
     stats: db('data/stats')
 };
 
-tiled.loadAllMaps();
-game.loadAllCharacters();
+game.loadAllCharacters(function() {
+    tiled.loadAllMaps(function() {
+        startServer();
+    });
+});
 
 //Setup Express
 
 app.use(express.static(path.resolve(__dirname +  "/../client/")));
 
-//Listen on specified port
+//Start server function
 
-http.listen(properties.port, function(){
-    output.give('WebClash Server is running on *:' + properties.port);
-});
+function startServer() {
+    //Listen on specified port
 
-//Handle socket interaction
+    http.listen(properties.port, function(){
+        output.give('WebClash Server is running on *:' + properties.port);
+    });
 
-io.on('connection', server.handleSocket);
+    //Handle socket interaction
+
+    io.on('connection', server.handleSocket);
+    
+    //Start game loop
+    
+    game.startLoop();
+}
 
 //Exit handler
 

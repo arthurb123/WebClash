@@ -5,6 +5,16 @@ const fs = require('fs');
 exports.players = [];
 exports.characters = [];
 
+exports.startLoop = function() {
+    setInterval(function() {
+        
+        //Update NPCs
+        
+        npcs.updateMaps();
+        
+    }, 1000/60);
+};
+
 exports.addPlayer = function(socket)
 {
     //Check if socket is valid
@@ -134,16 +144,29 @@ exports.loadMap = function(socket, map)
     //Send all players in the same map
     
     this.sendPlayers(socket);
+    
+    //Send all NPCs in the same map
+    
+    npcs.sendMap(map, socket);
 };
 
-exports.loadAllCharacters = function()
+exports.loadAllCharacters = function(cb)
 {
     let location = 'characters';
     
     fs.readdir(location, (err, files) => {
-      files.forEach(file => {
-          game.characters[file.substr(0, file.lastIndexOf('.'))] = game.loadCharacter(location + '/' + file);
-      });
+        let count = 0;
+        
+        files.forEach(file => {
+            game.characters[file.substr(0, file.lastIndexOf('.'))] = game.loadCharacter(location + '/' + file);
+            
+            count++;
+        });
+        
+        output.give('Loaded ' + count + ' character(s).');
+        
+        if (cb !== undefined)
+            cb();
     });
 };
 

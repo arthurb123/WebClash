@@ -113,6 +113,40 @@ const client = {
             
             game.loadMap(data); 
         });
+        socket.on('GAME_NPC_UPDATE', function (data) {
+            //Check if the recieved data is valid
+            
+             if (data === undefined || data.name === undefined)
+                 return;
+            
+             //Check if in-game
+            
+             if (!client.inGame)
+                 return;
+            
+             //Check if NPC exists, if not instantiate
+            
+             if (game.npcs[data.id] === undefined)
+                 game.instantiateNPC(data.id, data.name);
+            
+             //Handle data
+            
+             if (data.pos !== undefined)
+                 game.npcs[data.id].POS = data.pos;
+             if (data.moving !== undefined) 
+                 game.npcs[data.id]._moving = data.moving;
+             if (data.direction !== undefined) 
+                 game.npcs[data.id]._direction = data.direction;
+             if (data.character !== undefined) {
+                 game.npcs[data.id].SPRITE = new lx.Sprite(data.character.src);
+                 game.npcs[data.id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
+                 
+                 game.npcs[data.id].SIZE = game.npcs[data.id].SPRITE.Size();
+                 
+                 game.npcs[data.id]._animation = data.character.animation;
+                 game.npcs[data.id]._animation.cur = 0;
+             }
+        });
         socket.on('GAME_CHAT_UPDATE', function (data) {
             ui.chat.addMessage(data);
         })

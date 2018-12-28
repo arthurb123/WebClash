@@ -16,6 +16,10 @@ const tiled = {
         
         game.resetPlayers();
         
+        //Remove all NPCs
+        
+        game.resetNPCs();
+        
         //Clear all colliders, except player's
         
         game.resetColliders();

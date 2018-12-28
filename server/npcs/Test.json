@@ -1,1 +1,1 @@
-{"name":"Test","movement":"free","type":"friendly","character":"player"}
+{"name":"Test","movement":"free","range":10,"type":"friendly","character":"player"}

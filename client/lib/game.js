@@ -1,7 +1,9 @@
 const game = {
     player: -1,
     players: [],
+    npcs: [],
     tilesets: [],
+    
     getPlayerIndex: function(name) {
         //Grab the player index by checking for the player name
         
@@ -30,6 +32,8 @@ const game = {
             });
         
         go.name = name;
+        go._moving = false;
+        go._direction = 0;
         
         go._nameplate = new lx.UIText(name, 0, 0, 14)
             .Alignment('center')
@@ -79,6 +83,43 @@ const game = {
         
         this.players[this.player].Movement(0, 0);
     },
+    
+    instantiateNPC: function(id, name) {
+        //Instantiate Lynx2D GameObject for NPC
+        
+        let go = new lx.GameObject(undefined, 0, 0, 0, 0)
+            .Loops(function() {
+                animation.animateMoving(go);
+                
+                if (go._nameplate.Position().X == 0 &&
+                    go._nameplate.Position().Y == 0)
+                    go._nameplate.Position(go.Size().W/2, -Math.floor(go.Size().H/5));
+            });
+        
+        go.name = name;
+        go._moving = false;
+        go._direction = 0;
+        
+        go._nameplate = new lx.UIText(name, 0, 0, 14)
+            .Alignment('center')
+            .Follows(go)
+            .Show();
+        
+        this.npcs[id] = go.Show(2);
+    },
+    resetNPCs: function() {
+        //Cycle through all NPCs and hide them
+        
+        this.npcs.forEach(function(npc) {
+            npc.Hide();
+            npc._nameplate.Hide();
+        });
+        
+        //Reset NPCs array
+        
+        this.npcs = [];
+    },
+    
     resetColliders: function() {
         if (this.players === undefined || 
             this.player === undefined ||
@@ -113,6 +154,7 @@ const game = {
         
         return this.tilesets[src];
     },
+    
     initialize: function() {
         //Initialize and start Lynx2D
         

@@ -338,3 +338,51 @@ exports.removePlayer = function(id, socket)
     
     socket.broadcast.to(game.players[id].map).emit('GAME_PLAYER_UPDATE', { name: socket.name, remove: true });
 }
+
+//Sync NPC partially function, if socket is undefined it will be globally emitted
+
+exports.syncNPCPartially = function(map, id, type, socket, broadcast)
+{
+    if (npcs.onMap[map] === undefined || npcs.onMap[map][id] === undefined)
+        return;
+    
+    let data = {
+        id: id,
+        name: npcs.onMap[map][id].data.name
+    };
+    
+    switch (type)
+    {
+        case 'position':
+            data.pos = npcs.onMap[map][id].pos;
+            break;
+        case 'moving':
+            data.moving = npcs.onMap[map][id].moving;
+            break;
+        case 'direction':
+            data.direction = npcs.onMap[map][id].direction;
+            break;
+        case 'character':
+            data.character = npcs.onMap[map][id].data.character;
+            break;
+    }
+    
+    if (socket === undefined) 
+        io.to(map).emit('GAME_NPC_UPDATE', data);
+    else {
+        if (broadcast === undefined || !broadcast)
+            socket.emit('GAME_NPC_UPDATE', data);
+        else
+            socket.broadcast.to(map).emit('GAME_NPC_UPDATE', data);
+    }
+}
+
+//Sync whole NPC function, if socket is undefined it will be globally emitted
+
+exports.syncNPC = function(map, id, socket, broadcast)
+{
+    this.syncNPCPartially(map, id, 'moving', socket, broadcast);
+    this.syncNPCPartially(map, id, 'position', socket, broadcast);
+    this.syncNPCPartially(map, id, 'direction', socket, broadcast);
+    this.syncNPCPartially(map, id, 'character', socket, broadcast);
+};
