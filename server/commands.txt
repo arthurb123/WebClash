@@ -1,2 +1,3 @@
 Available commands:<br>
-/loadMap <i>ID</i> -> Loads map with ID
+/showmaps	   -> Show available maps<br>
+/loadmap <i>ID</i> -> Loads map with name

@@ -32,6 +32,11 @@ exports.handleCommand = function(socket, text)
 {
     try 
     {
+        //Check if client has permissions
+        
+        if (permissions.admins.indexOf(socket.name) == -1)
+            return 'success';
+        
         //Split the '/' character
         
         let command = '';
@@ -61,12 +66,23 @@ exports.handleCommand = function(socket, text)
                 });
                 
                 return 'success';
-            //Load map command, requires map ID
-            case 'loadMap':
+            //Show map list command
+            case 'showmaps':
+                let msg = 'Available maps:<br>';
+                
+                tiled.maps.forEach(function(map) {
+                    msg += '> ' + map.name + '<br>';
+                });
+                
+                socket.emit('GAME_CHAT_UPDATE', msg);
+                
+                return 'success';
+            //Load map command, requires map name
+            case 'loadmap':
                 if (argument.length == 0)
                     return 'wrong';
                 
-                game.loadMap(socket, parseInt(argument));
+                game.loadMap(socket, argument);
                 
                 return 'success';
         }

@@ -38,7 +38,7 @@ exports.loadMap = function(map)
             
             //Create NPC
             
-            this.createNPC(tiled.maps_properties[map][i], map)
+            this.createNPCs(tiled.maps_properties[map][i], map)
         }
 };
 
@@ -68,7 +68,7 @@ exports.updateMap = function(map)
             this.updateNPC(map, i);
 };
 
-exports.createNPC = function(npc_property, map_id)
+exports.createNPCs = function(npc_property, map_id)
 {    
     //Cycle through all dimensions
     
@@ -133,94 +133,7 @@ exports.updateNPC = function(map, id)
     try {
         //Update NPC movement
 
-        if (this.onMap[map][id].data.movement == 'free')
-        {
-            //Check if already moving
-
-            if (this.onMap[map][id].moving) {             
-                //Evaluate movement 
-                
-                switch (this.onMap[map][id].direction)
-                {
-                    case 0:
-                        if (this.onMap[map][id].movement.vel.y < this.onMap[map][id].data.character.movement.max)
-                            this.onMap[map][id].movement.vel.y += this.onMap[map][id].data.character.movement.acceleration;
-                        break;
-                    case 1:
-                        if (this.onMap[map][id].movement.vel.x > -this.onMap[map][id].data.character.movement.max)
-                            this.onMap[map][id].movement.vel.x -= this.onMap[map][id].data.character.movement.acceleration;
-                        break;
-                    case 2:
-                        if (this.onMap[map][id].movement.vel.x < this.onMap[map][id].data.character.movement.max)
-                            this.onMap[map][id].movement.vel.x += this.onMap[map][id].data.character.movement.acceleration;
-                        break;
-                    case 3:
-                        if (this.onMap[map][id].movement.vel.y > -this.onMap[map][id].data.character.movement.max)
-                            this.onMap[map][id].movement.vel.y -= this.onMap[map][id].data.character.movement.acceleration;
-                        break;
-                }
-                
-                //Add movement velocity
-                this.onMap[map][id].pos.X+=this.onMap[map][id].movement.vel.x;
-                this.onMap[map][id].pos.Y+=this.onMap[map][id].movement.vel.y;
-                
-                //Check and add distance
-                
-                if (Math.abs(this.onMap[map][id].movement.vel.x) > Math.abs(this.onMap[map][id].movement.vel.y)) {
-                    if (this.onMap[map][id].movement.distance >= tiled.maps[map].tilewidth)
-                            this.onMap[map][id].moving = false;
-                    else 
-                        this.onMap[map][id].movement.distance += Math.abs(this.onMap[map][id].movement.vel.x);
-                }
-                else {
-                    if (this.onMap[map][id].movement.distance >= tiled.maps[map].tileheight)
-                            this.onMap[map][id].moving = false;
-                    else
-                        this.onMap[map][id].movement.distance += Math.abs(this.onMap[map][id].movement.vel.y);
-                }
-                
-
-                //Sync new position
-
-                server.syncNPCPartially(map, id, 'position');
-                
-                //If moving is set to false, sync
-                
-                if (!this.onMap[map][id].moving)
-                    server.syncNPCPartially(map, id, 'moving');
-            }
-
-            //(Otherwise) Check movement timeout
-
-            else if (this.onMap[map][id].movement.cur >= this.onMap[map][id].movement.standard) {
-                //Reset NPC movement
-
-                this.onMap[map][id].movement.vel.x = 0;
-                this.onMap[map][id].movement.vel.y = 0;
-                this.onMap[map][id].movement.distance = 0;
-                this.onMap[map][id].movement.cur = 0;
-                this.onMap[map][id].movement.standard = 60 + Math.round(Math.random()*120);
-
-                //Set random direction
-
-                this.onMap[map][id].direction = Math.round(Math.random()*3);
-                
-                //Check range
-                
-                //...
-
-                //Set moving
-
-                this.onMap[map][id].moving = true; 
-
-                //Sync moving and direction
-
-                server.syncNPCPartially(map, id, 'direction');
-                server.syncNPCPartially(map, id, 'moving');
-            }
-            else
-                this.onMap[map][id].movement.cur++;
-        }
+        this.updateNPCMovement(map, id);
 
         //...
     }
@@ -229,3 +142,95 @@ exports.updateNPC = function(map, id)
         output.give('Could not update NPC: ' + err);
     }
 };
+
+exports.updateNPCMovement = function(map, id)
+{
+    if (this.onMap[map][id].data.movement == 'free')
+    {
+        //Check if already moving
+
+        if (this.onMap[map][id].moving) {             
+            //Evaluate movement 
+
+            switch (this.onMap[map][id].direction)
+            {
+                case 0:
+                    if (this.onMap[map][id].movement.vel.y < this.onMap[map][id].data.character.movement.max)
+                        this.onMap[map][id].movement.vel.y += this.onMap[map][id].data.character.movement.acceleration;
+                    break;
+                case 1:
+                    if (this.onMap[map][id].movement.vel.x > -this.onMap[map][id].data.character.movement.max)
+                        this.onMap[map][id].movement.vel.x -= this.onMap[map][id].data.character.movement.acceleration;
+                    break;
+                case 2:
+                    if (this.onMap[map][id].movement.vel.x < this.onMap[map][id].data.character.movement.max)
+                        this.onMap[map][id].movement.vel.x += this.onMap[map][id].data.character.movement.acceleration;
+                    break;
+                case 3:
+                    if (this.onMap[map][id].movement.vel.y > -this.onMap[map][id].data.character.movement.max)
+                        this.onMap[map][id].movement.vel.y -= this.onMap[map][id].data.character.movement.acceleration;
+                    break;
+            }
+
+            //Add movement velocity
+            this.onMap[map][id].pos.X+=this.onMap[map][id].movement.vel.x;
+            this.onMap[map][id].pos.Y+=this.onMap[map][id].movement.vel.y;
+
+            //Check and add distance
+
+            if (Math.abs(this.onMap[map][id].movement.vel.x) > Math.abs(this.onMap[map][id].movement.vel.y)) {
+                if (this.onMap[map][id].movement.distance >= tiled.maps[map].tilewidth)
+                        this.onMap[map][id].moving = false;
+                else 
+                    this.onMap[map][id].movement.distance += Math.abs(this.onMap[map][id].movement.vel.x);
+            }
+            else {
+                if (this.onMap[map][id].movement.distance >= tiled.maps[map].tileheight)
+                        this.onMap[map][id].moving = false;
+                else
+                    this.onMap[map][id].movement.distance += Math.abs(this.onMap[map][id].movement.vel.y);
+            }
+
+
+            //Sync new position
+
+            server.syncNPCPartially(map, id, 'position');
+
+            //If moving is set to false, sync
+
+            if (!this.onMap[map][id].moving)
+                server.syncNPCPartially(map, id, 'moving');
+        }
+
+        //(Otherwise) Check movement timeout
+
+        else if (this.onMap[map][id].movement.cur >= this.onMap[map][id].movement.standard) {
+            //Reset NPC movement
+
+            this.onMap[map][id].movement.vel.x = 0;
+            this.onMap[map][id].movement.vel.y = 0;
+            this.onMap[map][id].movement.distance = 0;
+            this.onMap[map][id].movement.cur = 0;
+            this.onMap[map][id].movement.standard = 60 + Math.round(Math.random()*120);
+
+            //Set random direction
+
+            this.onMap[map][id].direction = Math.round(Math.random()*3);
+
+            //Check range
+
+            //...
+
+            //Set moving
+
+            this.onMap[map][id].moving = true; 
+
+            //Sync moving and direction
+
+            server.syncNPCPartially(map, id, 'direction');
+            server.syncNPCPartially(map, id, 'moving');
+        }
+        else
+            this.onMap[map][id].movement.cur++;
+    }
+}

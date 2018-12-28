@@ -118,7 +118,7 @@ exports.handleSocket = function(socket)
         
         //Insert default stats
         
-        databases.stats(data.name).set('map', 0);
+        databases.stats(data.name).set('map', tiled.maps[0].name);
         databases.stats(data.name).set('pos', { X: 0, Y: 0 });
         databases.stats(data.name).set('moving', false);
         databases.stats(data.name).set('direction', 0);

@@ -86,8 +86,8 @@
                  "properties":[
                         {
                          "name":"loadMap",
-                         "type":"int",
-                         "value":1
+                         "type":"string",
+                         "value":"map1"
                         }, 
                         {
                          "name":"positionX",

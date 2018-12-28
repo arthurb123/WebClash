@@ -1,0 +1,10 @@
+{
+  "map": "map0",
+  "pos": {
+    "X": 0,
+    "Y": 0
+  },
+  "moving": false,
+  "direction": 0,
+  "char_name": "player"
+}

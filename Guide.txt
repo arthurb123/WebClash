@@ -23,8 +23,8 @@ tileset objects are as follows:
 
 [Events]
 
-* "loadMap" 	-> Loads a map with the specified 
-		   ID (int value)
+* "loadMap" 	-> Loads the map with the specified 
+		   name (string value)
 * "positionX"   -> Set player position tile X
                    (int value)
 * "positionY"   -> Set player position tile Y

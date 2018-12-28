@@ -104,8 +104,14 @@ exports.loadMap = function(socket, map)
     if (socket.name === undefined)
         return;
     
-    if (tiled.maps[map] === undefined) {
-        output.give('Map with ID ' + map + ' does not exist.');
+    //Get map ID
+    
+    let map_id = tiled.getMapIndex(map);
+    
+    //Check if valid
+    
+    if (map_id == -1 || tiled.maps[map_id] === undefined) {
+        output.give('Map with name \'' + map + '\' does not exist.');
         
         return;
     }
@@ -123,7 +129,7 @@ exports.loadMap = function(socket, map)
     
     //Leave old room, if it is available
     
-    socket.leave(game.players[id].map);
+    socket.leave(map_id);
     
     //Set new map
     
@@ -131,11 +137,11 @@ exports.loadMap = function(socket, map)
     
     //Join map specific room
     
-    socket.join(map);
+    socket.join(map_id);
     
     //Send the corresponding map
     
-    socket.emit('GAME_MAP_UPDATE', tiled.maps[map]);
+    socket.emit('GAME_MAP_UPDATE', tiled.maps[map_id]);
     
     //Send player to all players in the same map
     
@@ -147,7 +153,7 @@ exports.loadMap = function(socket, map)
     
     //Send all NPCs in the same map
     
-    npcs.sendMap(map, socket);
+    npcs.sendMap(map_id, socket);
 };
 
 exports.loadAllCharacters = function(cb)

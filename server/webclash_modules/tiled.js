@@ -117,9 +117,12 @@ exports.cacheMapProperties = function(map)
     npcs.loadMap(id);
 };
 
-exports.checkPropertyAtPosition = function(id, property_name, pos)
+exports.checkPropertyAtPosition = function(map_name, property_name, pos)
 {
-    if (this.maps_properties[id] === undefined ||
+    let id = tiled.getMapIndex(map_name);
+    
+    if (id == -1 ||
+        this.maps_properties[id] === undefined ||
         this.maps_properties[id].length == 0)
         return false;
     
