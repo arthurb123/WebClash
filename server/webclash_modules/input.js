@@ -48,11 +48,14 @@ exports.handleCommand = function(socket, text)
 
         //Filter out argument(s)
         
-        let argument = '';
+        let arguments = [];
 
         let sp = text.indexOf(' ');
-        if (sp != -1)
-            argument = text.substr(sp+1, text.length-sp);
+        if (sp != -1) {
+            let wt = text.substr(sp+1, text.length-sp);
+            
+            arguments = wt.split(' ');
+        }
 
         //Check which command applies
         
@@ -79,10 +82,21 @@ exports.handleCommand = function(socket, text)
                 return 'success';
             //Load map command, requires map name
             case 'loadmap':
-                if (argument.length == 0)
+                if (arguments.length == 0)
                     return 'wrong';
                 
-                game.loadMap(socket, argument);
+                game.loadMap(socket, arguments[0]);
+                
+                return 'success';
+            //Load map for player command, requires
+            //player name and map name
+            case 'loadmapfor':
+                if (arguments.length < 2)
+                    return 'wrong';
+                
+                let s = server.getSocketWithName(arguments[0]);
+                if (s !== undefined)
+                    game.loadMap(s, arguments[1]);
                 
                 return 'success';
         }

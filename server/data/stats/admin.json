@@ -6,5 +6,25 @@
   },
   "moving": false,
   "direction": 0,
-  "char_name": "player"
+  "char_name": "player",
+  "name": "admin",
+  "character": {
+    "src": "res/characters/player.png",
+    "width": 64,
+    "height": 64,
+    "animation": {
+      "direction": "horizontal",
+      "speed": 8
+    },
+    "collider": {
+      "x": 16,
+      "y": 40,
+      "width": 32,
+      "height": 24
+    },
+    "movement": {
+      "acceleration": 0.25,
+      "max": 2.5
+    }
+  }
 }

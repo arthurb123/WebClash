@@ -1,3 +1,4 @@
 Available commands:<br>
-/showmaps	   -> Show available maps<br>
-/loadmap <i>ID</i> -> Loads map with name
+/showmaps<br> 
+/loadmap <i>map</i><br>
+/loadmapfor <i>player</i> <i>map</i><br>

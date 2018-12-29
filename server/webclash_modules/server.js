@@ -266,12 +266,16 @@ exports.handleSocket = function(socket)
             
             let output = input.handleCommand(socket, data);
             
-            if (output === 'invalid')
+            if (output == 'invalid')
                 msg = 'Invalid command.';
             else if (output == 'wrong')
                 msg = 'Incorrect command syntax.';
             else
                 return;
+            
+            socket.emit('GAME_CHAT_UPDATE', msg);
+            
+            return;
         } 
         else
             msg = '<b>' + socket.name + '</b>: ' + input.filterText(data);
@@ -396,4 +400,18 @@ exports.syncNPC = function(map, id, socket, broadcast)
     this.syncNPCPartially(map, id, 'position', socket, broadcast);
     this.syncNPCPartially(map, id, 'direction', socket, broadcast);
     this.syncNPCPartially(map, id, 'character', socket, broadcast);
+};
+
+//Get socket with name function
+
+exports.getSocketWithName = function(name)
+{
+    //Loop through all sockets until socket
+    //with the same name is found
+    
+    for (let socketId in io.sockets.sockets) {
+        if (io.sockets.sockets[socketId] !== undefined &&
+            io.sockets.sockets[socketId].name == name)
+            return io.sockets.sockets[socketId];
+    }
 };
