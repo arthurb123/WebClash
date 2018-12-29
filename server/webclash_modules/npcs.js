@@ -72,7 +72,7 @@ exports.createNPCs = function(npc_property, map_id)
 {    
     //Cycle through all dimensions
     
-    for (let i = 0; i < npc_property.dimensions.length; i++)
+    for (let i = 0; i < npc_property.rectangles.length; i++)
     {
         //Get specified NPC
     
@@ -87,8 +87,8 @@ exports.createNPCs = function(npc_property, map_id)
         
         npc.id = this.onMap[map_id].length;
         npc.pos = {
-            X: npc_property.dimensions[i].x,
-            Y: npc_property.dimensions[i].y
+            X: npc_property.rectangles[i].x,
+            Y: npc_property.rectangles[i].y
         };
         npc.movement = {
             vel: {
@@ -217,20 +217,63 @@ exports.updateNPCMovement = function(map, id)
 
             this.onMap[map][id].direction = Math.round(Math.random()*3);
 
-            //Check range
+            //Check facing collision
+            
+            if (!this.checkNPCFacingCollision(map, id)) {
+                //Start moving
+                
+                this.onMap[map][id].moving = true; 
+                
+                //Sync moving
+                
+                server.syncNPCPartially(map, id, 'moving');
+            }
 
-            //...
-
-            //Set moving
-
-            this.onMap[map][id].moving = true; 
-
-            //Sync moving and direction
+            //Sync direction
 
             server.syncNPCPartially(map, id, 'direction');
-            server.syncNPCPartially(map, id, 'moving');
         }
         else
             this.onMap[map][id].movement.cur++;
     }
-}
+};
+
+exports.checkNPCFacingCollision = function(map, id)
+{
+    let rect = {
+        x: this.onMap[map][id].pos.X,
+        y: this.onMap[map][id].pos.Y,
+        w: tiled.maps[map].tilewidth,
+        h: tiled.maps[map].tileheight
+    };
+    
+    //Get supposed pos based on direction
+    
+    switch (this.onMap[map][id].direction)
+    {
+        case 0:
+            rect.y += rect.h;
+            break;
+        case 1:
+            rect.x -= rect.w;
+            break;
+        case 2:
+            rect.x += rect.w;
+            break;
+        case 3:
+            rect.y -= rect.h;
+            break;
+    };
+    
+    //Check if outside map
+    
+    if (!tiled.checkRectangleInMap(map, rect))
+        return true;
+    
+    //Check collision inside map
+    
+    if (tiled.checkCollisionWithRectangle(tiled.maps[map].name, rect))
+        return true;
+    
+    return false;
+};

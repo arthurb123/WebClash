@@ -222,9 +222,14 @@ exports.handleSocket = function(socket)
         if (id == -1 || game.players[id].map == data)
             return;
         
-        //Check if player has access to property
+        //Check if player is near to a loadMap property
         
-        if (!tiled.checkPropertyAtPosition(game.players[id].map, 'loadMap', game.players[id].pos))
+        if (!tiled.checkPropertyWithRectangle(game.players[id].map, 'loadMap', {
+            x: game.players[id].pos.X-game.players[id].character.width/2,
+            y: game.players[id].pos.Y-game.players[id].character.height/2,
+            w: game.players[id].character.width*2,
+            h: game.players[id].character.height*2
+        }))
             return;
         
         //Send map to player

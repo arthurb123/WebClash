@@ -4,6 +4,7 @@ const fs = require('fs');
 
 exports.maps = [];
 exports.maps_properties = [];
+exports.maps_colliders = [];
 
 exports.loadAllMaps = function(cb) {
     fs.readdir('maps', (err, files) => {
@@ -32,7 +33,7 @@ exports.loadMap = function(name) {
         
         this.maps.push(map);
         
-        this.cacheMapProperties(map);
+        this.cacheMap(map);
     }
     catch(err)
     {
@@ -57,9 +58,9 @@ exports.getMapIndex = function(name)
     return -1;
 };
 
-exports.getMapTilePropertyDimensions = function(map, id) 
+exports.getMapTileRectangles = function(map, id) 
 {
-    let dimensions = [];
+    let rects = [];
     
     for (let l = 0; l < map.layers.length; l++) {
          let offset_width = -map.width*map.tilewidth/2,
@@ -70,22 +71,23 @@ exports.getMapTilePropertyDimensions = function(map, id)
         
         for (let t = 0; t < map.layers[l].data.length; t++)
             if (map.layers[l].data[t] == id+1)
-                dimensions.push({
+                rects.push({
                     x: (t % map.layers[l].width) * map.tilewidth + offset_width,
                     y: Math.floor(t / map.layers[l].width) * map.tileheight + offset_height,
-                    w: map.tilewidth*2,
-                    h: map.tileheight*2
+                    w: map.tilewidth,
+                    h: map.tileheight
                 });
     }
     
-    return dimensions;
+    return rects;
 }
 
-exports.cacheMapProperties = function(map)
+exports.cacheMap = function(map)
 {
     let id = this.getMapIndex(map.name);
     
     this.maps_properties[id] = [];
+    this.maps_colliders[id] = [];
     
     if (map.tilesets === undefined)
         return;
@@ -98,46 +100,95 @@ exports.cacheMapProperties = function(map)
             continue;
         
         for (let i = 0; i < tileset.tiles.length; i++) {
-            if (tileset.tiles[i].properties === undefined)
-                continue;
+            //Check properties
             
-            for (let p = 0; p < tileset.tiles[i].properties.length; p++)
-            {
-                let property = tileset.tiles[i].properties[p];
-                
-                this.maps_properties[id].push({
-                    name: property.name,
-                    value: property.value,
-                    dimensions: this.getMapTilePropertyDimensions(map, tileset.tiles[i].id)
-                });
-            }
+            if (tileset.tiles[i].properties !== undefined)
+                for (let p = 0; p < tileset.tiles[i].properties.length; p++)
+                {
+                    let property = tileset.tiles[i].properties[p];
+
+                    this.maps_properties[id].push({
+                        name: property.name,
+                        value: property.value,
+                        rectangles: this.getMapTileRectangles(map, tileset.tiles[i].id)
+                    });
+                }
+            
+            //Check colliders
+            
+            if (tileset.tiles[i].objectgroup !== undefined)
+                this.maps_colliders[id].push(this.getMapTileRectangles(map, tileset.tiles[i].id));
         }
     }
+    
+    //Load NPCs
     
     npcs.loadMap(id);
 };
 
-exports.checkPropertyAtPosition = function(map_name, property_name, pos)
+exports.checkPropertyWithRectangle = function(map_name, property_name, rectangle)
 {
-    let id = tiled.getMapIndex(map_name);
+    let id = this.getMapIndex(map_name);
     
     if (id == -1 ||
         this.maps_properties[id] === undefined ||
         this.maps_properties[id].length == 0)
         return false;
-
+    
     for (let p = 0; p < this.maps_properties[id].length; p++)
-        for (let d = 0; d < this.maps_properties[id][p].dimensions.length; d++)
-            if (tiled.checkPositionInDimension(this.maps_properties[id][p].dimensions[d], pos.X, pos.Y)) 
+        for (let r = 0; r < this.maps_properties[id][p].rectangles.length; r++)
+            if (this.checkRectangularCollision(this.maps_properties[id][p].rectangles[r], rectangle)) 
                 return true;
     
-    return false
+    return false;
+};
+
+exports.checkCollisionWithRectangle = function(map_name, rectangle)
+{
+    let id = this.getMapIndex(map_name);
+    
+    if (id == -1 ||
+        this.maps_colliders[id] === undefined)
+        return false;
+    
+    for (let c = 0; c < this.maps_colliders[id].length; c++) {
+        if (this.maps_colliders[id][c] === undefined)
+            continue;
+        
+        for (let r = 0; r < this.maps_colliders[id][c].length; r++)
+            if (this.checkRectangularCollision(this.maps_colliders[id][c][r], rectangle)) 
+                    return true;
+    }
+    
+    return false;
 };
                                      
-exports.checkPositionInDimension = function(dimension, x, y) {
-    if (Math.abs(x-dimension.x) <= dimension.w &&
-        Math.abs(y-dimension.y) <= dimension.h)
+exports.checkRectangularCollision = function(rect1, rect2) {
+    if (rect1.x < rect2.x + rect2.w &&
+        rect1.x + rect1.w > rect2.x &&
+        rect1.y < rect2.y + rect2.h &&
+        rect1.h + rect1.y > rect2.y)
         return true;
     
     return false;
+};
+
+
+exports.checkRectangleInMap = function(id, rect) {
+    for (let l = 0; l < this.maps[id].layers.length; l++) {
+        let map = {
+            x: -this.maps[id].width*this.maps[id].tilewidth/2,
+            y: -this.maps[id].height*this.maps[id].tileheight/2,
+            w: this.maps[id].width*this.maps[id].tilewidth,
+            h: this.maps[id].height*this.maps[id].tileheight
+        };
+        
+        if (this.maps[id].layers[l].offsetx !== undefined) map.x += this.maps[id].layers[l].offsetx;
+        if (this.maps[id].layers[l].offsety !== undefined) map.y += this.maps[id].layers[l].offsety;  
+        
+        if (!this.checkRectangularCollision(map, rect))
+            return false;
+    }
+    
+    return true;
 };
