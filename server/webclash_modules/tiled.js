@@ -71,10 +71,10 @@ exports.getMapTilePropertyDimensions = function(map, id)
         for (let t = 0; t < map.layers[l].data.length; t++)
             if (map.layers[l].data[t] == id+1)
                 dimensions.push({
-                    x: t % map.layers[l].width * map.tilewidth + offset_width,
+                    x: (t % map.layers[l].width) * map.tilewidth + offset_width,
                     y: Math.floor(t / map.layers[l].width) * map.tileheight + offset_height,
-                    w: map.tilewidth,
-                    h: map.tileheight
+                    w: map.tilewidth*2,
+                    h: map.tileheight*2
                 });
     }
     
@@ -125,29 +125,18 @@ exports.checkPropertyAtPosition = function(map_name, property_name, pos)
         this.maps_properties[id] === undefined ||
         this.maps_properties[id].length == 0)
         return false;
+
+    for (let p = 0; p < this.maps_properties[id].length; p++)
+        for (let d = 0; d < this.maps_properties[id][p].dimensions.length; d++)
+            if (tiled.checkPositionInDimension(this.maps_properties[id][p].dimensions[d], pos.X, pos.Y)) 
+                return true;
     
-    let valid = false;
-    
-    this.maps_properties[id].forEach(function(property) {
-        if (valid)
-            return;
-        
-        if (property.name == property_name)
-            property.dimensions.forEach(function(dimension) {
-                if (tiled.checkPositionInDimension(dimension, pos.X, pos.Y)) {
-                    valid = true;
-                    
-                    return;
-                }
-            });
-    });
-    
-    return valid;
+    return false
 };
                                      
 exports.checkPositionInDimension = function(dimension, x, y) {
-    if (x-dimension.x >= 0 && Math.abs(x-dimension.x) <= dimension.w &&
-        y-dimension.y >= 0 && Math.abs(y-dimension.y) <= dimension.h)
+    if (Math.abs(x-dimension.x) <= dimension.w &&
+        Math.abs(y-dimension.y) <= dimension.h)
         return true;
     
     return false;
