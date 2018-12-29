@@ -5,12 +5,13 @@ const ui = {
     chat: {
         create: function() {
             if (this.dom !== undefined) {
-                if (this.dom.box.parentNode === undefined)
-                    return;
+                if (this.dom.box.parentNode !== undefined &&
+                    this.dom.box.parentNode !== null) {
                 
-                this.dom.box.parentNode.removeChild(this.dom.box);
-                
-                this.dom = undefined;
+                    this.dom.box.parentNode.removeChild(this.dom.box);
+
+                    this.dom = undefined;
+                }
             }
             
             view.dom.innerHTML += 
@@ -32,7 +33,7 @@ const ui = {
             });
         },
         timeformat: function() {
-            return '[' + new Date().toString().substr(16, 5) + '] ';
+            return '(' + new Date().toString().substr(16, 5) + ') ';
         },
         clear: function() {
             if (this.dom === undefined)
