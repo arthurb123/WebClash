@@ -17,7 +17,7 @@ const ui = {
             view.dom.innerHTML += 
                 '<div id="chat_box" class="box" style="position: absolute; top: 100%; left: 35px; margin-top: -235px; width: 340px; height: 180px;">' +
                     '<div id="chat_box_content" class="content" style="overflow-y: auto; height: 155px;"></div>' +
-                    '<input id="chat_box_message" type="text" style="width: 262px;"></textbox>' +
+                    '<input id="chat_box_message" type="text" style="width: 262px;"></input>' +
                     '<button onclick="ui.chat.sendMessage()" style="position: relative; left: 2px; height: 20px; width: 70px; padding-top: 2px;">Send</button>' +
                 '</div>';
             
@@ -30,6 +30,13 @@ const ui = {
             this.dom.message.addEventListener('keydown', function(e) {
                 if (e.keyCode == 13)
                     ui.chat.sendMessage();
+            });
+            
+            lx.OnKey(13, function() {
+                if (document.activeElement === ui.chat.dom.message)
+                    return;
+                
+                ui.chat.dom.message.focus();
             });
         },
         timeformat: function() {

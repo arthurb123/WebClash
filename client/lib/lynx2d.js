@@ -95,7 +95,8 @@ function Lynx2D() {
             //Events
             this.EVENTS.forEach(function(obj) {
                 if (obj != undefined) {
-                    if (obj.TYPE == 'key' && lx.CONTEXT.CONTROLLER.KEYS[obj.EVENT] || obj.TYPE == 'mousebutton' && lx.CONTEXT.CONTROLLER.MOUSE.BUTTONS[obj.EVENT]) {
+                    if (obj.TYPE == 'key' && lx.CONTEXT.CONTROLLER.KEYS[obj.EVENT] || 
+                        obj.TYPE == 'mousebutton' && lx.CONTEXT.CONTROLLER.MOUSE.BUTTONS[obj.EVENT]) {
                         for (var i = 0; i < obj.CALLBACK.length; i++) {
                             if (obj.CALLBACK[i] != undefined) {
                                 try {
@@ -582,6 +583,8 @@ function Lynx2D() {
             
             if (lx.CONTEXT.CONTROLLER.STOPPED_KEYS[String.fromCharCode(EVENT.keyCode).toLowerCase()]) return; 
             lx.CONTEXT.CONTROLLER.KEYS[String.fromCharCode(EVENT.keyCode).toLowerCase()] = true; 
+            
+            lx.CONTEXT.CONTROLLER.KEYS[EVENT.keyCode] = true; 
         });
         
         document.addEventListener('keyup', function(EVENT) { 
@@ -589,7 +592,9 @@ function Lynx2D() {
                 lx.GAME.INVALIDATE_EVENT('key', String.fromCharCode(EVENT.keyCode).toLowerCase());
             
             lx.CONTEXT.CONTROLLER.STOPPED_KEYS[String.fromCharCode(EVENT.keyCode).toLowerCase()] = false; 
-            lx.CONTEXT.CONTROLLER.KEYS[String.fromCharCode(EVENT.keyCode).toLowerCase()] = false; 
+            lx.CONTEXT.CONTROLLER.KEYS[String.fromCharCode(EVENT.keyCode).toLowerCase()] = false;
+            
+            lx.CONTEXT.CONTROLLER.KEYS[EVENT.keyCode] = false;
         });
         
         document.addEventListener('mousedown', function(EVENT) { 
@@ -673,7 +678,10 @@ function Lynx2D() {
     //3 - Event functions
     
     this.OnKey = function(key, callback) {
-        this.GAME.ADD_EVENT('key', key.toLowerCase(), callback);
+        if (isNaN(key))
+            this.GAME.ADD_EVENT('key', key.toLowerCase(), callback);
+        else
+            this.GAME.ADD_EVENT('key', key, callback);
         
         return this;
     };
@@ -685,8 +693,8 @@ function Lynx2D() {
     };
     
     this.StopKey = function(key) {
-        lx.CONTEXT.CONTROLLER.KEYS[key.toLowerCase()] = false;
         lx.CONTEXT.CONTROLLER.STOPPED_KEYS[key.toLowerCase()] = true;
+        lx.CONTEXT.CONTROLLER.KEYS[key.toLowerCase()] = false;
         
         return this;
     };
