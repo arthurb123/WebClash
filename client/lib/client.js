@@ -133,6 +133,8 @@ const client = {
             
              if (data.pos !== undefined)
                  game.npcs[data.id].POS = data.pos;
+             if (data.type !== undefined)
+                 game.npcs[data.id]._type = data.type;
              if (data.moving !== undefined) 
                  game.npcs[data.id]._moving = data.moving;
              if (data.direction !== undefined) 

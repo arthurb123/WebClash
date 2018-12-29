@@ -282,7 +282,7 @@ exports.handleSocket = function(socket)
         
         //Send chat message to all other players
         
-        io.to(game.players[id].map).emit('GAME_CHAT_UPDATE', msg);
+        io.to(tiled.getMapIndex(game.players[id].map)).emit('GAME_CHAT_UPDATE', msg);
     });
 };
 
@@ -380,6 +380,9 @@ exports.syncNPCPartially = function(map, id, type, socket, broadcast)
         case 'character':
             data.character = npcs.onMap[map][id].data.character;
             break;
+        case 'type':
+            data.type = npcs.onMap[map][id].data.type;
+            break;
     }
     
     if (socket === undefined) 
@@ -400,6 +403,7 @@ exports.syncNPC = function(map, id, socket, broadcast)
     this.syncNPCPartially(map, id, 'position', socket, broadcast);
     this.syncNPCPartially(map, id, 'direction', socket, broadcast);
     this.syncNPCPartially(map, id, 'character', socket, broadcast);
+    this.syncNPCPartially(map, id, 'type', socket, broadcast);
 };
 
 //Get socket with name function
