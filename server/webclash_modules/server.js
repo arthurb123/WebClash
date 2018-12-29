@@ -301,8 +301,10 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
             break;
     }
     
+    let map_id = tiled.getMapIndex(game.players[id].map);
+    
     if (socket === undefined) 
-        io.to(game.players[id].map).emit('GAME_PLAYER_UPDATE', data);
+        io.to(map_id).emit('GAME_PLAYER_UPDATE', data);
     else {
         if (broadcast === undefined || !broadcast) {
             if (socket.name == data.name)
@@ -311,7 +313,7 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
             socket.emit('GAME_PLAYER_UPDATE', data);
         }
         else
-            socket.broadcast.to(game.players[id].map).emit('GAME_PLAYER_UPDATE', data);
+            socket.broadcast.to(map_id).emit('GAME_PLAYER_UPDATE', data);
     }
 };
 
@@ -334,9 +336,13 @@ exports.removePlayer = function(id, socket)
     if (socket === undefined || socket.name === undefined)
         return;
     
+    //Grab map ID
+    
+    let map_id = tiled.getMapIndex(game.players[id].map);
+    
     //Broadcast player removal
     
-    socket.broadcast.to(game.players[id].map).emit('GAME_PLAYER_UPDATE', { name: socket.name, remove: true });
+    socket.broadcast.to(map_id).emit('GAME_PLAYER_UPDATE', { name: socket.name, remove: true });
 }
 
 //Sync NPC partially function, if socket is undefined it will be globally emitted

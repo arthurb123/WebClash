@@ -30,6 +30,9 @@ const player = {
         );  
     },
     update: function() {
+        this.POS.X = Math.round(this.POS.X);
+        this.POS.Y = Math.round(this.POS.Y);
+        
         if (this.MOVEMENT.VX != 0 || this.MOVEMENT.VY != 0) {
             var oldDir = this._direction;
             

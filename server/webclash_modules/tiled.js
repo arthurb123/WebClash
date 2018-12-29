@@ -146,8 +146,8 @@ exports.checkPropertyAtPosition = function(map_name, property_name, pos)
 };
                                      
 exports.checkPositionInDimension = function(dimension, x, y) {
-    if (Math.abs(x-dimension.x) <= dimension.w*2 &&
-        Math.abs(y-dimension.y) <= dimension.h*2)
+    if (x-dimension.x >= 0 && Math.abs(x-dimension.x) <= dimension.w &&
+        y-dimension.y >= 0 && Math.abs(y-dimension.y) <= dimension.h)
         return true;
     
     return false;
