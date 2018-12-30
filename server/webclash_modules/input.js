@@ -69,6 +69,50 @@ exports.handleCommand = function(socket, text)
                 });
                 
                 return 'success';
+            //OP command
+            case 'op':
+                if (arguments.length == 0)
+                    return 'wrong';
+                
+                permissions.admins.push(arguments[0]);
+                game.savePermissions();
+                
+                return 'success';
+            //DEOP command
+            case 'deop':
+                if (arguments.length == 0)
+                    return 'wrong';
+                
+                let a_id = permissions.admins.indexOf(arguments[0]);
+                if (a_id != -1) {
+                    permissions.admins.splice(a_id, 1);
+                    
+                    game.savePermissions();
+                }
+                
+                return 'success';
+            //Ban command
+            case 'ban':
+                if (arguments.length == 0)
+                    return 'wrong';
+                
+                permissions.banned.push(arguments[0]);
+                game.savePermissions();
+                
+                return 'success';
+            //Unban command
+            case 'unban':
+                if (arguments.length == 0)
+                    return 'wrong';
+                
+                let b_id = permissions.banned.indexOf(arguments[0]);
+                if (b_id != -1) {
+                    permissions.banned.splice(b_id, 1);
+                    
+                    game.savePermissions();
+                }
+                
+                return 'success';
             //Show map list command
             case 'showmaps':
                 let msg = 'Available maps:<br>';
@@ -90,7 +134,7 @@ exports.handleCommand = function(socket, text)
                 return 'success';
             //Load map for player command, requires
             //player name and map name
-            case 'loadmapfor':
+            case 'sendmap':
                 if (arguments.length < 2)
                     return 'wrong';
                 

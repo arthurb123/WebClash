@@ -15,6 +15,10 @@ exports.startLoop = function() {
     }, 1000/60);
 };
 
+exports.savePermissions = function () {
+    fs.writeFile('permissions.json', JSON.stringify(permissions, null, 1), 'utf8');
+};
+
 exports.addPlayer = function(socket)
 {
     //Check if socket is valid

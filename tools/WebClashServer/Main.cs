@@ -146,7 +146,11 @@ namespace WebClashServer
                 return;
 
             if (!InvokeRequired)
+            {
                 output.Text += msg + "\n";
+
+                output.ScrollToCaret();
+            }
             else
                 Invoke(new Action<string>(AddOutput), msg);
         }

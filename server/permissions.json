@@ -1,18 +1,16 @@
 {
-    "admins": [
-        "admin"
-    ],
-    "banned": [],
-    "censoredWords": [
-        "<",
-        ">",
-        "nigger",
-        "cunt",
-        "fuck",
-        "bitch",
-        "asshole",
-        "faggot",
-        "dick",
-        "cock"
-    ]
+ "admins": [],
+ "banned": [],
+ "censoredWords": [
+  "<",
+  ">",
+  "nigger",
+  "cunt",
+  "fuck",
+  "bitch",
+  "asshole",
+  "faggot",
+  "dick",
+  "cock"
+ ]
 }

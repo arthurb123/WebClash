@@ -34,7 +34,7 @@
             this.add = new System.Windows.Forms.Button();
             this.delete = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.dialogButton = new System.Windows.Forms.Button();
             this.name = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.charSelect = new System.Windows.Forms.ComboBox();
@@ -46,12 +46,16 @@
             this.movementFree = new System.Windows.Forms.RadioButton();
             this.movementStatic = new System.Windows.Forms.RadioButton();
             this.statistics = new System.Windows.Forms.GroupBox();
+            this.level = new System.Windows.Forms.NumericUpDown();
+            this.label5 = new System.Windows.Forms.Label();
             this.typeFriendly = new System.Windows.Forms.RadioButton();
             this.typeHostile = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.range)).BeginInit();
+            this.statistics.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.level)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -96,7 +100,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.dialogButton);
             this.groupBox1.Controls.Add(this.name);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.charSelect);
@@ -109,14 +113,14 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "NPC";
             // 
-            // button1
+            // dialogButton
             // 
-            this.button1.Location = new System.Drawing.Point(12, 69);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(344, 23);
-            this.button1.TabIndex = 15;
-            this.button1.Text = "Edit Dialog";
-            this.button1.UseVisualStyleBackColor = true;
+            this.dialogButton.Location = new System.Drawing.Point(12, 69);
+            this.dialogButton.Name = "dialogButton";
+            this.dialogButton.Size = new System.Drawing.Size(344, 23);
+            this.dialogButton.TabIndex = 15;
+            this.dialogButton.Text = "Edit Dialog";
+            this.dialogButton.UseVisualStyleBackColor = true;
             // 
             // name
             // 
@@ -239,6 +243,8 @@
             // 
             // statistics
             // 
+            this.statistics.Controls.Add(this.level);
+            this.statistics.Controls.Add(this.label5);
             this.statistics.Enabled = false;
             this.statistics.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statistics.Location = new System.Drawing.Point(15, 249);
@@ -247,6 +253,39 @@
             this.statistics.TabIndex = 9;
             this.statistics.TabStop = false;
             this.statistics.Text = "Statistics";
+            // 
+            // level
+            // 
+            this.level.Location = new System.Drawing.Point(56, 24);
+            this.level.Maximum = new decimal(new int[] {
+            9999999,
+            0,
+            0,
+            0});
+            this.level.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.level.Name = "level";
+            this.level.Size = new System.Drawing.Size(80, 21);
+            this.level.TabIndex = 1;
+            this.level.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.level.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.level.ValueChanged += new System.EventHandler(this.level_ValueChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(9, 26);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(36, 15);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "Level";
             // 
             // typeFriendly
             // 
@@ -307,6 +346,9 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.range)).EndInit();
+            this.statistics.ResumeLayout(false);
+            this.statistics.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.level)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -324,7 +366,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox name;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button dialogButton;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.NumericUpDown range;
         private System.Windows.Forms.Label label4;
@@ -334,5 +376,7 @@
         private System.Windows.Forms.RadioButton typeFriendly;
         private System.Windows.Forms.RadioButton typeHostile;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown level;
     }
 }

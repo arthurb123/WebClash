@@ -92,7 +92,7 @@ namespace WebClashServer.Editors
                     break;
             }
 
-            range.Value = (int)current.range;
+            range.Value = current.range;
 
             switch (current.type)
             {
@@ -102,6 +102,11 @@ namespace WebClashServer.Editors
                 case "hostile":
                     typeHostile.Checked = true;
                     break;
+            }
+
+            if (current.stats != null)
+            {
+                level.Value = current.stats.level;
             }
 
             checkStatisticsEnabled();
@@ -124,6 +129,9 @@ namespace WebClashServer.Editors
 
         private void save_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            if (current.type == "friendly")
+                current.stats = null;
+
             if (name.Text.Length == 0)
             {
                 MessageBox.Show("This NPC cannot be saved as it has an invalid name.", "WebClash Server - Error");
@@ -167,9 +175,17 @@ namespace WebClashServer.Editors
         private void checkStatisticsEnabled()
         {
             if (current.type != "friendly")
+            {
                 statistics.Enabled = true;
+
+                dialogButton.Enabled = false;
+            }
             else
+            {
                 statistics.Enabled = false;
+
+                dialogButton.Enabled = true;
+            }
         }
 
         public int GetAmount()
@@ -201,18 +217,31 @@ namespace WebClashServer.Editors
         private void movementFree_CheckedChanged(object sender, EventArgs e)
         {
             if (movementFree.Checked)
+            {
                 current.movement = "free";
+
+                range.Enabled = true;
+            }
         }
 
         private void movementStatic_CheckedChanged(object sender, EventArgs e)
         {
             if (movementStatic.Checked)
+            {
                 current.movement = "static";
+
+                range.Enabled = false;
+            }
         }
 
         private void range_ValueChanged(object sender, EventArgs e)
         {
             current.range = (int)range.Value;
+        }
+
+        private void level_ValueChanged(object sender, EventArgs e)
+        {
+            current.stats.level = (int)level.Value;
         }
     }
 
@@ -236,6 +265,8 @@ namespace WebClashServer.Editors
                 type = temp.type;
 
                 character = temp.character;
+
+                stats = temp.stats;
             }
             catch (Exception e)
             {
@@ -251,5 +282,12 @@ namespace WebClashServer.Editors
         public string type = "friendly";
 
         public string character = "player";
+
+        public Stats stats = new Stats();
+    }
+
+    public class Stats
+    {
+        public int level = 1;
     }
 }

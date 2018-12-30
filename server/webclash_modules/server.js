@@ -61,6 +61,14 @@ exports.handleSocket = function(socket)
             return;
         }
         
+        //Check if banned
+        
+        if (permissions.banned.indexOf(data.name) != -1)
+        {
+            callback('banned');
+            return;
+        }
+        
         //Check if already logged in
         
         if (game.getPlayerIndex(data.name) != -1)
@@ -123,6 +131,10 @@ exports.handleSocket = function(socket)
         databases.stats(data.name).set('moving', false);
         databases.stats(data.name).set('direction', 0);
         databases.stats(data.name).set('char_name', 'player');
+        databases.stats(data.name).set('stats', {
+            level: 1,
+            exp: 0
+        });
 
         //Save databases
         
@@ -308,6 +320,9 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
         case 'character':
             data.character = game.players[id].character;
             break;
+        case 'stats':
+            data.stats = game.players[id].stats;
+            break;
     }
     
     let map_id = tiled.getMapIndex(game.players[id].map);
@@ -334,6 +349,7 @@ exports.syncPlayer = function(id, socket, broadcast)
     this.syncPlayerPartially(id, 'position', socket, broadcast);
     this.syncPlayerPartially(id, 'direction', socket, broadcast);
     this.syncPlayerPartially(id, 'character', socket, broadcast);
+    this.syncPlayerPartially(id, 'stats', socket, broadcast);
 };
 
 //Sync player remove function, will be broadcast by default
@@ -383,6 +399,9 @@ exports.syncNPCPartially = function(map, id, type, socket, broadcast)
         case 'type':
             data.type = npcs.onMap[map][id].data.type;
             break;
+        case 'stats':
+            data.stats = npcs.onMap[map][id].data.stats;
+            break;
     }
     
     if (socket === undefined) 
@@ -404,6 +423,13 @@ exports.syncNPC = function(map, id, socket, broadcast)
     this.syncNPCPartially(map, id, 'direction', socket, broadcast);
     this.syncNPCPartially(map, id, 'character', socket, broadcast);
     this.syncNPCPartially(map, id, 'type', socket, broadcast);
+    
+    //Some NPCs don't have stats, so we dont send it if
+    //it is empty
+    
+    if (npcs.onMap[map][id].data.stats !== undefined &&
+        npcs.onMap[map][id].data.stats !== null)
+        this.syncNPCPartially(map, id, 'stats', socket, broadcast);
 };
 
 //Get socket with name function

@@ -1,4 +1,8 @@
 Available commands:<br>
+/op <i>player</i><br>
+/deop <i>player</i><br>
+/ban <i>player</i><br>
+/unban <i>player</i><br>
 /showmaps<br> 
 /loadmap <i>map</i><br>
-/loadmapfor <i>player</i> <i>map</i><br>
+/sendmap <i>player</i> <i>map</i>

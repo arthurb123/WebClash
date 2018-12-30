@@ -65,6 +65,7 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.acceleration = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).BeginInit();
@@ -310,7 +311,7 @@
             // canvas
             // 
             this.canvas.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.canvas.Location = new System.Drawing.Point(104, 331);
+            this.canvas.Location = new System.Drawing.Point(105, 341);
             this.canvas.Name = "canvas";
             this.canvas.Size = new System.Drawing.Size(200, 200);
             this.canvas.TabIndex = 6;
@@ -328,7 +329,7 @@
             this.save.AutoSize = true;
             this.save.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.save.LinkColor = System.Drawing.Color.Blue;
-            this.save.Location = new System.Drawing.Point(360, 518);
+            this.save.Location = new System.Drawing.Point(360, 528);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(32, 13);
             this.save.TabIndex = 7;
@@ -339,6 +340,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.label13);
             this.groupBox3.Controls.Add(this.label11);
             this.groupBox3.Controls.Add(this.label10);
             this.groupBox3.Controls.Add(this.label9);
@@ -350,7 +352,7 @@
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox3.Location = new System.Drawing.Point(15, 196);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(373, 63);
+            this.groupBox3.Size = new System.Drawing.Size(373, 70);
             this.groupBox3.TabIndex = 11;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Collider";
@@ -484,7 +486,7 @@
             this.groupBox4.Controls.Add(this.label15);
             this.groupBox4.Controls.Add(this.acceleration);
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox4.Location = new System.Drawing.Point(15, 262);
+            this.groupBox4.Location = new System.Drawing.Point(15, 272);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(373, 63);
             this.groupBox4.TabIndex = 18;
@@ -549,11 +551,21 @@
             this.acceleration.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.acceleration.ValueChanged += new System.EventHandler(this.acceleration_ValueChanged);
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Location = new System.Drawing.Point(248, 52);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(111, 12);
+            this.label13.TabIndex = 18;
+            this.label13.Text = "* NPCs don\'t use colliders";
+            // 
             // Characters
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 541);
+            this.ClientSize = new System.Drawing.Size(404, 551);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.save);
@@ -566,8 +578,8 @@
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(420, 580);
-            this.MinimumSize = new System.Drawing.Size(420, 580);
+            this.MaximumSize = new System.Drawing.Size(420, 590);
+            this.MinimumSize = new System.Drawing.Size(420, 590);
             this.Name = "Characters";
             this.Text = "WebClash Server - Characters";
             this.Load += new System.EventHandler(this.Characters_Load);
@@ -631,5 +643,6 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.NumericUpDown acceleration;
         private System.Windows.Forms.NumericUpDown maxVelocity;
+        private System.Windows.Forms.Label label13;
     }
 }

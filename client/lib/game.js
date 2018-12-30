@@ -29,6 +29,9 @@ const game = {
                 if (go._nameplate.Position().X == 0 &&
                     go._nameplate.Position().Y == 0)
                     go._nameplate.Position(go.Size().W/2, -Math.floor(go.Size().H/5));
+                
+                if (go._stats !== undefined)
+                    go._nameplate.Text('lvl ' + go._stats.level + ' - ' + go.name);
             });
         
         go.name = name;
@@ -99,6 +102,9 @@ const game = {
                     go._nameplate.Color('black');
                 else if (go._type == 'hostile')
                     go._nameplate.Color('red');
+                
+                if (go._stats !== undefined)
+                    go._nameplate.Text('lvl ' + go._stats.level + ' - ' + go.name);
             });
         
         go.name = name;

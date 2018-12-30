@@ -1,1 +1,1 @@
-{"name":"Orc","movement":"free","range":10,"type":"hostile","character":"orc"}
+{"name":"Orc","movement":"free","range":10,"type":"hostile","character":"orc","stats":{"level":1}}

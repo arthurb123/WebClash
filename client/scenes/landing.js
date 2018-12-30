@@ -66,6 +66,9 @@ const landingScene = new lx.Scene(function() {
                 case 'loggedin':
                     document.getElementById('windowErrorText').innerHTML = 'You are already logged in';
                     break;
+                case 'banned':
+                    document.getElementById('windowErrorText').innerHTML = 'You have been banned';
+                    break;
             }
         });
     };
