@@ -200,13 +200,17 @@ namespace WebClashServer.Editors
                     {
                         Image img = GetClientImage(el.src);
 
+                        if (img == null)
+                            goto DrawRectangle;
+
                         if (el.direction == "horizontal")
                             g.DrawImage(img, r, elementFrames[el].frame * el.w, 0, el.w, el.h, GraphicsUnit.Pixel);
                         else if (el.direction == "vertical")
                             g.DrawImage(img, r, 0, elementFrames[el].frame * el.h, el.w, el.h, GraphicsUnit.Pixel);
                     }
 
-                    g.DrawRectangle(Pens.Purple, r);
+                    DrawRectangle:
+                        g.DrawRectangle(Pens.Purple, r);
                 }
             }
             catch (Exception exc)
@@ -414,6 +418,9 @@ namespace WebClashServer.Editors
 
             for (int i = 0; i < current.elements.Length; i++)
             {
+                if (current.elements[i].src.Length == 0)
+                    continue;
+
                 if (!elementFrames.ContainsKey(current.elements[i]))
                     elementFrames.Add(current.elements[i], new Frame());
 
@@ -424,6 +431,8 @@ namespace WebClashServer.Editors
                     elementFrames[current.elements[i]].frame++;
 
                     Image img = GetClientImage(current.elements[i].src);
+                    if (img == null)
+                        continue;
 
                     if (current.elements[i].direction == "horizontal" &&
                         elementFrames[current.elements[i]].frame * current.elements[i].w >= img.Width)
