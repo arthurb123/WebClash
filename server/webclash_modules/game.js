@@ -48,6 +48,8 @@ exports.addPlayer = function(socket)
     //Sync to player
     
     server.syncPlayer(id, socket, false);
+    server.syncPlayerPartially(id, 'stats', socket, false);
+    server.syncPlayerPartially(id, 'health', socket, false);
 };
 
 exports.removePlayer = function(socket)

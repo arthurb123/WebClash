@@ -46,12 +46,6 @@
             this.movementFree = new System.Windows.Forms.RadioButton();
             this.movementStatic = new System.Windows.Forms.RadioButton();
             this.statistics = new System.Windows.Forms.GroupBox();
-            this.editActions = new System.Windows.Forms.Button();
-            this.level = new System.Windows.Forms.NumericUpDown();
-            this.label5 = new System.Windows.Forms.Label();
-            this.typeFriendly = new System.Windows.Forms.RadioButton();
-            this.typeHostile = new System.Windows.Forms.RadioButton();
-            this.label6 = new System.Windows.Forms.Label();
             this.vitality = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
             this.wisdom = new System.Windows.Forms.NumericUpDown();
@@ -64,17 +58,26 @@
             this.label9 = new System.Windows.Forms.Label();
             this.power = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
+            this.editActions = new System.Windows.Forms.Button();
+            this.level = new System.Windows.Forms.NumericUpDown();
+            this.label5 = new System.Windows.Forms.Label();
+            this.typeFriendly = new System.Windows.Forms.RadioButton();
+            this.typeHostile = new System.Windows.Forms.RadioButton();
+            this.label6 = new System.Windows.Forms.Label();
+            this.health = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.range)).BeginInit();
             this.statistics.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.level)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.vitality)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wisdom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.intelligence)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.toughness)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.agility)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.power)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.level)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.health)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -262,6 +265,8 @@
             // 
             // statistics
             // 
+            this.statistics.Controls.Add(this.health);
+            this.statistics.Controls.Add(this.label7);
             this.statistics.Controls.Add(this.vitality);
             this.statistics.Controls.Add(this.label11);
             this.statistics.Controls.Add(this.wisdom);
@@ -285,81 +290,6 @@
             this.statistics.TabIndex = 9;
             this.statistics.TabStop = false;
             this.statistics.Text = "Statistics";
-            // 
-            // editActions
-            // 
-            this.editActions.Location = new System.Drawing.Point(13, 134);
-            this.editActions.Name = "editActions";
-            this.editActions.Size = new System.Drawing.Size(344, 23);
-            this.editActions.TabIndex = 2;
-            this.editActions.Text = "Edit Actions";
-            this.editActions.UseVisualStyleBackColor = true;
-            // 
-            // level
-            // 
-            this.level.Location = new System.Drawing.Point(56, 24);
-            this.level.Maximum = new decimal(new int[] {
-            9999999,
-            0,
-            0,
-            0});
-            this.level.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.level.Name = "level";
-            this.level.Size = new System.Drawing.Size(80, 21);
-            this.level.TabIndex = 1;
-            this.level.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.level.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.level.ValueChanged += new System.EventHandler(this.level_ValueChanged);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 26);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(36, 15);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "Level";
-            // 
-            // typeFriendly
-            // 
-            this.typeFriendly.AutoSize = true;
-            this.typeFriendly.Checked = true;
-            this.typeFriendly.Location = new System.Drawing.Point(167, 226);
-            this.typeFriendly.Name = "typeFriendly";
-            this.typeFriendly.Size = new System.Drawing.Size(61, 17);
-            this.typeFriendly.TabIndex = 1;
-            this.typeFriendly.TabStop = true;
-            this.typeFriendly.Text = "Friendly";
-            this.typeFriendly.UseVisualStyleBackColor = true;
-            this.typeFriendly.CheckedChanged += new System.EventHandler(this.typeFriendly_CheckedChanged);
-            // 
-            // typeHostile
-            // 
-            this.typeHostile.AutoSize = true;
-            this.typeHostile.Location = new System.Drawing.Point(234, 226);
-            this.typeHostile.Name = "typeHostile";
-            this.typeHostile.Size = new System.Drawing.Size(57, 17);
-            this.typeHostile.TabIndex = 0;
-            this.typeHostile.Text = "Hostile";
-            this.typeHostile.UseVisualStyleBackColor = true;
-            this.typeHostile.CheckedChanged += new System.EventHandler(this.typeHostile_CheckedChanged);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(95, 228);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(56, 13);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "NPC Type";
             // 
             // vitality
             // 
@@ -469,6 +399,114 @@
             this.label8.TabIndex = 12;
             this.label8.Text = "Power";
             // 
+            // editActions
+            // 
+            this.editActions.Location = new System.Drawing.Point(13, 134);
+            this.editActions.Name = "editActions";
+            this.editActions.Size = new System.Drawing.Size(344, 23);
+            this.editActions.TabIndex = 2;
+            this.editActions.Text = "Edit Actions";
+            this.editActions.UseVisualStyleBackColor = true;
+            // 
+            // level
+            // 
+            this.level.Location = new System.Drawing.Point(82, 24);
+            this.level.Maximum = new decimal(new int[] {
+            9999999,
+            0,
+            0,
+            0});
+            this.level.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.level.Name = "level";
+            this.level.Size = new System.Drawing.Size(80, 21);
+            this.level.TabIndex = 1;
+            this.level.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.level.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.level.ValueChanged += new System.EventHandler(this.level_ValueChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(35, 26);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(36, 15);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "Level";
+            // 
+            // typeFriendly
+            // 
+            this.typeFriendly.AutoSize = true;
+            this.typeFriendly.Checked = true;
+            this.typeFriendly.Location = new System.Drawing.Point(167, 226);
+            this.typeFriendly.Name = "typeFriendly";
+            this.typeFriendly.Size = new System.Drawing.Size(61, 17);
+            this.typeFriendly.TabIndex = 1;
+            this.typeFriendly.TabStop = true;
+            this.typeFriendly.Text = "Friendly";
+            this.typeFriendly.UseVisualStyleBackColor = true;
+            this.typeFriendly.CheckedChanged += new System.EventHandler(this.typeFriendly_CheckedChanged);
+            // 
+            // typeHostile
+            // 
+            this.typeHostile.AutoSize = true;
+            this.typeHostile.Location = new System.Drawing.Point(234, 226);
+            this.typeHostile.Name = "typeHostile";
+            this.typeHostile.Size = new System.Drawing.Size(57, 17);
+            this.typeHostile.TabIndex = 0;
+            this.typeHostile.Text = "Hostile";
+            this.typeHostile.UseVisualStyleBackColor = true;
+            this.typeHostile.CheckedChanged += new System.EventHandler(this.typeHostile_CheckedChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(95, 228);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(56, 13);
+            this.label6.TabIndex = 10;
+            this.label6.Text = "NPC Type";
+            // 
+            // health
+            // 
+            this.health.Location = new System.Drawing.Point(261, 23);
+            this.health.Maximum = new decimal(new int[] {
+            9999999,
+            0,
+            0,
+            0});
+            this.health.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.health.Name = "health";
+            this.health.Size = new System.Drawing.Size(80, 21);
+            this.health.TabIndex = 25;
+            this.health.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.health.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.health.ValueChanged += new System.EventHandler(this.health_ValueChanged);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(214, 25);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(43, 15);
+            this.label7.TabIndex = 24;
+            this.label7.Text = "Health";
+            // 
             // NPCs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -497,13 +535,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.range)).EndInit();
             this.statistics.ResumeLayout(false);
             this.statistics.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.level)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.vitality)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.wisdom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.intelligence)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.toughness)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.agility)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.power)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.level)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.health)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -546,5 +585,7 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.NumericUpDown power;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.NumericUpDown health;
+        private System.Windows.Forms.Label label7;
     }
 }

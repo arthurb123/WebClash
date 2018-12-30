@@ -82,8 +82,12 @@ const client = {
                  game.players[id]._moving = data.moving;
              if (data.direction !== undefined) 
                  game.players[id]._direction = data.direction;
+             if (data.level !== undefined)
+                 game.players[id]._level = data.level;
              if (data.stats !== undefined)
                  game.players[id]._stats = data.stats;
+             if (data.health !== undefined)
+                 game.players[id]._health = data.health;
              if (data.character !== undefined) {
                  game.players[id].SPRITE = new lx.Sprite(data.character.src);
                  game.players[id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
@@ -143,6 +147,8 @@ const client = {
                  game.npcs[data.id]._direction = data.direction;
              if (data.stats !== undefined)
                  game.npcs[data.id]._stats = data.stats;
+             if (data.health !== undefined)
+                 game.npcs[data.id]._health = data.health;
              if (data.character !== undefined) {
                  game.npcs[data.id].SPRITE = new lx.Sprite(data.character.src);
                  game.npcs[data.id].SPRITE.Clip(0, 0, data.character.width, data.character.height);

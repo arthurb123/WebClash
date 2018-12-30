@@ -261,3 +261,21 @@ exports.checkNPCFacingCollision = function(map, id)
     
     return false;
 };
+
+exports.damageNPC = function(map, id, delta)
+{
+    if (this.onMap[map] === undefined ||
+        this.onMap[map][id] === undefined)
+        return;
+    
+    this.onMap[map][id].data.health.cur+=delta;
+    
+    if (this.onMap[map][id].data.health.cur <= 0)
+    {
+        this.onMap[map][id].data.health.cur = 0;
+        
+        //Kill NPC
+    }
+    
+    server.syncNPCPartially(map, id, 'health');
+};

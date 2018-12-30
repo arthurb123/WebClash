@@ -131,9 +131,21 @@ exports.handleSocket = function(socket)
         databases.stats(data.name).set('moving', false);
         databases.stats(data.name).set('direction', 0);
         databases.stats(data.name).set('char_name', 'player');
+        databases.stats(data.name).set('health', {
+            cur: 100,
+            max: 100
+        });
+        databases.stats(data.name).set('level', 1);
         databases.stats(data.name).set('stats', {
-            level: 1,
-            exp: 0
+            exp: 0,
+            attributes: {
+                power: 1,
+                toughness: 1,
+                vitality: 1,
+                agility: 1,
+                intelligence: 1,
+                wisdom: 1
+            }
         });
 
         //Save databases
@@ -220,7 +232,7 @@ exports.handleSocket = function(socket)
     
     socket.on('CLIENT_PLAYER_ACTION', function(data) {
          //Pretty temporary code
-        
+
          try 
          {
              if (socket.name === undefined)
@@ -341,8 +353,14 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
         case 'character':
             data.character = game.players[id].character;
             break;
+        case 'level':
+            data.level = game.players[id].level;
+            break;
         case 'stats':
             data.stats = game.players[id].stats;
+            break;
+        case 'health':
+            data.health = game.players[id].health;
             break;
     }
     
@@ -370,7 +388,7 @@ exports.syncPlayer = function(id, socket, broadcast)
     this.syncPlayerPartially(id, 'position', socket, broadcast);
     this.syncPlayerPartially(id, 'direction', socket, broadcast);
     this.syncPlayerPartially(id, 'character', socket, broadcast);
-    this.syncPlayerPartially(id, 'stats', socket, broadcast);
+    this.syncPlayerPartially(id, 'level', socket, broadcast);
 };
 
 //Sync player remove function, will be broadcast by default
@@ -423,6 +441,9 @@ exports.syncNPCPartially = function(map, id, type, socket, broadcast)
         case 'stats':
             data.stats = npcs.onMap[map][id].data.stats;
             break;
+        case 'health':
+            data.health = npcs.onMap[map][id].data.health;
+            break;
     }
     
     if (socket === undefined) 
@@ -449,8 +470,11 @@ exports.syncNPC = function(map, id, socket, broadcast)
     //it is empty
     
     if (npcs.onMap[map][id].data.stats !== undefined &&
-        npcs.onMap[map][id].data.stats !== null)
+        npcs.onMap[map][id].data.stats !== null) {
         this.syncNPCPartially(map, id, 'stats', socket, broadcast);
+        
+        this.syncNPCPartially(map, id, 'health', socket, broadcast);
+    }
 };
 
 //Sync whole action function, if socket is undefined it will be globally emitted

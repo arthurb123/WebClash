@@ -164,7 +164,9 @@ namespace WebClashServer
             try
             {
                 Process proc = Process.GetProcessById(pid);
-                if (!proc.HasExited) proc.Kill();
+
+                if (!proc.HasExited)
+                    proc.Kill();
             }
             catch (ArgumentException)
             {

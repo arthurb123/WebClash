@@ -1,1 +1,1 @@
-{"name":"Eric","movement":"free","range":10,"type":"friendly","character":"misadventurer","stats":null}
+{"name":"Eric","movement":"free","range":10,"type":"friendly","character":"misadventurer","stats":null,"health":{"cur":100,"max":100}}

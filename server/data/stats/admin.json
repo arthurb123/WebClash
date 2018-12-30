@@ -1,14 +1,46 @@
 {
-  "map": "map0",
+  "map": "map1",
   "pos": {
-    "X": 0,
-    "Y": 0
+    "X": 60,
+    "Y": -91
   },
   "moving": false,
   "direction": 0,
   "char_name": "player",
+  "health": {
+    "cur": 100,
+    "max": 100
+  },
+  "level": 1,
   "stats": {
-    "level": 1,
-    "exp": 0
+    "exp": 0,
+    "attributes": {
+      "power": 1,
+      "toughness": 1,
+      "vitality": 1,
+      "agility": 1,
+      "intelligence": 1,
+      "wisdom": 1
+    }
+  },
+  "name": "admin",
+  "character": {
+    "src": "res/characters/player.png",
+    "width": 64,
+    "height": 64,
+    "animation": {
+      "direction": "horizontal",
+      "speed": 8
+    },
+    "collider": {
+      "x": 16,
+      "y": 40,
+      "width": 32,
+      "height": 24
+    },
+    "movement": {
+      "acceleration": 0.25,
+      "max": 2.5
+    }
   }
 }

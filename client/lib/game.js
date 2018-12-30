@@ -30,8 +30,8 @@ const game = {
                     go._nameplate.Position().Y == 0)
                     go._nameplate.Position(go.Size().W/2, -Math.floor(go.Size().H/5));
                 
-                if (go._stats !== undefined)
-                    go._nameplate.Text('lvl ' + go._stats.level + ' - ' + go.name);
+                if (go._level !== undefined)
+                    go._nameplate.Text('lvl ' + go._level + ' - ' + go.name);
             });
         
         go.name = name;
@@ -92,19 +92,32 @@ const game = {
         
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
             .Loops(function() {
-                animation.animateMoving(go);
+                animation.animateMoving(this);
                 
-                if (go._nameplate.Position().X == 0 &&
-                    go._nameplate.Position().Y == 0)
-                    go._nameplate.Position(go.Size().W/2, -Math.floor(go.Size().H/5));
+                if (this._nameplate.Position().X == 0 &&
+                    this._nameplate.Position().Y == 0)
+                    this._nameplate.Position(this.Size().W/2, -Math.floor(this.Size().H/5));
                 
-                if (go._type == 'friendly')
-                    go._nameplate.Color('black');
-                else if (go._type == 'hostile')
-                    go._nameplate.Color('red');
+                if (this._type == 'friendly')
+                    this._nameplate.Color('black');
+                else if (this._type == 'hostile')
+                    this._nameplate.Color('red');
                 
-                if (go._stats !== undefined)
-                    go._nameplate.Text('lvl ' + go._stats.level + ' - ' + go.name);
+                if (this._stats !== undefined)
+                    this._nameplate.Text('lvl ' + this._stats.level + ' - ' + this.name);
+            })
+            .Draws(function(data) {
+                if (this._health === undefined || this._health.cur == this._health.max)
+                    return;
+                
+                let gfx = data.graphics,
+                    pos = lx.GAME.TRANSLATE_FROM_FOCUS(data.position);
+                
+                gfx.save();
+                gfx.fillRect(pos.X, pos.Y-36, data.size.W, 8);
+                gfx.fillStyle = 'red';
+                gfx.fillRect(pos.X, pos.Y-36, this._health.cur/this._health.max*data.size.W, 8);
+                gfx.restore();
             });
         
         go.name = name;

@@ -116,6 +116,9 @@ namespace WebClashServer.Editors
                 vitality.Value = current.stats.vitality;
             }
 
+            if (current.health != null)
+                health.Value = current.health.max;
+
             checkStatisticsEnabled();
 
             charSelect.SelectedItem = current.character;
@@ -280,6 +283,11 @@ namespace WebClashServer.Editors
         {
             current.stats.vitality = (int)vitality.Value;
         }
+
+        private void health_ValueChanged(object sender, EventArgs e)
+        {
+            current.health.cur = current.health.max = (int)health.Value;
+        }
     }
 
     public class NPC
@@ -321,6 +329,8 @@ namespace WebClashServer.Editors
         public string character = "player";
 
         public Stats stats = new Stats();
+
+        public Health health = new Health();
     }
 
     public class Stats
@@ -333,5 +343,11 @@ namespace WebClashServer.Editors
                    wisdom = 0,
                    intelligence = 0,
                    vitality = 0;
+    }
+
+    public class Health
+    {
+        public int cur = 100;
+        public int max = 100;
     }
 }

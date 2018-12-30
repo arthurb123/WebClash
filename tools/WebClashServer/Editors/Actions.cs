@@ -126,6 +126,8 @@ namespace WebClashServer.Editors
             toughness.Value = (decimal)current.scaling.toughness;
             vitality.Value = (decimal)current.scaling.vitality;
 
+            heal.Value = current.heal;
+
             canvas.Invalidate();
         }
 
@@ -198,15 +200,10 @@ namespace WebClashServer.Editors
                     {
                         Image img = GetClientImage(el.src);
 
-                        if (el.animates)
-                        {
-                            if (el.direction == "horizontal")
-                                g.DrawImage(img, r, elementFrames[el].frame * el.w, 0, el.w, el.h, GraphicsUnit.Pixel);
-                            else if (el.direction == "vertical")
-                                g.DrawImage(img, r, 0, elementFrames[el].frame * el.h, el.w, el.h, GraphicsUnit.Pixel);
-                        }
-                        else
-                            g.DrawImage(img, r);
+                        if (el.direction == "horizontal")
+                            g.DrawImage(img, r, elementFrames[el].frame * el.w, 0, el.w, el.h, GraphicsUnit.Pixel);
+                        else if (el.direction == "vertical")
+                            g.DrawImage(img, r, 0, elementFrames[el].frame * el.h, el.w, el.h, GraphicsUnit.Pixel);
                     }
 
                     g.DrawRectangle(Pens.Purple, r);
@@ -374,19 +371,6 @@ namespace WebClashServer.Editors
             else if (current.elements[curElement].direction == "vertical")
                 direction.SelectedItem = "Vertical";
 
-            animates.Checked = current.elements[curElement].animates;
-            animation.Enabled = current.elements[curElement].animates;
-
-            canvas.Invalidate();
-        }
-
-        private void animates_CheckedChanged(object sender, EventArgs e)
-        {
-            current.elements[curElement].animates = animates.Checked;
-            animationTimer.Enabled = animates.Checked;
-
-            animation.Enabled = current.elements[curElement].animates;
-
             canvas.Invalidate();
         }
 
@@ -430,9 +414,6 @@ namespace WebClashServer.Editors
 
             for (int i = 0; i < current.elements.Length; i++)
             {
-                if (!current.elements[i].animates)
-                    continue;
-
                 if (!elementFrames.ContainsKey(current.elements[i]))
                     elementFrames.Add(current.elements[i], new Frame());
 
@@ -489,6 +470,11 @@ namespace WebClashServer.Editors
         {
             current.scaling.vitality = float.Parse(vitality.Text, System.Globalization.NumberStyles.Any);
         }
+
+        private void heal_ValueChanged(object sender, EventArgs e)
+        {
+            current.heal = (int)heal.Value;
+        }
     }
 
     public class Action
@@ -542,6 +528,8 @@ namespace WebClashServer.Editors
         public Scaling scaling = new Scaling();
 
         public Element[] elements = new Element[0];
+
+        public int heal = 0;
     }
 
     public class Scaling
@@ -563,8 +551,6 @@ namespace WebClashServer.Editors
                    h = 64;
 
         public string src = "";
-
-        public bool animates = false;
 
         public int speed = 8;
         public string direction = "horizontal";
