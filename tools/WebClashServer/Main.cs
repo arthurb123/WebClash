@@ -257,5 +257,25 @@ namespace WebClashServer
 
             npcs.ShowDialog();
         }
+
+        private void actionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!CheckServerLocation())
+                return;
+
+            int amount = 0;
+
+            Actions actions = new Actions();
+            actions.VisibleChanged += (object s, EventArgs ea) =>
+            {
+                amount = actions.GetAmount();
+            };
+            actions.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                if (amount != actions.GetAmount())
+                    AddOutput("The amount of Actions has changed, changes will be visible after a server restart.");
+            };
+
+            actions.ShowDialog();
+        }
     }
 }

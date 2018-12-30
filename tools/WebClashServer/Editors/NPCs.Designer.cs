@@ -46,16 +46,35 @@
             this.movementFree = new System.Windows.Forms.RadioButton();
             this.movementStatic = new System.Windows.Forms.RadioButton();
             this.statistics = new System.Windows.Forms.GroupBox();
+            this.editActions = new System.Windows.Forms.Button();
             this.level = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
             this.typeFriendly = new System.Windows.Forms.RadioButton();
             this.typeHostile = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
+            this.vitality = new System.Windows.Forms.NumericUpDown();
+            this.label11 = new System.Windows.Forms.Label();
+            this.wisdom = new System.Windows.Forms.NumericUpDown();
+            this.label12 = new System.Windows.Forms.Label();
+            this.intelligence = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
+            this.toughness = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
+            this.agility = new System.Windows.Forms.NumericUpDown();
+            this.label9 = new System.Windows.Forms.Label();
+            this.power = new System.Windows.Forms.NumericUpDown();
+            this.label8 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.range)).BeginInit();
             this.statistics.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.level)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.vitality)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.wisdom)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.intelligence)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.toughness)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.agility)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.power)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -166,7 +185,7 @@
             this.save.AutoSize = true;
             this.save.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.save.LinkColor = System.Drawing.Color.Blue;
-            this.save.Location = new System.Drawing.Point(360, 417);
+            this.save.Location = new System.Drawing.Point(360, 420);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(32, 13);
             this.save.TabIndex = 7;
@@ -243,16 +262,38 @@
             // 
             // statistics
             // 
+            this.statistics.Controls.Add(this.vitality);
+            this.statistics.Controls.Add(this.label11);
+            this.statistics.Controls.Add(this.wisdom);
+            this.statistics.Controls.Add(this.label12);
+            this.statistics.Controls.Add(this.intelligence);
+            this.statistics.Controls.Add(this.label13);
+            this.statistics.Controls.Add(this.toughness);
+            this.statistics.Controls.Add(this.label10);
+            this.statistics.Controls.Add(this.agility);
+            this.statistics.Controls.Add(this.label9);
+            this.statistics.Controls.Add(this.power);
+            this.statistics.Controls.Add(this.label8);
+            this.statistics.Controls.Add(this.editActions);
             this.statistics.Controls.Add(this.level);
             this.statistics.Controls.Add(this.label5);
             this.statistics.Enabled = false;
             this.statistics.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statistics.Location = new System.Drawing.Point(15, 249);
             this.statistics.Name = "statistics";
-            this.statistics.Size = new System.Drawing.Size(373, 154);
+            this.statistics.Size = new System.Drawing.Size(373, 164);
             this.statistics.TabIndex = 9;
             this.statistics.TabStop = false;
             this.statistics.Text = "Statistics";
+            // 
+            // editActions
+            // 
+            this.editActions.Location = new System.Drawing.Point(13, 134);
+            this.editActions.Name = "editActions";
+            this.editActions.Size = new System.Drawing.Size(344, 23);
+            this.editActions.TabIndex = 2;
+            this.editActions.Text = "Edit Actions";
+            this.editActions.UseVisualStyleBackColor = true;
             // 
             // level
             // 
@@ -320,6 +361,114 @@
             this.label6.TabIndex = 10;
             this.label6.Text = "NPC Type";
             // 
+            // vitality
+            // 
+            this.vitality.Location = new System.Drawing.Point(243, 104);
+            this.vitality.Name = "vitality";
+            this.vitality.Size = new System.Drawing.Size(61, 21);
+            this.vitality.TabIndex = 23;
+            this.vitality.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.vitality.ValueChanged += new System.EventHandler(this.vitality_ValueChanged);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(189, 106);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(41, 15);
+            this.label11.TabIndex = 22;
+            this.label11.Text = "Vitality";
+            // 
+            // wisdom
+            // 
+            this.wisdom.Location = new System.Drawing.Point(243, 80);
+            this.wisdom.Name = "wisdom";
+            this.wisdom.Size = new System.Drawing.Size(61, 21);
+            this.wisdom.TabIndex = 21;
+            this.wisdom.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.wisdom.ValueChanged += new System.EventHandler(this.wisdom_ValueChanged);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(189, 82);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(52, 15);
+            this.label12.TabIndex = 20;
+            this.label12.Text = "Wisdom";
+            // 
+            // intelligence
+            // 
+            this.intelligence.Location = new System.Drawing.Point(243, 55);
+            this.intelligence.Name = "intelligence";
+            this.intelligence.Size = new System.Drawing.Size(61, 21);
+            this.intelligence.TabIndex = 19;
+            this.intelligence.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.intelligence.ValueChanged += new System.EventHandler(this.intelligence_ValueChanged);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(189, 57);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(46, 15);
+            this.label13.TabIndex = 18;
+            this.label13.Text = "Intellig.";
+            // 
+            // toughness
+            // 
+            this.toughness.Location = new System.Drawing.Point(121, 104);
+            this.toughness.Name = "toughness";
+            this.toughness.Size = new System.Drawing.Size(61, 21);
+            this.toughness.TabIndex = 17;
+            this.toughness.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.toughness.ValueChanged += new System.EventHandler(this.toughness_ValueChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(72, 106);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(45, 15);
+            this.label10.TabIndex = 16;
+            this.label10.Text = "Tough.";
+            // 
+            // agility
+            // 
+            this.agility.Location = new System.Drawing.Point(121, 80);
+            this.agility.Name = "agility";
+            this.agility.Size = new System.Drawing.Size(61, 21);
+            this.agility.TabIndex = 15;
+            this.agility.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.agility.ValueChanged += new System.EventHandler(this.agility_ValueChanged);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(72, 82);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(38, 15);
+            this.label9.TabIndex = 14;
+            this.label9.Text = "Agility";
+            // 
+            // power
+            // 
+            this.power.Location = new System.Drawing.Point(121, 55);
+            this.power.Name = "power";
+            this.power.Size = new System.Drawing.Size(61, 21);
+            this.power.TabIndex = 13;
+            this.power.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.power.ValueChanged += new System.EventHandler(this.power_ValueChanged);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(72, 57);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(42, 15);
+            this.label8.TabIndex = 12;
+            this.label8.Text = "Power";
+            // 
             // NPCs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -349,6 +498,12 @@
             this.statistics.ResumeLayout(false);
             this.statistics.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.level)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.vitality)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.wisdom)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.intelligence)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.toughness)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.agility)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.power)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -378,5 +533,18 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.NumericUpDown level;
+        private System.Windows.Forms.Button editActions;
+        private System.Windows.Forms.NumericUpDown vitality;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.NumericUpDown wisdom;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.NumericUpDown intelligence;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.NumericUpDown toughness;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.NumericUpDown agility;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.NumericUpDown power;
+        private System.Windows.Forms.Label label8;
     }
 }

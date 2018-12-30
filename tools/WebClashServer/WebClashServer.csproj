@@ -54,6 +54,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Editors\Actions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\Actions.Designer.cs">
+      <DependentUpon>Actions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Editors\NPCs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -80,6 +86,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Editors\Actions.resx">
+      <DependentUpon>Actions.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Editors\NPCs.resx">
       <DependentUpon>NPCs.cs</DependentUpon>
     </EmbeddedResource>

@@ -107,6 +107,13 @@ namespace WebClashServer.Editors
             if (current.stats != null)
             {
                 level.Value = current.stats.level;
+
+                power.Value = current.stats.power;
+                agility.Value = current.stats.agility;
+                intelligence.Value = current.stats.intelligence;
+                wisdom.Value = current.stats.wisdom;
+                toughness.Value = current.stats.toughness;
+                vitality.Value = current.stats.vitality;
             }
 
             checkStatisticsEnabled();
@@ -243,6 +250,36 @@ namespace WebClashServer.Editors
         {
             current.stats.level = (int)level.Value;
         }
+
+        private void power_ValueChanged(object sender, EventArgs e)
+        {
+            current.stats.power = (int)power.Value;
+        }
+
+        private void agility_ValueChanged(object sender, EventArgs e)
+        {
+            current.stats.agility = (int)agility.Value;
+        }
+
+        private void toughness_ValueChanged(object sender, EventArgs e)
+        {
+            current.stats.toughness = (int)toughness.Value;
+        }
+
+        private void intelligence_ValueChanged(object sender, EventArgs e)
+        {
+            current.stats.intelligence = (int)intelligence.Value;
+        }
+
+        private void wisdom_ValueChanged(object sender, EventArgs e)
+        {
+            current.stats.wisdom = (int)wisdom.Value;
+        }
+
+        private void vitality_ValueChanged(object sender, EventArgs e)
+        {
+            current.stats.vitality = (int)vitality.Value;
+        }
     }
 
     public class NPC
@@ -289,5 +326,12 @@ namespace WebClashServer.Editors
     public class Stats
     {
         public int level = 1;
+
+        public int power = 0,
+                   toughness = 0,
+                   agility = 0,
+                   wisdom = 0,
+                   intelligence = 0,
+                   vitality = 0;
     }
 }

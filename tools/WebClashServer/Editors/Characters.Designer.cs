@@ -52,6 +52,7 @@
             this.animation = new System.Windows.Forms.Timer(this.components);
             this.save = new System.Windows.Forms.LinkLabel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -65,7 +66,6 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.acceleration = new System.Windows.Forms.NumericUpDown();
-            this.label13 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).BeginInit();
@@ -357,6 +357,16 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Collider";
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Location = new System.Drawing.Point(248, 52);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(111, 12);
+            this.label13.TabIndex = 18;
+            this.label13.Text = "* NPCs don\'t use colliders";
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -550,16 +560,6 @@
             this.acceleration.TabIndex = 13;
             this.acceleration.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.acceleration.ValueChanged += new System.EventHandler(this.acceleration_ValueChanged);
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(248, 52);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(111, 12);
-            this.label13.TabIndex = 18;
-            this.label13.Text = "* NPCs don\'t use colliders";
             // 
             // Characters
             // 

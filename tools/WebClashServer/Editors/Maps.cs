@@ -145,7 +145,7 @@ namespace WebClashServer.Editors
 
         private void help_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("You can import maps created with Tiled (www.mapeditor.org) in the JSON format. The tilemaps must also have the used tilesets embedded into them.\n\nTileset images are imported automatically, as long as they have not been moved before importing the map.", "WebClash Server - Help");
+            MessageBox.Show("You can import maps created with Tiled (www.mapeditor.org) in the JSON format. The tilemaps must also have the used tilesets embedded into them.\n\nTileset images are often imported automatically. If the tileset could not be found it will have to be selected manually.", "WebClash Server - Help");
         }
 
         private void mapList_SelectedIndexChanged(object sender, EventArgs e)
@@ -178,19 +178,44 @@ namespace WebClashServer.Editors
                 foreach (Tileset ts in current.tilesets)
                     if (!CheckTileset(ts))
                     {
-                        Image temp;
+                        Image temp = null;
+                        int s = ts.image.LastIndexOf("/") + 1;
+                        string name = ts.image.Substring(s, ts.image.Length - s);
 
                         if (File.Exists(startLocation + ts.image))
                             temp = Image.FromFile(startLocation + ts.image);
                         else if (File.Exists(ts.image))
                             temp = Image.FromFile(ts.image);
-                        else continue;
+                        else
+                        {
+                            string result = string.Empty;
+
+                            OpenFileDialog ofd = new OpenFileDialog();
+                            ofd.Title = "Select tileset '" + name + "'";
+                            ofd.Filter = "Tileset (Image File)|*.png;*.jpg;*.jpeg;*.gif;*.bmp";
+
+                            if (ofd.ShowDialog() == DialogResult.OK)
+                                temp = Image.FromFile(ofd.FileName);
+                            else
+                            {
+                                MessageBox.Show("Tileset '" + name + "' could not be imported.", "WebClash Server - Error");
+
+                                continue;
+                            }
+                                
+                        }
+
+                        if (temp == null) {
+                            MessageBox.Show("Tileset '" + name + "' could not be imported.", "WebClash Server - Error");
+
+                            continue;
+                        }
 
                         string clientLocation = Program.main.location + "/../client/res/tilesets/";
 
-                        int s = ts.image.LastIndexOf("/") + 1;
+                        temp.Save(clientLocation + name);
 
-                        temp.Save(clientLocation + ts.image.Substring(s, ts.image.Length - s));
+                        temp.Dispose();
                     }
 
                 CheckTilesets();
