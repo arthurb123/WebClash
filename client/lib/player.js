@@ -10,6 +10,19 @@ const player = {
         go._moving = false;
         
         game.players.push(go.Show(3));  
+        
+        //Pretty temporary code
+        
+        lx.OnMouse(0, function(data) {
+            if (data.state == 0)
+                return;
+            
+            socket.emit('CLIENT_PLAYER_ACTION', 'Slash');
+            
+            lx.StopMouse(0);
+        });
+        
+        //Pretty temporary code
     },
     setCollider: function(collider) {
         game.players[game.player].ApplyCollider(

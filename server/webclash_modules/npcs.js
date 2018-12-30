@@ -240,29 +240,13 @@ exports.updateNPCMovement = function(map, id)
 
 exports.checkNPCFacingCollision = function(map, id)
 {
+    let pos = game.calculateFace(this.onMap[map][id].pos, tiled.maps[map].tilewidth, tiled.maps[map].tileheight, this.onMap[map][id].direction);
+    
     let rect = {
-        x: this.onMap[map][id].pos.X,
-        y: this.onMap[map][id].pos.Y,
+        x: pos.X,
+        y: pos.Y,
         w: tiled.maps[map].tilewidth,
         h: tiled.maps[map].tileheight
-    };
-    
-    //Get supposed pos based on direction
-    
-    switch (this.onMap[map][id].direction)
-    {
-        case 0:
-            rect.y += rect.h;
-            break;
-        case 1:
-            rect.x -= rect.w;
-            break;
-        case 2:
-            rect.x += rect.w;
-            break;
-        case 3:
-            rect.y -= rect.h;
-            break;
     };
     
     //Check if outside map

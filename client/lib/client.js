@@ -153,6 +153,58 @@ const client = {
                  game.npcs[data.id]._animation.cur = 0;
              }
         });
+        socket.on('GAME_ACTION_UPDATE', function (data) {
+            //Check if the recieved data is valid
+            
+             if (data === undefined)
+                 return;
+            
+             //Check if in-game
+            
+             if (!client.inGame)
+                 return;
+            
+             //Handle data
+
+             for (let i = 0; i < data.elements.length; i++)
+             {
+                 if (data.elements[i].src.length == 0)
+                     continue;
+                 
+                 let sprite = new lx.Sprite(data.elements[i].src);
+                 
+                 let sprites = [];
+                 
+                 if (data.elements[i].direction === 'horizontal')
+                     for (let x = 0; x < sprite.Size().W/data.elements[i].w; x++)
+                         sprites.push(new lx.Sprite(data.elements[i].src,
+                             x*data.elements[i].w, 
+                             0, 
+                             data.elements[i].w, 
+                             data.elements[i].h
+                         ));
+                 if (data.elements[i].direction === 'vertical')
+                     for (let y = 0; y < sprite.Size().H/data.elements[i].h; y++)
+                         sprites.push(new lx.Sprite(data.elements[i].src,
+                             0, 
+                             y*data.elements[i].h, 
+                             data.elements[i].w, 
+                             data.elements[i].h
+                         ));
+                 
+                 if (sprites.length == 0)
+                     return;
+                 
+                 new lx.Animation(sprites, data.elements[i].speed).Show(
+                     4, 
+                     data.pos.X+data.elements[i].x,
+                     data.pos.Y+data.elements[i].y,
+                     data.elements[i].w,
+                     data.elements[i].h,
+                     0
+                 );
+             }
+        });
         socket.on('GAME_CHAT_UPDATE', function (data) {
             ui.chat.addMessage(data);
         })

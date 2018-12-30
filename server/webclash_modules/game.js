@@ -190,3 +190,31 @@ exports.loadCharacter = function(location)
         output.give(err);
     }
 };
+
+exports.calculateFace = function(pos, width, height, direction)
+{
+    let point = {
+        X: pos.X,
+        Y: pos.Y
+    };
+    
+    //Get supposed pos based on direction
+    
+    switch (direction)
+    {
+        case 0:
+            point.Y += height;
+            break;
+        case 1:
+            point.X -= width;
+            break;
+        case 2:
+            point.X += width;
+            break;
+        case 3:
+            point.Y -= height;
+            break;
+    };
+    
+    return point;
+};

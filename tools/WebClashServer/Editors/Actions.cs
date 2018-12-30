@@ -534,6 +534,9 @@ namespace WebClashServer.Editors
             elements = temp.ToArray();
         }
 
+        public int sw = 320,
+                   sh = 320;
+
         public string name = "New Action";
 
         public Scaling scaling = new Scaling();

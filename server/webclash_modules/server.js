@@ -218,6 +218,27 @@ exports.handleSocket = function(socket)
         }
     });
     
+    socket.on('CLIENT_PLAYER_ACTION', function(data) {
+         //Pretty temporary code
+        
+         try 
+         {
+             if (socket.name === undefined)
+                 return;
+             
+             let id = game.getPlayerIndex(socket.name);
+             
+             if (id == -1)
+                 return;
+             
+             actions.createPlayerAction(data, id);
+         } 
+         catch (err)
+         {
+             output.give('Could not add player action: ' + err);
+         }
+    });
+    
     socket.on('CLIENT_REQUEST_MAP', function(data) {
         //Check if valid
         
@@ -431,6 +452,20 @@ exports.syncNPC = function(map, id, socket, broadcast)
         npcs.onMap[map][id].data.stats !== null)
         this.syncNPCPartially(map, id, 'stats', socket, broadcast);
 };
+
+//Sync whole action function, if socket is undefined it will be globally emitted
+
+exports.syncAction = function(data, socket, broadcast)
+{
+    if (socket === undefined) 
+        io.to(data.map).emit('GAME_ACTION_UPDATE', data);
+    else {
+        if (broadcast === undefined || !broadcast)
+            socket.emit('GAME_ACTION_UPDATE', data);
+        else
+            socket.broadcast.to(data.map).emit('GAME_ACTION_UPDATE', data);
+    }
+}
 
 //Get socket with name function
 
