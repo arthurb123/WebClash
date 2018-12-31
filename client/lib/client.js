@@ -122,7 +122,7 @@ const client = {
         socket.on('GAME_NPC_UPDATE', function (data) {
             //Check if the recieved data is valid
             
-             if (data === undefined || data.name === undefined)
+             if (data === undefined)
                  return;
             
              //Check if in-game
@@ -132,11 +132,13 @@ const client = {
             
              //Check if NPC exists, if not instantiate
             
-             if (game.npcs[data.id] === undefined)
+             if (game.npcs[data.id] === undefined && data.name !== undefined)
                  game.instantiateNPC(data.id, data.name);
             
              //Handle data
             
+             if (data.remove !== undefined)
+                 game.removeNPC(data.id);
              if (data.pos !== undefined)
                  game.npcs[data.id].POS = data.pos;
              if (data.type !== undefined)
@@ -148,7 +150,7 @@ const client = {
              if (data.stats !== undefined)
                  game.npcs[data.id]._stats = data.stats;
              if (data.health !== undefined)
-                 game.npcs[data.id]._health = data.health;
+                 game.setNPCHealth(data.id, data.health);
              if (data.character !== undefined) {
                  game.npcs[data.id].SPRITE = new lx.Sprite(data.character.src);
                  game.npcs[data.id].SPRITE.Clip(0, 0, data.character.width, data.character.height);

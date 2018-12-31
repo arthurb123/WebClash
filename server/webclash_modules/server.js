@@ -424,7 +424,10 @@ exports.syncNPCPartially = function(map, id, type, socket, broadcast)
     switch (type)
     {
         case 'position':
-            data.pos = npcs.onMap[map][id].pos;
+            data.pos = {
+                X: Math.round(npcs.onMap[map][id].pos.X),
+                Y: Math.round(npcs.onMap[map][id].pos.Y)
+            };
             break;
         case 'moving':
             data.moving = npcs.onMap[map][id].moving;
@@ -474,6 +477,25 @@ exports.syncNPC = function(map, id, socket, broadcast)
         this.syncNPCPartially(map, id, 'stats', socket, broadcast);
         
         this.syncNPCPartially(map, id, 'health', socket, broadcast);
+    }
+};
+
+//Remove NPC function, if socket is undefined it will be globally emitted
+
+exports.removeNPC = function(map, id, socket, broadcast)
+{
+    let data = {
+        id: id,
+        remove: true
+    };
+    
+    if (socket === undefined) 
+        io.to(map).emit('GAME_NPC_UPDATE', data);
+    else {
+        if (broadcast === undefined || !broadcast)
+            socket.emit('GAME_NPC_UPDATE', data);
+        else
+            socket.broadcast.to(map).emit('GAME_NPC_UPDATE', data);
     }
 };
 

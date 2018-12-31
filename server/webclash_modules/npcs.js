@@ -2,9 +2,14 @@
 
 const fs = require('fs');
 
-exports.onMap = [];
+//Respawn time in seconds
 
-exports.cache = [];
+exports.respawnTime = 10;
+
+//Properties
+
+exports.onMap = [];
+exports.onTimeOut = [];
 
 exports.sendMap = function(map, socket)
 {
@@ -86,10 +91,16 @@ exports.createNPCs = function(npc_property, map_id)
         //Setup NPC
         
         npc.id = this.onMap[map_id].length;
+        
         npc.pos = {
             X: npc_property.rectangles[i].x,
             Y: npc_property.rectangles[i].y
         };
+        npc.start_pos = {
+            X: npc_property.rectangles[i].x,
+            Y: npc_property.rectangles[i].y
+        };
+        
         npc.movement = {
             vel: {
                 x: 0,
@@ -110,27 +121,36 @@ exports.loadNPC = function(name)
 {
     try 
     {
-        if (this.cache[name] !== undefined)
-            return this.cache[name];
+        let location = 'npcs';
         
-        let location = 'npcs/' + name + '.json';
-        
-        let npc = JSON.parse(fs.readFileSync(location, 'utf-8'));
+        let npc = JSON.parse(fs.readFileSync(location + '/' + name + '.json', 'utf-8'));
         npc.character = game.characters[npc.character];
         
-        this.cache[name] = npc;
+        return npc;
     }
     catch(err)
     {
         output.give(err);
     }
-    
-    return this.cache[name];
-}
+};
 
 exports.updateNPC = function(map, id)
 {
     try {
+        //Check if NPC is on timeout
+        
+        if (this.isTimedOut(map, id)) {
+            this.onTimeOut[map][id]--;
+            
+            if (this.onTimeOut[map][id] <= 0) {
+                this.onTimeOut[map][id] = undefined;
+                
+                this.respawnNPC(map, id);
+            }
+            else 
+                return;
+        }
+        
         //Update NPC movement
 
         this.updateNPCMovement(map, id);
@@ -271,11 +291,38 @@ exports.damageNPC = function(map, id, delta)
     this.onMap[map][id].data.health.cur+=delta;
     
     if (this.onMap[map][id].data.health.cur <= 0)
-    {
         this.onMap[map][id].data.health.cur = 0;
-        
-        //Kill NPC
-    }
-    
+
     server.syncNPCPartially(map, id, 'health');
+    
+    if (this.onMap[map][id].data.health.cur == 0)
+        this.killNPC(map, id);
+    
+};
+
+exports.killNPC = function(map, id)
+{
+    if (this.onTimeOut[map] === undefined)
+        this.onTimeOut[map] = [];
+    
+    this.onTimeOut[map][id] = this.respawnTime*60;
+    
+    server.removeNPC(map, id);
+};
+
+exports.respawnNPC = function(map, id)
+{
+    this.onMap[map][id].pos = this.onMap[map][id].start_pos;
+    
+    this.onMap[map][id].data.health.cur = this.onMap[map][id].data.health.max;
+    
+    server.syncNPC(map, id);
+};
+
+exports.isTimedOut = function(map, id)
+{
+    if (this.onTimeOut[map] !== undefined && this.onTimeOut[map][id] !== undefined)
+        return true;
+    
+    return false;
 };

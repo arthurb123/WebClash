@@ -131,19 +131,61 @@ const game = {
         
         this.npcs[id] = go.Show(2);
     },
+    setNPCHealth: function(id, health)
+    {
+        if (this.npcs[id]._health !== undefined)
+        {
+            let delta = this.npcs[id]._health.cur-health.cur;
+            
+            //Floaty text
+            
+            //Blood particles
+            
+            let count = delta;
+            if (count > 10)
+                count = 10;
+            
+            for (let i = 0; i < count; i++) {
+                let size = 4+Math.round(Math.random()*4);
+                
+                let blood = new lx.GameObject(
+                    new lx.Sprite('res/particles/blood.png'),
+                    this.npcs[id].POS.X+this.npcs[id].SIZE.W/2,
+                    this.npcs[id].POS.Y+this.npcs[id].SIZE.H/2,
+                    size,
+                    size
+                );
+                
+                blood.MaxVelocity(3);
+                blood.AddVelocity(Math.round(Math.random()*-3+Math.random()*3), Math.round(Math.random()*-3+Math.random()*3));
+                
+                blood.Loops(function() {
+                    if (blood.Movement().VX == 0 && blood.Movement().VY == 0)
+                        blood.Hide();
+                });
+                
+                blood.Show(1+Math.round(Math.random()));
+            }
+        }
+        
+        this.npcs[id]._health = health;
+    },
+    removeNPC: function(id) {
+        this.npcs[id].Hide();
+        this.npcs[id]._nameplate.Hide();    
+        
+        this.npcs[id] = undefined;
+    },
     resetNPCs: function() {
         //Cycle through all NPCs and hide them
         
-        this.npcs.forEach(function(npc) {
-            npc.Hide();
-            npc._nameplate.Hide();
-        });
+        for (let i = 0; i < this.npcs.length; i++)
+            this.removeNPC(i);
         
         //Reset NPCs array
         
         this.npcs = [];
     },
-    
     resetColliders: function() {
         if (this.players === undefined || 
             this.player === undefined ||

@@ -1,8 +1,8 @@
 {
   "map": "map1",
   "pos": {
-    "X": 60,
-    "Y": -91
+    "X": 65,
+    "Y": 381
   },
   "moving": false,
   "direction": 0,

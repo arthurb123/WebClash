@@ -77,8 +77,9 @@ exports.damageNPCs = function(stats, actionData, action)
 {
     for (let e = 0; e < actionData.elements.length; e++)
         for (let n = 0; n < npcs.onMap[actionData.map].length; n++)
-        {
-            if (npcs.onMap[actionData.map][n].data.type !== 'hostile')
+        {   
+            if (npcs.onMap[actionData.map][n].data.type !== 'hostile' ||
+                npcs.isTimedOut(actionData.map, n))
                 continue;
 
             let actionRect = {
@@ -95,7 +96,7 @@ exports.damageNPCs = function(stats, actionData, action)
                 h: npcs.onMap[actionData.map][n].data.character.height
             };
 
-            if (tiled.checkRectangularCollision(actionRect, npcRect))
+            if (tiled.checkRectangularCollision(actionRect, npcRect)) 
                 npcs.damageNPC(actionData.map, n, this.calculateDamage(stats, action.scaling));
         }
 };
