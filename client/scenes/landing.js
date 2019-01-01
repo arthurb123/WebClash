@@ -21,11 +21,13 @@ const landingScene = new lx.Scene(function() {
         
     view.dom.innerHTML = 
         '<div id="sceneWindow" class="box" style="text-align: center; position: absolute; top: 50%; left: 50%; width: 180px; height: 220px; margin-left: -96px; margin-top: -110px;">' +
-            '<p id="windowTitle" class="header">Login</p><br>' +
-            '<p>Username</p>' +
-            '<input id="windowName" maxlength="16" type="text" style="width: 95%;"></input><br>' +
-            '<p>Password</p>' +
-            '<input id="windowPassword" type="password" style="width: 95%;"></input><br>' +
+            '<form>' +
+                '<p id="windowTitle" class="header">Login</p><br>' +
+                '<p>Username</p>' +
+                '<input id="windowName" autocomplete="username" maxlength="16" type="text" style="width: 95%;"></input><br>' +
+                '<p>Password</p>' +
+                '<input id="windowPassword" autocomplete="current-password" type="password" style="width: 95%;"></input><br>' +
+            '</form>' +
             '<p id="windowErrorText" style="margin: 10px; height: 20px; color: red; font-size: 11px;"></p>' +
         '</div>';
 

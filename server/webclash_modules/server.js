@@ -124,29 +124,9 @@ exports.handleSocket = function(socket)
         
         databases.accounts(data.name).set('pass', data.pass);
         
-        //Insert default stats
+        //Insert and save default stats
         
-        databases.stats(data.name).set('map', tiled.maps[0].name);
-        databases.stats(data.name).set('pos', { X: 0, Y: 0 });
-        databases.stats(data.name).set('moving', false);
-        databases.stats(data.name).set('direction', 0);
-        databases.stats(data.name).set('char_name', 'player');
-        databases.stats(data.name).set('health', {
-            cur: 100,
-            max: 100
-        });
-        databases.stats(data.name).set('level', 1);
-        databases.stats(data.name).set('stats', {
-            exp: 0,
-            attributes: {
-                power: 1,
-                toughness: 1,
-                vitality: 1,
-                agility: 1,
-                intelligence: 1,
-                wisdom: 1
-            }
-        });
+        game.savePlayer(data.name);
 
         //Save databases
         

@@ -26,30 +26,35 @@ exports.addPlayer = function(socket)
     if (socket.name == undefined)
         return;
     
-    //Grab player stats
+    //Grab player stats and continue
     
-    let player = databases.stats(socket.name).object();
-    player.name = socket.name;
-    player.character = this.characters[player.char_name];
-    
-    //Add player
+    fs.readFile('data/stats/' + socket.name + '.json', 'utf-8', function(err, player) {
+        if (err)
+            return;
+        
+        player = JSON.parse(player);
+        player.name = socket.name;
+        player.character = game.characters[player.char_name];
 
-    let id = this.players.length;
-    this.players[id] = player;
-    
-    //Load current world
-    
-    this.loadMap(socket, player.map); 
-    
-    //Sync across server
-    
-    server.syncPlayer(id, socket, true);
-    
-    //Sync to player
-    
-    server.syncPlayer(id, socket, false);
-    server.syncPlayerPartially(id, 'stats', socket, false);
-    server.syncPlayerPartially(id, 'health', socket, false);
+        //Add player
+
+        let id = game.players.length;
+        game.players[id] = player;
+
+        //Load current world
+
+        game.loadMap(socket, player.map); 
+
+        //Sync across server
+
+        server.syncPlayer(id, socket, true);
+
+        //Sync to player
+
+        server.syncPlayer(id, socket, false);
+        server.syncPlayerPartially(id, 'stats', socket, false);
+        server.syncPlayerPartially(id, 'health', socket, false); 
+    });
 };
 
 exports.removePlayer = function(socket)
@@ -63,13 +68,58 @@ exports.removePlayer = function(socket)
     
     for (let i = 0; i < this.players.length; i++)
         if (this.players[i].name == socket.name) {
+            //Remove from clients
+            
             server.removePlayer(i, socket);
+            
+            //Save player
+            
+            this.savePlayer(socket.name, this.players[i]);
+            
+            //Remove player entry
             
             this.players.splice(i, 1);
             
             break;
         }
 };
+
+exports.savePlayer = function(name, data)
+{
+    let player = data;
+    
+    if (player === undefined)
+        player = {
+            char_name: 'player',
+            map: tiled.maps[0].name,
+            pos: { X: 0, Y: 0 },
+            moving: false,
+            direction: 0,
+            health: { cur: 100, max: 100 },
+            level: 1,
+            stats: {
+                exp: 0,
+                attributes: {
+                    power: 1,
+                    toughness: 1,
+                    vitality: 1,
+                    agility: 1,
+                    intelligence: 1,
+                    wisdom: 1
+                }
+            }
+        };
+    
+    
+    databases.stats(name).set('map', player.map);
+    databases.stats(name).set('pos', player.pos);
+    databases.stats(name).set('moving', player.moving);
+    databases.stats(name).set('direction', player.direction);
+    databases.stats(name).set('char_name', player.char_name);
+    databases.stats(name).set('health', player.health);
+    databases.stats(name).set('level', player.level);
+    databases.stats(name).set('stats', player.stats);
+}
 
 exports.getPlayerIndex = function(name)
 {

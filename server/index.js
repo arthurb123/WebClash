@@ -66,6 +66,12 @@ function exitHandler() {
     
     output.give('Shutting down server..');
     
+    //Save all players
+    
+    game.players.forEach(function(player) {
+        game.savePlayer(player.name, player); 
+    });
+    
     //Save database
     
     databases.accounts.save();
