@@ -1,6 +1,8 @@
 const ui = {
     initialize: function() {
         this.chat.create();  
+        
+        lx.Loops(this.floaties.update);
     },
     chat: {
         create: function() {
@@ -74,5 +76,52 @@ const ui = {
             
             return false;
         }
-    }  
+    },
+    floaties: {
+        buffer: [],
+        add: function(uitext, duration)
+        {
+            this.buffer.push({
+                uitext: uitext.Show(),
+                movement: {
+                    x: 0,
+                    y: -.35,
+                    dy: .05
+                },
+                cur: duration
+            });
+        },
+        update: function()
+        {
+            for (let i = 0; i < ui.floaties.buffer.length; i++)
+            {
+                ui.floaties.buffer[i].uitext.Position().X += ui.floaties.buffer[i].movement.x;
+                ui.floaties.buffer[i].uitext.Position().Y += ui.floaties.buffer[i].movement.y;
+                
+                ui.floaties.buffer[i].cur--;
+                ui.floaties.buffer[i].movement.y += ui.floaties.buffer[i].movement.dy;
+                
+                if (ui.floaties.buffer[i].cur <= 0) 
+                {
+                    ui.floaties.buffer[i].uitext.Hide();
+                    
+                    ui.floaties.buffer.splice(i, 1);
+                }
+            }
+        },
+        damageFloaty: function(target, delta)
+        {
+            let t = new lx.UIText(
+                -delta,
+                Math.random()*target.Size().W,
+                Math.random()*target.Size().H,
+                14,
+                'red'
+            );
+            
+            t.Follows(target);
+            
+            this.add(t, 30);
+        }
+    }
 };

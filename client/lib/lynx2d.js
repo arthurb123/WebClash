@@ -1763,6 +1763,11 @@ function Lynx2D() {
             lx.CONTEXT.GRAPHICS.fillStyle = this.COLOR;
             lx.CONTEXT.GRAPHICS.textAlign = this.ALIGN;
             
+            if (this.SHADOW) {
+                lx.CONTEXT.GRAPHICS.shadowColor = 'rgba(0,0,0,0.5)';
+                lx.CONTEXT.GRAPHICS.shadowOffsetY = 1;
+            }
+            
             if (this.TARGET != undefined) {
                 if (lx.GAME.FOCUS != undefined) {
                     var POS = lx.GAME.TRANSLATE_FROM_FOCUS({ X: this.TARGET.POS.X+this.POS.X, Y: this.TARGET.POS.Y+this.POS.Y });
@@ -1973,8 +1978,30 @@ function Lynx2D() {
         };
         
         this.RENDER = function() {
-            if (this.TARGET != undefined) this.SPRITE.RENDER(lx.GAME.TRANSLATE_FROM_FOCUS({ X: this.TARGET.POS.X+this.POS.X, Y: this.TARGET.POS.Y+this.POS.Y }), this.SIZE);
-            else this.SPRITE.RENDER(this.POS, this.SIZE);
+            if (this.TARGET != undefined) {
+                let POS = lx.GAME.TRANSLATE_FROM_FOCUS({ X: this.TARGET.POS.X+this.POS.X, Y: this.TARGET.POS.Y+this.POS.Y })
+                
+                if (typeof this.SPRITE === 'string')
+                {
+                    lx.CONTEXT.GRAPHICS.save();
+                    lx.CONTEXT.GRAPHICS.fillStyle = this.SPRITE;
+                    lx.CONTEXT.GRAPHICS.fillRect(POS.X, POS.Y, this.SIZE.W, this.SIZE.H);
+                    lx.CONTEXT.GRAPHICS.restore();
+                }
+                else
+                    this.SPRITE.RENDER(POS, this.SIZE);
+            }
+            else {
+                if (typeof this.SPRITE === 'string')
+                {
+                    lx.CONTEXT.GRAPHICS.save();
+                    lx.CONTEXT.GRAPHICS.fillStyle = this.SPRITE;
+                    lx.CONTEXT.GRAPHICS.fillRect(this.POS.X, this.POS.Y, this.SIZE.W, this.SIZE.H);
+                    lx.CONTEXT.GRAPHICS.restore();
+                }
+                else
+                    this.SPRITE.RENDER(this.POS, this.SIZE);
+            }
         };
         
         this.UPDATE = function() {

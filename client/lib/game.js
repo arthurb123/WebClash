@@ -43,6 +43,8 @@ const game = {
             .Follows(go)
             .Show();
         
+        go._nameplate.SHADOW = true;
+        
         this.players.push(go.Show(2));  
     },
     removePlayer: function(id) {
@@ -105,19 +107,27 @@ const game = {
                 
                 if (this._stats !== undefined)
                     this._nameplate.Text('lvl ' + this._stats.level + ' - ' + this.name);
-            })
-            .Draws(function(data) {
-                if (this._health === undefined || this._health.cur == this._health.max)
-                    return;
                 
-                let gfx = data.graphics,
-                    pos = lx.GAME.TRANSLATE_FROM_FOCUS(data.position);
-                
-                gfx.save();
-                gfx.fillRect(pos.X, pos.Y-36, data.size.W, 8);
-                gfx.fillStyle = 'red';
-                gfx.fillRect(pos.X, pos.Y-36, this._health.cur/this._health.max*data.size.W, 8);
-                gfx.restore();
+                if (this._health !== undefined)
+                {    
+                    if (this._healthbar === undefined) {
+                        this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W, 8).Follows(go);
+                        this._healthbar = new lx.UITexture('red', 0, -36, this._health.cur/this._health.max*this.SIZE.W, 8).Follows(go);
+                    } else {
+                        this._healthbar.SIZE.W = this._health.cur/this._health.max*this.SIZE.W;
+                    
+                        if (this._health.cur == this._health.max)
+                        {
+                            this._healthbarBack.Hide();
+                            this._healthbar.Hide();
+                        } 
+                        else 
+                        {
+                            this._healthbarBack.Show();
+                            this._healthbar.Show();
+                        }
+                    }
+                }
             });
         
         go.name = name;
@@ -129,6 +139,8 @@ const game = {
             .Follows(go)
             .Show();
         
+        go._nameplate.SHADOW = true;
+        
         this.npcs[id] = go.Show(2);
     },
     setNPCHealth: function(id, health)
@@ -138,6 +150,8 @@ const game = {
             let delta = this.npcs[id]._health.cur-health.cur;
             
             //Floaty text
+            
+            ui.floaties.damageFloaty(this.npcs[id], delta);
             
             //Blood particles
             
@@ -171,8 +185,17 @@ const game = {
         this.npcs[id]._health = health;
     },
     removeNPC: function(id) {
+        if (this.npcs[id] === undefined)
+            return;
+        
         this.npcs[id].Hide();
-        this.npcs[id]._nameplate.Hide();    
+        this.npcs[id]._nameplate.Hide();   
+        
+        if (this.npcs[id]._healthbar !== undefined)
+        {
+            this.npcs[id]._healthbarBack.Hide();
+            this.npcs[id]._healthbar.Hide();
+        }
         
         this.npcs[id] = undefined;
     },
