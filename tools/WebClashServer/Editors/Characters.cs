@@ -176,7 +176,7 @@ namespace WebClashServer.Editors
 
         private void height_ValueChanged(object sender, EventArgs e)
         {
-            current.width = (int)height.Value;
+            current.height = (int)height.Value;
 
             canvas.Invalidate();
         }

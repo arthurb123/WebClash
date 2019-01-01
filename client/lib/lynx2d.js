@@ -1070,7 +1070,7 @@ function Lynx2D() {
         };
         
         this.Hide = function() {
-            if (this.BUFFER_ID == -1) return;
+            if (this.BUFFER_ID == -1 || lx.GAME.BUFFER[this.BUFFER_LAYER] === undefined) return;
             
             lx.GAME.BUFFER[this.BUFFER_LAYER][this.BUFFER_ID] = undefined;
             this.BUFFER_ID = -1;

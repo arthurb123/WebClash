@@ -31,13 +31,35 @@ exports.createPlayerAction = function(name, id)
             game.players[id].direction
         ),
         map: tiled.getMapIndex(game.players[id].map),
-        elements: this.collection[a_id].elements
+        elements: JSON.parse(JSON.stringify(this.collection[a_id].elements))
     };
+    
+    if (game.players[id].direction == 1 ||
+        game.players[id].direction == 2)
+         for (let e = 0; e < actionData.elements.length; e++) {
+             let x = actionData.elements[e].x;
+             
+             actionData.elements[e].x = actionData.elements[e].y;
+             actionData.elements[e].y = x+game.players[id].character.height;
+             
+             if (game.players[id].direction == 1)
+                 actionData.elements[e].x = this.collection[a_id].sw-actionData.elements[e].x;
+             else 
+                 actionData.elements[e].x -= game.players[id].character.width;
+         }
+    
+    if (game.players[id].direction == 3)
+        for (let e = 0; e < actionData.elements.length; e++) {
+             actionData.elements[e].y = this.collection[a_id].sh-(actionData.elements[e].y-game.players[id].character.height);
+         }
     
     actionData.pos.X+=game.players[id].character.width/2-this.collection[a_id].sw/2;
     actionData.pos.Y+=-this.collection[a_id].sh/2-game.players[id].character.height/2;
     
     this.damageNPCs(game.players[id].stats.attributes, actionData, this.collection[a_id]);
+    
+    if (this.collection[a_id].heal > 0)
+        this.healPlayers(actionData, this.collection[a_id].heal);
     
     server.syncAction(actionData);
 };
@@ -101,6 +123,40 @@ exports.damageNPCs = function(stats, actionData, action)
         }
 };
 
+exports.healPlayers = function(actionData, action)
+{
+    for (let e = 0; e < actionData.elements.length; e++)
+        for (let p = 0; p < game.players.length; p++)
+        {
+            if (tiled.getMapIndex(game.players[p].map) != actionData.map)
+                continue;
+            
+            let actionRect = {
+                x: actionData.pos.X+actionData.elements[e].x,
+                y: actionData.pos.Y+actionData.elements[e].y,
+                w: actionData.elements[e].w,
+                h: actionData.elements[e].h
+            };
+            
+            let playerRect = {
+                x: game.players[p].pos.X,
+                y: game.players[p].pos.Y,
+                w: game.players[p].character.width,
+                h: game.players[p].character.height
+            };
+            
+            if (tiled.checkRectangularCollision(actionRect, playerRect)) 
+            {
+                game.players[p].health.cur += action.heal;
+                
+                if (game.players[p].health.cur >= game.players[p].health.max)
+                    game.players[p].health.cur = game.players[p].health.max;
+                
+                server.syncPlayerPartially(p, 'health');
+            }
+        }
+};
+
 exports.calculateDamage = function(stats, scaling)
 {
     let total = 0;
@@ -112,6 +168,6 @@ exports.calculateDamage = function(stats, scaling)
     total += 10*stats.toughness*scaling.toughness;
     total += 10*stats.vitality*scaling.vitality;
     
-    return -total;
+    return -Math.round(Math.random()*total);
     
 };

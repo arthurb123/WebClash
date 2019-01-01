@@ -47,7 +47,55 @@ const game = {
         
         this.players.push(go.Show(2));  
     },
-    removePlayer: function(id) {
+    setPlayerHealth: function(id, health) {
+        if (this.players[id]._health !== undefined) {
+            let delta = -(this.players[id]._health.cur-health.cur);
+            
+            if (delta > 0) {
+                //Heal floaty
+                
+                ui.floaties.healFloaty(this.players[id], delta);
+                
+                return;
+            }
+            
+            //Damage floaty
+            
+            ui.floaties.damageFloaty(this.players[id], delta);
+            
+            //Blood particles
+            
+            let count = -delta;
+            if (count > 10)
+                count = 10;
+            
+            for (let i = 0; i < count; i++) {
+                let size = 4+Math.round(Math.random()*4);
+                
+                let blood = new lx.GameObject(
+                    new lx.Sprite('res/particles/blood.png'),
+                    this.players[id].POS.X+this.players[id].SIZE.W/2,
+                    this.players[id].POS.Y+this.players[id].SIZE.H/2,
+                    size,
+                    size
+                );
+                
+                blood.MaxVelocity(3);
+                blood.AddVelocity(Math.round(Math.random()*-3+Math.random()*3), Math.round(Math.random()*-3+Math.random()*3));
+                
+                blood.Loops(function() {
+                    if (blood.Movement().VX == 0 && blood.Movement().VY == 0)
+                        blood.Hide();
+                });
+                
+                blood.Show(1+Math.round(Math.random()));
+            }
+        }
+        
+        this.players[id]._health = health;
+    },
+    removePlayer: function(id) 
+    {
         //Check if valid
         
         if (id === undefined || this.players[id] === undefined || this.player == id)
@@ -143,19 +191,26 @@ const game = {
         
         this.npcs[id] = go.Show(2);
     },
-    setNPCHealth: function(id, health)
-    {
+    setNPCHealth: function(id, health) {
         if (this.npcs[id]._health !== undefined)
         {
-            let delta = this.npcs[id]._health.cur-health.cur;
+            let delta = -(this.npcs[id]._health.cur-health.cur);
             
-            //Floaty text
+            if (delta > 0) {
+                //Heal floaty
+                
+                ui.floaties.healFloaty(this.npcs[id], delta);
+                
+                return;
+            }
+            
+            //Damage floaty
             
             ui.floaties.damageFloaty(this.npcs[id], delta);
             
             //Blood particles
             
-            let count = delta;
+            let count = -delta;
             if (count > 10)
                 count = 10;
             

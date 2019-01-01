@@ -112,11 +112,25 @@ const ui = {
         damageFloaty: function(target, delta)
         {
             let t = new lx.UIText(
-                -delta,
+                delta,
                 Math.random()*target.Size().W,
                 Math.random()*target.Size().H,
                 14,
                 'red'
+            );
+            
+            t.Follows(target);
+            
+            this.add(t, 30);
+        },
+        healFloaty: function(target, delta)
+        {
+            let t = new lx.UIText(
+                delta,
+                Math.random()*target.Size().W,
+                Math.random()*target.Size().H,
+                14,
+                'green'
             );
             
             t.Follows(target);

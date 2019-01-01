@@ -1,1 +1,1 @@
-{"sw":320,"sh":320,"name":"Slash","scaling":{"power":0.1,"agility":0.0,"intelligence":0.0,"wisdom":0.0,"toughness":0.0,"vitality":0.0},"elements":[{"x":129,"y":197,"w":64,"h":64,"src":"res/actions/slash.png","speed":3,"direction":"vertical"}],"heal":0}
+{"sw":320,"sh":320,"name":"Slash","scaling":{"power":0.1,"agility":0.0,"intelligence":0.0,"wisdom":0.0,"toughness":0.0,"vitality":0.0},"elements":[{"x":127,"y":203,"w":64,"h":64,"src":"res/actions/slash.png","speed":3,"direction":"vertical"}],"heal":0}

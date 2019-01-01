@@ -87,7 +87,7 @@ const client = {
              if (data.stats !== undefined)
                  game.players[id]._stats = data.stats;
              if (data.health !== undefined)
-                 game.players[id]._health = data.health;
+                 game.setPlayerHealth(id, data.health);
              if (data.character !== undefined) {
                  game.players[id].SPRITE = new lx.Sprite(data.character.src);
                  game.players[id].SPRITE.Clip(0, 0, data.character.width, data.character.height);

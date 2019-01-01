@@ -19,9 +19,12 @@ exports.sendMap = function(map, socket)
         return;
     
     //Cycle through all NPCs and send to socket
+    //if the NPC is not on timeout
     
     for (let i = 0; i < this.onMap[map].length; i++)
-        server.syncNPC(map, i, socket, false);
+        if (this.onTimeOut[map] === undefined ||
+            this.onTimeOut[map][i] === undefined) 
+            server.syncNPC(map, i, socket, false);
 }
 
 exports.loadMap = function(map)
