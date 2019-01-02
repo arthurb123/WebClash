@@ -6,9 +6,10 @@ exports.handleSocket = function(socket)
     if (socket.playing == undefined || !socket.playing)
         socket.emit('REQUEST_LANDING');
     
-    //Send client name
+    //Send client and server name
     
     socket.emit('UPDATE_CLIENT_NAME', properties.clientName);
+    socket.emit('UPDATE_SERVER_NAME', properties.serverName);
     
     //Disconnect event listener
     
@@ -34,60 +35,58 @@ exports.handleSocket = function(socket)
         
         //Grab entry with username
         
-        let pass = databases.accounts(data.name).get('pass', undefined);
+        storage.load('accounts', data.name, function(player) {
+            if (player === undefined)
+            {
+                callback('none');
+                return;
+            }
+            
+            //Check if password matches
         
-        //Check if username exists
-        
-        if (pass === undefined)
-        {
-            callback('none');
-            return;
-        }
-        
-        //Check if password matches
-        
-        if (pass != data.pass)
-        {
-            callback('wrong');
-            return;
-        }
-        
-        //Check if there is place available
-        
-        if (properties.maxPlayers != 0 &&
-            game.players.length >= properties.maxPlayers)
-        {
-            callback('full');
-            return;
-        }
-        
-        //Check if banned
-        
-        if (permissions.banned.indexOf(data.name) != -1)
-        {
-            callback('banned');
-            return;
-        }
-        
-        //Check if already logged in
-        
-        if (game.getPlayerIndex(data.name) != -1)
-        {
-            callback('loggedin');
-            return;
-        }
-        
-        //Output
-        
-        output.give('User \'' + data.name + '\' has logged in.');
-        
-        //Set variables
-        
-        socket.name = data.name;
-        
-        //Request game page
-        
-        socket.emit('REQUEST_GAME');
+            if (player.pass != data.pass)
+            {
+                callback('wrong');
+                return;
+            }
+
+            //Check if there is place available
+
+            if (properties.maxPlayers != 0 &&
+                game.players.length >= properties.maxPlayers)
+            {
+                callback('full');
+                return;
+            }
+
+            //Check if banned
+
+            if (permissions.banned.indexOf(data.name) != -1)
+            {
+                callback('banned');
+                return;
+            }
+
+            //Check if already logged in
+
+            if (game.getPlayerIndex(data.name) != -1)
+            {
+                callback('loggedin');
+                return;
+            }
+
+            //Output
+
+            output.give('User \'' + data.name + '\' has logged in.');
+
+            //Set variables
+
+            socket.name = data.name;
+
+            //Request game page
+
+            socket.emit('REQUEST_GAME');
+        });
     }); 
     socket.on('CLIENT_REGISTER', function(data, callback) {
         //Check if valid package
@@ -105,30 +104,34 @@ exports.handleSocket = function(socket)
         
         //Check if account already exists
         
-        if (databases.accounts(data.name).has('pass'))
-        {
-            callback('taken');
-            return;
-        }
+        storage.exists('accounts', data.name, function(is) {
+            if (is)
+            {
+                callback('taken');
+                return; 
+            }
+            
+            //Check if there is place available
         
-        //Check if there is place available
-        
-        if (properties.maxPlayers != 0 &&
-            game.players.length >= properties.maxPlayers)
-        {
-            callback('full');
-            return;
-        }
-        
-        //Insert account
-        
-        databases.accounts(data.name).set('pass', data.pass);
-        
-        //Insert and save default stats
-        
-        game.savePlayer(data.name, undefined, function() {
-           //Ouput
-        
+            if (properties.maxPlayers != 0 &&
+                game.players.length >= properties.maxPlayers)
+            {
+                callback('full');
+                return;
+            }
+
+            //Insert account
+
+            storage.save('accounts', data.name, {
+                pass: data.pass
+            });
+
+            //Insert and save default stats
+
+            game.savePlayer(data.name);
+
+            //Give output
+
             output.give('New user \'' + data.name + '\' created.');
 
             //Set variables

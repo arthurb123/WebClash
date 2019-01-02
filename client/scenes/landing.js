@@ -17,6 +17,18 @@ const landingScene = new lx.Scene(function() {
         );
     });
     
+    //Draw server name text and
+    //add a loop thats keeps updating
+    //the text in case of new package
+    
+    let server_name = new lx.UIText('', lx.GetDimensions().width/2, lx.GetDimensions().height-35, 14)
+        .Alignment('center')
+        .Show();
+    
+    server_name.SHADOW = true;
+    
+    lx.Loops(function() { server_name.Text(client.serverName); });
+    
     //Set innerHTML
         
     view.dom.innerHTML = 

@@ -26,38 +26,36 @@ exports.addPlayer = function(socket)
     if (socket.name === undefined)
         return;
     
-    //Grab player stats and continue
-    
-    fs.readFile('data/stats/' + socket.name + '.json', 'utf-8', function(err, player) {
-        if (err) {
-            output.give('Could not load player stats: ' + err);
-            
-            return;
-        }
-        
-        player = JSON.parse(player);
-        player.name = socket.name;
-        player.character = game.characters[player.char_name];
+    try {
+        //Grab player stats and continue
 
-        //Add player
+        storage.load('stats', socket.name, function(player) {
+            player.name = socket.name;
+            player.character = game.characters[player.char_name];
 
-        let id = game.players.length;
-        game.players[id] = player;
+            //Add player
 
-        //Load current world
+            let id = game.players.length;
+            game.players[id] = player;
 
-        game.loadMap(socket, player.map); 
+            //Load current world
 
-        //Sync across server
+            game.loadMap(socket, player.map); 
 
-        server.syncPlayer(id, socket, true);
+            //Sync across server
 
-        //Sync to player
+            server.syncPlayer(id, socket, true);
 
-        server.syncPlayer(id, socket, false);
-        server.syncPlayerPartially(id, 'stats', socket, false);
-        server.syncPlayerPartially(id, 'health', socket, false); 
-    });
+            //Sync to player
+
+            server.syncPlayer(id, socket, false);
+            server.syncPlayerPartially(id, 'stats', socket, false);
+            server.syncPlayerPartially(id, 'health', socket, false);  
+        });
+    }
+    catch (err) {
+        output.give('Could not add player: ' + err);
+    }
 };
 
 exports.removePlayer = function(socket)
@@ -113,21 +111,16 @@ exports.savePlayer = function(name, data, cb)
             }
         };
     
-    let temp = databases.stats(name).object();
-    
-    temp.map = player.map;
-    temp.char_name = player.char_name;
-    temp.pos = player.pos;
-    temp.moving = player.moving;
-    temp.direction = player.direction;
-    temp.health = player.health;
-    temp.level = player.level;
-    temp.stats = player.stats;
-    
-    if (cb !== undefined)
-        databases.stats.save(cb);
-    else
-        databases.stats.save();
+    storage.save('stats', name, {
+        map: player.map,
+        char_name: player.char_name,
+        pos: player.pos,
+        moving: player.moving,
+        direction: player.direction,
+        health: player.health,
+        level: player.level,
+        stats: player.stats
+    });
 }
 
 exports.getPlayerIndex = function(name)

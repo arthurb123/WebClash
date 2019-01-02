@@ -1,5 +1,6 @@
 const client = {
     inGame: false,
+    serverName: '',
     connect: function(cb) {
         //Try to make a connection
         
@@ -32,6 +33,7 @@ const client = {
     },
     setup: function() {
         socket.on('UPDATE_CLIENT_NAME', function(t) { document.title = t; });
+        socket.on('UPDATE_SERVER_NAME', function(t) { client.serverName = t; });
         
         socket.on('REQUEST_LANDING', view.loadLanding);
         socket.on('REQUEST_GAME', view.loadGame);

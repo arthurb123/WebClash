@@ -4,8 +4,7 @@ const fs = require('fs'),
       express = require('express'),
       app = express(),
       http = require('http').Server(app),
-      path = require('path'),
-      db = require('origindb');
+      path = require('path');
 
 global.io = require('socket.io')(http);
 
@@ -18,16 +17,12 @@ global.actions = require('./webclash_modules/actions');
 global.tiled = require('./webclash_modules/tiled');
 global.output = require('./webclash_modules/output');
 global.input = require('./webclash_modules/input');
+global.storage = require('./webclash_modules/storage');
 
 //(Setup/load) Server settings
 
 global.properties = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
 global.permissions = JSON.parse(fs.readFileSync('permissions.json', 'utf-8'));
-
-global.databases = {
-    accounts: db('data/accounts'),
-    stats: db('data/stats')
-};
 
 game.loadAllCharacters(function() {
     actions.loadAllActions(function() {
@@ -71,11 +66,6 @@ function exitHandler() {
     game.players.forEach(function(player) {
         game.savePlayer(player.name, player); 
     });
-    
-    //Save database
-    
-    databases.accounts.save();
-    databases.stats.save();
 }
 
 //On close event listeners
