@@ -23,14 +23,17 @@ exports.addPlayer = function(socket)
 {
     //Check if socket is valid
     
-    if (socket.name == undefined)
+    if (socket.name === undefined)
         return;
     
     //Grab player stats and continue
     
     fs.readFile('data/stats/' + socket.name + '.json', 'utf-8', function(err, player) {
-        if (err)
+        if (err) {
+            output.give('Could not load player stats: ' + err);
+            
             return;
+        }
         
         player = JSON.parse(player);
         player.name = socket.name;
@@ -84,7 +87,7 @@ exports.removePlayer = function(socket)
         }
 };
 
-exports.savePlayer = function(name, data)
+exports.savePlayer = function(name, data, cb)
 {
     let player = data;
     
@@ -110,15 +113,21 @@ exports.savePlayer = function(name, data)
             }
         };
     
+    let temp = databases.stats(name).object();
     
-    databases.stats(name).set('map', player.map);
-    databases.stats(name).set('pos', player.pos);
-    databases.stats(name).set('moving', player.moving);
-    databases.stats(name).set('direction', player.direction);
-    databases.stats(name).set('char_name', player.char_name);
-    databases.stats(name).set('health', player.health);
-    databases.stats(name).set('level', player.level);
-    databases.stats(name).set('stats', player.stats);
+    temp.map = player.map;
+    temp.char_name = player.char_name;
+    temp.pos = player.pos;
+    temp.moving = player.moving;
+    temp.direction = player.direction;
+    temp.health = player.health;
+    temp.level = player.level;
+    temp.stats = player.stats;
+    
+    if (cb !== undefined)
+        databases.stats.save(cb);
+    else
+        databases.stats.save();
 }
 
 exports.getPlayerIndex = function(name)

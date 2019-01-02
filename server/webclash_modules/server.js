@@ -126,24 +126,19 @@ exports.handleSocket = function(socket)
         
         //Insert and save default stats
         
-        game.savePlayer(data.name);
+        game.savePlayer(data.name, undefined, function() {
+           //Ouput
+        
+            output.give('New user \'' + data.name + '\' created.');
 
-        //Save databases
-        
-        databases.accounts.save();
-        databases.stats.save();
-        
-        //Ouput
-        
-        output.give('New user \'' + data.name + '\' created.');
-        
-        //Set variables
-        
-        socket.name = data.name;
-        
-        //Request game page
-        
-        socket.emit('REQUEST_GAME');
+            //Set variables
+
+            socket.name = data.name;
+
+            //Request game page
+
+            socket.emit('REQUEST_GAME'); 
+        });
     });
     
     socket.on('CLIENT_JOIN_GAME', function() {
