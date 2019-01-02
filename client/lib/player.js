@@ -1,4 +1,5 @@
 const player = {
+    actions: [],
     forceFrame: {
         start: function(dir) {
             game.players[game.player]._direction = dir;
@@ -27,20 +28,30 @@ const player = {
         
         game.players.push(go.Show(3));  
         
-        //Pretty temporary code
+        //(Less) temporary code
         
         lx.OnMouse(0, function(data) {
-            if (data.state == 0)
+            if (data.state == 0 ||
+                player.actions[0] === undefined)
                 return;
             
             player.faceMouse();
             
-            socket.emit('CLIENT_PLAYER_ACTION', 'Slash');
+            socket.emit('CLIENT_PLAYER_ACTION', player.actions[0].name);
             
             lx.StopMouse(0);
         });
-        
-        //Pretty temporary code
+        lx.OnMouse(2, function(data) {
+            if (data.state == 0 ||
+                player.actions[1] === undefined)
+                return;
+            
+            player.faceMouse();
+            
+            socket.emit('CLIENT_PLAYER_ACTION', player.actions[1].name);
+            
+            lx.StopMouse(2);
+        });
     },
     setCollider: function(collider) {
         game.players[game.player].ApplyCollider(
@@ -59,6 +70,11 @@ const player = {
             movement.acceleration, 
             movement.max
         );  
+    },
+    setActions: function(actions) {
+        this.actions = actions;
+        
+        ui.actionbar.reload();
     },
     faceMouse: function() {
         let dx = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-lx.GetDimensions().width/2,
@@ -118,8 +134,7 @@ const player = {
         
         animation.animateMoving(this);
     },
-    sync: function(type)
-    {
+    sync: function(type) {
         let data = {};
         
         switch(type)

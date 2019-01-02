@@ -13,6 +13,18 @@ exports.getActionIndex = function(name)
     return -1;
 };
 
+exports.hasPlayerAction = function(name, id)
+{
+    if (game.players[id] === undefined)
+        return false;
+    
+    for (let a = 0; a < game.players[id].actions.length; a++)
+        if (game.players[id].actions[a].name === name)
+            return true;
+    
+    return false;
+};
+
 exports.createPlayerAction = function(name, id)
 {
     let a_id = this.getActionIndex(name);
@@ -20,7 +32,7 @@ exports.createPlayerAction = function(name, id)
     if (a_id == -1)
         return false;
     
-    if (game.players[id] === undefined)
+    if (!this.hasPlayerAction(name, id))
         return false;
     
     let actionData = {

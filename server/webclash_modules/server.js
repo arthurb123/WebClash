@@ -209,8 +209,6 @@ exports.handleSocket = function(socket)
     });
     
     socket.on('CLIENT_PLAYER_ACTION', function(data) {
-         //Pretty temporary code
-
          try 
          {
              if (socket.name === undefined)
@@ -339,6 +337,9 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
             break;
         case 'health':
             data.health = game.players[id].health;
+            break;
+        case 'actions':
+            data.actions = game.players[id].actions;
             break;
     }
     

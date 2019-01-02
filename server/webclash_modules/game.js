@@ -51,6 +51,7 @@ exports.addPlayer = function(socket)
             server.syncPlayer(id, socket, false);
             server.syncPlayerPartially(id, 'stats', socket, false);
             server.syncPlayerPartially(id, 'health', socket, false);  
+            server.syncPlayerPartially(id, 'actions', socket, false);
         });
     }
     catch (err) {
@@ -109,7 +110,10 @@ exports.savePlayer = function(name, data, cb)
                     wisdom: 1
                 }
             },
-            actions: []
+            actions: [{
+                name: 'Slash',
+                src: 'res/icons/slash.png'
+            }]
         };
     
     storage.save('stats', name, {

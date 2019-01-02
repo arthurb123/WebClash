@@ -92,13 +92,13 @@ const ui = {
                 
             view.dom.innerHTML += 
                 '<div id="actionbar_box" class="box" style="position: absolute; top: 100%; left: 50%; margin-left: -176px; margin-top: -105px; width: 338px; height: 48px;">' +
-                    '<img class="slot" id="actionbar_slot0"/>' +
-                    '<img class="slot" id="actionbar_slot1"/>' +
-                    '<img class="slot" id="actionbar_slot2"/>' +
-                    '<img class="slot" id="actionbar_slot3"/>' +
-                    '<img class="slot" id="actionbar_slot4"/>' +
-                    '<img class="slot" id="actionbar_slot5"/>' +
-                    '<img class="slot" id="actionbar_slot6"/>' +
+                    '<div class="slot" id="actionbar_slot0"></div>' +
+                    '<div class="slot" id="actionbar_slot1"></div>' +
+                    '<div class="slot" id="actionbar_slot2"></div>' +
+                    '<div class="slot" id="actionbar_slot3"></div>' +
+                    '<div class="slot" id="actionbar_slot4"></div>' +
+                    '<div class="slot" id="actionbar_slot5"></div>' +
+                    '<div class="slot" id="actionbar_slot6"></div>' +
                 '</div>';
 
             this.dom = {
@@ -113,6 +113,25 @@ const ui = {
                     document.getElementById('actionbar_slot6')
                 ]
             };
+        },
+        reload: function() {
+            if (this.dom === undefined)
+                return;
+            
+            for (let i = 0; i < this.dom.slots.length; i++) 
+                this.dom.slots[i].innerHTML = '';
+            
+            for (let i = 0; i < player.actions.length; i++) {
+                if (player.actions[i] === undefined)
+                    continue;
+                
+                let uses = '';
+                if (player.actions[i].uses !== undefined)
+                    '<font class="info" style="position: absolute; top: 25px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%;">' + player.actions[i].uses + '/' + player.actions[i].max + '</font>';
+                
+                this.dom.slots[i].innerHTML = 
+                    '<img src="' + player.actions[i].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' + uses;
+            }
         }
     },
     floaties: {
