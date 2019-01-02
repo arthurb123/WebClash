@@ -1,6 +1,7 @@
 const ui = {
     initialize: function() {
-        this.chat.create();  
+        this.chat.create();
+        this.actionbar.create();
         
         lx.Loops(this.floaties.update);
     },
@@ -75,6 +76,43 @@ const ui = {
                 return true;
             
             return false;
+        }
+    },
+    actionbar: {
+        create: function() {
+            if (this.dom !== undefined) {
+                if (this.dom.box.parentNode !== undefined &&
+                    this.dom.box.parentNode !== null) {
+                
+                    this.dom.box.parentNode.removeChild(this.dom.box);
+
+                    this.dom = undefined;
+                }
+            }
+                
+            view.dom.innerHTML += 
+                '<div id="actionbar_box" class="box" style="position: absolute; top: 100%; left: 50%; margin-left: -176px; margin-top: -105px; width: 338px; height: 48px;">' +
+                    '<img class="slot" id="actionbar_slot0"/>' +
+                    '<img class="slot" id="actionbar_slot1"/>' +
+                    '<img class="slot" id="actionbar_slot2"/>' +
+                    '<img class="slot" id="actionbar_slot3"/>' +
+                    '<img class="slot" id="actionbar_slot4"/>' +
+                    '<img class="slot" id="actionbar_slot5"/>' +
+                    '<img class="slot" id="actionbar_slot6"/>' +
+                '</div>';
+
+            this.dom = {
+                box: document.getElementById('actionbar_box'),
+                slots: [
+                    document.getElementById('actionbar_slot0'),
+                    document.getElementById('actionbar_slot1'),
+                    document.getElementById('actionbar_slot2'),
+                    document.getElementById('actionbar_slot3'),
+                    document.getElementById('actionbar_slot4'),
+                    document.getElementById('actionbar_slot5'),
+                    document.getElementById('actionbar_slot6')
+                ]
+            };
         }
     },
     floaties: {

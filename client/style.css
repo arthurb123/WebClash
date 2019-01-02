@@ -88,6 +88,21 @@ canvas {
     padding: 2px;
 }
 
+.slot {
+    border-radius: 3px;
+    background-color: #bcbcbc;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.45);
+    padding: 4px;
+    width: 32px;
+    height: 32px;
+    margin: 4px;
+}
+
+.slot:hover {
+    opacity: .85;
+    cursor: pointer;
+}
+
 #overlay {
     position: absolute;
     top: 0px;

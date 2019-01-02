@@ -21,13 +21,11 @@ const landingScene = new lx.Scene(function() {
     //add a loop thats keeps updating
     //the text in case of new package
     
-    let server_name = new lx.UIText('', lx.GetDimensions().width/2, lx.GetDimensions().height-35, 14)
+    let server_name = new lx.UIText('Connected to: -', lx.GetDimensions().width/2, lx.GetDimensions().height-20, 11, '#3d3d3d')
         .Alignment('center')
         .Show();
     
-    server_name.SHADOW = true;
-    
-    lx.Loops(function() { server_name.Text(client.serverName); });
+    lx.Loops(function() { server_name.Text('Connected to: ' + client.serverName); });
     
     //Set innerHTML
         

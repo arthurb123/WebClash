@@ -108,7 +108,8 @@ exports.savePlayer = function(name, data, cb)
                     intelligence: 1,
                     wisdom: 1
                 }
-            }
+            },
+            actions: []
         };
     
     storage.save('stats', name, {
@@ -119,7 +120,8 @@ exports.savePlayer = function(name, data, cb)
         direction: player.direction,
         health: player.health,
         level: player.level,
-        stats: player.stats
+        stats: player.stats,
+        actions: player.actions
     });
 }
 
