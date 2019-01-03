@@ -95,13 +95,13 @@ const ui = {
                 '</div>';
 
             this.slots = [
-                document.getElementById('actionbar_slot0'),
-                document.getElementById('actionbar_slot1'),
-                document.getElementById('actionbar_slot2'),
-                document.getElementById('actionbar_slot3'),
-                document.getElementById('actionbar_slot4'),
-                document.getElementById('actionbar_slot5'),
-                document.getElementById('actionbar_slot6')
+                'actionbar_slot0',
+                'actionbar_slot1',
+                'actionbar_slot2',
+                'actionbar_slot3',
+                'actionbar_slot4',
+                'actionbar_slot5',
+                'actionbar_slot6'
             ];
         },
         reload: function() {
@@ -109,18 +109,18 @@ const ui = {
                 return;
             
             for (let i = 0; i < this.slots.length; i++) 
-                this.slots[i].innerHTML = '';
+                document.getElementById(this.slots[i]).innerHTML = '';
             
-            for (let i = 0; i < player.actions.length; i++) {
-                if (player.actions[i] === undefined)
+            for (let a = 0; a < player.actions.length; a++) {
+                if (player.actions[a] === undefined)
                     continue;
                 
                 let uses = '';
-                if (player.actions[i].uses !== undefined)
-                    uses = '<font class="info" style="position: absolute; top: 25px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%;">' + player.actions[i].uses + '/' + player.actions[i].max + '</font>';
+                if (player.actions[a].uses !== undefined)
+                    uses = '<font class="info" style="position: absolute; top: 25px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%;">' + player.actions[a].uses + '/' + player.actions[a].max + '</font>';
                 
-                this.slots[i].innerHTML = 
-                    '<img src="' + player.actions[i].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' + uses;
+                document.getElementById(this.slots[a]).innerHTML = 
+                    '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' + uses;
             }
         }
     },

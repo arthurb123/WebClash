@@ -5,11 +5,11 @@ const gameScene = new lx.Scene(function() {
     
     lx.Background('');
     
-    //Attempt to join the game
-    
-    client.joinGame();
-    
     //Initialize UI
         
     ui.initialize();
+    
+    //Attempt to join the game
+    
+    client.joinGame();
 });
