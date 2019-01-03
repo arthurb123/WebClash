@@ -1,7 +1,7 @@
 const ui = {
     initialize: function() {
-        this.chat.create();
         this.actionbar.create();
+        this.chat.create();
         
         lx.Loops(this.floaties.update);
     },
@@ -36,7 +36,7 @@ const ui = {
             });
             
             lx.OnKey(13, function() {
-                if (document.activeElement === ui.chat.dom.message)
+                if (ui.chat.isTyping())
                     return;
                 
                 ui.chat.dom.message.focus();
@@ -80,15 +80,8 @@ const ui = {
     },
     actionbar: {
         create: function() {
-            if (this.dom !== undefined) {
-                if (this.dom.box.parentNode !== undefined &&
-                    this.dom.box.parentNode !== null) {
-                
-                    this.dom.box.parentNode.removeChild(this.dom.box);
-
-                    this.dom = undefined;
-                }
-            }
+            if (this.slots !== undefined)
+                return;
                 
             view.dom.innerHTML += 
                 '<div id="actionbar_box" class="box" style="position: absolute; top: 100%; left: 50%; margin-left: -176px; margin-top: -105px; width: 338px; height: 48px;">' +
@@ -101,25 +94,22 @@ const ui = {
                     '<div class="slot" id="actionbar_slot6"></div>' +
                 '</div>';
 
-            this.dom = {
-                box: document.getElementById('actionbar_box'),
-                slots: [
-                    document.getElementById('actionbar_slot0'),
-                    document.getElementById('actionbar_slot1'),
-                    document.getElementById('actionbar_slot2'),
-                    document.getElementById('actionbar_slot3'),
-                    document.getElementById('actionbar_slot4'),
-                    document.getElementById('actionbar_slot5'),
-                    document.getElementById('actionbar_slot6')
-                ]
-            };
+            this.slots = [
+                document.getElementById('actionbar_slot0'),
+                document.getElementById('actionbar_slot1'),
+                document.getElementById('actionbar_slot2'),
+                document.getElementById('actionbar_slot3'),
+                document.getElementById('actionbar_slot4'),
+                document.getElementById('actionbar_slot5'),
+                document.getElementById('actionbar_slot6')
+            ];
         },
         reload: function() {
-            if (this.dom === undefined)
+            if (this.slots === undefined)
                 return;
             
-            for (let i = 0; i < this.dom.slots.length; i++) 
-                this.dom.slots[i].innerHTML = '';
+            for (let i = 0; i < this.slots.length; i++) 
+                this.slots[i].innerHTML = '';
             
             for (let i = 0; i < player.actions.length; i++) {
                 if (player.actions[i] === undefined)
@@ -127,9 +117,9 @@ const ui = {
                 
                 let uses = '';
                 if (player.actions[i].uses !== undefined)
-                    '<font class="info" style="position: absolute; top: 25px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%;">' + player.actions[i].uses + '/' + player.actions[i].max + '</font>';
+                    uses = '<font class="info" style="position: absolute; top: 25px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%;">' + player.actions[i].uses + '/' + player.actions[i].max + '</font>';
                 
-                this.dom.slots[i].innerHTML = 
+                this.slots[i].innerHTML = 
                     '<img src="' + player.actions[i].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' + uses;
             }
         }
