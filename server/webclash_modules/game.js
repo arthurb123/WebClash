@@ -119,9 +119,8 @@ exports.savePlayer = function(name, data, cb)
                 }
             },
             actions: [],
-            inventory: [
-                items.collection[0]
-            ]
+            inventory: properties.playerStartingItems,
+            gold: 0
         };
     
     storage.save('stats', name, {

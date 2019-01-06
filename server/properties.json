@@ -6,5 +6,9 @@
     
     "maxPlayers": 0,
     
-    "welcomeMessage": "<b>Welcome to WebClash!</b>"
+    "welcomeMessage": "<b>Welcome to WebClash!</b>",
+    
+    "playerStartingItems": [
+        "Wooden Sword"
+    ]
 }

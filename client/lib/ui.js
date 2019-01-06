@@ -126,6 +126,10 @@ const ui = {
         }
     },
     inventory: {
+        size: {
+            width: 4,
+            height: 5
+        },
         create: function() {
             if (this.slots !== undefined)
                 return;
@@ -133,15 +137,22 @@ const ui = {
             this.slots = [];
                 
             view.dom.innerHTML += 
-                '<div id="inventory_box" class="box" style="position: absolute; top: 100%; left: 100%; margin-left: -230px; margin-top: -315px; width: 195px; height: 260px;">' +
+                '<div id="inventory_box" class="box" style="position: absolute; top: 100%; left: 100%; margin-left: -230px; margin-top: -315px; width: 195px; height: 260px; text-align: center;">' +
                 '</div>';
             
-            for (let y = 0; y < 5; y++)
-                for (let x = 0; x < 4; x++) {
-                    document.getElementById('inventory_box').innerHTML += '<div class="slot" id="inventory_slot' + (y*x+x) + '" onmousemove="ui.inventory.displayBox(' + (y*x+x) + ')" onmouseleave="ui.inventory.removeBox(' + (y*x+x) + ');"></div>';
+            for (let y = 0; y < this.size.height; y++)
+                for (let x = 0; x < this.size.width; x++) {
+                    let i = (y*this.size.width+x);
                     
-                    this.slots[(y*x+x)] = 'inventory_slot' + (y*x+x);
+                    document.getElementById('inventory_box').innerHTML += 
+                        '<div class="slot" id="inventory_slot' + i + '" onmousemove="ui.inventory.displayBox(' + i + ')" onmouseleave="ui.inventory.removeBox(' + i + ');">' +
+                        '</div>';
+                    
+                    this.slots[i] = 'inventory_slot' + i;
                 }
+            
+            document.getElementById('inventory_box').innerHTML +=
+                '<font class="info" style="position: relative; top: 4px; font-size: 11px; color: yellow;">0 Gold</font>';
         },
         reload: function() {
             if (this.slots === undefined)
@@ -158,8 +169,17 @@ const ui = {
             }
         },
         reloadItem: function(slot) {
-            document.getElementById(this.slots[slot]).innerHTML = 
-                '<img src="' + player.inventory[slot].source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>';
+            if (player.inventory[slot] !== undefined) {
+                document.getElementById(this.slots[slot]).innerHTML = 
+                    '<img src="' + player.inventory[slot].source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>';
+                
+                document.getElementById(this.slots[slot]).style.border = '1px solid ' + this.getItemColor(player.inventory[slot].rarity);
+            }
+            else {
+                document.getElementById(this.slots[slot]).innerHTML = '';
+                
+                document.getElementById(this.slots[slot]).style.border = '0px solid gray';
+            }
         },
         displayBox: function(slot) {
             if (player.inventory[slot] === undefined)
@@ -169,10 +189,24 @@ const ui = {
             
             if (el == null)
             {
-                view.dom.innerHTML += 
-                    '<div id="displayBox' + slot + '" class="box" style="position: absolute; top: 0px; left: 0px; width: 120px; height: auto; text-align: center;">' +
-                        '<font class="header" style="font-size: 14px;">' + player.inventory[slot].name + '</font>' + 
-                    '</div>';
+                let color = this.getItemColor(player.inventory[slot].rarity);
+                let note = '';
+                
+                if (player.inventory[slot].equippable !== 'none')
+                    note = '(Click to equip)';
+                
+                let displayBox = document.createElement('div');
+                
+                displayBox.id = 'displayBox' + slot;
+                displayBox.classList.add('box');
+                displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 16px; height: auto; text-align: center;';
+                displayBox.innerHTML =
+                        '<font class="header" style="font-size: 15px; color: ' + color + ';">' + player.inventory[slot].name + '</font><br>' + 
+                        '<font class="info" style="position: relative; top: 8px;">' + player.inventory[slot].description + '</font><br>' +
+                        '<font class="info" style="position: relative; top: 10px; font-size: 11px;">' + note + '</font><br>' +
+                        '<font class="info" style="position: relative; top: 10px; font-size: 11px; color: yellow;">' + player.inventory[slot].value + ' Gold</font><br>';
+                
+                view.dom.appendChild(displayBox);
                 
                 el = document.getElementById('displayBox' + slot);
             } 
@@ -184,7 +218,31 @@ const ui = {
             if (document.getElementById('displayBox' + slot) == null)
                 return;
             
-            view.dom.removeChild(document.getElementById('displayBox' + slot));
+            document.getElementById('displayBox' + slot).remove();
+        },
+        getItemColor: function(rarity) {
+            let color = 'gray';
+                
+            switch (rarity)
+            {
+                case 'common':
+                    color = 'silver';
+                    break;
+                case 'uncommon':
+                    color = 'lightgreen';
+                    break;
+                case 'rare':
+                    color = 'dodgerblue';
+                    break;
+                case 'exotic':
+                    color = 'yellow';
+                    break;
+                case 'legendary':
+                    color = 'magenta';
+                    break;
+            }
+            
+            return color;
         }
     },
     floaties: {

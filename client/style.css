@@ -91,12 +91,13 @@ canvas {
 .slot {
     position: relative;
     border-radius: 3px;
-    background-color: #a6a6a6;
+    background-color: rgba(175, 175, 175, .85);
     box-shadow: inset 0px 1px 1px rgba(0,0,0,0.45);
+    border: 1px solid gray;
     padding: 4px;
     width: 32px;
     height: 32px;
-    margin: 4px;
+    margin: 3px;
     display: inline-block;
 }
 

@@ -11,6 +11,7 @@ namespace WebClashServer
     public partial class Items : Form
     {
         private Item current;
+        private string oldName;
 
         public Items()
         {
@@ -87,10 +88,14 @@ namespace WebClashServer
                 current = new Item(Program.main.location + "/items/" + itemName + ".json");
 
             name.Text = itemName;
+            oldName = name.Text;
+
             src.Text = current.source;
 
             rarity.SelectedItem = FirstCharToUpper(current.rarity);
             value.Value = current.value;
+
+            description.Text = current.description;
 
             if (current.equippable != string.Empty)
                 equippable.SelectedItem = FirstCharToUpper(current.equippable);
@@ -134,6 +139,9 @@ namespace WebClashServer
                 MessageBox.Show("Could not save item as it is invalid.", "WebClash Server - Error");
                 return;
             }
+
+            if (oldName != name.Text)
+                File.Delete(Program.main.location + "/items/" + oldName + ".json");
 
             File.WriteAllText(Program.main.location + "/items/" + name.Text + ".json", JsonConvert.SerializeObject(current));
 
@@ -222,6 +230,29 @@ namespace WebClashServer
 
             current.equippableAction = equippableAction.SelectedItem.ToString();
         }
+        
+        private void description_TextChanged(object sender, EventArgs e)
+        {
+            current.description = description.Text;
+        }
+        
+        private void delete_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (current == null)
+            {
+                MessageBox.Show("Could not remove item as it is invalid.", "WebClash Server - Error");
+                return;
+            }
+
+            File.Delete(Program.main.location + "/items/" + oldName + ".json");
+
+            ReloadItems();
+
+            if (itemList.Items.Count > 0)
+                itemList.SelectedItem = itemList.Items[0];
+            else
+                newLink_LinkClicked(sender, e);
+        }
 
         public int GetAmount()
         {
@@ -245,6 +276,8 @@ namespace WebClashServer
                 source = temp.source;
                 rarity = temp.rarity;
 
+                description = temp.description;
+
                 value = temp.value;
 
                 equippable = temp.equippable;
@@ -261,6 +294,8 @@ namespace WebClashServer
         public string rarity = "common";
 
         public int value = 0;
+
+        public string description = "";
 
         public string equippable = "none";
         public string equippableSource = string.Empty;

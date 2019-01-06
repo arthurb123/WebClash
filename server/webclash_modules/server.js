@@ -503,7 +503,12 @@ exports.syncInventoryItem = function(slot, id, socket, broadcast)
     if (game.players[id].inventory[slot] === undefined)
         return;
     
-    data.item = game.players[id].inventory[slot];
+    let item = items.getItemIndex(game.players[id].inventory[slot]);
+    
+    if (item == -1)
+        return;
+    
+    data.item = items.collection[item];
     
     if (socket === undefined) 
         io.to(data.map).emit('GAME_INVENTORY_UPDATE', data);

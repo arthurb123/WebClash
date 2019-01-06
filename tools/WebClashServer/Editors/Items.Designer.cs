@@ -50,10 +50,14 @@
             this.label7 = new System.Windows.Forms.Label();
             this.equippable = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.description = new System.Windows.Forms.RichTextBox();
+            this.delete = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.value)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.icon)).BeginInit();
             this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // itemList
@@ -61,7 +65,7 @@
             this.itemList.FormattingEnabled = true;
             this.itemList.Location = new System.Drawing.Point(0, 0);
             this.itemList.Name = "itemList";
-            this.itemList.Size = new System.Drawing.Size(120, 225);
+            this.itemList.Size = new System.Drawing.Size(120, 290);
             this.itemList.TabIndex = 0;
             this.itemList.SelectedIndexChanged += new System.EventHandler(this.itemList_SelectedIndexChanged);
             // 
@@ -79,7 +83,7 @@
             this.groupBox1.Controls.Add(this.icon);
             this.groupBox1.Location = new System.Drawing.Point(126, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(316, 129);
+            this.groupBox1.Size = new System.Drawing.Size(316, 126);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "General Settings";
@@ -184,7 +188,7 @@
             this.newLink.ActiveLinkColor = System.Drawing.Color.Blue;
             this.newLink.AutoSize = true;
             this.newLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.newLink.Location = new System.Drawing.Point(7, 230);
+            this.newLink.Location = new System.Drawing.Point(6, 299);
             this.newLink.Name = "newLink";
             this.newLink.Size = new System.Drawing.Size(29, 13);
             this.newLink.TabIndex = 2;
@@ -198,7 +202,7 @@
             this.saveLink.ActiveLinkColor = System.Drawing.Color.Blue;
             this.saveLink.AutoSize = true;
             this.saveLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.saveLink.Location = new System.Drawing.Point(83, 230);
+            this.saveLink.Location = new System.Drawing.Point(46, 299);
             this.saveLink.Name = "saveLink";
             this.saveLink.Size = new System.Drawing.Size(32, 13);
             this.saveLink.TabIndex = 3;
@@ -215,9 +219,9 @@
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.equippable);
             this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Location = new System.Drawing.Point(126, 138);
+            this.groupBox2.Location = new System.Drawing.Point(126, 209);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(316, 107);
+            this.groupBox2.Size = new System.Drawing.Size(316, 104);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Equipment Settings";
@@ -277,11 +281,49 @@
             this.label6.TabIndex = 16;
             this.label6.Text = "Slot";
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.description);
+            this.groupBox3.Location = new System.Drawing.Point(126, 133);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(316, 73);
+            this.groupBox3.TabIndex = 5;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Description";
+            // 
+            // description
+            // 
+            this.description.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.description.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.description.Location = new System.Drawing.Point(3, 16);
+            this.description.Name = "description";
+            this.description.Size = new System.Drawing.Size(310, 54);
+            this.description.TabIndex = 0;
+            this.description.Text = "";
+            this.description.TextChanged += new System.EventHandler(this.description_TextChanged);
+            // 
+            // delete
+            // 
+            this.delete.ActiveLinkColor = System.Drawing.Color.Red;
+            this.delete.AutoSize = true;
+            this.delete.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.delete.LinkColor = System.Drawing.Color.Red;
+            this.delete.Location = new System.Drawing.Point(92, 299);
+            this.delete.Name = "delete";
+            this.delete.Size = new System.Drawing.Size(23, 13);
+            this.delete.TabIndex = 6;
+            this.delete.TabStop = true;
+            this.delete.Text = "Del";
+            this.delete.VisitedLinkColor = System.Drawing.Color.Red;
+            this.delete.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.delete_LinkClicked);
+            // 
             // Items
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(451, 250);
+            this.ClientSize = new System.Drawing.Size(451, 321);
+            this.Controls.Add(this.delete);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.saveLink);
             this.Controls.Add(this.newLink);
@@ -289,8 +331,8 @@
             this.Controls.Add(this.itemList);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(467, 289);
-            this.MinimumSize = new System.Drawing.Size(467, 289);
+            this.MaximumSize = new System.Drawing.Size(467, 360);
+            this.MinimumSize = new System.Drawing.Size(467, 360);
             this.Name = "Items";
             this.Text = "WebClash Server - Items";
             this.Load += new System.EventHandler(this.Items_Load);
@@ -300,6 +342,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.icon)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -328,5 +371,8 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox equippable;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.RichTextBox description;
+        private System.Windows.Forms.LinkLabel delete;
     }
 }
