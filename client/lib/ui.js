@@ -1,6 +1,7 @@
 const ui = {
     initialize: function() {
         this.actionbar.create();
+        this.inventory.create();
         this.chat.create();
         
         lx.Loops(this.floaties.update);
@@ -122,6 +123,68 @@ const ui = {
                 document.getElementById(this.slots[a]).innerHTML = 
                     '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' + uses;
             }
+        }
+    },
+    inventory: {
+        create: function() {
+            if (this.slots !== undefined)
+                return;
+            
+            this.slots = [];
+                
+            view.dom.innerHTML += 
+                '<div id="inventory_box" class="box" style="position: absolute; top: 100%; left: 100%; margin-left: -230px; margin-top: -315px; width: 195px; height: 260px;">' +
+                '</div>';
+            
+            for (let y = 0; y < 5; y++)
+                for (let x = 0; x < 4; x++) {
+                    document.getElementById('inventory_box').innerHTML += '<div class="slot" id="inventory_slot' + (y*x+x) + '" onmousemove="ui.inventory.displayBox(' + (y*x+x) + ')" onmouseleave="ui.inventory.removeBox(' + (y*x+x) + ');"></div>';
+                    
+                    this.slots[(y*x+x)] = 'inventory_slot' + (y*x+x);
+                }
+        },
+        reload: function() {
+            if (this.slots === undefined)
+                return;
+            
+            for (let i = 0; i < this.slots.length; i++) 
+                document.getElementById(this.slots[i]).innerHTML = '';
+            
+            for (let i = 0; i < player.inventory.length; i++) {
+                if (player.inventory[i] === undefined)
+                    continue;
+                
+                this.reloadItem(i);
+            }
+        },
+        reloadItem: function(slot) {
+            document.getElementById(this.slots[slot]).innerHTML = 
+                '<img src="' + player.inventory[slot].source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>';
+        },
+        displayBox: function(slot) {
+            if (player.inventory[slot] === undefined)
+                return;
+            
+            let el = document.getElementById('displayBox' + slot);
+            
+            if (el == null)
+            {
+                view.dom.innerHTML += 
+                    '<div id="displayBox' + slot + '" class="box" style="position: absolute; top: 0px; left: 0px; width: 120px; height: auto; text-align: center;">' +
+                        '<font class="header" style="font-size: 14px;">' + player.inventory[slot].name + '</font>' + 
+                    '</div>';
+                
+                el = document.getElementById('displayBox' + slot);
+            } 
+            
+            el.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-el.offsetWidth-8;
+            el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight;
+        },
+        removeBox: function(slot) {
+            if (document.getElementById('displayBox' + slot) == null)
+                return;
+            
+            view.dom.removeChild(document.getElementById('displayBox' + slot));
         }
     },
     floaties: {

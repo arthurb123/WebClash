@@ -492,6 +492,29 @@ exports.syncAction = function(data, socket, broadcast)
     }
 }
 
+//Sync whole action function, if socket is undefined it will be globally emitted
+
+exports.syncInventoryItem = function(slot, id, socket, broadcast)
+{
+    let data = {
+        slot: slot
+    };
+    
+    if (game.players[id].inventory[slot] === undefined)
+        return;
+    
+    data.item = game.players[id].inventory[slot];
+    
+    if (socket === undefined) 
+        io.to(data.map).emit('GAME_INVENTORY_UPDATE', data);
+    else {
+        if (broadcast === undefined || !broadcast)
+            socket.emit('GAME_INVENTORY_UPDATE', data);
+        else
+            socket.broadcast.to(data.map).emit('GAME_INVENTORY_UPDATE', data);
+    }
+}
+
 //Get socket with name function
 
 exports.getSocketWithName = function(name)

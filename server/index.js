@@ -12,6 +12,7 @@ global.io = require('socket.io')(http);
 
 global.server = require('./webclash_modules/server');
 global.game = require('./webclash_modules/game');
+global.items = require('./webclash_modules/items');
 global.npcs = require('./webclash_modules/npcs');
 global.actions = require('./webclash_modules/actions');
 global.tiled = require('./webclash_modules/tiled');
@@ -25,9 +26,11 @@ global.properties = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
 global.permissions = JSON.parse(fs.readFileSync('permissions.json', 'utf-8'));
 
 game.loadAllCharacters(function() {
-    actions.loadAllActions(function() {
-        tiled.loadAllMaps(function() {
-            startServer();
+    items.loadAllItems(function() {
+        actions.loadAllActions(function() {
+            tiled.loadAllMaps(function() {
+                startServer();
+            });
         });
     });
 });

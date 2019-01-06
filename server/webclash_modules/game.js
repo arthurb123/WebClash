@@ -49,9 +49,17 @@ exports.addPlayer = function(socket)
             //Sync to player
 
             server.syncPlayer(id, socket, false);
+            
+            //Sync partial stats
+            
             server.syncPlayerPartially(id, 'stats', socket, false);
             server.syncPlayerPartially(id, 'health', socket, false);  
             server.syncPlayerPartially(id, 'actions', socket, false);
+            
+            //Sync inventory
+            for (let i = 0; i < game.players[id].inventory.length; i++)
+                if (game.players[id].inventory[i] !== undefined)
+                    server.syncInventoryItem(i, id, socket, false);
         });
     }
     catch (err) {
@@ -110,10 +118,10 @@ exports.savePlayer = function(name, data, cb)
                     wisdom: 1
                 }
             },
-            actions: [{
-                name: 'Slash',
-                src: 'res/icons/slash.png'
-            }]
+            actions: [],
+            inventory: [
+                items.collection[0]
+            ]
         };
     
     storage.save('stats', name, {
@@ -125,7 +133,8 @@ exports.savePlayer = function(name, data, cb)
         health: player.health,
         level: player.level,
         stats: player.stats,
-        actions: player.actions
+        actions: player.actions,
+        inventory: player.inventory
     });
 }
 

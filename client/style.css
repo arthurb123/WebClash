@@ -91,7 +91,7 @@ canvas {
 .slot {
     position: relative;
     border-radius: 3px;
-    background-color: #bcbcbc;
+    background-color: #a6a6a6;
     box-shadow: inset 0px 1px 1px rgba(0,0,0,0.45);
     padding: 4px;
     width: 32px;

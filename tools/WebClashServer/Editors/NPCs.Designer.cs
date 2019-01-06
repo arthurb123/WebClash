@@ -46,6 +46,8 @@
             this.movementFree = new System.Windows.Forms.RadioButton();
             this.movementStatic = new System.Windows.Forms.RadioButton();
             this.statistics = new System.Windows.Forms.GroupBox();
+            this.health = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
             this.vitality = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
             this.wisdom = new System.Windows.Forms.NumericUpDown();
@@ -64,12 +66,11 @@
             this.typeFriendly = new System.Windows.Forms.RadioButton();
             this.typeHostile = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
-            this.health = new System.Windows.Forms.NumericUpDown();
-            this.label7 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.range)).BeginInit();
             this.statistics.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.health)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.vitality)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wisdom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.intelligence)).BeginInit();
@@ -77,7 +78,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.agility)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.power)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.level)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.health)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -291,6 +291,39 @@
             this.statistics.TabStop = false;
             this.statistics.Text = "Statistics";
             // 
+            // health
+            // 
+            this.health.Location = new System.Drawing.Point(261, 23);
+            this.health.Maximum = new decimal(new int[] {
+            9999999,
+            0,
+            0,
+            0});
+            this.health.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.health.Name = "health";
+            this.health.Size = new System.Drawing.Size(80, 21);
+            this.health.TabIndex = 25;
+            this.health.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.health.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.health.ValueChanged += new System.EventHandler(this.health_ValueChanged);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(214, 25);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(43, 15);
+            this.label7.TabIndex = 24;
+            this.label7.Text = "Health";
+            // 
             // vitality
             // 
             this.vitality.Location = new System.Drawing.Point(243, 104);
@@ -474,39 +507,6 @@
             this.label6.TabIndex = 10;
             this.label6.Text = "NPC Type";
             // 
-            // health
-            // 
-            this.health.Location = new System.Drawing.Point(261, 23);
-            this.health.Maximum = new decimal(new int[] {
-            9999999,
-            0,
-            0,
-            0});
-            this.health.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.health.Name = "health";
-            this.health.Size = new System.Drawing.Size(80, 21);
-            this.health.TabIndex = 25;
-            this.health.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.health.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.health.ValueChanged += new System.EventHandler(this.health_ValueChanged);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(214, 25);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(43, 15);
-            this.label7.TabIndex = 24;
-            this.label7.Text = "Health";
-            // 
             // NPCs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -525,6 +525,8 @@
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(420, 481);
+            this.MinimumSize = new System.Drawing.Size(420, 481);
             this.Name = "NPCs";
             this.Text = "WebClash Server - NPCs";
             this.Load += new System.EventHandler(this.NPCs_Load);
@@ -535,6 +537,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.range)).EndInit();
             this.statistics.ResumeLayout(false);
             this.statistics.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.health)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.vitality)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.wisdom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.intelligence)).EndInit();
@@ -542,7 +545,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.agility)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.power)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.level)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.health)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

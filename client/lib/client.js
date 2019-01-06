@@ -217,6 +217,25 @@ const client = {
                  );
              }
         });
+        socket.on('GAME_INVENTORY_UPDATE', function(data) {
+            //Check if the recieved data is valid
+            
+             if (data === undefined)
+                 return;
+            
+             //Check if in-game
+            
+             if (!client.inGame)
+                 return;
+            
+             //Handle data
+            
+             player.inventory[data.slot] = data.item;
+            
+             //Refresh UI (slot)
+            
+             ui.inventory.reloadItem(data.slot);
+        });
         socket.on('GAME_CHAT_UPDATE', function (data) {
             ui.chat.addMessage(data);
         })
