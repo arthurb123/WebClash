@@ -78,6 +78,12 @@
     <Compile Include="Editors\Maps.Designer.cs">
       <DependentUpon>Maps.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\Items.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\Items.Designer.cs">
+      <DependentUpon>Items.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,6 +103,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\Maps.resx">
       <DependentUpon>Maps.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\Items.resx">
+      <DependentUpon>Items.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>

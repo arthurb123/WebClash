@@ -279,5 +279,25 @@ namespace WebClashServer
 
             actions.ShowDialog();
         }
+
+        private void itemsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!CheckServerLocation())
+                return;
+
+            int amount = 0;
+
+            Items items = new Items();
+            items.VisibleChanged += (object s, EventArgs ea) =>
+            {
+                amount = items.GetAmount();
+            };
+            items.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                if (amount != items.GetAmount())
+                    AddOutput("The amount of Items has changed, changes will be visible after a server restart.");
+            };
+
+            items.ShowDialog();
+        }
     }
 }
