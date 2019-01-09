@@ -233,12 +233,12 @@ function Lynx2D() {
             }
         },
         ADD_LOOPS: function(CALLBACK) {
-            if (CALLBACK == undefined) return;
+            if (CALLBACK == undefined) return -1;
             
             for (var i = 0; i < this.LOOPS.length+1; i++) {
                 if (this.LOOPS[i] == undefined) {
                     this.LOOPS[i] = CALLBACK;
-                    break;
+                    return i;
                 }
             }  
         },
@@ -597,7 +597,7 @@ function Lynx2D() {
             lx.CONTEXT.CONTROLLER.KEYS[EVENT.keyCode] = false;
         });
         
-        document.addEventListener('mousedown', function(EVENT) { 
+        this.CONTEXT.CANVAS.addEventListener('mousedown', function(EVENT) { 
             lx.GAME.AUDIO.CAN_PLAY = true; 
             
             if (lx.CONTEXT.CONTROLLER.MOUSE.STOPPED_BUTTONS[EVENT.button]) return; 
@@ -605,7 +605,7 @@ function Lynx2D() {
             lx.GAME.HANDLE_MOUSE_CLICK(EVENT.button); 
         });
         
-        document.addEventListener('mouseup', function(EVENT) { 
+        this.CONTEXT.CANVAS.addEventListener('mouseup', function(EVENT) { 
             if (!lx.CONTEXT.CONTROLLER.MOUSE.STOPPED_BUTTONS[EVENT.button])
                 lx.GAME.INVALIDATE_EVENT('mousebutton', EVENT.button);
             

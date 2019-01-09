@@ -145,7 +145,7 @@ const ui = {
                     let i = (y*this.size.width+x);
                     
                     document.getElementById('inventory_box').innerHTML += 
-                        '<div class="slot" id="inventory_slot' + i + '" onmousemove="ui.inventory.displayBox(' + i + ')" onmouseleave="ui.inventory.removeBox(' + i + ');">' +
+                        '<div class="slot" id="inventory_slot' + i + '" onmouseover="ui.inventory.displayBox(' + i + ')" onmouseleave="ui.inventory.removeBox(' + i + ');">' +
                         '</div>';
                     
                     this.slots[i] = 'inventory_slot' + i;
@@ -185,40 +185,48 @@ const ui = {
             if (player.inventory[slot] === undefined)
                 return;
             
-            let el = document.getElementById('displayBox' + slot);
+            let el = document.getElementById('displayBox');
             
-            if (el == null)
-            {
-                let color = this.getItemColor(player.inventory[slot].rarity);
-                let note = '';
-                
-                if (player.inventory[slot].equippable !== 'none')
-                    note = '(Click to equip)';
-                
-                let displayBox = document.createElement('div');
-                
-                displayBox.id = 'displayBox' + slot;
-                displayBox.classList.add('box');
-                displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 16px; height: auto; text-align: center;';
-                displayBox.innerHTML =
-                        '<font class="header" style="font-size: 15px; color: ' + color + ';">' + player.inventory[slot].name + '</font><br>' + 
-                        '<font class="info" style="position: relative; top: 8px;">' + player.inventory[slot].description + '</font><br>' +
-                        '<font class="info" style="position: relative; top: 10px; font-size: 11px;">' + note + '</font><br>' +
-                        '<font class="info" style="position: relative; top: 10px; font-size: 11px; color: yellow;">' + player.inventory[slot].value + ' Gold</font><br>';
-                
-                view.dom.appendChild(displayBox);
-                
-                el = document.getElementById('displayBox' + slot);
-            } 
+            if (el != undefined)
+                return;
+            
+            let color = this.getItemColor(player.inventory[slot].rarity);
+            let note = '';
+
+            if (player.inventory[slot].equippable !== 'none')
+                note = '(Click to equip)';
+
+            let displayBox = document.createElement('div');
+
+            displayBox.id = 'displayBox';
+            displayBox.classList.add('box');
+            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 16px; height: auto; text-align: center;';
+            displayBox.innerHTML =
+                    '<font class="header" style="font-size: 15px; color: ' + color + ';">' + player.inventory[slot].name + '</font><br>' + 
+                    '<font class="info" style="position: relative; top: 8px;">' + player.inventory[slot].description + '</font><br>' +
+                    '<font class="info" style="position: relative; top: 10px; font-size: 11px;">' + note + '</font><br>' +
+                    '<font class="info" style="position: relative; top: 10px; font-size: 11px; color: yellow;">' + player.inventory[slot].value + ' Gold</font><br>';
+
+            view.dom.appendChild(displayBox);
+
+            el = document.getElementById('displayBox');
             
             el.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-el.offsetWidth-8;
             el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight;
+
+            this.displayBoxLoopID = lx.GAME.ADD_LOOPS(function() {
+                 el.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-el.offsetWidth-8;
+                 el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight;
+            });
         },
         removeBox: function(slot) {
-            if (document.getElementById('displayBox' + slot) == null)
+            if (document.getElementById('displayBox') == null ||
+               this.displayBoxLoopID === undefined)
                 return;
             
-            document.getElementById('displayBox' + slot).remove();
+            lx.ClearLoop(this.displayBoxLoopID);
+            
+            document.getElementById('displayBox').remove();
         },
         getItemColor: function(rarity) {
             let color = 'gray';
