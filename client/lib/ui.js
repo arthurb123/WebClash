@@ -145,7 +145,7 @@ const ui = {
                     let i = (y*this.size.width+x);
                     
                     document.getElementById('inventory_box').innerHTML += 
-                        '<div class="slot" id="inventory_slot' + i + '" onmouseover="ui.inventory.displayBox(' + i + ')" onmouseleave="ui.inventory.removeBox(' + i + ');">' +
+                        '<div class="slot" id="inventory_slot' + i + '" onmouseover="ui.inventory.displayBox(' + i + ')" onmousedown="ui.inventory.useItem(' + i + ')" onmouseleave="ui.inventory.removeBox();">' +
                         '</div>';
                     
                     this.slots[i] = 'inventory_slot' + i;
@@ -178,7 +178,19 @@ const ui = {
             else {
                 document.getElementById(this.slots[slot]).innerHTML = '';
                 
-                document.getElementById(this.slots[slot]).style.border = '0px solid gray';
+                document.getElementById(this.slots[slot]).style.border = '1px solid gray';
+            }
+        },
+        useItem: function(slot) {
+            if (player.inventory[slot] !== undefined) {
+                socket.emit('CLIENT_USE_ITEM', player.inventory[slot].name);
+                
+                //Check if stackable
+                
+                player.inventory[slot] = undefined;
+                
+                this.reloadItem(slot);
+                this.removeBox();
             }
         },
         displayBox: function(slot) {
@@ -219,7 +231,7 @@ const ui = {
                  el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight;
             });
         },
-        removeBox: function(slot) {
+        removeBox: function() {
             if (document.getElementById('displayBox') == null ||
                this.displayBoxLoopID === undefined)
                 return;

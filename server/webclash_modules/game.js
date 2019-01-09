@@ -5,7 +5,12 @@ const fs = require('fs');
 exports.players = [];
 exports.characters = [];
 
-exports.startLoop = function() {
+exports.playerConstraints = {
+    inventory_size: 20
+};
+
+exports.startLoop = function() 
+{
     setInterval(function() {
         
         //Update NPCs
@@ -15,7 +20,8 @@ exports.startLoop = function() {
     }, 1000/60);
 };
 
-exports.savePermissions = function () {
+exports.savePermissions = function () 
+{
     fs.writeFile('permissions.json', JSON.stringify(permissions, null, 1), 'utf8');
 };
 
@@ -98,6 +104,7 @@ exports.savePlayer = function(name, data, cb)
 {
     let player = data;
     
+    //Check if a new player data must be created
     if (player === undefined)
         player = {
             char_name: 'player',
@@ -119,10 +126,12 @@ exports.savePlayer = function(name, data, cb)
                 }
             },
             actions: [],
+            equipment: {},
             inventory: properties.playerStartingItems,
             gold: 0
         };
     
+    //Save player data
     storage.save('stats', name, {
         map: player.map,
         char_name: player.char_name,
@@ -133,7 +142,8 @@ exports.savePlayer = function(name, data, cb)
         level: player.level,
         stats: player.stats,
         actions: player.actions,
-        inventory: player.inventory
+        inventory: player.inventory,
+        equipment: player.equipment
     });
 }
 

@@ -1,1 +1,32 @@
-{"map":"map0","char_name":"player","pos":{"X":-46,"Y":34},"moving":false,"direction":1,"health":{"cur":100,"max":100},"level":1,"stats":{"exp":0,"attributes":{"power":1,"toughness":1,"vitality":1,"agility":1,"intelligence":1,"wisdom":1}},"actions":[],"inventory":["Wooden Sword"]}
+{
+ "map": "map0",
+ "char_name": "player",
+ "pos": {
+  "X": 0,
+  "Y": 0
+ },
+ "moving": false,
+ "direction": 0,
+ "health": {
+  "cur": 100,
+  "max": 100
+ },
+ "level": 1,
+ "stats": {
+  "exp": 0,
+  "attributes": {
+   "power": 1,
+   "toughness": 1,
+   "vitality": 1,
+   "agility": 1,
+   "intelligence": 1,
+   "wisdom": 1
+  }
+ },
+ "actions": [],
+ "inventory": [
+  "Wooden Sword",
+  "Heavy Axe"
+ ],
+ "equipment": {}
+}

@@ -305,6 +305,31 @@ exports.handleSocket = function(socket)
         
         io.to(tiled.getMapIndex(game.players[id].map)).emit('GAME_CHAT_UPDATE', msg);
     });
+    
+    socket.on('CLIENT_USE_ITEM', function(data) {
+         //Check if valid player
+        
+        if (socket.playing === undefined || !socket.playing)
+            return;
+        
+        //Get player id
+        
+        let id = game.getPlayerIndex(socket.name);
+        
+        //Check if valid
+        
+        if (id == -1)
+            return;
+        
+        //Check if player has item
+        
+        if (!items.hasPlayerItem(id, data))
+            return;
+        
+        //Use item
+        
+        items.usePlayerItem(socket, id, data);
+    });
 };
 
 //Sync player partially function, if socket is undefined it will be globally emitted
@@ -503,12 +528,10 @@ exports.syncInventoryItem = function(slot, id, socket, broadcast)
     if (game.players[id].inventory[slot] === undefined)
         return;
     
-    let item = items.getItemIndex(game.players[id].inventory[slot]);
+    data.item = items.getItem(game.players[id].inventory[slot]);
     
-    if (item == -1)
+    if (data.item === undefined)
         return;
-    
-    data.item = items.collection[item];
     
     if (socket === undefined) 
         io.to(data.map).emit('GAME_INVENTORY_UPDATE', data);
