@@ -141,14 +141,14 @@ exports.setPlayerEquipment = function(socket, id, item)
     //If this is not possible return.
     
     if (game.players[id].equipment[equippable] !== undefined)
-        if (!this.addPlayerItem(socket, id, game.players[id].equipment[equippable].name))
+        if (!this.addPlayerItem(socket, id, game.players[id].equipment[equippable]))
             return false;
     
     //Set equipment equippable of player
     
-    game.players[id].equipment[equippable] = item;
+    game.players[id].equipment[equippable] = item.name;
     
-    //Sync to (player and) others
+    //Sync to others
     
     //...
     

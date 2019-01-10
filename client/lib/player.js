@@ -1,6 +1,7 @@
 const player = {
     actions: [],
     inventory: [],
+    equipment: {},
     forceFrame: {
         start: function(dir) {
             game.players[game.player]._direction = dir;

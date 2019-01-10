@@ -66,6 +66,12 @@ exports.addPlayer = function(socket)
             for (let i = 0; i < game.players[id].inventory.length; i++)
                 if (game.players[id].inventory[i] !== undefined)
                     server.syncInventoryItem(i, id, socket, false);
+            
+            //Sync equipment
+            for (let equipment in game.players[id].equipment) {
+                if (equipment !== undefined)
+                    server.syncEquipmentItem(equipment, id, socket, false);
+            };
         });
     }
     catch (err) {

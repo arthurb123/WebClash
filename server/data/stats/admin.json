@@ -1,9 +1,9 @@
 {
- "map": "map0",
+ "map": "stress_test",
  "char_name": "player",
  "pos": {
-  "X": 0,
-  "Y": 0
+  "X": -194,
+  "Y": -235
  },
  "moving": false,
  "direction": 0,

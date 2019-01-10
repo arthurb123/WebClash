@@ -2,6 +2,7 @@ const ui = {
     initialize: function() {
         this.actionbar.create();
         this.inventory.create();
+        this.equipment.create();
         this.chat.create();
         
         lx.Loops(this.floaties.update);
@@ -125,6 +126,107 @@ const ui = {
             }
         }
     },
+    equipment: {
+        create: function() {
+            if (this.slots !== undefined)
+                return;
+                
+            view.dom.innerHTML += 
+                '<div id="equipmentbar_box" class="box" style="position: absolute; top: 50%; left: 100%; margin-left: -83px; margin-top: -250px; width: 48px; height: 335px; text-align: center;">' +
+                    '<div class="slot" id="equipmentbar_slot0"></div>' +
+                    '<div class="slot" id="equipmentbar_slot1"></div>' +
+                    '<div class="slot" id="equipmentbar_slot2"></div>' +
+                    '<div class="slot" id="equipmentbar_slot3"></div>' +
+                    '<div class="slot" id="equipmentbar_slot4"></div>' +
+                    '<div class="slot" id="equipmentbar_slot5"></div>' +
+                    '<div class="slot" id="equipmentbar_slot6"></div>' +
+                '</div>';
+
+            this.slots = [
+                'equipmentbar_slot0',
+                'equipmentbar_slot1',
+                'equipmentbar_slot2',
+                'equipmentbar_slot3',
+                'equipmentbar_slot4',
+                'equipmentbar_slot5',
+                'equipmentbar_slot6'
+            ];
+            
+            this.reload();
+        },
+        reload: function() {
+            if (this.slots === undefined)
+                return;
+            
+            for (let i = 0; i < this.slots.length; i++) 
+                document.getElementById(this.slots[i]).innerHTML = '';
+            
+            this.reloadEquipment('main');
+            this.reloadEquipment('offhand');
+            this.reloadEquipment('head');
+            this.reloadEquipment('torso');
+            this.reloadEquipment('hands');
+            this.reloadEquipment('legs');
+            this.reloadEquipment('feet');
+        },
+        reloadEquipment: function(equippable) {
+            let slot = this.getEquippableIndex(equippable);
+            
+            if (player.equipment[equippable] !== undefined || slot == -1) {
+                document.getElementById(this.slots[slot]).innerHTML = 
+                    '<img src="' + player.equipment[equippable].source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>';
+                
+                document.getElementById(this.slots[slot]).style.border = '1px solid ' + ui.inventory.getItemColor(player.equipment[equippable].rarity);
+            }
+            else {
+                document.getElementById(this.slots[slot]).innerHTML = '<p style="position: relative; left: -1px; top: 2px; color: black; font-size: 9px; opacity: .65;">' + equippable + '</p>';
+                
+                document.getElementById(this.slots[slot]).style.border = '1px solid gray';
+            }
+        },
+        equipItem: function(slot) {
+            //Get item
+            
+            let item = player.inventory[slot];
+            
+            if (item === undefined)
+                return;
+            
+            //Equip item
+            
+            player.equipment[item.equippable] = item;
+            
+            //Remove item
+            
+            player.inventory[slot] = undefined;
+            
+            //Refresh UI (slot)
+            
+            this.reloadEquipment(item.equippable);
+            ui.inventory.reloadItem(slot);
+        },
+        getEquippableIndex: function(equippable) {
+            switch (equippable)
+            {
+                case 'head':
+                    return 0;
+                case 'torso':
+                    return 1;
+                case 'hands':
+                    return 2;
+                case 'legs':
+                    return 3;
+                case 'feet':
+                    return 4;
+                case 'main':
+                    return 5;
+                case 'offhand':
+                    return 6;
+            }
+            
+            return -1;
+        }
+    },
     inventory: {
         size: {
             width: 4,
@@ -183,13 +285,19 @@ const ui = {
         },
         useItem: function(slot) {
             if (player.inventory[slot] !== undefined) {
+                //Send to server
+                
                 socket.emit('CLIENT_USE_ITEM', player.inventory[slot].name);
                 
                 //Check if stackable
                 
-                player.inventory[slot] = undefined;
+                //Check if equipment
                 
-                this.reloadItem(slot);
+                if (player.inventory[slot].equippable !== 'none')
+                    ui.equipment.equipItem(slot);
+                
+                //Remove box
+                
                 this.removeBox();
             }
         },

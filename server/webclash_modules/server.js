@@ -517,7 +517,7 @@ exports.syncAction = function(data, socket, broadcast)
     }
 }
 
-//Sync whole action function, if socket is undefined it will be globally emitted
+//Sync single inventory item function, if socket is undefined it will be globally emitted
 
 exports.syncInventoryItem = function(slot, id, socket, broadcast)
 {
@@ -540,6 +540,25 @@ exports.syncInventoryItem = function(slot, id, socket, broadcast)
             socket.emit('GAME_INVENTORY_UPDATE', data);
         else
             socket.broadcast.to(data.map).emit('GAME_INVENTORY_UPDATE', data);
+    }
+}
+
+//Sync single equipment item function, if socket is undefined it will be globally emitted
+
+exports.syncEquipmentItem = function(equippable, id, socket, broadcast)
+{
+    let data = items.getItem(game.players[id].equipment[equippable]);
+    
+    if (data === undefined)
+        return;
+    
+    if (socket === undefined) 
+        io.to(data.map).emit('GAME_EQUIPMENT_UPDATE', data);
+    else {
+        if (broadcast === undefined || !broadcast)
+            socket.emit('GAME_EQUIPMENT_UPDATE', data);
+        else
+            socket.broadcast.to(data.map).emit('GAME_EQUIPMENT_UPDATE', data);
     }
 }
 

@@ -236,6 +236,25 @@ const client = {
             
              ui.inventory.reloadItem(data.slot);
         });
+        socket.on('GAME_EQUIPMENT_UPDATE', function(data) {
+            //Check if the recieved data is valid
+            
+             if (data === undefined)
+                 return;
+            
+             //Check if in-game
+            
+             if (!client.inGame)
+                 return;
+
+             //Handle data
+            
+             player.equipment[data.equippable] = data;
+            
+             //Refresh UI (slot)
+            
+             ui.equipment.reloadEquipment(data.equippable);
+        });
         socket.on('GAME_CHAT_UPDATE', function (data) {
             ui.chat.addMessage(data);
         })
