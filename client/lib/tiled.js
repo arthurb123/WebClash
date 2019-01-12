@@ -111,6 +111,10 @@ const tiled = {
             });
         }
         
+        //Add world boundary colliders
+        
+        this.createWorldBoundaries(map, offset_width, offset_height);
+        
         //Execute after load queue
 
         this.queue.forEach(function(cb) {
@@ -283,5 +287,12 @@ const tiled = {
                     }
                 };
         }
+    },
+    createWorldBoundaries: function(map, offset_width, offset_height) {
+        new lx.Collider(offset_width, offset_height-map.tileheight, map.width*map.tilewidth, map.tileheight, true);
+        new lx.Collider(offset_width-map.tilewidth, offset_height, map.tilewidth, map.height*map.tileheight, true);
+        
+        new lx.Collider(offset_width, offset_height+map.height*map.tileheight, map.width*map.tilewidth, map.tileheight, true);
+        new lx.Collider(offset_width+map.width*map.tilewidth, offset_height, map.tilewidth, map.height*map.tileheight, true);
     }
 };
