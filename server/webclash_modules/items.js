@@ -150,7 +150,9 @@ exports.setPlayerEquipment = function(socket, id, item)
     
     //Sync to others
     
-    //...
+    server.syncPlayerPartially(id, 'equipment', socket, true);
+    
+    //Return true
     
     return true;
 };
@@ -160,7 +162,7 @@ exports.getPlayerFreeSlot = function(id)
     //Search for a undefined/non-existing slot
     
     for (let i = 0; i < game.players[id].inventory.length; i++)
-        if (game.players[id].inventory[i] === undefined)
+        if (game.players[id].inventory[i] == undefined)
             return i;
     
     //Otherwise return the length

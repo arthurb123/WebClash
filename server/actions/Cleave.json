@@ -1,1 +1,0 @@
-{"sw":320,"sh":320,"name":"Cleave","scaling":{"power":0.09,"agility":0.0,"intelligence":0.0,"wisdom":0.0,"toughness":0.05,"vitality":0.0},"elements":[{"x":123,"y":168,"w":72,"h":72,"src":"res/actions/cleave.png","speed":5,"direction":"vertical"}],"heal":0}

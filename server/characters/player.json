@@ -1,1 +1,1 @@
-{"src":"res/characters/player.png","width":64,"height":64,"animation":{"direction":"horizontal","speed":8},"collider":{"x":16,"y":40,"width":32,"height":24},"movement":{"acceleration":0.13,"max":2.0}}
+{"src":"res/characters/17.png","width":32,"height":48,"animation":{"direction":"horizontal","speed":9},"collider":{"x":6,"y":32,"width":20,"height":12},"movement":{"acceleration":0.25,"max":1.65}}

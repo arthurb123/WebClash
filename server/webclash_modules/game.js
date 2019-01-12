@@ -51,6 +51,10 @@ exports.addPlayer = function(socket)
             //Sync across server
 
             server.syncPlayer(id, socket, true);
+            
+            //Sync partial equipment across server
+            
+            server.syncPlayerPartially(id, 'equipment', socket, true);
 
             //Sync to player
 

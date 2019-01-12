@@ -9,7 +9,6 @@
     "welcomeMessage": "<b>Welcome to WebClash!</b>",
     
     "playerStartingItems": [
-        "Wooden Sword",
-        "Heavy Axe"
+        "Sword"
     ]
 }

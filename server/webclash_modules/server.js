@@ -366,6 +366,19 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
         case 'actions':
             data.actions = game.players[id].actions;
             break;
+        case 'equipment':
+            data.equipment = {};
+            
+            for (let equipment in game.players[id].equipment) {
+                let item = items.getItem(game.players[id].equipment[equipment]);
+                
+                if (item === undefined || item.equippableSource.length == 0)
+                    continue;
+                
+                data.equipment[equipment] = item.equippableSource;
+            }
+            
+            break;
     }
     
     let map_id = tiled.getMapIndex(game.players[id].map);

@@ -1,0 +1,1 @@
+{"name":"Ghoul","movement":"free","range":10,"type":"hostile","character":"ghoul","stats":{"level":2,"power":1,"toughness":0,"agility":1,"wisdom":0,"intelligence":0,"vitality":0},"health":{"cur":85,"max":85}}
