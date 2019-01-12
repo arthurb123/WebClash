@@ -110,13 +110,20 @@ const game = {
     {
         let result = [];
         
-        for (let e in equipment)
-        {
-            if (equipment[e] === undefined)
-                continue;
-            
-            result[result.length] = new lx.Sprite(equipment[e]);
-        }
+        if (equipment['torso'] !== undefined)
+            result.push(new lx.Sprite(equipment['torso']));
+        if (equipment['hands'] !== undefined)
+            result.push(new lx.Sprite(equipment['hands']));
+        if (equipment['head'] !== undefined)
+            result.push(new lx.Sprite(equipment['head']));
+        if (equipment['feet'] !== undefined)
+            result.push(new lx.Sprite(equipment['feet']));
+        if (equipment['legs'] !== undefined)
+            result.push(new lx.Sprite(equipment['legs']));
+        if (equipment['offhand'] !== undefined)
+            result.push(new lx.Sprite(equipment['offhand']));
+        if (equipment['main'] !== undefined)
+            result.push(new lx.Sprite(equipment['main']));
         
         this.players[id]._equipment = result;
     },

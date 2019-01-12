@@ -2,11 +2,11 @@
  "map": "1",
  "char_name": "player",
  "pos": {
-  "X": 154,
-  "Y": 73
+  "X": -38,
+  "Y": 79
  },
  "moving": false,
- "direction": 2,
+ "direction": 0,
  "health": {
   "cur": 100,
   "max": 100
@@ -25,7 +25,8 @@
  },
  "actions": [],
  "inventory": [
-  "Sword"
+  "Sword",
+  "Heavy Axe"
  ],
  "equipment": {}
 }

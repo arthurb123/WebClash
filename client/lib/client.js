@@ -251,7 +251,7 @@ const client = {
 
              //Handle data
             
-             player.equipment[data.equippable] = data;
+             player.setEquipment(data);
             
              //Refresh UI (slot)
             

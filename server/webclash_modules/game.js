@@ -51,10 +51,6 @@ exports.addPlayer = function(socket)
             //Sync across server
 
             server.syncPlayer(id, socket, true);
-            
-            //Sync partial equipment across server
-            
-            server.syncPlayerPartially(id, 'equipment', socket, true);
 
             //Sync to player
 
@@ -76,6 +72,10 @@ exports.addPlayer = function(socket)
                 if (equipment !== undefined)
                     server.syncEquipmentItem(equipment, id, socket, false);
             };
+            
+            //Sync equipment to others
+            
+            server.syncPlayerPartially(id, 'equipment', socket, true);
         });
     }
     catch (err) {

@@ -184,27 +184,6 @@ const ui = {
                 document.getElementById(this.slots[slot]).style.border = '1px solid gray';
             }
         },
-        equipItem: function(slot) {
-            //Get item
-            
-            let item = player.inventory[slot];
-            
-            if (item === undefined)
-                return;
-            
-            //Equip item
-            
-            player.equipment[item.equippable] = item;
-            
-            //Remove item
-            
-            player.inventory[slot] = undefined;
-            
-            //Refresh UI (slot)
-            
-            this.reloadEquipment(item.equippable);
-            ui.inventory.reloadItem(slot);
-        },
         getEquippableIndex: function(equippable) {
             switch (equippable)
             {
@@ -271,6 +250,9 @@ const ui = {
             }
         },
         reloadItem: function(slot) {
+            if (document.getElementById(this.slots[slot]) == undefined)
+                return;
+            
             if (player.inventory[slot] !== undefined) {
                 document.getElementById(this.slots[slot]).innerHTML = 
                     '<img src="' + player.inventory[slot].source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>';
@@ -291,14 +273,19 @@ const ui = {
                 
                 //Check if stackable
                 
-                //Check if equipment
-                
-                if (player.inventory[slot].equippable !== 'none')
-                    ui.equipment.equipItem(slot);
+                //...
                 
                 //Remove box
                 
                 this.removeBox();
+                
+                //Remove item
+            
+                player.inventory[slot] = undefined;
+
+                //Refresh UI (slot)
+                
+                this.reloadItem(slot);
             }
         },
         displayBox: function(slot) {

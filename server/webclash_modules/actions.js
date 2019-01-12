@@ -25,6 +25,67 @@ exports.hasPlayerAction = function(name, id)
     return false;
 };
 
+exports.addPlayerAction = function(socket, name, id)
+{
+    if (game.players[id] === undefined)
+        return false;
+    
+    let a_id = this.getActionIndex(name);
+    if (a_id == -1)
+        return false;
+    
+    for (let a = 0; a < 7; a++)
+        if (game.players[id].actions[a] === undefined) {
+            game.players[id].actions[a] = {
+                name: name,
+                source: this.collection[a_id].src
+            };
+                
+            break;
+        }
+    
+    server.syncPlayerPartially(id, 'actions', socket, false);
+    
+    return true;
+};
+
+exports.setPlayerAction = function(socket, name, position, id)
+{
+    if (game.players[id] === undefined)
+        return false;
+    
+    let a_id = this.getActionIndex(name);
+    if (a_id == -1)
+        return false;
+    
+    game.players[id].actions[position] = {
+        name: name,
+        src: this.collection[a_id].src
+    };
+    
+    server.syncPlayerPartially(id, 'actions', socket, false);
+    
+    return true;
+};
+
+exports.removePlayerAction = function(socket, name, id)
+{
+    if (!this.hasPlayerAction(name, id))
+        return true;
+    
+    for (let a = 0; a < game.players[id].actions.length; a++)
+        if (game.players[id].actions[a] !== undefined &&
+            game.players[id].actions[a].name === name) {
+            game.players[id].actions[a] = undefined;
+            
+            break;
+        }
+    
+    server.syncPlayerPartially(id, 'actions', socket, false);
+    
+    return true;
+};
+
 exports.createPlayerAction = function(name, id)
 {
     let a_id = this.getActionIndex(name);

@@ -148,9 +148,22 @@ exports.setPlayerEquipment = function(socket, id, item)
     
     game.players[id].equipment[equippable] = item.name;
     
+    //Equip if action is available
+    
+    if (item.equippableAction.length > 0) {
+        //Set action at 0 if main
+        
+        if (equippable === 'main')
+            actions.setPlayerAction(socket, item.equippableAction, 0, id);
+    }
+    
     //Sync to others
     
     server.syncPlayerPartially(id, 'equipment', socket, true);
+    
+    //Sync to player
+    
+    server.syncEquipmentItem(equippable, id, socket, false);
     
     //Return true
     

@@ -21,6 +21,7 @@ const player = {
         let go = new lx.GameObject(undefined, 0, 0, 0, 0);
         
         go.Loops(player.update)
+          .Draws(player.draws)
           .Focus();
         
         go.name = name;
@@ -77,6 +78,12 @@ const player = {
         this.actions = actions;
         
         ui.actionbar.reload();
+    },
+    setEquipment: function(equipment) {
+        this.equipment[equipment.equippable] = equipment;  
+        
+        if (equipment.equippableSource !== '')
+            this.equipment[equipment.equippable]._sprite = new lx.Sprite(equipment.equippableSource);
     },
     faceMouse: function() {
         let dx = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-lx.GetDimensions().width/2,
@@ -135,6 +142,43 @@ const player = {
         }
         
         animation.animateMoving(this);
+    },
+    draws: function() {
+        let equipment = [];
+        
+        if (player.equipment['torso'] !== undefined &&
+            player.equipment['torso']._sprite !== undefined)
+            equipment.push(player.equipment['hands']._sprite);
+        
+        if (player.equipment['hands'] !== undefined &&
+            player.equipment['hands']._sprite !== undefined)
+            equipment.push(player.equipment['hands']._sprite);
+        
+        if (player.equipment['head'] !== undefined &&
+            player.equipment['head']._sprite !== undefined)
+            equipment.push(player.equipment['head']._sprite);
+        
+        if (player.equipment['feet'] !== undefined &&
+            player.equipment['feet']._sprite !== undefined)
+            equipment.push(player.equipment['feet']._sprite);
+        
+        if (player.equipment['legs'] !== undefined &&
+            player.equipment['legs']._sprite !== undefined)
+            equipment.push(player.equipment['legs']._sprite);
+        
+        if (player.equipment['main'] !== undefined &&
+            player.equipment['main']._sprite !== undefined)
+            equipment.push(player.equipment['main']._sprite);
+        
+        if (player.equipment['offhand'] !== undefined &&
+            player.equipment['offhand']._sprite !== undefined)
+            equipment.push(player.equipment['offhand']._sprite);
+        
+        for (let i = 0; i < equipment.length; i++) {
+            equipment[i].CLIP = this.SPRITE.CLIP;
+            
+            lx.DrawSprite(equipment[i], this.POS.X, this.POS.Y, this.POS.W, this.POS.H);
+        }
     },
     sync: function(type) {
         let data = {};

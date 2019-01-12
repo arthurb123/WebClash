@@ -126,6 +126,11 @@ namespace WebClashServer.Editors
             toughness.Value = (decimal)current.scaling.toughness;
             vitality.Value = (decimal)current.scaling.vitality;
 
+            icon.Text = current.src;
+            AttemptSetIcon();
+
+            description.Text = current.description;
+
             heal.Value = current.heal;
 
             canvas.Invalidate();
@@ -484,6 +489,31 @@ namespace WebClashServer.Editors
         {
             current.heal = (int)heal.Value;
         }
+
+        private void icon_TextChanged(object sender, EventArgs e)
+        {
+            AttemptSetIcon();
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            current.description = description.Text;
+        }
+
+        private void AttemptSetIcon()
+        {
+            string location = Program.main.location + "/../client/" + icon.Text;
+
+            if (!File.Exists(location))
+            {
+                iconImage.BackgroundImage = null;
+                current.src = string.Empty;
+                return;
+            }
+
+            iconImage.BackgroundImage = Image.FromFile(location);
+            current.src = icon.Text;
+        }
     }
 
     public class Action
@@ -504,6 +534,10 @@ namespace WebClashServer.Editors
                 scaling = temp.scaling;
 
                 name = temp.name;
+
+                src = temp.src;
+
+                description = temp.description;
             }
             catch (Exception e)
             {
@@ -533,6 +567,10 @@ namespace WebClashServer.Editors
                    sh = 320;
 
         public string name = "New Action";
+
+        public string src = "";
+
+        public string description = "";
 
         public Scaling scaling = new Scaling();
 

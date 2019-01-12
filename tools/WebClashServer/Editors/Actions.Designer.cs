@@ -54,8 +54,6 @@
             this.save = new System.Windows.Forms.LinkLabel();
             this.animationTimer = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.heal = new System.Windows.Forms.NumericUpDown();
-            this.label14 = new System.Windows.Forms.Label();
             this.vitality = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
             this.wisdom = new System.Windows.Forms.NumericUpDown();
@@ -68,6 +66,14 @@
             this.label9 = new System.Windows.Forms.Label();
             this.power = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
+            this.heal = new System.Windows.Forms.NumericUpDown();
+            this.label14 = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.description = new System.Windows.Forms.RichTextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.iconImage = new System.Windows.Forms.PictureBox();
+            this.icon = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.properties.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
@@ -75,13 +81,15 @@
             this.animation.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.speed)).BeginInit();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.heal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.vitality)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wisdom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.intelligence)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.toughness)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.agility)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.power)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.heal)).BeginInit();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.iconImage)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -105,7 +113,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(284, 15);
+            this.label2.Location = new System.Drawing.Point(419, 21);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(77, 13);
             this.label2.TabIndex = 2;
@@ -115,7 +123,7 @@
             // 
             this.charSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.charSelect.FormattingEnabled = true;
-            this.charSelect.Location = new System.Drawing.Point(472, 12);
+            this.charSelect.Location = new System.Drawing.Point(597, 15);
             this.charSelect.Name = "charSelect";
             this.charSelect.Size = new System.Drawing.Size(135, 21);
             this.charSelect.TabIndex = 3;
@@ -123,7 +131,7 @@
             // 
             // canvas
             // 
-            this.canvas.Location = new System.Drawing.Point(287, 48);
+            this.canvas.Location = new System.Drawing.Point(412, 48);
             this.canvas.Name = "canvas";
             this.canvas.Size = new System.Drawing.Size(320, 320);
             this.canvas.TabIndex = 4;
@@ -139,7 +147,7 @@
             this.properties.Controls.Add(this.source);
             this.properties.Controls.Add(this.label3);
             this.properties.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.properties.Location = new System.Drawing.Point(12, 193);
+            this.properties.Location = new System.Drawing.Point(145, 196);
             this.properties.Name = "properties";
             this.properties.Size = new System.Drawing.Size(254, 175);
             this.properties.TabIndex = 5;
@@ -295,7 +303,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(166, 371);
+            this.button2.Location = new System.Drawing.Point(299, 373);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(100, 23);
             this.button2.TabIndex = 7;
@@ -305,7 +313,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 371);
+            this.button1.Location = new System.Drawing.Point(145, 373);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 6;
@@ -315,7 +323,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(166, 39);
+            this.button3.Location = new System.Drawing.Point(299, 37);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(100, 23);
             this.button3.TabIndex = 9;
@@ -339,7 +347,7 @@
             this.save.AutoSize = true;
             this.save.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.save.LinkColor = System.Drawing.Color.Blue;
-            this.save.Location = new System.Drawing.Point(575, 381);
+            this.save.Location = new System.Drawing.Point(700, 381);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(32, 13);
             this.save.TabIndex = 11;
@@ -369,35 +377,12 @@
             this.groupBox1.Controls.Add(this.power);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(12, 61);
+            this.groupBox1.Location = new System.Drawing.Point(145, 64);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(254, 99);
             this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Scaling";
-            // 
-            // heal
-            // 
-            this.heal.Location = new System.Drawing.Point(119, 167);
-            this.heal.Maximum = new decimal(new int[] {
-            99999999,
-            0,
-            0,
-            0});
-            this.heal.Name = "heal";
-            this.heal.Size = new System.Drawing.Size(61, 20);
-            this.heal.TabIndex = 13;
-            this.heal.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.heal.ValueChanged += new System.EventHandler(this.heal_ValueChanged);
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(79, 170);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(29, 13);
-            this.label14.TabIndex = 12;
-            this.label14.Text = "Heal";
             // 
             // vitality
             // 
@@ -543,11 +528,95 @@
             this.label8.TabIndex = 0;
             this.label8.Text = "Power";
             // 
+            // heal
+            // 
+            this.heal.Location = new System.Drawing.Point(252, 170);
+            this.heal.Maximum = new decimal(new int[] {
+            99999999,
+            0,
+            0,
+            0});
+            this.heal.Name = "heal";
+            this.heal.Size = new System.Drawing.Size(61, 20);
+            this.heal.TabIndex = 13;
+            this.heal.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.heal.ValueChanged += new System.EventHandler(this.heal_ValueChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(214, 174);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(29, 13);
+            this.label14.TabIndex = 12;
+            this.label14.Text = "Heal";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.description);
+            this.groupBox2.Controls.Add(this.label16);
+            this.groupBox2.Controls.Add(this.iconImage);
+            this.groupBox2.Controls.Add(this.icon);
+            this.groupBox2.Controls.Add(this.label15);
+            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox2.Location = new System.Drawing.Point(12, 66);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(127, 305);
+            this.groupBox2.TabIndex = 14;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "General Info";
+            // 
+            // description
+            // 
+            this.description.Location = new System.Drawing.Point(6, 185);
+            this.description.Name = "description";
+            this.description.Size = new System.Drawing.Size(115, 111);
+            this.description.TabIndex = 4;
+            this.description.Text = "";
+            this.description.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(27, 162);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(69, 15);
+            this.label16.TabIndex = 3;
+            this.label16.Text = "Description";
+            // 
+            // iconImage
+            // 
+            this.iconImage.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.iconImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.iconImage.Location = new System.Drawing.Point(31, 81);
+            this.iconImage.Name = "iconImage";
+            this.iconImage.Size = new System.Drawing.Size(64, 64);
+            this.iconImage.TabIndex = 2;
+            this.iconImage.TabStop = false;
+            // 
+            // icon
+            // 
+            this.icon.Location = new System.Drawing.Point(6, 45);
+            this.icon.Name = "icon";
+            this.icon.Size = new System.Drawing.Size(115, 21);
+            this.icon.TabIndex = 1;
+            this.icon.TextChanged += new System.EventHandler(this.icon_TextChanged);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(47, 24);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(30, 15);
+            this.label15.TabIndex = 0;
+            this.label15.Text = "Icon";
+            // 
             // Actions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(619, 403);
+            this.ClientSize = new System.Drawing.Size(744, 403);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.heal);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.groupBox1);
@@ -565,8 +634,8 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(635, 442);
-            this.MinimumSize = new System.Drawing.Size(635, 442);
+            this.MaximumSize = new System.Drawing.Size(760, 442);
+            this.MinimumSize = new System.Drawing.Size(760, 442);
             this.Name = "Actions";
             this.Text = "WebClash Server - Actions";
             this.Load += new System.EventHandler(this.Actions_Load);
@@ -580,13 +649,16 @@
             ((System.ComponentModel.ISupportInitialize)(this.speed)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.heal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.vitality)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.wisdom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.intelligence)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.toughness)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.agility)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.power)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.heal)).EndInit();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.iconImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -632,5 +704,11 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.NumericUpDown heal;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.PictureBox iconImage;
+        private System.Windows.Forms.TextBox icon;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.RichTextBox description;
+        private System.Windows.Forms.Label label16;
     }
 }
