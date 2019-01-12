@@ -330,6 +330,44 @@ exports.handleSocket = function(socket)
         
         items.usePlayerItem(socket, id, data);
     });
+    
+    socket.on('CLIENT_UNEQUIP_ITEM', function(data) {
+        //Check if valid player
+        
+        if (socket.playing === undefined || !socket.playing)
+            return;
+        
+        //Get player id
+        
+        let id = game.getPlayerIndex(socket.name);
+        
+        //Check if valid
+        
+        if (id == -1)
+            return;
+        
+        //Check if player has equipped item
+        
+        if (game.players[id].equipment[data] === undefined)
+            return;
+        
+        //Add item
+        
+        if (!items.addPlayerItem(socket, id, game.players[id].equipment[data]))
+            return;
+        
+        //Remove equipped item
+        
+        game.players[id].equipment[data] = undefined;
+        
+        //Sync to others
+    
+        server.syncPlayerPartially(id, 'equipment', socket, true);
+
+        //Sync to player
+
+        server.syncEquipmentItem(data, id, socket, false);
+    });
 };
 
 //Sync player partially function, if socket is undefined it will be globally emitted
@@ -560,13 +598,21 @@ exports.syncInventoryItem = function(slot, id, socket, broadcast)
 
 exports.syncEquipmentItem = function(equippable, id, socket, broadcast)
 {
-    let data = items.getItem(game.players[id].equipment[equippable]);
+    let data;
     
-    if (broadcast && data.equippableSource !== '') 
-        data = data.equippableSource;
-    
-    if (data === undefined)
-        return;
+    if (game.players[id].equipment[equippable] !== undefined) {
+        data = items.getItem(game.players[id].equipment[equippable]);
+
+        if (broadcast && data.equippableSource !== '') 
+            data = data.equippableSource;
+
+        if (data === undefined)
+            return;
+    } else
+        data = {
+            equippable: equippable,
+            remove: true
+        };
     
     if (socket === undefined) 
         io.to(data.map).emit('GAME_EQUIPMENT_UPDATE', data);

@@ -133,13 +133,6 @@ const ui = {
                 
             view.dom.innerHTML += 
                 '<div id="equipmentbar_box" class="box" style="position: absolute; top: 50%; left: 100%; margin-left: -83px; margin-top: -250px; width: 48px; height: 335px; text-align: center;">' +
-                    '<div class="slot" id="equipmentbar_slot0"></div>' +
-                    '<div class="slot" id="equipmentbar_slot1"></div>' +
-                    '<div class="slot" id="equipmentbar_slot2"></div>' +
-                    '<div class="slot" id="equipmentbar_slot3"></div>' +
-                    '<div class="slot" id="equipmentbar_slot4"></div>' +
-                    '<div class="slot" id="equipmentbar_slot5"></div>' +
-                    '<div class="slot" id="equipmentbar_slot6"></div>' +
                 '</div>';
 
             this.slots = [
@@ -151,6 +144,12 @@ const ui = {
                 'equipmentbar_slot5',
                 'equipmentbar_slot6'
             ];
+            
+            for (let i = 0; i < this.slots.length; i++) {
+                let equippable = this.getEquippableAtIndex(i);
+                
+                document.getElementById('equipmentbar_box').innerHTML += '<div class="slot" id="' + this.slots[i] + '" onmouseover="ui.inventory.displayBox(\'' + equippable + '\')" onmousedown="player.unequip(\'' + equippable + '\')" onmouseleave="ui.inventory.removeBox()"></div>';
+            }
             
             this.reload();
         },
@@ -204,6 +203,24 @@ const ui = {
             }
             
             return -1;
+        },
+        getEquippableAtIndex: function(index) {
+            switch (index) {
+                case 0:
+                    return 'head';
+                case 1:
+                    return 'torso';
+                case 2:
+                    return 'hands';
+                case 3:
+                    return 'legs';
+                case 4:
+                    return 'feet';
+                case 5:
+                    return 'main';
+                case 6:
+                    return 'offhand';
+            }
         }
     },
     inventory: {
@@ -289,7 +306,7 @@ const ui = {
             }
         },
         displayBox: function(slot) {
-            if (player.inventory[slot] === undefined)
+            if (player.inventory[slot] === undefined && player.equipment[slot] === undefined)
                 return;
             
             let el = document.getElementById('displayBox');
@@ -297,11 +314,20 @@ const ui = {
             if (el != undefined)
                 return;
             
-            let color = this.getItemColor(player.inventory[slot].rarity);
+            let item = player.inventory[slot];
+            
+            if (item === undefined) 
+                item = player.equipment[slot];
+            
+            let color = this.getItemColor(item.rarity);
             let note = '';
 
-            if (player.inventory[slot].equippable !== 'none')
-                note = '(Click to equip)';
+            if (item.equippable !== 'none') {
+                if (player.equipment[slot] === undefined)
+                    note = '(Click to equip)';
+                else
+                    note = '(Click to unequip)';
+            }
 
             let displayBox = document.createElement('div');
 
@@ -309,10 +335,10 @@ const ui = {
             displayBox.classList.add('box');
             displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 16px; height: auto; text-align: center;';
             displayBox.innerHTML =
-                    '<font class="header" style="font-size: 15px; color: ' + color + ';">' + player.inventory[slot].name + '</font><br>' + 
-                    '<font class="info" style="position: relative; top: 8px;">' + player.inventory[slot].description + '</font><br>' +
+                    '<font class="header" style="font-size: 15px; color: ' + color + ';">' + item.name + '</font><br>' + 
+                    '<font class="info" style="position: relative; top: 8px;">' + item.description + '</font><br>' +
                     '<font class="info" style="position: relative; top: 10px; font-size: 11px;">' + note + '</font><br>' +
-                    '<font class="info" style="position: relative; top: 10px; font-size: 11px; color: yellow;">' + player.inventory[slot].value + ' Gold</font><br>';
+                    '<font class="info" style="position: relative; top: 10px; font-size: 11px; color: yellow;">' + item.value + ' Gold</font><br>';
 
             view.dom.appendChild(displayBox);
 

@@ -80,10 +80,14 @@ const player = {
         ui.actionbar.reload();
     },
     setEquipment: function(equipment) {
-        this.equipment[equipment.equippable] = equipment;  
-        
-        if (equipment.equippableSource !== '')
-            this.equipment[equipment.equippable]._sprite = new lx.Sprite(equipment.equippableSource);
+        if (equipment.remove === undefined || !equipment.remove) {
+            this.equipment[equipment.equippable] = equipment;  
+            
+            if (equipment.equippableSource !== '')
+                this.equipment[equipment.equippable]._sprite = new lx.Sprite(equipment.equippableSource);
+        } 
+        else
+            this.equipment[equipment.equippable] = undefined;
     },
     faceMouse: function() {
         let dx = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-lx.GetDimensions().width/2,
@@ -97,6 +101,12 @@ const player = {
             else this.forceFrame.start(3);
         
         this.sync('direction');
+    },
+    unequip: function(equippable) {
+        if (this.equipment[equippable] === undefined)
+            return;
+        
+        socket.emit('CLIENT_UNEQUIP_ITEM', equippable);
     },
     update: function() {
         this.POS.X = Math.round(this.POS.X);
