@@ -90,6 +90,8 @@ const client = {
                  game.players[id]._stats = data.stats;
              if (data.health !== undefined)
                  game.setPlayerHealth(id, data.health);
+             if (data.equipment !== undefined)
+                 game.setPlayerEquipment(id, data.equipment);
              if (data.actions !== undefined)
                  player.setActions(data.actions);
              if (data.character !== undefined) {

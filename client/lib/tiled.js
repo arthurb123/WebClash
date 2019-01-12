@@ -36,6 +36,11 @@ const tiled = {
         
         this.checkObjects(map);
         
+        //Create offset width and height
+        
+        let offset_width = -map.width*map.tilewidth/2,
+            offset_height = -map.height*map.tileheight/2;
+        
         //Add OnLayerDraw events based on
         //the map content
     
@@ -43,9 +48,6 @@ const tiled = {
             const data = map.layers[l].data,
                   width = map.layers[l].width,
                   height = map.layers[l].height;
-            
-            let offset_width = -map.width*map.tilewidth/2,
-                offset_height = -map.height*map.tileheight/2;
             
             if (map.layers[l].offsetx !== undefined) offset_width += map.layers[l].offsetx;
             if (map.layers[l].offsety !== undefined) offset_height += map.layers[l].offsety;
@@ -89,6 +91,11 @@ const tiled = {
                         y: Math.floor(t / width) * map.tileheight       
                     };
                     
+                    //Tile clip coordinates artefact prevention
+                    
+                    if (tc.x == -map.tilewidth)
+                        tc.x = sprite.Size().W - map.tilewidth;
+                    
                     //Draw tile
                     
                     lx.DrawSprite(
@@ -105,9 +112,9 @@ const tiled = {
         }
         
         //Execute after load queue
-        
+
         this.queue.forEach(function(cb) {
-            cb.cb(cb.parameter); 
+            cb.cb(cb.parameter, offset_width, offset_height); 
         });
         this.queue = [];
         
@@ -254,18 +261,24 @@ const tiled = {
                     }
                 };
             case "positionX":
-                return function(go) {
+                return function(go, ow, oh) {
                     if (go === game.players[game.player])
                     {
-                        go.POS.X = Math.floor(property.value*tileset.tilewidth+offset_width);
+                        if (ow === undefined)
+                            ow = offset_width;
+                        
+                        go.POS.X = Math.floor(property.value*tileset.tilewidth+ow);
                         player.sync('position');
                     }
                 };
             case "positionY":
-                return function(go) {
+                return function(go, ow, oh) {
                     if (go === game.players[game.player])
                     {
-                        go.POS.Y = Math.floor(property.value*tileset.tileheight+offset_height)-go.Size().H/2;
+                        if (oh === undefined)
+                            oh = offset_height;
+                        
+                        go.POS.Y = Math.floor(property.value*tileset.tileheight+oh)-go.Size().H/2;
                         player.sync('position');
                     }
                 };

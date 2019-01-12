@@ -32,11 +32,23 @@ const game = {
                 
                 if (go._level !== undefined)
                     go._nameplate.Text('lvl ' + go._level + ' - ' + go.name);
+            })
+            .Draws(function() {
+                for (let i = 0; i < go._equipment.length; i++)
+                {
+                    if (go._equipment[i] === undefined)
+                        continue;
+                    
+                    go._equipment[i].CLIP = go.SPRITE.CLIP;
+                    
+                    lx.DrawSprite(go._equipment[i], go.Position().X, go.Position().Y, go.Size().W, go.Size().H)
+                }
             });
         
         go.name = name;
         go._moving = false;
         go._direction = 0;
+        go._equipment = {};
         
         go._nameplate = new lx.UIText(name, 0, 0, 14)
             .Alignment('center')
@@ -93,6 +105,20 @@ const game = {
         }
         
         this.players[id]._health = health;
+    },
+    setPlayerEquipment: function(id, equipment)
+    {
+        let result = [];
+        
+        for (let e in equipment)
+        {
+            if (equipment[e] === undefined)
+                continue;
+            
+            result[result.length] = new lx.Sprite(equipment[e]);
+        }
+        
+        this.players[id]._equipment = result;
     },
     removePlayer: function(id) 
     {
