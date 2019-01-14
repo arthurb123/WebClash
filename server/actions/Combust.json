@@ -1,0 +1,1 @@
+{"sw":320,"sh":320,"name":"Combust","src":"res/icons/1.png","description":"You better be careful with that.","scaling":{"power":0.0,"agility":0.0,"intelligence":0.25,"wisdom":0.1,"toughness":0.0,"vitality":0.0},"elements":[{"x":139,"y":193,"w":48,"h":48,"src":"res/actions/11.png","speed":1,"direction":"horizontal"}],"heal":0}

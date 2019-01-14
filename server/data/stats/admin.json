@@ -2,8 +2,8 @@
  "map": "1",
  "char_name": "player",
  "pos": {
-  "X": 122,
-  "Y": 55
+  "X": 0,
+  "Y": 0
  },
  "moving": false,
  "direction": 0,
@@ -23,17 +23,11 @@
    "wisdom": 1
   }
  },
- "actions": [
-  {
-   "name": "Slash",
-   "src": "res/icons/slash.png"
-  }
- ],
+ "actions": [],
  "inventory": [
-  null,
-  "Heavy Axe"
+  "Sword",
+  "Magic Axe",
+  "Iron Helm"
  ],
- "equipment": {
-  "main": "Sword"
- }
+ "equipment": {}
 }

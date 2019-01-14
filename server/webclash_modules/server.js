@@ -351,10 +351,36 @@ exports.handleSocket = function(socket)
         if (game.players[id].equipment[data] === undefined)
             return;
         
+        //Get item        
+        
+        let item = items.getItem(game.players[id].equipment[data]);
+        
+        //Check if valid
+        
+        if (item === undefined)
+            return;
+        
         //Add item
         
         if (!items.addPlayerItem(socket, id, game.players[id].equipment[data]))
             return;
+        
+        //Check if equipment has action
+        
+        if (item.equippableAction !== undefined)
+            for (let a = 0; a < game.players[id].actions.length; a++)
+                if (game.players[id].actions[a].name === item.equippableAction)
+                    {
+                        //Remove equipped action
+                        
+                        game.players[id].actions[a] = undefined;
+                        
+                        //Sync to player
+                        
+                        server.syncPlayerPartially(id, 'actions', socket, false);
+                        
+                        break;
+                    }
         
         //Remove equipped item
         

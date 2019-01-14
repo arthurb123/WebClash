@@ -114,7 +114,7 @@ const ui = {
                 document.getElementById(this.slots[i]).innerHTML = '';
             
             for (let a = 0; a < player.actions.length; a++) {
-                if (player.actions[a] === undefined)
+                if (player.actions[a] == undefined)
                     continue;
                 
                 let uses = '';
@@ -426,6 +426,20 @@ const ui = {
                 Math.random()*target.Size().H,
                 14,
                 'red'
+            );
+            
+            t.Follows(target);
+            
+            this.add(t, 30);
+        },
+        missFloaty: function(target, delta)
+        {
+            let t = new lx.UIText(
+                delta,
+                Math.random()*target.Size().W,
+                Math.random()*target.Size().H,
+                14,
+                'silver'
             );
             
             t.Follows(target);

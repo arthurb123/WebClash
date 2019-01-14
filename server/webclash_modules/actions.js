@@ -90,11 +90,17 @@ exports.createPlayerAction = function(name, id)
 {
     let a_id = this.getActionIndex(name);
     
+    //Check if valid
+    
     if (a_id == -1)
         return false;
     
+    //Check if player has the action
+    
     if (!this.hasPlayerAction(name, id))
         return false;
+    
+    //Generate action data
     
     let actionData = {
         pos: game.calculateFace(
@@ -107,6 +113,8 @@ exports.createPlayerAction = function(name, id)
         elements: JSON.parse(JSON.stringify(this.collection[a_id].elements))
     };
     
+    //Positional correction
+    
     if (game.players[id].direction == 1 ||
         game.players[id].direction == 2)
          for (let e = 0; e < actionData.elements.length; e++) {
@@ -116,23 +124,30 @@ exports.createPlayerAction = function(name, id)
              actionData.elements[e].y = x+game.players[id].character.height;
              
              if (game.players[id].direction == 1)
-                 actionData.elements[e].x = this.collection[a_id].sw-actionData.elements[e].x;
+                 actionData.elements[e].x = this.collection[a_id].sw-actionData.elements[e].x-actionData.elements[e].w+game.players[id].character.width;
              else 
                  actionData.elements[e].x -= game.players[id].character.width;
          }
     
     if (game.players[id].direction == 3)
-        for (let e = 0; e < actionData.elements.length; e++) {
-             actionData.elements[e].y = this.collection[a_id].sh-(actionData.elements[e].y-game.players[id].character.height);
-         }
+        for (let e = 0; e < actionData.elements.length; e++)
+             actionData.elements[e].y = this.collection[a_id].sh-actionData.elements[e].y-actionData.elements[e].h+game.players[id].character.height*2;
+    
+    //Set action data position
     
     actionData.pos.X+=game.players[id].character.width/2-this.collection[a_id].sw/2;
     actionData.pos.Y+=-this.collection[a_id].sh/2-game.players[id].character.height/2;
     
+    //Damage NPCs
+    
     this.damageNPCs(game.players[id].stats.attributes, actionData, this.collection[a_id]);
+    
+    //Check for healing
     
     if (this.collection[a_id].heal > 0)
         this.healPlayers(actionData, this.collection[a_id].heal);
+    
+    //Sync action
     
     server.syncAction(actionData);
 };

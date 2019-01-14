@@ -63,6 +63,12 @@ const game = {
         if (this.players[id]._health !== undefined) {
             let delta = -(this.players[id]._health.cur-health.cur);
             
+            if (delta == 0) {
+                //Miss floaty
+                
+                ui.floaties.missFloaty(this.players[id], delta);
+            }
+            
             if (delta > 0) {
                 //Heal floaty
                 
