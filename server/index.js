@@ -26,8 +26,8 @@ global.properties = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
 global.permissions = JSON.parse(fs.readFileSync('permissions.json', 'utf-8'));
 
 game.loadAllCharacters(function() {
-    items.loadAllItems(function() {
-        actions.loadAllActions(function() {
+    actions.loadAllActions(function() {
+        items.loadAllItems(function() {
             tiled.loadAllMaps(function() {
                 startServer();
             });

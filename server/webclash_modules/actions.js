@@ -4,10 +4,19 @@ const fs = require('fs');
 
 exports.collection = [];
 
+exports.getAction = function(name)
+{
+    let id = this.getActionIndex(name);
+    if (id == -1)
+        return;
+    
+    return this.collection[id];
+};
+
 exports.getActionIndex = function(name)
 {
     for (let i = 0; i < this.collection.length; i++)
-        if (this.collection[i].name == name)
+        if (this.collection[i].name === name)
             return i;
     
     return -1;

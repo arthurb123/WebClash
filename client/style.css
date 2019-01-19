@@ -90,6 +90,13 @@ canvas {
     pointer-events: auto;
 }
 
+.inner-box {
+    border-radius: 2px;
+    background-color: rgba(58, 58, 58, .75);
+    box-shadow: 0px 2px 1px rgba(0,0,0,0.125);
+    pointer-events: auto;
+}
+
 .content {
     border-radius: 2px;
     background-color: rgba(65, 65, 65, .85);
@@ -113,6 +120,11 @@ canvas {
 .slot:hover {
     opacity: .85;
     cursor: pointer;
+}
+
+.thumb {
+    width: 20px;
+    height: 20px;
 }
 
 /* Overlay style - customization is not advised */

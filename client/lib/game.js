@@ -264,12 +264,22 @@ const game = {
                     size
                 );
                 
-                blood.MaxVelocity(3);
-                blood.AddVelocity(Math.round(Math.random()*-3+Math.random()*3), Math.round(Math.random()*-3+Math.random()*3));
+                blood.Movement(Math.random()*-(this.npcs[id].SIZE.W/32)+Math.random()*(this.npcs[id].SIZE.W/32), this.npcs[id].SIZE.H/48);
+                
+                blood._timer = {
+                    cur: 0,
+                    standard: this.npcs[id].SIZE.H
+                };
                 
                 blood.Loops(function() {
-                    if (blood.Movement().VX == 0 && blood.Movement().VY == 0)
+                    if (this._timer.cur >= this._timer.standard)
+                    {
+                        this._timer.cur = 0;
+                        
                         blood.Hide();
+                    } 
+                    else
+                        this._timer.cur++;
                 });
                 
                 blood.Show(1+Math.round(Math.random()));

@@ -1,5 +1,7 @@
 {
- "admins": ["admin"],
+ "admins": [
+  "admin"
+ ],
  "banned": [],
  "censoredWords": [
   "<",

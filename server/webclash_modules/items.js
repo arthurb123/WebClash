@@ -16,7 +16,7 @@ exports.getItem = function(name)
 exports.getItemIndex = function(name)
 {
     for (let i = 0; i < this.collection.length; i++)
-        if (this.collection[i].name == name)
+        if (this.collection[i].name === name)
             return i;
     
     return -1;
@@ -48,7 +48,22 @@ exports.loadAllItems = function(cb)
 exports.loadItem = function(location)
 {
     try {
-        return JSON.parse(fs.readFileSync(location, 'utf-8'));
+        //Create object
+        
+        let object = JSON.parse(fs.readFileSync(location, 'utf-8'));
+        
+        //Create equippable icon if equippable action exists
+        
+        if (object.equippableAction.length > 0)
+        {
+            let action = actions.getAction(object.equippableAction);
+            
+            if (action !== undefined)
+                object.equippableActionIcon = action.src;
+        }
+        //Return object
+        
+        return object;
     }
     catch (err)
     {
