@@ -51,7 +51,10 @@ exports.exists = function(dir, name, cb) {
 exports.save = function(dir, name, data) {
     try 
     {
-        fs.writeFile('data/' + dir + '/' + name + '.json', JSON.stringify(data, null, 1), 'utf8');
+        fs.writeFile('data/' + dir + '/' + name + '.json', JSON.stringify(data, null, 1), 'utf8', function(err) {
+            if (err)
+                throw err;
+        });
     }
     catch (err)
     {

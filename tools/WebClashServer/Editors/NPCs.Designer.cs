@@ -214,11 +214,6 @@
             // range
             // 
             this.range.Location = new System.Drawing.Point(286, 25);
-            this.range.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.range.Name = "range";
             this.range.Size = new System.Drawing.Size(60, 21);
             this.range.TabIndex = 3;

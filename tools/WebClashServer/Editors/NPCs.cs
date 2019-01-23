@@ -312,6 +312,8 @@ namespace WebClashServer.Editors
                 character = temp.character;
 
                 stats = temp.stats;
+
+                range = temp.range;
             }
             catch (Exception e)
             {

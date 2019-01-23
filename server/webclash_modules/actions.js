@@ -45,10 +45,7 @@ exports.addPlayerAction = function(socket, name, id)
     
     for (let a = 0; a < 7; a++)
         if (game.players[id].actions[a] === undefined) {
-            game.players[id].actions[a] = {
-                name: name,
-                source: this.collection[a_id].src
-            };
+            game.players[id].actions[a] = this.createPlayerSlotAction(name, a_id);
                 
             break;
         }
@@ -67,10 +64,7 @@ exports.setPlayerAction = function(socket, name, position, id)
     if (a_id == -1)
         return false;
     
-    game.players[id].actions[position] = {
-        name: name,
-        src: this.collection[a_id].src
-    };
+    game.players[id].actions[position] = this.createPlayerSlotAction(name, a_id);
     
     server.syncPlayerPartially(id, 'actions', socket, false);
     
@@ -93,6 +87,15 @@ exports.removePlayerAction = function(socket, name, id)
     server.syncPlayerPartially(id, 'actions', socket, false);
     
     return true;
+};
+
+exports.createPlayerSlotAction = function(name, id)
+{
+    return {
+        name: name,
+        description: this.collection[id].description,
+        src: this.collection[id].src
+    };
 };
 
 exports.createPlayerAction = function(name, id)

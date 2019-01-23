@@ -2,8 +2,8 @@
  "map": "1",
  "char_name": "player",
  "pos": {
-  "X": -68,
-  "Y": 67
+  "X": 0,
+  "Y": 0
  },
  "moving": false,
  "direction": 0,
@@ -23,18 +23,11 @@
    "wisdom": 1
   }
  },
- "actions": [
-  {
-   "name": "Combust",
-   "src": "res/icons/1.png"
-  }
- ],
+ "actions": [],
  "inventory": [
   "Sword",
-  null,
+  "Magic Axe",
   "Iron Helm"
  ],
- "equipment": {
-  "main": "Magic Axe"
- }
+ "equipment": {}
 }

@@ -122,8 +122,55 @@ const ui = {
                     uses = '<font class="info" style="position: absolute; top: 25px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%;">' + player.actions[a].uses + '/' + player.actions[a].max + '</font>';
                 
                 document.getElementById(this.slots[a]).innerHTML = 
-                    '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' + uses;
+                    '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;" onmouseover="ui.actionbar.displayBox(' + a + ')" onmouseleave="ui.actionbar.removeBox()"/>' + uses;
             }
+        },
+        displayBox: function(slot) {
+            if (player.actions[slot] === undefined)
+                return;
+            
+            //Element
+            
+            let el = document.getElementById('displayBox');
+            
+            if (el != undefined)
+                return;
+
+            //Create displabox
+            
+            let displayBox = document.createElement('div');
+
+            displayBox.id = 'displayBox';
+            displayBox.classList.add('box');
+            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 16px; height: auto; text-align: center;';
+            displayBox.innerHTML =
+                    '<font class="header" style="font-size: 15px;">' + player.actions[slot].name + '</font><br>' + 
+                    '<font class="info" style="position: relative; top: 8px;">' + player.actions[slot].description + '</font><br>';
+
+            //Append
+            
+            view.dom.appendChild(displayBox);
+            
+            //Create mouse following
+
+            el = document.getElementById('displayBox');
+            
+            el.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-el.offsetWidth/2;
+            el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight-8;
+
+            this.displayBoxLoopID = lx.GAME.ADD_LOOPS(function() {
+                 el.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-el.offsetWidth-8;
+                 el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight;
+            });
+        },
+        removeBox: function() {
+            if (document.getElementById('displayBox') == null ||
+               this.displayBoxLoopID === undefined)
+                return;
+            
+            lx.ClearLoop(this.displayBoxLoopID);
+            
+            document.getElementById('displayBox').remove();
         }
     },
     equipment: {

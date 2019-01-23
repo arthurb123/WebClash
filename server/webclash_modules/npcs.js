@@ -239,6 +239,27 @@ exports.updateNPCMovement = function(map, id)
             //Set random direction
 
             this.onMap[map][id].direction = Math.round(Math.random()*3);
+            
+            //Check range
+            
+            if (this.onMap[map][id].data.range != 0) 
+            {
+                //Grab delta
+                
+                let dx = Math.round((this.onMap[map][id].pos.X-this.onMap[map][id].start_pos.X)/tiled.maps[map].tilewidth);
+                let dy = Math.round((this.onMap[map][id].pos.Y-this.onMap[map][id].start_pos.Y)/tiled.maps[map].tileheight);
+                
+                //Check delta x and y in range
+                
+                if (dx >= this.onMap[map][id].data.range)
+                    this.onMap[map][id].direction = 1;
+                else if (dx <= -this.onMap[map][id].data.range)
+                    this.onMap[map][id].direction = 2;
+                else if (dy >= this.onMap[map][id].data.range)
+                    this.onMap[map][id].direction = 3;
+                else if (dy <= -this.onMap[map][id].data.range)
+                    this.onMap[map][id].direction = 0;
+            }
 
             //Check facing collision
             

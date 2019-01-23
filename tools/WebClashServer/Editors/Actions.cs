@@ -421,6 +421,9 @@ namespace WebClashServer.Editors
         {
             bool done = false;
 
+            if (current == null)
+                return;
+
             for (int i = 0; i < current.elements.Length; i++)
             {
                 if (current.elements[i].src.Length == 0)
@@ -581,12 +584,12 @@ namespace WebClashServer.Editors
 
     public class Scaling
     {
-        public float power = 0,
-                   agility = 0,
-                   intelligence = 0,
-                   wisdom = 0,
-                   toughness = 0,
-                   vitality = 0;
+        public float power = 0.0f,
+                   agility = 0.0f,
+                   intelligence = 0.0f,
+                   wisdom = 0.0f,
+                   toughness = 0.0f,
+                   vitality = 0.0f;
     }
     
     public class Element
