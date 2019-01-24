@@ -143,6 +143,7 @@
             this.dialogButton.TabIndex = 15;
             this.dialogButton.Text = "Edit Dialog";
             this.dialogButton.UseVisualStyleBackColor = true;
+            this.dialogButton.Click += new System.EventHandler(this.dialogButton_Click);
             // 
             // name
             // 
@@ -435,6 +436,7 @@
             this.editActions.TabIndex = 2;
             this.editActions.Text = "Edit Actions";
             this.editActions.UseVisualStyleBackColor = true;
+            this.editActions.Click += new System.EventHandler(this.editActions_Click);
             // 
             // level
             // 

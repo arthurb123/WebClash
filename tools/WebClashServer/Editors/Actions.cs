@@ -133,6 +133,8 @@ namespace WebClashServer.Editors
 
             heal.Value = current.heal;
 
+            cooldown.Value = current.cooldown * 16;
+
             canvas.Invalidate();
         }
 
@@ -517,6 +519,11 @@ namespace WebClashServer.Editors
             iconImage.BackgroundImage = Image.FromFile(location);
             current.src = icon.Text;
         }
+
+        private void cooldown_ValueChanged(object sender, EventArgs e)
+        {
+            current.cooldown = (int)(cooldown.Value / 16);
+        }
     }
 
     public class Action
@@ -541,6 +548,8 @@ namespace WebClashServer.Editors
                 src = temp.src;
 
                 description = temp.description;
+
+                cooldown = temp.cooldown;
             }
             catch (Exception e)
             {
@@ -580,6 +589,8 @@ namespace WebClashServer.Editors
         public Element[] elements = new Element[0];
 
         public int heal = 0;
+
+        public int cooldown = 0;
     }
 
     public class Scaling

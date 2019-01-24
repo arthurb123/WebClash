@@ -156,11 +156,11 @@ const ui = {
             el = document.getElementById('displayBox');
             
             el.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-el.offsetWidth/2;
-            el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight-8;
+            el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight-12;
 
             this.displayBoxLoopID = lx.GAME.ADD_LOOPS(function() {
-                 el.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-el.offsetWidth-8;
-                 el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight;
+                el.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-el.offsetWidth/2;
+                el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight-12;
             });
         },
         removeBox: function() {

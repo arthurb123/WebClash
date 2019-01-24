@@ -150,7 +150,7 @@ const player = {
                 player.sync('moving');
             }
         }
-        
+    
         animation.animateMoving(this);
     },
     draws: function() {

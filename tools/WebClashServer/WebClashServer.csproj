@@ -60,11 +60,11 @@
     <Compile Include="Editors\Actions.Designer.cs">
       <DependentUpon>Actions.cs</DependentUpon>
     </Compile>
-    <Compile Include="Editors\NPCs.cs">
+    <Compile Include="Editors\ActionSelection.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Editors\NPCs.Designer.cs">
-      <DependentUpon>NPCs.cs</DependentUpon>
+    <Compile Include="Editors\ActionSelection.Designer.cs">
+      <DependentUpon>ActionSelection.cs</DependentUpon>
     </Compile>
     <Compile Include="Editors\Characters.cs">
       <SubType>Form</SubType>
@@ -84,6 +84,12 @@
     <Compile Include="Editors\Items.Designer.cs">
       <DependentUpon>Items.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\NPCs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\NPCs.Designer.cs">
+      <DependentUpon>NPCs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,8 +101,8 @@
     <EmbeddedResource Include="Editors\Actions.resx">
       <DependentUpon>Actions.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Editors\NPCs.resx">
-      <DependentUpon>NPCs.cs</DependentUpon>
+    <EmbeddedResource Include="Editors\ActionSelection.resx">
+      <DependentUpon>ActionSelection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\Characters.resx">
       <DependentUpon>Characters.cs</DependentUpon>
@@ -106,6 +112,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\Items.resx">
       <DependentUpon>Items.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\NPCs.resx">
+      <DependentUpon>NPCs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
@@ -136,5 +145,6 @@
   <ItemGroup>
     <Content Include="icon.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

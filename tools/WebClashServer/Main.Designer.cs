@@ -117,35 +117,35 @@
             // itemsToolStripMenuItem
             // 
             this.itemsToolStripMenuItem.Name = "itemsToolStripMenuItem";
-            this.itemsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.itemsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.itemsToolStripMenuItem.Text = "Items";
             this.itemsToolStripMenuItem.Click += new System.EventHandler(this.itemsToolStripMenuItem_Click);
             // 
             // charactersToolStripMenuItem
             // 
             this.charactersToolStripMenuItem.Name = "charactersToolStripMenuItem";
-            this.charactersToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.charactersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.charactersToolStripMenuItem.Text = "Characters";
             this.charactersToolStripMenuItem.Click += new System.EventHandler(this.charactersToolStripMenuItem_Click);
             // 
             // NPCsToolStripMenuItem
             // 
             this.NPCsToolStripMenuItem.Name = "NPCsToolStripMenuItem";
-            this.NPCsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.NPCsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.NPCsToolStripMenuItem.Text = "NPCs";
             this.NPCsToolStripMenuItem.Click += new System.EventHandler(this.NPCsToolStripMenuItem_Click);
             // 
             // actionsToolStripMenuItem
             // 
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
-            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.actionsToolStripMenuItem.Text = "Actions";
             this.actionsToolStripMenuItem.Click += new System.EventHandler(this.actionsToolStripMenuItem_Click);
             // 
             // mapsToolStripMenuItem
             // 
             this.mapsToolStripMenuItem.Name = "mapsToolStripMenuItem";
-            this.mapsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.mapsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.mapsToolStripMenuItem.Text = "Maps";
             this.mapsToolStripMenuItem.Click += new System.EventHandler(this.mapsToolStripMenuItem_Click);
             // 

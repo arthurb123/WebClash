@@ -152,7 +152,7 @@ exports.createPlayerAction = function(name, id)
     
     //Damage NPCs
     
-    this.damageNPCs(game.players[id].stats.attributes, actionData, this.collection[a_id]);
+    this.damageNPCs(id, game.players[id].stats.attributes, actionData, this.collection[a_id]);
     
     //Check for healing
     
@@ -162,6 +162,70 @@ exports.createPlayerAction = function(name, id)
     //Sync action
     
     server.syncAction(actionData);
+};
+
+exports.createNPCAction = function(name, map, id)
+{
+    let a_id = this.getActionIndex(name);
+    
+    //Check if valid
+    
+    if (a_id == -1)
+        return false;
+    
+    //Generate action data
+    
+    let actionData = {
+        pos: game.calculateFace(
+            npcs.onMap[map][id].pos, 
+            npcs.onMap[map][id].data.character.width,
+            npcs.onMap[map][id].data.character.height,
+            npcs.onMap[map][id].direction
+        ),
+        map: map,
+        elements: JSON.parse(JSON.stringify(this.collection[a_id].elements))
+    };
+    
+    //Positional correction
+    
+    if (npcs.onMap[map][id].direction == 1 ||
+        npcs.onMap[map][id].direction == 2)
+         for (let e = 0; e < actionData.elements.length; e++) {
+             let x = actionData.elements[e].x;
+             
+             actionData.elements[e].x = actionData.elements[e].y;
+             actionData.elements[e].y = x+npcs.onMap[map][id].data.character.height;
+             
+             if (npcs.onMap[map][id].direction == 1)
+                 actionData.elements[e].x = this.collection[a_id].sw-actionData.elements[e].x-actionData.elements[e].w+npcs.onMap[map][id].data.character.width;
+             else 
+                 actionData.elements[e].x -= npcs.onMap[map][id].data.character.width;
+         }
+    
+    if (npcs.onMap[map][id].direction == 3)
+        for (let e = 0; e < actionData.elements.length; e++)
+             actionData.elements[e].y = this.collection[a_id].sh-actionData.elements[e].y-actionData.elements[e].h+npcs.onMap[map][id].data.character.height*2;
+    
+    //Set action data position
+    
+    actionData.pos.X+=npcs.onMap[map][id].data.character.width/2-this.collection[a_id].sw/2;
+    actionData.pos.Y+=-this.collection[a_id].sh/2-npcs.onMap[map][id].data.character.height/2;
+    
+    //Damage players
+    
+    //...
+    
+    //Check for healing
+    
+    //...
+    
+    //Sync action
+    
+    server.syncAction(actionData);
+    
+    //Set NPC cooldown
+    
+    npcs.onMap[map][id].combat_cooldown.start(this.collection[a_id].cooldown);
 };
 
 exports.loadAllActions = function(cb)
@@ -195,7 +259,7 @@ exports.loadAction = function(location)
     }
 };
 
-exports.damageNPCs = function(stats, actionData, action)
+exports.damageNPCs = function(owner, stats, actionData, action)
 {
     for (let e = 0; e < actionData.elements.length; e++)
         for (let n = 0; n < npcs.onMap[actionData.map].length; n++)
@@ -219,7 +283,7 @@ exports.damageNPCs = function(stats, actionData, action)
             };
 
             if (tiled.checkRectangularCollision(actionRect, npcRect)) 
-                npcs.damageNPC(actionData.map, n, this.calculateDamage(stats, action.scaling));
+                npcs.damageNPC(owner, actionData.map, n, this.calculateDamage(stats, action.scaling));
         }
 };
 

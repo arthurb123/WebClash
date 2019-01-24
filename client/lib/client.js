@@ -220,7 +220,7 @@ const client = {
              }
         });
         socket.on('GAME_INVENTORY_UPDATE', function(data) {
-            //Check if the recieved data is valid
+             //Check if the recieved data is valid
             
              if (data === undefined)
                  return;

@@ -288,6 +288,24 @@ namespace WebClashServer.Editors
         {
             current.health.cur = current.health.max = (int)health.Value;
         }
+
+        private void editActions_Click(object sender, EventArgs e)
+        {
+            ActionSelection actionSelection = new ActionSelection("Set actions for '" + current.name + "'", current.actions);
+
+            actionSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                current.actions = actionSelection.GetSelection();
+            };
+
+            actionSelection.ShowDialog();
+        }
+
+        private void dialogButton_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("NPC dialog has not been implemented yet.", "WebClash Server - Oof");
+
+            //...
+        }
     }
 
     public class NPC
@@ -314,6 +332,8 @@ namespace WebClashServer.Editors
                 stats = temp.stats;
 
                 range = temp.range;
+
+                actions = temp.actions;
             }
             catch (Exception e)
             {
@@ -333,6 +353,8 @@ namespace WebClashServer.Editors
         public Stats stats = new Stats();
 
         public Health health = new Health();
+
+        public PossibleAction[] actions = new PossibleAction[0];
     }
 
     public class Stats
