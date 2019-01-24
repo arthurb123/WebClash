@@ -67,9 +67,10 @@ const game = {
                 //Miss floaty
                 
                 ui.floaties.missFloaty(this.players[id], delta);
+                
+                return;
             }
-            
-            if (delta > 0) {
+            else if (delta > 0) {
                 //Heal floaty
                 
                 ui.floaties.healFloaty(this.players[id], delta);

@@ -213,7 +213,7 @@ exports.createNPCAction = function(possibleAction, map, id)
     
     //Damage players
     
-    //...
+    this.damagePlayers(npcs.onMap[map][id].data.stats, actionData, this.collection[a_id]);
     
     //Check for healing
     
@@ -286,6 +286,33 @@ exports.damageNPCs = function(owner, stats, actionData, action)
                 npcs.damageNPC(owner, actionData.map, n, this.calculateDamage(stats, action.scaling));
         }
 };
+
+exports.damagePlayers = function(stats, actionData, action)
+{
+    for (let e = 0; e < actionData.elements.length; e++)
+        for (let p = 0; p < game.players.length; p++)
+        {
+            if (tiled.getMapIndex(game.players[p].map) != actionData.map)
+                continue;
+            
+            let actionRect = {
+                x: actionData.pos.X+actionData.elements[e].x,
+                y: actionData.pos.Y+actionData.elements[e].y,
+                w: actionData.elements[e].w,
+                h: actionData.elements[e].h
+            };
+            
+            let playerRect = {
+                x: game.players[p].pos.X,
+                y: game.players[p].pos.Y,
+                w: game.players[p].character.width,
+                h: game.players[p].character.height
+            };
+            
+            if (tiled.checkRectangularCollision(actionRect, playerRect)) 
+                game.damagePlayer(p, this.calculateDamage(stats, action.scaling));
+        }
+}
 
 exports.healPlayers = function(actionData, action)
 {

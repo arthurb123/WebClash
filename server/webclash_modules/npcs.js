@@ -434,9 +434,17 @@ exports.updateNPCCombat = function(map, id)
         return;
     }
     
-    //Reset moving
+    //Reset moving if necessary
     
-    this.onMap[map][id].moving = false;
+    if (this.onMap[map][id]) {
+        //Reset
+        
+        this.onMap[map][id].moving = false;
+    
+        //Sync moving
+
+        server.syncNPCPartially(map, id, 'moving');
+    }
     
     //Perform action
     

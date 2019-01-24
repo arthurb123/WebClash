@@ -38,6 +38,7 @@ exports.addPlayer = function(socket)
         storage.load('stats', socket.name, function(player) {
             player.name = socket.name;
             player.character = game.characters[player.char_name];
+            player.socket = socket;
 
             //Add player
 
@@ -156,6 +157,37 @@ exports.savePlayer = function(name, data, cb)
         equipment: player.equipment
     });
 }
+
+exports.damagePlayer = function(id, damage)
+{
+    //Add damage
+    
+    this.players[id].health.cur += damage;
+    
+    //Check if player should die
+    
+    if (this.players[id].health.cur <= 0)
+    {
+        //---TEMP----
+        //reset player pos and send
+        //back to first map
+        
+        this.players[id].health.cur = this.players[id].health.max;
+        
+        server.syncPlayerPartially(id, 'health');
+        
+        this.players[id].pos.X = 0;
+        this.players[id].pos.Y = 0;
+         
+        this.loadMap(this.players[id].socket, tiled.maps[0].name);
+        
+        return;
+    }
+    
+    //Sync health
+
+    server.syncPlayerPartially(id, 'health');
+};
 
 exports.getPlayerIndex = function(name)
 {
