@@ -36,7 +36,10 @@
             this.actionSelect = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.range = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.extraCooldown = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.range)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.extraCooldown)).BeginInit();
             this.SuspendLayout();
             // 
             // actionList
@@ -113,11 +116,35 @@
             this.range.TabIndex = 12;
             this.range.ValueChanged += new System.EventHandler(this.range_ValueChanged);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(122, 64);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(54, 39);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Extra \r\nCooldown\r\n(ms)\r\n";
+            // 
+            // extraCooldown
+            // 
+            this.extraCooldown.Location = new System.Drawing.Point(177, 73);
+            this.extraCooldown.Maximum = new decimal(new int[] {
+            276447231,
+            23283,
+            0,
+            0});
+            this.extraCooldown.Name = "extraCooldown";
+            this.extraCooldown.Size = new System.Drawing.Size(104, 20);
+            this.extraCooldown.TabIndex = 14;
+            this.extraCooldown.ValueChanged += new System.EventHandler(this.extraCooldown_ValueChanged);
+            // 
             // ActionSelection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(293, 158);
+            this.Controls.Add(this.extraCooldown);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.range);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.actionSelect);
@@ -131,6 +158,7 @@
             this.Text = "ActionSelection";
             this.Load += new System.EventHandler(this.ActionSelection_Load);
             ((System.ComponentModel.ISupportInitialize)(this.range)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.extraCooldown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -145,5 +173,7 @@
         private System.Windows.Forms.ComboBox actionSelect;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown range;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.NumericUpDown extraCooldown;
     }
 }

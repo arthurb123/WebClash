@@ -110,8 +110,12 @@ const ui = {
             if (this.slots === undefined)
                 return;
             
-            for (let i = 0; i < this.slots.length; i++) 
+            for (let i = 0; i < this.slots.length; i++) {
+                if (document.getElementById(this.slots[i]) == undefined)
+                    continue;
+                
                 document.getElementById(this.slots[i]).innerHTML = '';
+            }
             
             for (let a = 0; a < player.actions.length; a++) {
                 if (player.actions[a] == undefined)

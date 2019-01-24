@@ -92,21 +92,29 @@ const game = {
                 
                 let blood = new lx.GameObject(
                     new lx.Sprite('res/particles/blood.png'),
-                    this.players[id].POS.X+this.players[id].SIZE.W/2,
-                    this.players[id].POS.Y+this.players[id].SIZE.H/2,
+                    this.players[id].POS.X+Math.round(Math.random()*this.players[id].SIZE.W),
+                    this.players[id].POS.Y+this.players[id].SIZE.H-4-Math.round(Math.random()*6),
                     size,
                     size
                 );
                 
-                blood.MaxVelocity(3);
-                blood.AddVelocity(Math.round(Math.random()*-3+Math.random()*3), Math.round(Math.random()*-3+Math.random()*3));
+                blood._timer = {
+                    cur: 0,
+                    standard: this.npcs[id].SIZE.H
+                };
                 
                 blood.Loops(function() {
-                    if (blood.Movement().VX == 0 && blood.Movement().VY == 0)
+                    if (this._timer.cur >= this._timer.standard)
+                    {
+                        this._timer.cur = 0;
+                        
                         blood.Hide();
+                    } 
+                    else
+                        this._timer.cur++;
                 });
                 
-                blood.Show(1+Math.round(Math.random()));
+                blood.Show(1);
             }
         }
         
@@ -258,13 +266,11 @@ const game = {
                 
                 let blood = new lx.GameObject(
                     new lx.Sprite('res/particles/blood.png'),
-                    this.npcs[id].POS.X+this.npcs[id].SIZE.W/2,
-                    this.npcs[id].POS.Y+this.npcs[id].SIZE.H/2,
+                    this.npcs[id].POS.X+Math.round(Math.random()*this.npcs[id].SIZE.W),
+                    this.npcs[id].POS.Y+this.npcs[id].SIZE.H-4-Math.round(Math.random()*6),
                     size,
                     size
                 );
-                
-                blood.Movement(Math.random()*-(this.npcs[id].SIZE.W/32)+Math.random()*(this.npcs[id].SIZE.W/32), this.npcs[id].SIZE.H/48);
                 
                 blood._timer = {
                     cur: 0,
@@ -282,7 +288,7 @@ const game = {
                         this._timer.cur++;
                 });
                 
-                blood.Show(1+Math.round(Math.random()));
+                blood.Show(1);
             }
         }
         

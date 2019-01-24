@@ -164,9 +164,9 @@ exports.createPlayerAction = function(name, id)
     server.syncAction(actionData);
 };
 
-exports.createNPCAction = function(name, map, id)
+exports.createNPCAction = function(possibleAction, map, id)
 {
-    let a_id = this.getActionIndex(name);
+    let a_id = this.getActionIndex(possibleAction.action);
     
     //Check if valid
     
@@ -225,7 +225,7 @@ exports.createNPCAction = function(name, map, id)
     
     //Set NPC cooldown
     
-    npcs.onMap[map][id].combat_cooldown.start(this.collection[a_id].cooldown);
+    npcs.onMap[map][id].combat_cooldown.start(this.collection[a_id].cooldown+possibleAction.extraCooldown);
 };
 
 exports.loadAllActions = function(cb)

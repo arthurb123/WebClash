@@ -434,15 +434,14 @@ exports.updateNPCCombat = function(map, id)
         return;
     }
     
-    //Reset movement
+    //Reset moving
     
-    this.onMap[map][id].movement.vel.x = 0;
-    this.onMap[map][id].movement.vel.y = 0;
+    this.onMap[map][id].moving = false;
     
     //Perform action
     
     actions.createNPCAction(
-        this.onMap[map][id].data.actions[nextAction].action, 
+        this.onMap[map][id].data.actions[nextAction], 
         map,
         id
     );

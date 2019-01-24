@@ -2,11 +2,11 @@
  "map": "1",
  "char_name": "player",
  "pos": {
-  "X": -63,
-  "Y": 179
+  "X": 0,
+  "Y": 0
  },
  "moving": false,
- "direction": 1,
+ "direction": 0,
  "health": {
   "cur": 100,
   "max": 100
@@ -23,20 +23,11 @@
    "wisdom": 1
   }
  },
- "actions": [
-  {
-   "name": "Combust",
-   "description": "You better be careful with that.",
-   "src": "res/icons/1.png"
-  }
- ],
+ "actions": [],
  "inventory": [
   "Sword",
-  null,
-  null
+  "Magic Axe",
+  "Iron Helm"
  ],
- "equipment": {
-  "head": "Iron Helm",
-  "main": "Magic Axe"
- }
+ "equipment": {}
 }

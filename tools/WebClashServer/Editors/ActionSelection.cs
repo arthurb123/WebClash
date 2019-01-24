@@ -45,6 +45,13 @@ namespace WebClashServer.Editors
             {
                 MessageBox.Show(exc.Message, "WebClash Server - Error");
             }
+
+            if (current == -1 &&
+                actions.Length > 0)
+                actionList.SelectedItem = actionList.Items[0];
+            else if (actions.Length > 0 &&
+                     current < actions.Length)
+                actionList.SelectedItem = actionList.Items[current];
         }
 
         private void ReloadActions()
@@ -80,6 +87,7 @@ namespace WebClashServer.Editors
 
             actionSelect.SelectedItem = actions[current].action;
             range.Value = actions[current].range;
+            extraCooldown.Value = actions[current].extraCooldown*16;
         }
 
         private void actionSelect_SelectedIndexChanged(object sender, EventArgs e)
@@ -122,6 +130,14 @@ namespace WebClashServer.Editors
             ReloadActionList(actions.ToArray());
         }
 
+        private void extraCooldown_ValueChanged(object sender, EventArgs e)
+        {
+            if (current == -1)
+                return;
+
+            actions[current].extraCooldown = (int)extraCooldown.Value / 16;
+        }
+
         public PossibleAction[] GetSelection()
         {
             return actions.ToArray();
@@ -132,5 +148,6 @@ namespace WebClashServer.Editors
     {
         public string action = "";
         public int range = 0;
+        public int extraCooldown = 0;
     }
 }
