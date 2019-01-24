@@ -469,6 +469,7 @@ exports.syncPlayer = function(id, socket, broadcast)
     this.syncPlayerPartially(id, 'position', socket, broadcast);
     this.syncPlayerPartially(id, 'direction', socket, broadcast);
     this.syncPlayerPartially(id, 'character', socket, broadcast);
+    this.syncPlayerPartially(id, 'equipment', socket, broadcast);
     this.syncPlayerPartially(id, 'level', socket, broadcast);
 };
 
