@@ -363,6 +363,10 @@ exports.updateNPCCombat = function(map, id)
             this.onMap[map][id].direction = 1;
         else if (dx > 0)
             this.onMap[map][id].direction = 2;
+        
+        //Reset vertical movement
+        
+        this.onMap[map][id].movement.y = 0;
     }
     else if (Math.abs(dx) < Math.abs(dy))
     {
@@ -372,6 +376,10 @@ exports.updateNPCCombat = function(map, id)
             this.onMap[map][id].direction = 3;
         else if (dy > 0)
             this.onMap[map][id].direction = 0;
+        
+        //Reset horizontal movement
+        
+        this.onMap[map][id].movement.x = 0;
     }
     else if (!this.onMap[map][id].moving)
     {
