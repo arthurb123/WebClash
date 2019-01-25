@@ -436,7 +436,7 @@ exports.updateNPCCombat = function(map, id)
     
     //Reset moving if necessary
     
-    if (this.onMap[map][id]) {
+    if (this.onMap[map][id].moving) {
         //Reset
         
         this.onMap[map][id].moving = false;
