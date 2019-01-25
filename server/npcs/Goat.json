@@ -1,1 +1,0 @@
-{"name":"Goat","movement":"free","range":4,"type":"hostile","character":"goat","stats":{"level":4,"power":1,"toughness":1,"agility":0,"wisdom":0,"intelligence":0,"vitality":0},"health":{"cur":100,"max":100},"actions":[{"action":"Slash","range":1,"extraCooldown":15}]}
