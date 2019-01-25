@@ -59,20 +59,31 @@ function startServer() {
 
 //Exit handler
 
-function exitHandler() {
-    //Output
+function exitHandler(options, exitCode) {
+    if (options.cleanup)
+    {
+        //Output
     
-    output.give('Shutting down server..');
+        output.give('Shutting down server..');
     
-    //Save all players
+        //Save all players
     
-    game.players.forEach(function(player) {
-        game.savePlayer(player.name, player); 
-    });
+        game.players.forEach(function(player) {
+            game.savePlayer(player.name, player); 
+        });
+    }
+    
+    if (exitCode || exitCode === 0) 
+        output.give('Exited with code ' + exitCode + '.');
+    if (options.exit) 
+        process.exit();
 }
 
 //On close event listeners
 
-process.on('exit', exitHandler.bind(null, {cleanup:true}));
+process.on('exit', exitHandler.bind(null,{cleanup:true}));
 process.on('SIGINT', exitHandler.bind(null, {exit:true}));
 process.on('SIGTERM', exitHandler.bind(null, {exit: true}));
+process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
+process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
+process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
