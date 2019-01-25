@@ -361,6 +361,15 @@ const game = {
         if (data == undefined)
             return;
         
+        //Check how many items exist at position
+        
+        let dy = -12;
+        
+        for (let i = 0; i < this.items.length; i++)
+            if (this.items[i].POS.X == data.pos.X &&
+                this.items[i].POS.Y == data.pos.Y)
+                    dy -= 13;
+        
         //Create lynx gameobject
         
         let worldItem = new lx.GameObject(
@@ -373,7 +382,7 @@ const game = {
         
         //Add name label
         
-        worldItem._nameplate = new lx.UIText(data.name + ' (' + data.value + 'g)', data.size.W/2, -12, 12, ui.inventory.getItemColor(data.rarity));
+        worldItem._nameplate = new lx.UIText(data.name + ' (' + data.value + 'g)', data.size.W/2, dy, 12, ui.inventory.getItemColor(data.rarity));
         worldItem._nameplate.SHADOW = true;
         
         worldItem._nameplate
@@ -387,7 +396,7 @@ const game = {
         
         //Show world item
         
-        this.items[this.items.length-1].Show(2);
+        this.items[this.items.length-1].Show(1);
     },
     resetWorldItems: function() {
         //Cycle through all items and hide
