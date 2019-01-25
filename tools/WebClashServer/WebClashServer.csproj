@@ -60,6 +60,12 @@
     <Compile Include="Editors\Actions.Designer.cs">
       <DependentUpon>Actions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\ItemSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\ItemSelection.Designer.cs">
+      <DependentUpon>ItemSelection.cs</DependentUpon>
+    </Compile>
     <Compile Include="Editors\ActionSelection.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,6 +106,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Editors\Actions.resx">
       <DependentUpon>Actions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\ItemSelection.resx">
+      <DependentUpon>ItemSelection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\ActionSelection.resx">
       <DependentUpon>ActionSelection.cs</DependentUpon>

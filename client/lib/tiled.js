@@ -24,6 +24,10 @@ const tiled = {
         
         game.resetColliders();
         
+        //Clear all world items
+        
+        game.resetWorldItems();
+        
         //Make sure certain player stats are reset
         
         game.resetPlayer();

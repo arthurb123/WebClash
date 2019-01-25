@@ -200,6 +200,24 @@ namespace WebClashServer
             }
         }
 
+        private void permissions_Click(object sender, EventArgs e)
+        {
+            if (!CheckServerLocation())
+                return;
+
+            try
+            {
+                if (location.IndexOf("\\") == -1)
+                    location = Application.StartupPath + "/" + location;
+
+                Process.Start(new ProcessStartInfo(location + "/permissions.json"));
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message, "WebClash Server - Error");
+            }
+        }
+
         private void charactersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!CheckServerLocation())

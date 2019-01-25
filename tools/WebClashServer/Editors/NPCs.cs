@@ -300,6 +300,17 @@ namespace WebClashServer.Editors
             actionSelection.ShowDialog();
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ItemSelection itemSelection = new ItemSelection("Set items for '" + current.name + "'", current.items);
+
+            itemSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                current.items = itemSelection.GetSelection();
+            };
+
+            itemSelection.ShowDialog();
+        }
+
         private void dialogButton_Click(object sender, EventArgs e)
         {
             MessageBox.Show("NPC dialog has not been implemented yet.", "WebClash Server - Oof");
@@ -325,6 +336,8 @@ namespace WebClashServer.Editors
 
                 movement = temp.movement;
 
+                health = temp.health;
+
                 type = temp.type;
 
                 character = temp.character;
@@ -334,6 +347,8 @@ namespace WebClashServer.Editors
                 range = temp.range;
 
                 actions = temp.actions;
+
+                items = temp.items;
             }
             catch (Exception e)
             {
@@ -355,6 +370,8 @@ namespace WebClashServer.Editors
         public Health health = new Health();
 
         public PossibleAction[] actions = new PossibleAction[0];
+
+        public PossibleItem[] items = new PossibleItem[0];
     }
 
     public class Stats

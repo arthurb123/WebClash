@@ -278,6 +278,10 @@ exports.loadMap = function(socket, map)
     //Send all NPCs in the same map
     
     npcs.sendMap(map_id, socket);
+    
+    //Send all items in the same map
+    
+    items.sendMap(map_id, socket);
 };
 
 exports.loadAllCharacters = function(cb)

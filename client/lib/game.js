@@ -2,6 +2,7 @@ const game = {
     player: -1,
     players: [],
     npcs: [],
+    items: [],
     tilesets: [],
     
     getPlayerIndex: function(name) {
@@ -121,7 +122,7 @@ const game = {
             }
         }
         else
-                this.players[id]._health = health;
+            this.players[id]._health = health;
     },
     setPlayerEquipment: function(id, equipment)
     {
@@ -242,7 +243,8 @@ const game = {
         this.npcs[id] = go.Show(2);
     },
     setNPCHealth: function(id, health) {
-        if (this.npcs[id]._health !== undefined)
+        if (this.npcs[id] != undefined &&
+            this.npcs[id]._health !== undefined)
         {
             let delta = -(this.npcs[id]._health.cur-health.cur);
             
@@ -260,6 +262,11 @@ const game = {
             
             ui.floaties.damageFloaty(this.npcs[id], delta);
             
+            //Check if valid
+            
+            if(this.npcs[id] == undefined)
+                return;
+            
             //Blood particles
             
             let count = -delta;
@@ -267,6 +274,9 @@ const game = {
                 count = 10;
             
             for (let i = 0; i < count; i++) {
+                if(this.npcs[id] == undefined)
+                    return;
+                
                 let size = 4+Math.round(Math.random()*4);
                 
                 let blood = new lx.GameObject(
@@ -296,7 +306,7 @@ const game = {
                 blood.Show(1);
             }
         }
-        else
+        else if (this.npcs[id] != undefined)
             this.npcs[id]._health = health;
     },
     removeNPC: function(id) {
@@ -344,6 +354,53 @@ const game = {
 
             this.players[this.player].COLLIDER = c.Enable();
         }
+    },
+    createWorldItem: function(data) {
+        //Check if valid
+        
+        if (data == undefined)
+            return;
+        
+        //Create lynx gameobject
+        
+        let worldItem = new lx.GameObject(
+            new lx.Sprite(data.source),
+            data.pos.X,
+            data.pos.Y,
+            data.size.W,
+            data.size.H
+        );
+        
+        //Add name label
+        
+        worldItem._nameplate = new lx.UIText(data.name + ' (' + data.value + 'g)', data.size.W/2, -12, 12, ui.inventory.getItemColor(data.rarity));
+        worldItem._nameplate.SHADOW = true;
+        
+        worldItem._nameplate
+            .Alignment('center')
+            .Follows(worldItem)
+            .Show();
+        
+        //Add to items
+        
+        this.items.push(worldItem);
+        
+        //Show world item
+        
+        this.items[this.items.length-1].Show(2);
+    },
+    resetWorldItems: function() {
+        //Cycle through all items and hide
+        
+        for (let i = 0; i < this.items.length; i++)
+            if (this.items[i] != undefined) {
+                this.items[i]._nameplate.Hide();
+                this.items[i].Hide();
+            }
+        
+        //Reset to empty array
+        
+        this.items = [];
     },
     loadMap: function(map) {
         tiled.convertAndLoadMap(map);

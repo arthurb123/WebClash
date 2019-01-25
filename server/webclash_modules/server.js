@@ -651,6 +651,20 @@ exports.syncEquipmentItem = function(equippable, id, socket, broadcast)
     }
 }
 
+//Sync single world item function, if socket is undefined it will be globally emitted
+
+exports.syncWorldItem = function(map, data, socket, broadcast)
+{   
+    if (socket === undefined) 
+        io.to(map).emit('GAME_WORLD_ITEM_UPDATE', data);
+    else {
+        if (broadcast === undefined || !broadcast)
+            socket.emit('GAME_WORLD_ITEM_UPDATE', data);
+        else
+            socket.broadcast.to(map).emit('GAME_WORLD_ITEM_UPDATE', data);
+    }
+};
+
 //Get socket with name function
 
 exports.getSocketWithName = function(name)

@@ -46,6 +46,7 @@
             this.movementFree = new System.Windows.Forms.RadioButton();
             this.movementStatic = new System.Windows.Forms.RadioButton();
             this.statistics = new System.Windows.Forms.GroupBox();
+            this.editLootTable = new System.Windows.Forms.Button();
             this.health = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
             this.vitality = new System.Windows.Forms.NumericUpDown();
@@ -189,7 +190,7 @@
             this.save.AutoSize = true;
             this.save.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.save.LinkColor = System.Drawing.Color.Blue;
-            this.save.Location = new System.Drawing.Point(360, 420);
+            this.save.Location = new System.Drawing.Point(360, 449);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(32, 13);
             this.save.TabIndex = 7;
@@ -261,6 +262,7 @@
             // 
             // statistics
             // 
+            this.statistics.Controls.Add(this.editLootTable);
             this.statistics.Controls.Add(this.health);
             this.statistics.Controls.Add(this.label7);
             this.statistics.Controls.Add(this.vitality);
@@ -282,10 +284,20 @@
             this.statistics.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statistics.Location = new System.Drawing.Point(15, 249);
             this.statistics.Name = "statistics";
-            this.statistics.Size = new System.Drawing.Size(373, 164);
+            this.statistics.Size = new System.Drawing.Size(373, 194);
             this.statistics.TabIndex = 9;
             this.statistics.TabStop = false;
             this.statistics.Text = "Statistics";
+            // 
+            // editLootTable
+            // 
+            this.editLootTable.Location = new System.Drawing.Point(13, 162);
+            this.editLootTable.Name = "editLootTable";
+            this.editLootTable.Size = new System.Drawing.Size(344, 23);
+            this.editLootTable.TabIndex = 26;
+            this.editLootTable.Text = "Edit Loot Table";
+            this.editLootTable.UseVisualStyleBackColor = true;
+            this.editLootTable.Click += new System.EventHandler(this.button1_Click);
             // 
             // health
             // 
@@ -508,7 +520,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 442);
+            this.ClientSize = new System.Drawing.Size(404, 471);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.statistics);
             this.Controls.Add(this.groupBox2);
@@ -520,10 +532,11 @@
             this.Controls.Add(this.add);
             this.Controls.Add(this.npcSelect);
             this.Controls.Add(this.label1);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(420, 481);
-            this.MinimumSize = new System.Drawing.Size(420, 481);
+            this.MaximumSize = new System.Drawing.Size(420, 510);
+            this.MinimumSize = new System.Drawing.Size(420, 510);
             this.Name = "NPCs";
             this.Text = "WebClash Server - NPCs";
             this.Load += new System.EventHandler(this.NPCs_Load);
@@ -586,5 +599,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.NumericUpDown health;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button editLootTable;
     }
 }

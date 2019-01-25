@@ -40,6 +40,7 @@
             this.NPCsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mapsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.permissions = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,6 +58,7 @@
             // 
             // startButton
             // 
+            this.startButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.startButton.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.startButton.Location = new System.Drawing.Point(0, 218);
             this.startButton.MaximumSize = new System.Drawing.Size(120, 23);
@@ -74,7 +76,7 @@
             this.status.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.status.Location = new System.Drawing.Point(121, 218);
             this.status.Name = "status";
-            this.status.Size = new System.Drawing.Size(247, 20);
+            this.status.Size = new System.Drawing.Size(228, 20);
             this.status.TabIndex = 2;
             this.status.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -82,11 +84,12 @@
             // 
             this.settings.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("settings.BackgroundImage")));
             this.settings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.settings.Cursor = System.Windows.Forms.Cursors.Hand;
             this.settings.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.settings.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.settings.Location = new System.Drawing.Point(374, 218);
+            this.settings.Location = new System.Drawing.Point(378, 217);
             this.settings.Name = "settings";
-            this.settings.Size = new System.Drawing.Size(28, 23);
+            this.settings.Size = new System.Drawing.Size(23, 23);
             this.settings.TabIndex = 3;
             this.settings.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.settings.UseVisualStyleBackColor = true;
@@ -117,37 +120,52 @@
             // itemsToolStripMenuItem
             // 
             this.itemsToolStripMenuItem.Name = "itemsToolStripMenuItem";
-            this.itemsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.itemsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.itemsToolStripMenuItem.Text = "Items";
             this.itemsToolStripMenuItem.Click += new System.EventHandler(this.itemsToolStripMenuItem_Click);
             // 
             // charactersToolStripMenuItem
             // 
             this.charactersToolStripMenuItem.Name = "charactersToolStripMenuItem";
-            this.charactersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.charactersToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.charactersToolStripMenuItem.Text = "Characters";
             this.charactersToolStripMenuItem.Click += new System.EventHandler(this.charactersToolStripMenuItem_Click);
             // 
             // NPCsToolStripMenuItem
             // 
             this.NPCsToolStripMenuItem.Name = "NPCsToolStripMenuItem";
-            this.NPCsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.NPCsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.NPCsToolStripMenuItem.Text = "NPCs";
             this.NPCsToolStripMenuItem.Click += new System.EventHandler(this.NPCsToolStripMenuItem_Click);
             // 
             // actionsToolStripMenuItem
             // 
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
-            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.actionsToolStripMenuItem.Text = "Actions";
             this.actionsToolStripMenuItem.Click += new System.EventHandler(this.actionsToolStripMenuItem_Click);
             // 
             // mapsToolStripMenuItem
             // 
             this.mapsToolStripMenuItem.Name = "mapsToolStripMenuItem";
-            this.mapsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mapsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.mapsToolStripMenuItem.Text = "Maps";
             this.mapsToolStripMenuItem.Click += new System.EventHandler(this.mapsToolStripMenuItem_Click);
+            // 
+            // permissions
+            // 
+            this.permissions.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("permissions.BackgroundImage")));
+            this.permissions.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.permissions.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.permissions.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.permissions.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.permissions.Location = new System.Drawing.Point(352, 217);
+            this.permissions.Name = "permissions";
+            this.permissions.Size = new System.Drawing.Size(23, 23);
+            this.permissions.TabIndex = 5;
+            this.permissions.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.permissions.UseVisualStyleBackColor = true;
+            this.permissions.Click += new System.EventHandler(this.permissions_Click);
             // 
             // Main
             // 
@@ -155,6 +173,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(404, 241);
+            this.Controls.Add(this.permissions);
             this.Controls.Add(this.settings);
             this.Controls.Add(this.status);
             this.Controls.Add(this.startButton);
@@ -187,6 +206,7 @@
         private System.Windows.Forms.ToolStripMenuItem NPCsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem actionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem itemsToolStripMenuItem;
+        private System.Windows.Forms.Button permissions;
     }
 }
 

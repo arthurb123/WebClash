@@ -204,6 +204,7 @@
             this.Controls.Add(this.delete);
             this.Controls.Add(this.import);
             this.Controls.Add(this.mapList);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(435, 225);

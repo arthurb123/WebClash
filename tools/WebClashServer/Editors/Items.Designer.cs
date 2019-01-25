@@ -63,7 +63,7 @@
             // itemList
             // 
             this.itemList.FormattingEnabled = true;
-            this.itemList.Location = new System.Drawing.Point(0, 0);
+            this.itemList.Location = new System.Drawing.Point(2, 2);
             this.itemList.Name = "itemList";
             this.itemList.Size = new System.Drawing.Size(120, 290);
             this.itemList.TabIndex = 0;
@@ -329,6 +329,7 @@
             this.Controls.Add(this.newLink);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.itemList);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(467, 360);

@@ -3,6 +3,7 @@
 const fs = require('fs');
 
 exports.collection = [];
+exports.onMap = [];
 
 exports.getItem = function(name)
 {
@@ -196,4 +197,67 @@ exports.getPlayerFreeSlot = function(id)
     //Otherwise return the length
     
     return game.players[id].inventory.length;
+};
+
+exports.createWorldItem = function(owner, map, x, y, name)
+{
+    //Get item
+    
+    let item = this.getItem(name);
+    
+    //Check if valid
+    
+    if (item == undefined)
+        return;
+    
+    //Create world item on map
+    
+    if (this.onMap[map] == undefined)
+        this.onMap[map] = [];
+    
+    let worldItem = {
+        name: name,
+        pos: {
+            X: x,
+            Y: y
+        },
+        size: {
+            W: tiled.maps[map].tilewidth,
+            H: tiled.maps[map].tileheight
+        },
+        source: item.source,
+        rarity: item.rarity,
+        value: item.value
+    };
+    
+    //Add world item to map
+    
+    let id = this.onMap[map].length;
+    
+    this.onMap[map].push({
+        owner: owner,
+        item: worldItem
+    });
+
+    //Sync across map
+    
+    server.syncWorldItem(map, this.onMap[map][id].item);
+    
+    //Create timer 
+    
+    //...
+};
+
+exports.sendMap = function(map, socket)
+{
+    //Check if valid
+    
+    if (this.onMap[map] == undefined ||
+        this.onMap[map].length == 0)
+        return;
+    
+    //Send all items in map
+    
+    for (let i = 0; i < this.onMap[map].length; i++)
+        server.syncWorldItem(map, this.onMap[map][i].item, socket, false);
 };

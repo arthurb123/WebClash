@@ -531,6 +531,10 @@ exports.killNPC = function(map, id)
     if (this.onTimeOut[map] === undefined)
         this.onTimeOut[map] = [];
     
+    //Evaluate loot table
+    
+    this.evaluateLootTable(map, id);
+    
     //Add to timeout
     
     this.onTimeOut[map][id] = this.respawnTime*60;
@@ -608,4 +612,42 @@ exports.setNPCTarget = function(owner, map, id)
     //Set new target
     
     this.onMap[map][id].target = newTarget;
+};
+
+exports.evaluateLootTable = function(map, id)
+{
+    //Check if loot table exists
+    
+    if (this.onMap[map][id].data.items === undefined ||
+        this.onMap[map][id].data.items.length == 0)
+        return;
+    
+    //Check if target (still) exists
+    
+    if (this.onMap[map][id].target == -1)
+        return;
+    
+    //Loop through loot table
+    
+    for (let i = 0; i < this.onMap[map][id].data.items.length; i++)
+    {
+        //Create chance
+        
+        let chance = Math.random();
+        
+        //Evaluate chance against drop rate
+        
+        if (chance <= 1/this.onMap[map][id].data.items[i].dropChance)
+        {
+            //Create world item
+            
+            items.createWorldItem(
+                this.onMap[map][id].target,
+                map,
+                this.onMap[map][id].pos.X+this.onMap[map][id].data.character.width/2-tiled.maps[map].tilewidth/2,
+                this.onMap[map][id].pos.Y+this.onMap[map][id].data.character.height-tiled.maps[map].tileheight,
+                this.onMap[map][id].data.items[i].item
+            );
+        }
+    }
 };
