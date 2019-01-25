@@ -119,9 +119,9 @@ const game = {
                 
                 blood.Show(1);
             }
-            else
-                this.players[id]._health = health;
         }
+        else
+                this.players[id]._health = health;
     },
     setPlayerEquipment: function(id, equipment)
     {
