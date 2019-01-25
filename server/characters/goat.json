@@ -1,0 +1,1 @@
+{"src":"res/characters/153.png","width":48,"height":48,"animation":{"direction":"horizontal","speed":9},"collider":{"x":16,"y":32,"width":16,"height":12},"movement":{"acceleration":0.13,"max":1.1}}

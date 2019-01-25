@@ -63,6 +63,8 @@ const game = {
         if (this.players[id]._health !== undefined) {
             let delta = -(this.players[id]._health.cur-health.cur);
             
+            this.players[id]._health = health;
+            
             if (delta == 0) {
                 //Miss floaty
                 
@@ -117,9 +119,9 @@ const game = {
                 
                 blood.Show(1);
             }
+            else
+                this.players[id]._health = health;
         }
-        
-        this.players[id]._health = health;
     },
     setPlayerEquipment: function(id, equipment)
     {
@@ -244,6 +246,8 @@ const game = {
         {
             let delta = -(this.npcs[id]._health.cur-health.cur);
             
+            this.npcs[id]._health = health;
+            
             if (delta > 0) {
                 //Heal floaty
                 
@@ -292,8 +296,8 @@ const game = {
                 blood.Show(1);
             }
         }
-        
-        this.npcs[id]._health = health;
+        else
+            this.npcs[id]._health = health;
     },
     removeNPC: function(id) {
         if (this.npcs[id] === undefined)
