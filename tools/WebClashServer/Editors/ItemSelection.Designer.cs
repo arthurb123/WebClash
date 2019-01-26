@@ -102,13 +102,13 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(120, 43);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 26);
+            this.label2.Size = new System.Drawing.Size(37, 26);
             this.label2.TabIndex = 11;
-            this.label2.Text = "Drop\r\nChance";
+            this.label2.Text = "Drop\r\nFactor";
             // 
             // dropChance
             // 
-            this.dropChance.Location = new System.Drawing.Point(177, 43);
+            this.dropChance.Location = new System.Drawing.Point(177, 46);
             this.dropChance.Maximum = new decimal(new int[] {
             -1530494977,
             232830,
@@ -133,11 +133,11 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(122, 80);
+            this.label3.Location = new System.Drawing.Point(118, 78);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(174, 26);
+            this.label3.Size = new System.Drawing.Size(175, 26);
             this.label3.TabIndex = 13;
-            this.label3.Text = "Drop chance = 1/x - where x is the \r\nspecified number (higher is rarer)";
+            this.label3.Text = "Drop chance = 1/x - where x is the \r\nspecified drop factor (higher is rarer)";
             // 
             // ItemSelection
             // 
