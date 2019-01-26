@@ -12,11 +12,13 @@ exports.playerConstraints = {
 exports.startLoop = function() 
 {
     setInterval(function() {
-        
         //Update NPCs
-        
+
         npcs.updateMaps();
-        
+
+        //Update world items
+
+        items.updateMaps();
     }, 1000/60);
 };
 
@@ -98,6 +100,10 @@ exports.removePlayer = function(socket)
             //Remove from clients
             
             server.removePlayer(i, socket);
+            
+            //Release owned world items
+            
+            items.releaseWorldItemsFromOwner(tiled.getMapIndex(this.players[i].map), this.players[i].name);
             
             //Save player
             

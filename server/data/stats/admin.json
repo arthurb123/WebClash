@@ -1,14 +1,14 @@
 {
- "map": "2",
+ "map": "1",
  "char_name": "player",
  "pos": {
-  "X": 24,
-  "Y": 61
+  "X": 0,
+  "Y": 0
  },
  "moving": false,
  "direction": 0,
  "health": {
-  "cur": 89,
+  "cur": 100,
   "max": 100
  },
  "level": 1,
@@ -23,18 +23,10 @@
    "wisdom": 1
   }
  },
- "actions": [
-  {
-   "name": "Combust",
-   "description": "That's hot.",
-   "src": "res/icons/1.png"
-  }
- ],
+ "actions": [],
  "inventory": [
   "Sword",
-  null
+  "Magic Axe"
  ],
- "equipment": {
-  "main": "Magic Axe"
- }
+ "equipment": {}
 }

@@ -216,6 +216,7 @@ exports.createWorldItem = function(owner, map, x, y, name)
         this.onMap[map] = [];
     
     let worldItem = {
+        owner: game.players[owner].name,
         name: name,
         pos: {
             X: x,
@@ -234,18 +235,111 @@ exports.createWorldItem = function(owner, map, x, y, name)
     
     let id = this.onMap[map].length;
     
+    worldItem.id = id;
+    
     this.onMap[map].push({
         owner: owner,
-        item: worldItem
+        item: worldItem,
+        timer: {
+            cur: 0,
+            releaseTime: 1800,
+            removeTime: 5400
+        }
     });
 
     //Sync across map
     
     server.syncWorldItem(map, this.onMap[map][id].item);
+};
+
+exports.releaseWorldItemsFromOwner = function(map, owner)
+{
+    //Check if valid
     
-    //Create timer 
+    if (this.onMap[map] == undefined)
+        return;
     
-    //...
+    //Cycle through all items on map
+    
+    for (let i = 0; i < this.onMap[map].length; i++)
+    {
+        if (this.onMap[map][i].item.owner == owner)
+        {
+            //Set owner to -1
+            
+            this.onMap[map][i].item.owner = -1;
+            
+            //Sync world item
+            
+            server.syncWorldItem(map, this.onMap[map][i].item);
+        }
+    }
+};
+
+exports.releaseWorldItemFromOwner = function(map, item)
+{
+    //Check if valid
+    
+    if (this.onMap[map] == undefined)
+        return;
+    
+    //Set owner to -1
+            
+    this.onMap[map][item].item.owner = -1;
+    
+    //Sync world item
+            
+    server.syncWorldItem(map, this.onMap[map][item].item);
+};
+
+exports.removeWorldItem = function(map, item)
+{
+    //Check if valid
+    
+    if (this.onMap[map] == undefined)
+        return;
+    
+    //Set as remove object
+    
+    this.onMap[map][item].item = {
+        id: item,
+        remove: true
+    };
+    
+    //Sync world item
+            
+    server.syncWorldItem(map, this.onMap[map][item].item);
+};
+
+exports.updateMaps = function()
+{
+    //Cycle through all maps
+    
+    for (let m = 0; m < this.onMap.length; m++)
+    {
+        //Check if map is valid
+        
+        if (this.onMap[m] == undefined)
+            continue;
+        
+        //Cycle through all items
+        
+        for (let i = 0; i < this.onMap[m].length; i++)
+        {
+            this.onMap[m][i].timer.cur++;
+            
+            //Check if item should be released of it's owner
+            
+            if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.releaseTime &&
+                this.onMap[m][i].owner != -1)
+                this.releaseWorldItemFromOwner(m, i);
+            
+            //Check if item should be removed
+                
+            if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.removeTime)
+                this.removeWorldItem(m, i);
+        }
+    }
 };
 
 exports.sendMap = function(map, socket)

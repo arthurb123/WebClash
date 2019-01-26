@@ -361,6 +361,33 @@ const game = {
         if (data == undefined)
             return;
         
+        //Check if world item should be removed
+        
+        if (data.remove)
+        {
+            this.removeWorldItem(data.id);
+
+            return;
+        }
+        
+        //Create item name
+        
+        let name = data.name + ' (' + data.value + 'g)';
+        
+        //Check if world item already exists
+        
+        if (this.items[data.id] != undefined)
+        {                  
+            //Update nameplate
+
+            if (data.owner == -1)
+                this.items[data.id]._nameplate.Text(name);
+
+            //...
+
+            return;
+        }
+        
         //Check how many items exist at position
         
         let dy = -12;
@@ -382,8 +409,15 @@ const game = {
         
         //Add name label
         
-        worldItem._nameplate = new lx.UIText(data.name + ' (' + data.value + 'g)', data.size.W/2, dy, 12, ui.inventory.getItemColor(data.rarity));
+        worldItem._nameplate = new lx.UIText(name, data.size.W/2, dy, 12, ui.inventory.getItemColor(data.rarity));
         worldItem._nameplate.SHADOW = true;
+        
+        //Check owner
+        
+        if (data.owner != -1 &&
+            this.players[this.player] != undefined &&
+            this.players[this.player].name !== data.owner)
+            worldItem._nameplate.Text('*' + name);
         
         worldItem._nameplate
             .Alignment('center')
@@ -392,24 +426,31 @@ const game = {
         
         //Add to items
         
-        this.items.push(worldItem);
+        this.items[data.id] = worldItem;
         
         //Show world item
         
-        this.items[this.items.length-1].Show(1);
+        this.items[data.id].Show(1);
     },
     resetWorldItems: function() {
         //Cycle through all items and hide
         
         for (let i = 0; i < this.items.length; i++)
-            if (this.items[i] != undefined) {
-                this.items[i]._nameplate.Hide();
-                this.items[i].Hide();
-            }
+            this.removeWorldItem(i);
         
         //Reset to empty array
         
         this.items = [];
+    },
+    removeWorldItem: function(id) {
+        //If item exists remove it
+        
+        if (this.items[id] != undefined) {
+            this.items[id]._nameplate.Hide();
+            this.items[id].Hide();
+            
+            this.items[id] = undefined;
+        }
     },
     loadMap: function(map) {
         tiled.convertAndLoadMap(map);
