@@ -253,7 +253,7 @@ exports.createWorldItem = function(owner, map, x, y, name)
 
     //Sync across map
     
-    server.syncWorldItem(map, this.onMap[map][id].item);
+    server.syncWorldItem(map, worldItem);
 };
 
 exports.releaseWorldItemsFromOwner = function(map, owner)
