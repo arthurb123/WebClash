@@ -233,19 +233,23 @@ exports.createWorldItem = function(owner, map, x, y, name)
     
     //Add world item to map
     
-    let id = this.onMap[map].length;
+    for (let i = 0; i < this.onMap[map].length+1; i++)
+        if (this.onMap[map][i] == undefined)
+        {
+            worldItem.id = i;
     
-    worldItem.id = id;
-    
-    this.onMap[map].push({
-        owner: owner,
-        item: worldItem,
-        timer: {
-            cur: 0,
-            releaseTime: 1800,
-            removeTime: 5400
+            this.onMap[map][i] = {
+                owner: owner,
+                item: worldItem,
+                timer: {
+                    cur: 0,
+                    releaseTime: 1800,
+                    removeTime: 5400
+                }
+            };
+            
+            break;
         }
-    });
 
     //Sync across map
     
