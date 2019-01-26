@@ -322,6 +322,17 @@ exports.updateNPCCombat = function(map, id)
     if (this.onMap[map][id].target == -1)
         return;
     
+    //Check if target is still on the same map
+    
+    if (game.players[this.onMap[map][id].target].map !== tiled.maps[map].name)
+    {
+        //Reset target
+        
+        this.onMap[map][id].target = -1;
+        
+        return;
+    }
+    
     //Check combat cooldown
     
     if (!this.onMap[map][id].combat_cooldown.done)
