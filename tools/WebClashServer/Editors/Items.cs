@@ -109,6 +109,16 @@ namespace WebClashServer
             else
                 equippableAction.SelectedItem = null;
 
+            if (current.stats != null)
+            {
+                power.Value = current.stats.power;
+                toughness.Value = current.stats.toughness;
+                vitality.Value = current.stats.vitality;
+                intelligence.Value = current.stats.intelligence;
+                wisdom.Value = current.stats.wisdom;
+                agility.Value = current.stats.agility;
+            }
+
             AttemptSetIcon();
         }
 
@@ -215,16 +225,30 @@ namespace WebClashServer
                 return;
             }
 
+            if ((string)equippable.SelectedItem == nameof(Equippable.Main) ||
+                (string)equippable.SelectedItem == nameof(Equippable.Offhand))
+            {
+                equippableAction.Enabled = true;
+            }
+            else
+                equippableAction.Enabled = false;
+
             current.equippable = equippable.SelectedItem.ToString().ToLower();
         }
 
         private void equippableSource_TextChanged(object sender, EventArgs e)
         {
+            if (current == null)
+                return;
+
             current.equippableSource = equippableSource.Text;
         }
 
         private void equippableAction_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (current == null)
+                return;
+
             if (equippableAction.SelectedItem == null)
                 return;
 
@@ -233,6 +257,9 @@ namespace WebClashServer
         
         private void description_TextChanged(object sender, EventArgs e)
         {
+            if (current == null)
+                return;
+
             current.description = description.Text;
         }
         
@@ -252,6 +279,54 @@ namespace WebClashServer
                 itemList.SelectedItem = itemList.Items[0];
             else
                 newLink_LinkClicked(sender, e);
+        }
+
+        private void power_ValueChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.stats.power = (int)power.Value;
+        }
+
+        private void agility_ValueChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.stats.agility = (int)agility.Value;
+        }
+
+        private void toughness_ValueChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.stats.toughness = (int)toughness.Value;
+        }
+
+        private void intelligence_ValueChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.stats.intelligence = (int)intelligence.Value;
+        }
+
+        private void wisdom_ValueChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.stats.wisdom = (int)wisdom.Value;
+        }
+
+        private void vitality_ValueChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.stats.vitality = (int)vitality.Value;
         }
 
         public int GetAmount()
@@ -283,6 +358,9 @@ namespace WebClashServer
                 equippable = temp.equippable;
                 equippableSource = temp.equippableSource;
                 equippableAction = temp.equippableAction;
+
+                if (temp.stats != null)
+                    stats = temp.stats;
             }
             catch (Exception e)
             {
@@ -300,6 +378,18 @@ namespace WebClashServer
         public string equippable = "none";
         public string equippableSource = string.Empty;
         public string equippableAction = string.Empty;
+
+        public Stats stats = new Stats();
+    }
+
+    public class Stats
+    {
+        public int power = 0;
+        public int toughness = 0;
+        public int vitality = 0;
+        public int intelligence = 0;
+        public int wisdom = 0;
+        public int agility = 0;
     }
 
     public enum Equippable

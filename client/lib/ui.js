@@ -396,8 +396,27 @@ const ui = {
                             '<p class="info" style="font-size: 11px; display: inline-block; margin: 0px; margin-right: 2px; position: relative; top: -3px;">' + item.equippableAction + '</p>' +
                          '</div>'
             }
+            
+            //Stats
+            
+            let stats = '';
+            
+            if (item.stats != undefined) {
+                if (item.stats.power > 0)
+                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.power + ' Power</p>';
+                if (item.stats.intelligence > 0)
+                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.intelligence + ' Intelligence</p>';
+                if (item.stats.toughness > 0)
+                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.toughness + ' Toughness</p>';
+                if (item.stats.vitality > 0)
+                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.vitality + ' Vitality</p>';
+                if (item.stats.wisdom > 0)
+                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.wisdom + ' Wisdom</p>';
+                if (item.stats.agility > 0)
+                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.agility + ' Agility</p>';
+            }
 
-            //Create displabox
+            //Create displaybox
             
             let displayBox = document.createElement('div');
 
@@ -408,6 +427,7 @@ const ui = {
                     '<font class="header" style="font-size: 15px; color: ' + color + ';">' + item.name + '</font><br>' + 
                     action +
                     '<font class="info" style="position: relative; top: 8px;">' + item.description + '</font><br>' +
+                    stats +
                     '<font class="info" style="position: relative; top: 10px; font-size: 11px; margin-top: 5px;">' + note + '</font><br>' +
                     '<font class="info" style="position: relative; top: 10px; font-size: 11px; color: yellow;">' + item.value + ' Gold</font><br>';
 

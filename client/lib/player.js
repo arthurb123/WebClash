@@ -106,6 +106,8 @@ const player = {
         if (this.equipment[equippable] === undefined)
             return;
         
+        ui.inventory.removeBox();
+        
         socket.emit('CLIENT_UNEQUIP_ITEM', equippable);
     },
     update: function() {
