@@ -388,8 +388,10 @@ const game = {
 
             if (data.owner == -1)
                 this.items[data.id]._nameplate.Text(name);
-
-            //...
+            
+            //Set new owner
+            
+            this.items[data.id]._owner = data.owner;
 
             return;
         }
@@ -419,15 +421,13 @@ const game = {
         worldItem._nameplate = new lx.UIText(name, data.size.W/2, dy, 12, ui.inventory.getItemColor(data.rarity));
         worldItem._nameplate.SHADOW = true;
         
+        //Set owner
+        
+        worldItem._owner = data.owner;
+        
         //Create collider
         
         worldItem.CreateCollider(true, function(coll_data) {
-            //Check if item has already been added
-            
-            if (data.added !== undefined &&
-                data.added)
-                return;
-            
             //Check if player
             
             if (game.players[game.player].COLLIDER !== coll_data.trigger)
@@ -435,8 +435,8 @@ const game = {
             
             //Check if player is owner
             
-            if (data.owner != -1 &&
-                game.players[game.player].name !== data.owner)
+            if (game.items[data.id]._owner != -1 &&
+                game.players[game.player].name !== game.items[data.id]._owner)
                 return;
             
             //Check if player is moving
