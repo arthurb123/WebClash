@@ -3,6 +3,7 @@ const ui = {
         this.actionbar.create();
         this.inventory.create();
         this.equipment.create();
+        this.loot.create();
         this.chat.create();
         
         lx.Loops(this.floaties.update);
@@ -337,23 +338,23 @@ const ui = {
             if (player.inventory[slot] !== undefined) {
                 //Send to server
                 
-                socket.emit('CLIENT_USE_ITEM', player.inventory[slot].name);
+                socket.emit('CLIENT_USE_ITEM', player.inventory[slot].name, function() {
+                    //Check if stackable
                 
-                //Check if stackable
-                
-                //...
-                
-                //Remove box
-                
-                this.removeBox();
-                
-                //Remove item
-            
-                player.inventory[slot] = undefined;
+                    //...
 
-                //Refresh UI (slot)
-                
-                this.reloadItem(slot);
+                    //Remove box
+
+                    ui.inventory.removeBox();
+
+                    //Remove item
+
+                    player.inventory[slot] = undefined;
+
+                    //Refresh UI (slot)
+
+                    ui.inventory.reloadItem(slot); 
+                });
             }
         },
         displayBox: function(slot) {
@@ -479,6 +480,143 @@ const ui = {
             }
             
             return color;
+        }
+    },
+    loot: {
+        items: [],
+        create: function() {
+            view.dom.innerHTML += 
+                '<div id="loot_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 25%; margin-left: -75px; margin-top: -45px; width: auto; max-width: 150px; height: auto; text-align: center;">' +
+                    '<p class="info" style="font-size: 14px; margin: 3px;">Loot</p>' +
+                    '<div id="loot_box_content" style="text-align: left;"></div>' +
+                    '<p class="link" onmousedown="ui.loot.hide()" style="font-size: 12px; color: red;">Close</p>'
+                '</div>';
+        },
+        reset: function() {
+            //Reset loot items
+            
+            this.items = [];
+            
+            //Hide loot box
+            
+            this.hide();
+        },
+        add: function(data) {
+            //Check if item has already been added to the loot box
+            
+            if (this.items[data.id] !== undefined)
+                return;
+            
+            //Get DOM elements
+            
+            let el = document.getElementById('loot_box'),
+                el_content = document.getElementById('loot_box_content');
+            
+            //Check if valid
+            
+            if (el === undefined ||
+                el_content === undefined)
+                return;
+            
+            //Set item
+            
+            this.items[data.id] = data;
+            
+            //Add to DOM loot box content
+            
+            el_content.innerHTML += 
+                '<div class="slot" id="loot_slot' + data.id + '" style="border: 1px solid ' + ui.inventory.getItemColor(data.rarity) + ';" onmousedown="ui.loot.pickup(' + data.id + ')">' +
+                    '<img src="' + data.source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' +
+                '</div>';
+            
+            //Set new top position
+            
+            el.style.marginTop = -el.offsetHeight/2;
+            
+            //Show loot box
+            
+            this.show();
+        },
+        pickup: function(id) {
+            //Check if valid
+            
+            if (this.items[id] === undefined)
+                return;
+            
+            //Emit pickup request
+            
+            socket.emit('CLIENT_PICKUP_ITEM', id);
+        },
+        remove: function(id) {
+            //Check if valid
+            
+            if (this.items[id] === undefined)
+                return;
+            
+            //Get DOM elements
+            
+            let el = document.getElementById('loot_box_content'),
+                slot_el = document.getElementById('loot_slot' + id);
+            
+            //Check if DOM elements are valid
+            
+            if (el === undefined || 
+                slot_el === undefined)
+                return;
+            
+            //Remove slot element
+            
+            el.removeChild(slot_el);
+            
+            //Remove possible loot item
+            
+            this.items[id] = undefined;
+            
+            //Check if loot box should be hidden
+            
+            let count = 0;
+            for (let i = 0; i < this.items.length; i++)
+                if (this.items[i] === undefined)
+                    count++;
+            
+            if (count == this.items.length)
+            {
+                this.items = [];
+                
+                this.hide();
+            }
+        },
+        show: function() {
+            //Show the loot box if it is available
+            
+            let el = document.getElementById('loot_box');
+            
+            if (el === undefined)
+                return;
+            
+            //Set visibility
+            
+            el.style.visibility = 'visible';
+        },
+        hide: function() {
+            //Hide the loot box if it is available
+            
+            let el = document.getElementById('loot_box'),
+                el_content = document.getElementById('loot_box_content');
+            
+            if (el === undefined ||
+                el_content === undefined)
+                return;
+            
+            //Clear all items
+            
+            el_content.innerHTML = '';
+            
+            this.items = [];
+            
+            //Set visibility
+            
+            el.style.visibility = 'hidden';
         }
     },
     floaties: {

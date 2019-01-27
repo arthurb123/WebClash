@@ -104,7 +104,7 @@ const game = {
                 
                 blood._timer = {
                     cur: 0,
-                    standard: this.npcs[id].SIZE.H
+                    standard: 60
                 };
                 
                 blood.Loops(function() {
@@ -289,7 +289,7 @@ const game = {
                 
                 blood._timer = {
                     cur: 0,
-                    standard: this.npcs[id].SIZE.H
+                    standard: 60
                 };
                 
                 blood.Loops(function() {
@@ -365,7 +365,13 @@ const game = {
         
         if (data.remove)
         {
+            //Remove world item
+            
             this.removeWorldItem(data.id);
+            
+            //Remove from loot box
+            
+            ui.loot.remove(data.id);
 
             return;
         }
@@ -393,7 +399,8 @@ const game = {
         let dy = -12;
         
         for (let i = 0; i < this.items.length; i++)
-            if (this.items[i].POS.X == data.pos.X &&
+            if (this.items[i] != undefined &&
+                this.items[i].POS.X == data.pos.X &&
                 this.items[i].POS.Y == data.pos.Y)
                     dy -= 13;
         
@@ -411,6 +418,39 @@ const game = {
         
         worldItem._nameplate = new lx.UIText(name, data.size.W/2, dy, 12, ui.inventory.getItemColor(data.rarity));
         worldItem._nameplate.SHADOW = true;
+        
+        //Create collider
+        
+        worldItem.CreateCollider(true, function(coll_data) {
+            //Check if item has already been added
+            
+            if (data.added !== undefined &&
+                data.added)
+                return;
+            
+            //Check if player
+            
+            if (game.players[game.player].COLLIDER !== coll_data.trigger)
+                return;
+            
+            //Check if player is owner
+            
+            if (data.owner != -1 &&
+                game.players[game.player].name !== data.owner)
+                return;
+            
+            //Check if player is moving
+            
+            if (game.players[game.player].MOVEMENT.VX == 0 &&
+                game.players[game.player].MOVEMENT.VY == 0)
+                return;
+            
+            //Add to loot window
+            
+            ui.loot.add(data);
+        });
+        
+        worldItem.COLLIDER.Solid(false);
         
         //Check owner
         

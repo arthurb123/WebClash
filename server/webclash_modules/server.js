@@ -306,8 +306,8 @@ exports.handleSocket = function(socket)
         io.to(tiled.getMapIndex(game.players[id].map)).emit('GAME_CHAT_UPDATE', msg);
     });
     
-    socket.on('CLIENT_USE_ITEM', function(data) {
-         //Check if valid player
+    socket.on('CLIENT_USE_ITEM', function(data, callback) {
+        //Check if valid player
         
         if (socket.playing === undefined || !socket.playing)
             return;
@@ -328,7 +328,8 @@ exports.handleSocket = function(socket)
         
         //Use item
         
-        items.usePlayerItem(socket, id, data);
+        if (items.usePlayerItem(socket, id, data))
+            callback();
     });
     
     socket.on('CLIENT_UNEQUIP_ITEM', function(data) {
@@ -393,6 +394,29 @@ exports.handleSocket = function(socket)
         //Sync to player
 
         server.syncEquipmentItem(data, id, socket, false);
+    });
+    
+    socket.on('CLIENT_PICKUP_ITEM', function(data) {
+        //Check if valid player
+        
+        if (socket.playing === undefined || !socket.playing)
+            return;
+        
+        //Get player id
+        
+        let id = game.getPlayerIndex(socket.name);
+        
+        //Check if valid
+        
+        if (id == -1)
+            return;
+        
+        //Pick up world item
+        
+        if (!items.pickupWorldItem(tiled.getMapIndex(game.players[id].map), id, data))
+        {
+            //Failure, notify user
+        }
     });
 };
 

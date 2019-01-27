@@ -32,6 +32,10 @@ const tiled = {
         
         game.resetPlayer();
         
+        //Reset loot box
+        
+        ui.loot.reset();
+        
         //Clear the OnLayerDraw events
         
         lx.ResetLayerDraw();

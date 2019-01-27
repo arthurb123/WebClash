@@ -135,10 +135,14 @@ exports.checkPropertyWithRectangle = function(map_name, property_name, rectangle
         this.maps_properties[id].length == 0)
         return false;
     
-    for (let p = 0; p < this.maps_properties[id].length; p++)
+    for (let p = 0; p < this.maps_properties[id].length; p++) {
+        if (this.maps_properties[id][p].name !== property_name)
+            continue;
+        
         for (let r = 0; r < this.maps_properties[id][p].rectangles.length; r++)
             if (this.checkRectangularCollision(this.maps_properties[id][p].rectangles[r], rectangle)) 
                 return true;
+    }
     
     return false;
 };

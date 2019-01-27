@@ -2,13 +2,13 @@
  "map": "2",
  "char_name": "player",
  "pos": {
-  "X": 68,
-  "Y": -10
+  "X": -15,
+  "Y": 83
  },
  "moving": false,
  "direction": 1,
  "health": {
-  "cur": 94,
+  "cur": 100,
   "max": 100
  },
  "level": 1,

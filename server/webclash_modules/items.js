@@ -114,16 +114,22 @@ exports.usePlayerItem = function(socket, id, name)
     //Check if valid
     
     if (item === undefined)
-        return;
+        return false;
     
     //Check if piece of equipment
     
     if (item.equippable !== 'none')
     {
+        //Check if the item differs from the equipped item
+        
+        if (game.players[id].equipment[item.equippable] !== undefined &&
+            game.players[id].equipment[item.equippable] === name)
+            return false;
+        
         //Set equipment and if it is not possible return
         
         if (!this.setPlayerEquipment(socket, id, item))
-            return;
+            return false;
         
         //Remove player item
         
@@ -132,6 +138,8 @@ exports.usePlayerItem = function(socket, id, name)
     
     //Check if consumable, scroll, etc.
     //...
+    
+    return true;
 };
 
 exports.removePlayerItem = function(id, name)
@@ -267,6 +275,9 @@ exports.releaseWorldItemsFromOwner = function(map, owner)
     
     for (let i = 0; i < this.onMap[map].length; i++)
     {
+        if (this.onMap[map][i] === undefined)
+            continue;
+        
         if (this.onMap[map][i].item.owner == owner)
         {
             //Set owner to -1
@@ -284,7 +295,7 @@ exports.releaseWorldItemFromOwner = function(map, item)
 {
     //Check if valid
     
-    if (this.onMap[map] == undefined)
+    if (this.onMap[map] === undefined)
         return;
     
     //Set owner to -1
@@ -296,11 +307,39 @@ exports.releaseWorldItemFromOwner = function(map, item)
     server.syncWorldItem(map, this.onMap[map][item].item);
 };
 
+exports.pickupWorldItem = function(map, id, item)
+{
+    //Check if valid
+    
+    if (this.onMap[map] === undefined ||
+        this.onMap[map][item] === undefined)
+        return false;
+    
+    //Check owner
+    
+    if (this.onMap[map][item].item.owner != -1 &&
+        this.onMap[map][item].item.owner !== game.players[id].name)
+        return false;
+    
+    //Attempt to add item
+    
+    if (!this.addPlayerItem(game.players[id].socket, id, this.onMap[map][item].item.name))
+        return false;
+    
+    //Remove world item
+    
+    this.removeWorldItem(map, item);
+    
+    //Return true
+    
+    return true;
+};
+
 exports.removeWorldItem = function(map, item)
 {
     //Check if valid
     
-    if (this.onMap[map] == undefined)
+    if (this.onMap[map] === undefined)
         return;
     
     //Set as remove object
@@ -313,6 +352,10 @@ exports.removeWorldItem = function(map, item)
     //Sync world item
             
     server.syncWorldItem(map, this.onMap[map][item].item);
+    
+    //Remove world item
+    
+    this.onMap[map][item] = undefined;
 };
 
 exports.updateMaps = function()
@@ -323,13 +366,16 @@ exports.updateMaps = function()
     {
         //Check if map is valid
         
-        if (this.onMap[m] == undefined)
+        if (this.onMap[m] === undefined)
             continue;
         
         //Cycle through all items
         
         for (let i = 0; i < this.onMap[m].length; i++)
         {
+            if (this.onMap[m][i] === undefined)
+                continue;
+            
             this.onMap[m][i].timer.cur++;
             
             //Check if item should be released of it's owner
@@ -357,5 +403,6 @@ exports.sendMap = function(map, socket)
     //Send all items in map
     
     for (let i = 0; i < this.onMap[map].length; i++)
-        server.syncWorldItem(map, this.onMap[map][i].item, socket, false);
+        if (this.onMap[map][i] !== undefined)
+            server.syncWorldItem(map, this.onMap[map][i].item, socket, false);
 };
