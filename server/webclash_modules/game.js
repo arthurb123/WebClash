@@ -125,7 +125,7 @@ exports.savePlayer = function(name, data, cb)
     if (player === undefined)
         player = {
             char_name: 'player',
-            map: tiled.maps[0].name,
+            map: properties.startingMap,
             pos: { X: 0, Y: 0 },
             moving: false,
             direction: 0,

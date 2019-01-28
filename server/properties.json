@@ -11,5 +11,7 @@
     "playerStartingItems": [
         "Sword",
         "Magic Axe"
-    ]
+    ],
+    
+    "startingMap": "1"
 }
