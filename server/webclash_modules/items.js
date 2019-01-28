@@ -150,6 +150,8 @@ exports.removePlayerItem = function(id, name)
         if (game.players[id].inventory[i] === name) {
             game.players[id].inventory[i] = undefined;
             
+            server.syncInventoryItem(i, id, game.players[id].socket, false);
+            
             break;
         }
 };
@@ -199,7 +201,7 @@ exports.getPlayerFreeSlot = function(id)
     //Search for a undefined/non-existing slot
     
     for (let i = 0; i < game.players[id].inventory.length; i++)
-        if (game.players[id].inventory[i] == undefined)
+        if (game.players[id].inventory[i] == null)
             return i;
     
     //Otherwise return the length

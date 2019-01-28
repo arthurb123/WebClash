@@ -338,23 +338,11 @@ const ui = {
             if (player.inventory[slot] !== undefined) {
                 //Send to server
                 
-                socket.emit('CLIENT_USE_ITEM', player.inventory[slot].name, function() {
-                    //Check if stackable
+                socket.emit('CLIENT_USE_ITEM', player.inventory[slot].name);
                 
-                    //...
-
-                    //Remove box
-
-                    ui.inventory.removeBox();
-
-                    //Remove item
-
-                    player.inventory[slot] = undefined;
-
-                    //Refresh UI (slot)
-
-                    ui.inventory.reloadItem(slot); 
-                });
+                //Remove box
+                
+                ui.inventory.removeBox();
             }
         },
         displayBox: function(slot) {

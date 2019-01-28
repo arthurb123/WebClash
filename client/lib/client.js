@@ -232,7 +232,10 @@ const client = {
             
              //Handle data
             
-             player.inventory[data.slot] = data.item;
+             if (data.remove)
+                player.inventory[data.slot] = undefined;
+             else
+                player.inventory[data.slot] = data.item;
             
              //Refresh UI (slot)
             
