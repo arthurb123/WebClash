@@ -220,13 +220,20 @@ exports.createWorldItem = function(owner, map, x, y, name)
     if (item == undefined)
         return;
     
+    //Check if owner should be global or single player
+    
+    let ownerName = owner;
+    
+    if (ownerName != -1)
+        ownerName = game.players[owner].name;
+    
     //Create world item on map
     
     if (this.onMap[map] == undefined)
         this.onMap[map] = [];
     
     let worldItem = {
-        owner: game.players[owner].name,
+        owner: ownerName,
         name: name,
         pos: {
             X: x,

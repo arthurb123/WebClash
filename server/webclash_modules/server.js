@@ -331,6 +331,50 @@ exports.handleSocket = function(socket)
         items.usePlayerItem(socket, id, data)
     });
     
+    socket.on('CLIENT_DROP_ITEM', function(data) {
+        //Check if valid player
+        
+        if (socket.playing === undefined || !socket.playing)
+            return;
+        
+        //Get player id
+        
+        let id = game.getPlayerIndex(socket.name);
+        
+        //Check if valid
+        
+        if (id == -1)
+            return;
+        
+        //Check if player has item in slot
+        
+        if (game.players[id].inventory[data] == null)
+            return;
+        
+        //Get map index
+        
+        let map = tiled.getMapIndex(game.players[id].map);
+        
+        //Create world item
+        
+        items.createWorldItem(
+            -1, 
+            map, 
+            game.players[id].pos.X+game.players[id].character.width/2-tiled.maps[map].tilewidth/2, 
+            game.players[id].pos.Y+game.players[id].character.height-tiled.maps[map].tileheight, 
+            game.players[id].inventory[data]
+        );
+        
+        //Remove item from player inventory
+        //at specific slot
+        
+        game.players[id].inventory[data] = undefined;
+        
+        //Sync inventory item
+        
+        server.syncInventoryItem(data, id, socket, false);
+    });
+    
     socket.on('CLIENT_UNEQUIP_ITEM', function(data) {
         //Check if valid player
         

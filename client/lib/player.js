@@ -35,7 +35,7 @@ const player = {
         
         lx.OnMouse(0, function(data) {
             if (data.state == 0 ||
-                player.actions[0] === undefined)
+                player.actions[0] == undefined)
                 return;
             
             player.faceMouse();

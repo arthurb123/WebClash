@@ -200,7 +200,7 @@ const ui = {
             for (let i = 0; i < this.slots.length; i++) {
                 let equippable = this.getEquippableAtIndex(i);
                 
-                document.getElementById('equipmentbar_box').innerHTML += '<div class="slot" id="' + this.slots[i] + '" onmouseover="ui.inventory.displayBox(\'' + equippable + '\')" onmousedown="player.unequip(\'' + equippable + '\')" onmouseleave="ui.inventory.removeBox()"></div>';
+                document.getElementById('equipmentbar_box').innerHTML += '<div class="slot" id="' + this.slots[i] + '" onmouseover="ui.inventory.displayBox(\'' + equippable + '\')" onclick="player.unequip(\'' + equippable + '\')" onmouseleave="ui.inventory.removeBox()"></div>';
             }
             
             this.reload();
@@ -295,7 +295,7 @@ const ui = {
                     let i = (y*this.size.width+x);
                     
                     document.getElementById('inventory_box').innerHTML += 
-                        '<div class="slot" id="inventory_slot' + i + '" onmouseover="ui.inventory.displayBox(' + i + ')" onmousedown="ui.inventory.useItem(' + i + ')" onmouseleave="ui.inventory.removeBox();">' +
+                        '<div class="slot" id="inventory_slot' + i + '" oncontextmenu="ui.inventory.displayContext(' + i + ')" onmouseover="ui.inventory.displayBox(' + i + ')" onclick="ui.inventory.useItem(' + i + ')" onmouseleave="ui.inventory.removeBox();">' +
                         '</div>';
                     
                     this.slots[i] = 'inventory_slot' + i;
@@ -343,6 +343,21 @@ const ui = {
                 //Remove box
                 
                 ui.inventory.removeBox();
+                
+                //Remove context menu
+                
+                ui.inventory.removeContext();
+            }
+        },
+        dropItem: function(slot) {
+            if (player.inventory[slot] !== undefined) {
+                //Send to server
+                
+                socket.emit('CLIENT_DROP_ITEM', slot);
+                
+                //Remove box
+                
+                ui.inventory.removeContext();
             }
         },
         displayBox: function(slot) {
@@ -351,9 +366,11 @@ const ui = {
             
             //Element
             
-            let el = document.getElementById('displayBox');
+            let el = document.getElementById('displayBox'),
+                context_el = document.getElementById('contextBox');
             
-            if (el != undefined)
+            if (el != undefined ||
+                context_el != undefined)
                 return;
             
             //Item
@@ -445,6 +462,56 @@ const ui = {
             
             document.getElementById('displayBox').remove();
         },
+        displayContext: function(slot) {
+            if (player.inventory[slot] === undefined && player.equipment[slot] === undefined)
+                return;
+            
+            //Element
+            
+            let el = document.getElementById('contextBox');
+            
+            if (el != undefined)
+                this.removeContext();
+            
+            //Item
+            
+            let item = player.inventory[slot];
+            
+            if (item === undefined) 
+                item = player.equipment[slot];
+            
+            //Hide displaybox
+            
+            this.removeBox();
+            
+            //Show context menu
+            
+            let contextBox = document.createElement('div');
+
+            contextBox.id = 'contextBox';
+            contextBox.classList.add('box');
+            contextBox.style = 'position: absolute; width: 70px; padding: 4px; height: auto; text-align: center;';
+            contextBox.innerHTML =
+                    '<button style="width: 90%; height: 20px; font-size: 12px;" onclick="ui.inventory.useItem(' + slot + ')">Use</button>' +
+                    '<button style="width: 90%; height: 20px; font-size: 12px; margin-top: 5px;" onclick="ui.inventory.dropItem(' + slot + ')">Drop</button>';
+
+            //Append
+            
+            view.dom.appendChild(contextBox);
+            
+            //Set position
+            
+            el = document.getElementById('contextBox');
+            
+            el.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-el.offsetWidth-8;
+            el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight;
+        },
+        removeContext: function() {
+            if (document.getElementById('contextBox') == null)
+                return;
+            
+            document.getElementById('contextBox').remove();
+        },
         getItemColor: function(rarity) {
             let color = 'gray';
                 
@@ -477,7 +544,7 @@ const ui = {
                 '<div id="loot_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 25%; margin-left: -75px; margin-top: -45px; width: auto; max-width: 150px; height: auto; text-align: center;">' +
                     '<p class="info" style="font-size: 14px; margin: 3px;">Loot</p>' +
                     '<div id="loot_box_content" style="text-align: left;"></div>' +
-                    '<p class="link" onmousedown="ui.loot.hide()" style="font-size: 12px; color: red;">Close</p>'
+                    '<p class="link" onclick="ui.loot.hide()" style="font-size: 12px; color: red;">Close</p>'
                 '</div>';
         },
         reset: function() {
@@ -513,7 +580,7 @@ const ui = {
             //Add to DOM loot box content
             
             el_content.innerHTML += 
-                '<div class="slot" id="loot_slot' + data.id + '" style="border: 1px solid ' + ui.inventory.getItemColor(data.rarity) + ';" onmousedown="ui.loot.pickup(' + data.id + ')">' +
+                '<div class="slot" id="loot_slot' + data.id + '" style="border: 1px solid ' + ui.inventory.getItemColor(data.rarity) + ';" onclick="ui.loot.pickup(' + data.id + ')">' +
                     '<img src="' + data.source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' +
                 '</div>';
             
