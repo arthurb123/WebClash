@@ -369,7 +369,8 @@ exports.handleSocket = function(socket)
         
         if (item.equippableAction !== undefined)
             for (let a = 0; a < game.players[id].actions.length; a++)
-                if (game.players[id].actions[a].name === item.equippableAction)
+                if (game.players[id].actions[a] != undefined &&
+                    game.players[id].actions[a].name === item.equippableAction)
                     {
                         //Remove equipped action
                         

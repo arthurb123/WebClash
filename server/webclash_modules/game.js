@@ -174,8 +174,7 @@ exports.damagePlayer = function(id, damage)
     
     if (this.players[id].health.cur <= 0)
     {
-        //---TEMP----
-        //reset player pos and send
+        //reset player pos, health and send
         //back to first map
         
         this.players[id].health.cur = this.players[id].health.max;
