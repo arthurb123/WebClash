@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WebClashServer.Editors;
 
@@ -14,9 +13,6 @@ namespace WebClashServer
         public string location = "server";
 
         private Process p = null;
-
-        [DllImport("User32.dll")]
-        static extern int SetForegroundWindow(IntPtr point);
 
         public Main()
         {
