@@ -62,10 +62,6 @@ function startServer() {
     //Start game loop
     
     game.startLoop();
-    
-    //Resume standard input
-    
-    process.stdin.resume();
 }
 
 //Check version function
