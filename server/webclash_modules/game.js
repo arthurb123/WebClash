@@ -11,15 +11,21 @@ exports.playerConstraints = {
 
 exports.startLoop = function() 
 {
+    //Start game logics loop
+    
     setInterval(function() {
         //Update NPCs
 
         npcs.updateMaps();
-
-        //Update world items
-
-        items.updateMaps();
     }, 1000/60);
+    
+    //Start real time loop
+    
+    setInterval(function() {
+        //Update world items
+        
+        items.updateMaps();
+    }, 1000);
 };
 
 exports.savePermissions = function () 
@@ -161,7 +167,7 @@ exports.savePlayer = function(name, data, cb)
         actions: player.actions,
         inventory: player.inventory,
         equipment: player.equipment
-    });
+    }, cb);
 }
 
 exports.damagePlayer = function(id, damage)

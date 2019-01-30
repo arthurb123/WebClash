@@ -260,8 +260,8 @@ exports.createWorldItem = function(owner, map, x, y, name)
                 item: worldItem,
                 timer: {
                     cur: 0,
-                    releaseTime: 1800,
-                    removeTime: 5400
+                    releaseTime: 30, //30 seconds for item release
+                    removeTime: 60   //60 seconds for item removal
                 }
             };
             

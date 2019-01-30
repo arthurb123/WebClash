@@ -48,12 +48,14 @@ exports.exists = function(dir, name, cb) {
     }
 };
 
-exports.save = function(dir, name, data) {
+exports.save = async function(dir, name, data, cb) {
     try 
     {
-        fs.writeFile('data/' + dir + '/' + name + '.json', JSON.stringify(data, null, 1), 'utf8', function(err) {
+        await fs.writeFile('data/' + dir + '/' + name + '.json', JSON.stringify(data, null, 1), 'utf8', function(err) {
             if (err)
                 throw err;
+            else if (cb !== undefined)
+                cb();
         });
     }
     catch (err)

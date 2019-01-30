@@ -59,30 +59,51 @@ function startServer() {
 
 //Exit handler
 
-function exitHandler(options, exitCode) {
-    if (options.cleanup)
-    {
-        //Output
+let hasSaved = false;
+
+function exitHandler(shouldExit) {
+    //Check if exit handler has already been executed
     
-        output.give('Shutting down server..');
+    if (hasSaved)
+        return;
     
-        //Save all players
+    //Output
     
-        game.players.forEach(function(player) {
-            game.savePlayer(player.name, player); 
-        });
-    }
+    output.give('Shutting down server..');
+
+    //Save all players recursively
+
+    let id = -1;
+
+    let cb = () => {
+        id++;
+
+        if (id >= game.players.length) {
+            //Output
+            
+            if (id !== -1)
+                output.give('Saved ' + id + ' players.');
+            
+            //Set has saved to avoid save loop
+            
+            hasSaved = true;
+            
+            //Exit process
+            
+            process.exit();
+        }
+        else
+            game.savePlayer(game.players[id].name, game.players[id], cb);
+    };
     
-    if (exitCode || exitCode === 0) 
-        output.give('Exited with code ' + exitCode + '.');
-    if (options.exit) 
-        process.exit();
+    cb();
 }
 
 //On close event listeners
 
-process.on('exit', exitHandler.bind(null,{cleanup:true}));
-process.on('SIGINT', exitHandler.bind(null, {exit:true}));
-process.on('SIGTERM', exitHandler.bind(null, {exit: true}));
-process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
-process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
+process.on('exit', exitHandler);
+process.on('uncaughtException', exitHandler);
+process.on('SIGINT', exitHandler);
+process.on('SIGTERM', exitHandler);
+process.on('SIGUSR1', exitHandler);
+process.on('SIGUSR2', exitHandler);
