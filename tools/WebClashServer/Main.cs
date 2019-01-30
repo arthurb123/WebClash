@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Management;
 using WebClashServer.Editors;
 
 namespace WebClashServer
@@ -14,6 +14,9 @@ namespace WebClashServer
         public string location = "server";
 
         private Process p = null;
+
+        [DllImport("User32.dll")]
+        static extern int SetForegroundWindow(IntPtr point);
 
         public Main()
         {
@@ -41,22 +44,31 @@ namespace WebClashServer
             if (!CheckServerLocation())
                 return;
 
+            string nodeLocation = getNodeJSLocation();
+
+            if (nodeLocation == "")
+            {
+                MessageBox.Show("Could not locate NodeJS, the server could not be started.", "WebClash Server - Error");
+
+                return;
+            }
+
             startButton.Text = "Stop";
 
             running = true;
 
             try
             {
-                ProcessStartInfo pi = new ProcessStartInfo("cmd.exe", "/c node index.js");
+                ProcessStartInfo pi = new ProcessStartInfo(nodeLocation + "/node.exe", "index.js");
                 p = new Process();
 
                 pi.CreateNoWindow = true;
                 pi.UseShellExecute = false;
-
                 pi.WorkingDirectory = location;
 
                 pi.RedirectStandardError = true;
                 pi.RedirectStandardOutput = true;
+                pi.RedirectStandardInput = true;
 
                 p = Process.Start(pi);
 
@@ -83,17 +95,19 @@ namespace WebClashServer
 
         private void AttemptStopServer()
         {
-            if (running)
+            if (running && 
+                p != null &&
+                !p.HasExited)
             {
                 running = false;
 
+                output.Text = "";
+
                 startButton.Text = "Start";
 
-                KillProcessAndChildrens(p.Id);
+                p.Kill();
 
                 status.Text = "Server has been stopped.";
-
-                output.Text = "";
 
                 p = null;
             }
@@ -155,31 +169,23 @@ namespace WebClashServer
                 Invoke(new Action<string>(AddOutput), msg);
         }
 
-        private void KillProcessAndChildrens(int pid)
+        private string getNodeJSLocation()
         {
-            ManagementObjectSearcher processSearcher = new ManagementObjectSearcher
-              ("Select * From Win32_Process Where ParentProcessID=" + pid);
-            ManagementObjectCollection processCollection = processSearcher.Get();
+            string result = "";
 
-            try
-            {
-                Process proc = Process.GetProcessById(pid);
+            if (Directory.Exists("C:/nodejs"))
+                result = "C:/nodejs";
+            else if (Directory.Exists("C:/Program Files/nodejs"))
+                result = "C:/Program Files/nodejs";
+            else if (Directory.Exists("C:/Program Files (x86)/nodejs"))
+                result = "C:/Program Files (x86)/nodejs";
 
-                if (!proc.HasExited)
-                    proc.Kill();
-            }
-            catch (ArgumentException)
-            {
-                // Process already exited.
-            }
+            if (result == "")
+                using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                        result = dialog.SelectedPath;
 
-            if (processCollection != null)
-            {
-                foreach (ManagementObject mo in processCollection)
-                {
-                    KillProcessAndChildrens(Convert.ToInt32(mo["ProcessID"])); //kill child processes(also kills childrens of childrens etc.)
-                }
-            }
+            return result;
         }
 
         private void settings_Click(object sender, EventArgs e)

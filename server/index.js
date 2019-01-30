@@ -25,6 +25,12 @@ global.storage = require('./webclash_modules/storage');
 global.properties = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
 global.permissions = JSON.parse(fs.readFileSync('permissions.json', 'utf-8'));
 
+//Setup Express
+
+app.use(express.static(path.resolve(__dirname +  "/../client/")));
+
+//Load all game data, and if successful start server
+
 game.loadAllCharacters(function() {
     actions.loadAllActions(function() {
         items.loadAllItems(function() {
@@ -35,13 +41,14 @@ game.loadAllCharacters(function() {
     });
 });
 
-//Setup Express
-
-app.use(express.static(path.resolve(__dirname +  "/../client/")));
-
 //Start server function
 
 function startServer() {
+    //Check NodeJS version
+    
+    if (!checkVersion())
+        return;
+    
     //Listen on specified port
 
     http.listen(properties.port, function(){
@@ -55,6 +62,32 @@ function startServer() {
     //Start game loop
     
     game.startLoop();
+    
+    //Resume standard input
+    
+    process.stdin.resume();
+}
+
+//Check version function
+
+function checkVersion() {
+    //Get version
+    
+    let major = parseInt(process.version.substr(1, process.version.indexOf('.')));
+    
+    //Check if the current version is compliant
+    
+    if (major < 8) {
+        output.give('WebClash requires NodeJS 8 or higher.');
+        
+        return false;
+    }
+    
+    //Print version that is being used
+    
+    output.give('Using NodeJS ' + process.version);
+    
+    return true;
 }
 
 //Exit handler
@@ -70,6 +103,11 @@ function exitHandler(shouldExit) {
     //Output
     
     output.give('Shutting down server..');
+    
+    //Check if there are players that need to be saved
+    
+    if (game.players.length === 0)
+        return;
 
     //Save all players recursively
 
@@ -102,7 +140,6 @@ function exitHandler(shouldExit) {
 //On close event listeners
 
 process.on('exit', exitHandler);
-process.on('uncaughtException', exitHandler);
 process.on('SIGINT', exitHandler);
 process.on('SIGTERM', exitHandler);
 process.on('SIGUSR1', exitHandler);

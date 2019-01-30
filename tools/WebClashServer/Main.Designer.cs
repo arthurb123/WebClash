@@ -41,26 +41,27 @@
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mapsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.permissions = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.menuStrip1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // output
             // 
             this.output.BackColor = System.Drawing.SystemColors.Control;
             this.output.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.output.Dock = System.Windows.Forms.DockStyle.Top;
+            this.output.Dock = System.Windows.Forms.DockStyle.Fill;
             this.output.Location = new System.Drawing.Point(0, 24);
             this.output.Name = "output";
             this.output.ReadOnly = true;
-            this.output.Size = new System.Drawing.Size(404, 193);
+            this.output.Size = new System.Drawing.Size(404, 192);
             this.output.TabIndex = 0;
             this.output.Text = "";
             // 
             // startButton
             // 
             this.startButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.startButton.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.startButton.Location = new System.Drawing.Point(0, 218);
+            this.startButton.Location = new System.Drawing.Point(3, 1);
             this.startButton.MaximumSize = new System.Drawing.Size(120, 23);
             this.startButton.MinimumSize = new System.Drawing.Size(120, 23);
             this.startButton.Name = "startButton";
@@ -74,20 +75,21 @@
             // 
             this.status.BackColor = System.Drawing.SystemColors.ControlLight;
             this.status.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.status.Location = new System.Drawing.Point(121, 218);
+            this.status.Location = new System.Drawing.Point(123, 1);
             this.status.Name = "status";
-            this.status.Size = new System.Drawing.Size(228, 20);
+            this.status.Size = new System.Drawing.Size(227, 20);
             this.status.TabIndex = 2;
             this.status.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // settings
             // 
+            this.settings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.settings.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("settings.BackgroundImage")));
             this.settings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.settings.Cursor = System.Windows.Forms.Cursors.Hand;
             this.settings.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.settings.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.settings.Location = new System.Drawing.Point(378, 217);
+            this.settings.Location = new System.Drawing.Point(378, 1);
             this.settings.Name = "settings";
             this.settings.Size = new System.Drawing.Size(23, 23);
             this.settings.TabIndex = 3;
@@ -120,46 +122,47 @@
             // itemsToolStripMenuItem
             // 
             this.itemsToolStripMenuItem.Name = "itemsToolStripMenuItem";
-            this.itemsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.itemsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.itemsToolStripMenuItem.Text = "Items";
             this.itemsToolStripMenuItem.Click += new System.EventHandler(this.itemsToolStripMenuItem_Click);
             // 
             // charactersToolStripMenuItem
             // 
             this.charactersToolStripMenuItem.Name = "charactersToolStripMenuItem";
-            this.charactersToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.charactersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.charactersToolStripMenuItem.Text = "Characters";
             this.charactersToolStripMenuItem.Click += new System.EventHandler(this.charactersToolStripMenuItem_Click);
             // 
             // NPCsToolStripMenuItem
             // 
             this.NPCsToolStripMenuItem.Name = "NPCsToolStripMenuItem";
-            this.NPCsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.NPCsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.NPCsToolStripMenuItem.Text = "NPCs";
             this.NPCsToolStripMenuItem.Click += new System.EventHandler(this.NPCsToolStripMenuItem_Click);
             // 
             // actionsToolStripMenuItem
             // 
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
-            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.actionsToolStripMenuItem.Text = "Actions";
             this.actionsToolStripMenuItem.Click += new System.EventHandler(this.actionsToolStripMenuItem_Click);
             // 
             // mapsToolStripMenuItem
             // 
             this.mapsToolStripMenuItem.Name = "mapsToolStripMenuItem";
-            this.mapsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.mapsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.mapsToolStripMenuItem.Text = "Maps";
             this.mapsToolStripMenuItem.Click += new System.EventHandler(this.mapsToolStripMenuItem_Click);
             // 
             // permissions
             // 
+            this.permissions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.permissions.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("permissions.BackgroundImage")));
             this.permissions.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.permissions.Cursor = System.Windows.Forms.Cursors.Hand;
             this.permissions.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.permissions.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.permissions.Location = new System.Drawing.Point(352, 217);
+            this.permissions.Location = new System.Drawing.Point(353, 1);
             this.permissions.Name = "permissions";
             this.permissions.Size = new System.Drawing.Size(23, 23);
             this.permissions.TabIndex = 5;
@@ -167,27 +170,36 @@
             this.permissions.UseVisualStyleBackColor = true;
             this.permissions.Click += new System.EventHandler(this.permissions_Click);
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.startButton);
+            this.panel1.Controls.Add(this.settings);
+            this.panel1.Controls.Add(this.permissions);
+            this.panel1.Controls.Add(this.status);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 216);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(404, 25);
+            this.panel1.TabIndex = 6;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(404, 241);
-            this.Controls.Add(this.permissions);
-            this.Controls.Add(this.settings);
-            this.Controls.Add(this.status);
-            this.Controls.Add(this.startButton);
             this.Controls.Add(this.output);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(420, 280);
             this.MinimumSize = new System.Drawing.Size(420, 280);
             this.Name = "Main";
             this.Text = "WebClash Server";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -207,6 +219,7 @@
         private System.Windows.Forms.ToolStripMenuItem actionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem itemsToolStripMenuItem;
         private System.Windows.Forms.Button permissions;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 
