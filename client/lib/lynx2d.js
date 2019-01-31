@@ -1723,6 +1723,18 @@ function Lynx2D() {
             return this;
         };
         
+        this.Loops = function(callback) {
+            this.LOOPS = callback;
+            
+            return this;
+        };
+        
+        this.ClearLoops = function() {
+            this.LOOPS = undefined;
+            
+            return this;
+        };
+        
         this.Alignment = function(alignment) {
             if (alignment == undefined) return this.ALIGN;
             else this.ALIGN = alignment;  
@@ -1781,7 +1793,8 @@ function Lynx2D() {
         };
         
         this.UPDATE = function() {
-            
+            if (this.LOOPS !== undefined)
+                this.LOOPS();
         };
         
         this.Show = function() {

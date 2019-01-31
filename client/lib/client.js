@@ -2,39 +2,51 @@ const client = {
     inGame: false,
     serverName: '',
     connect: function(cb) {
-        //Set timeout
-        
-        let timeOut = setInterval(function() {
-            //Clear timeout interval
-            
-            clearInterval(timeOut);
-            
-            //Set status text
-            
-            document.getElementById('status_text').innerHTML = 'Server is not available';
-        }, 5000);
-        
-        //Try to make a connection
-        
-        window['socket'] = io.connect(
-            (properties.address.length > 0 ? (properties.address + ":" + properties.port) : undefined)
-        );
-        
-        //Set on connect callback
-        
-        window['socket']._callbacks.$connect.push(function() {
-            //Clear timeout interval
-            
-            clearInterval(timeOut);
-            
-            //Setup possible server requests
+        try {
+            //Set timeout
 
-            client.setup();
+            let timeOut = setInterval(function() {
+                //Clear timeout interval
 
-            //Callback
+                clearInterval(timeOut);
 
-            cb();
-        });
+                //Set status text
+
+                document.getElementById('status_text').innerHTML = 'Server is not available';
+            }, 5000);
+
+            //Try to make a connection
+
+            window['socket'] = io.connect(
+                (properties.address.length > 0 ? (properties.address + ":" + properties.port) : undefined)
+            );
+
+            //Set on connect callback
+
+            window['socket']._callbacks.$connect.push(function() {
+                //Check if connection is valid
+
+                if (!window['socket'].connected ||
+                    window['socket'].disconnected)
+                    return;
+
+                //Clear timeout interval
+
+                clearInterval(timeOut);
+
+                //Setup possible server requests
+
+                client.setup();
+
+                //Callback
+
+                cb();
+            });
+        }
+        catch (err)
+        {
+            console.log('Could not connect to server:' + err);
+        }
     },
     joinGame: function() {
         if (this.inGame)

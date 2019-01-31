@@ -22,6 +22,9 @@ const landingScene = new lx.Scene(function() {
     //the text in case of new package
     
     let server_name = new lx.UIText('Connected to: -', lx.GetDimensions().width/2, lx.GetDimensions().height-20, 11, '#3d3d3d')
+        .Loops(function() {
+            this.Position(lx.GetDimensions().width/2, lx.GetDimensions().height-20);
+        })
         .Alignment('center')
         .Show();
     
