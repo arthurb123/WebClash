@@ -494,6 +494,10 @@ const ui = {
             contextBox.innerHTML =
                     '<button style="width: 90%; height: 20px; font-size: 12px;" onclick="ui.inventory.useItem(' + slot + ')">Use</button>' +
                     '<button style="width: 90%; height: 20px; font-size: 12px; margin-top: 5px;" onclick="ui.inventory.dropItem(' + slot + ')">Drop</button>';
+            
+            //Set on mouse leave event handler
+            
+            contextBox.setAttribute('onmouseleave', 'ui.inventory.removeContext()');
 
             //Append
             

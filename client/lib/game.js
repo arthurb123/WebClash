@@ -406,19 +406,23 @@ const game = {
                 this.items[i].POS.Y == data.pos.Y)
                     dy -= 13;
         
+        //Create item sprite
+        
+        let sprite = new lx.Sprite(data.source);
+        
         //Create lynx gameobject
         
         let worldItem = new lx.GameObject(
-            new lx.Sprite(data.source),
+            sprite,
             data.pos.X,
             data.pos.Y,
-            data.size.W,
-            data.size.H
+            sprite.Size().W,
+            sprite.Size().H
         );
         
         //Add name label
         
-        worldItem._nameplate = new lx.UIText(name, data.size.W/2, dy, 12, ui.inventory.getItemColor(data.rarity));
+        worldItem._nameplate = new lx.UIText(name, worldItem.Size().W/2, dy, 12, ui.inventory.getItemColor(data.rarity));
         worldItem._nameplate.SHADOW = true;
         
         //Set owner

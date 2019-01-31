@@ -239,10 +239,6 @@ exports.createWorldItem = function(owner, map, x, y, name)
             X: x,
             Y: y
         },
-        size: {
-            W: tiled.maps[map].tilewidth,
-            H: tiled.maps[map].tileheight
-        },
         source: item.source,
         rarity: item.rarity,
         value: item.value
