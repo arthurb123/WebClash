@@ -2,19 +2,39 @@ const client = {
     inGame: false,
     serverName: '',
     connect: function(cb) {
+        //Set timeout
+        
+        let timeOut = setInterval(function() {
+            //Clear timeout interval
+            
+            clearInterval(timeOut);
+            
+            //Set status text
+            
+            document.getElementById('status_text').innerHTML = 'Server is not available';
+        }, 5000);
+        
         //Try to make a connection
         
         window['socket'] = io.connect(
             (properties.address.length > 0 ? (properties.address + ":" + properties.port) : undefined)
         );
         
-        //Setup possible server requests
+        //Set on connect callback
         
-        this.setup();
-        
-        //Callback
-        
-        cb();
+        window['socket']._callbacks.$connect.push(function() {
+            //Clear timeout interval
+            
+            clearInterval(timeOut);
+            
+            //Setup possible server requests
+
+            client.setup();
+
+            //Callback
+
+            cb();
+        });
     },
     joinGame: function() {
         if (this.inGame)
