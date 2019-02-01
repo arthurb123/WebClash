@@ -502,8 +502,11 @@ const game = {
         //...
     },
     getTileset: function(src) {
-        if (this.tilesets[src] === undefined)
-            this.tilesets[src] = new lx.Sprite(src);
+        if (this.tilesets[src] === undefined) {
+            let s = src.lastIndexOf('/')+1;
+            
+            this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s));
+        }
         
         this.tilesets[src].CLIP = undefined;
         

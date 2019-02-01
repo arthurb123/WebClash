@@ -57,65 +57,82 @@ const tiled = {
                   width = map.layers[l].width,
                   height = map.layers[l].height;
             
-            if (map.layers[l].offsetx !== undefined) offset_width += map.layers[l].offsetx;
-            if (map.layers[l].offsety !== undefined) offset_height += map.layers[l].offsety;
+            if (map.layers[l].offsetx !== undefined) 
+                offset_width += map.layers[l].offsetx;
+            if (map.layers[l].offsety !== undefined) 
+                offset_height += map.layers[l].offsety;
             
             lx.OnLayerDraw(l, function(gfx) {
-                for (let t = 0; t < data.length; t++)
-                {
-                    //Skip empty tiles
-                    
-                    if (data[t] == 0)
-                        continue;
-                    
-                    //Get corresponding tile sprite
-                    
-                    let sprite;
-                    
-                    for (let i = 0; i < map.tilesets.length; i++) {
-                        const tileset = map.tilesets[i];
+                let y_line = {
+                    start: Math.floor((game.players[game.player].POS.Y-offset_height-lx.GetDimensions().height/2)/map.tileheight),
+                    length: lx.GetDimensions().height/map.tileheight+2
+                },
+                    x_line = {
+                    start: Math.floor((game.players[game.player].POS.X-offset_width-lx.GetDimensions().width/2)/map.tilewidth),
+                    length: lx.GetDimensions().width/map.tilewidth+2
+                };
+         
+                for (let y = y_line.start; y < y_line.start+y_line.length; y++)
+                    for (let x = x_line.start; x < x_line.start+x_line.length; x++) {
+                        //Convert to tile
                         
-                        if (data[t] >= tileset.firstgid) {
-                            let s = tileset.image.lastIndexOf('/')+1;
-                            
-                            sprite = game.getTileset('res/tilesets/' + tileset.image.substr(s, tileset.image.length-s));
-                        } else
-                            break;
+                        let t = y * map.width + x;
+                        
+                        //Skip empty tiles
+                    
+                        if (data[t] == 0)
+                            continue;
+
+                        //Get corresponding tile sprite
+
+                        let sprite;
+
+                        for (let i = 0; i < map.tilesets.length; i++)
+                            if (data[t] >= map.tilesets[i].firstgid)
+                                sprite = game.getTileset(map.tilesets[i].image);
+                            else
+                                break;
+
+                        //Check if sprite is valid
+
+                        if (sprite === undefined)
+                            continue;
+
+                        //Check if sprite has a tilewidth specified
+
+                        if (sprite._tilewidth == undefined || 
+                            sprite._tilewidth == 0) {
+                            sprite._tilewidth = sprite.Size().W/map.tilewidth;
+                        }
+
+                        //Calculate tile coordinates
+
+                        let tc = {
+                            x: (data[t] % sprite._tilewidth - 1) * map.tilewidth,
+                            y: (Math.ceil(data[t] / sprite._tilewidth) -1) * map.tileheight
+                        },
+                            tp = {
+                            x: t % width * map.tilewidth,
+                            y: Math.floor(t / width) * map.tileheight       
+                        };
+
+                        //Tile clip coordinates artefact prevention
+
+                        if (tc.x == -map.tilewidth)
+                            tc.x = sprite.Size().W - map.tilewidth;
+
+                        //Draw tile
+
+                        lx.DrawSprite(
+                            sprite.Clip(tc.x, tc.y, map.tilewidth, map.tileheight),
+
+                            tp.x+offset_width,
+                            tp.y+offset_height, 
+
+                            map.tilewidth,
+                            map.tileheight
+                        );
                     }
-                    
-                    //Check if sprite is valid
-                    
-                    if (sprite === undefined)
-                        continue;
-                    
-                    //Calculate tile coordinates
-                    
-                    let tc = {
-                        x: (data[t] % Math.round(sprite.Size().W/map.tilewidth) - 1) * map.tilewidth,
-                        y: (Math.ceil(data[t] / Math.round(sprite.Size().W/map.tilewidth)) -1) * map.tileheight
-                    },
-                        tp = {
-                        x: t % width * map.tilewidth,
-                        y: Math.floor(t / width) * map.tileheight       
-                    };
-                    
-                    //Tile clip coordinates artefact prevention
-                    
-                    if (tc.x == -map.tilewidth)
-                        tc.x = sprite.Size().W - map.tilewidth;
-                    
-                    //Draw tile
-                    
-                    lx.DrawSprite(
-                        sprite.Clip(tc.x, tc.y, map.tilewidth, map.tileheight),
-                        
-                        tp.x+offset_width,
-                        tp.y+offset_height, 
-                        
-                        map.tilewidth,
-                        map.tileheight
-                    );
-                }
             });
         }
         
