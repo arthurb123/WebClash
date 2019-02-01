@@ -3,6 +3,7 @@ const ui = {
         this.actionbar.create();
         this.inventory.create();
         this.equipment.create();
+        this.status.create();
         this.loot.create();
         this.chat.create();
         
@@ -676,6 +677,45 @@ const ui = {
             //Set visibility
             
             el.style.visibility = 'hidden';
+        }
+    },
+    status: {
+       create: function() {
+            view.dom.innerHTML += 
+                '<div id="status_box" class="box" style="position: absolute; top: 20px; left: 20px; width: 195px; height: 80px;">' +
+                    '<p class="info">Health</p>' +
+                    '<div id="status_health_box" class="bar" style="text-align: center;">' +
+                        '<div id="status_health" class="bar_content" style="background-color: #E87651; width: 100%;"></div>' +
+                        '<p id="status_health_text" class="info" style="position: relative; top: -18px; font-size: 10px;"></p>' +
+                    '</div>' + 
+                    '<p class="info">Mana</p>' +
+                    '<div id="status_mana_box" class="bar" style="text-align: center;">' +
+                        '<div id="status_mana" class="bar_content" style="background-color: #2B92ED; width: 100%;"></div>' +
+                        '<p id="status_mana_text" class="info" style="position: relative; top: -18px; font-size: 10px;"></p>' +
+                    '</div>' + 
+                '</div>';
+        },
+        setHealth: function(value, max) {
+            let el = document.getElementById('status_health'),
+                t_el = document.getElementById('status_health_text');
+            
+            el.style.width = (value/max)*100 + '%';
+            
+            if (value != max)
+                t_el.innerHTML = value;
+            else
+                t_el.innerHTML = '';
+        },
+        setMana: function(value, max) {
+            let el = document.getElementById('status_mana'),
+                t_el = document.getElementById('status_mana_text');
+            
+            el.style.width = (value/max)*100 + '%';
+            
+            if (value != max)
+                t_el.innerHTML = value;
+            else
+                t_el.innerHTML = '';
         }
     },
     floaties: {

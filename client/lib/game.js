@@ -65,6 +65,11 @@ const game = {
             let delta = -(this.players[id]._health.cur-health.cur);
             
             this.players[id]._health = health;
+        
+            //If player set UI health
+                
+            if (this.player == id)
+                ui.status.setHealth(health.cur, health.max);
             
             if (delta == 0) {
                 //Miss floaty
@@ -121,8 +126,14 @@ const game = {
                 blood.Show(1);
             }
         }
-        else
+        else {
             this.players[id]._health = health;
+                 
+            //If player set UI health
+                
+            if (this.player == id)
+                ui.status.setHealth(health.cur, health.max);
+        }
     },
     setPlayerEquipment: function(id, equipment)
     {
