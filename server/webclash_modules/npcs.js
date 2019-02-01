@@ -655,8 +655,8 @@ exports.evaluateLootTable = function(map, id)
             items.createWorldItem(
                 this.onMap[map][id].target,
                 map,
-                this.onMap[map][id].pos.X+this.onMap[map][id].data.character.width/2-tiled.maps[map].tilewidth/2,
-                this.onMap[map][id].pos.Y+this.onMap[map][id].data.character.height-tiled.maps[map].tileheight,
+                this.onMap[map][id].pos.X+this.onMap[map][id].data.character.width/2,
+                this.onMap[map][id].pos.Y+this.onMap[map][id].data.character.height,
                 this.onMap[map][id].data.items[i].item
             );
         }

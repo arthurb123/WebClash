@@ -396,16 +396,6 @@ const game = {
             return;
         }
         
-        //Check how many items exist at position
-        
-        let dy = -12;
-        
-        for (let i = 0; i < this.items.length; i++)
-            if (this.items[i] != undefined &&
-                this.items[i].POS.X == data.pos.X &&
-                this.items[i].POS.Y == data.pos.Y)
-                    dy -= 13;
-        
         //Create item sprite
         
         let sprite = new lx.Sprite(data.source);
@@ -414,11 +404,21 @@ const game = {
         
         let worldItem = new lx.GameObject(
             sprite,
-            data.pos.X,
-            data.pos.Y,
+            data.pos.X-sprite.Size().W/2,
+            data.pos.Y-sprite.Size().H,
             sprite.Size().W,
             sprite.Size().H
         );
+        
+        //Check how many items exist at position
+        
+        let dy = -12;
+        
+        for (let i = 0; i < this.items.length; i++)
+            if (this.items[i] != undefined &&
+                this.items[i].POS.X == worldItem.POS.X &&
+                this.items[i].POS.Y == worldItem.POS.Y)
+                    dy -= 13;
         
         //Add name label
         

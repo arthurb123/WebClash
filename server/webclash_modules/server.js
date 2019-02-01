@@ -360,8 +360,8 @@ exports.handleSocket = function(socket)
         items.createWorldItem(
             -1, 
             map, 
-            game.players[id].pos.X+game.players[id].character.width/2-tiled.maps[map].tilewidth/2, 
-            game.players[id].pos.Y+game.players[id].character.height-tiled.maps[map].tileheight, 
+            game.players[id].pos.X+game.players[id].character.width/2, 
+            game.players[id].pos.Y+game.players[id].character.height, 
             game.players[id].inventory[data]
         );
         

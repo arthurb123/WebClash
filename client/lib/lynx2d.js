@@ -319,6 +319,26 @@ function Lynx2D() {
                 };
             }
         },
+        UNTRANSLATE_FROM_FOCUS: function(POS) {
+            if (this.FOCUS == undefined) return POS;
+            else {
+                if (this.FOCUS.SIZE == undefined)
+                    this.FOCUS.SIZE = {
+                        W: 0,
+                        H: 0
+                    };
+                else if (this.FOCUS.SIZE.W == undefined || this.FOCUS.SIZE.H == undefined)
+                {
+                    this.FOCUS.SIZE.W = 0;
+                    this.FOCUS.SIZE.H = 0;
+                }
+                
+                return {
+                    X: Math.floor(Math.round(POS.X)+Math.round(this.FOCUS.Position().X)-lx.GetDimensions().width/2+this.FOCUS.SIZE.W/2),
+                    Y: Math.floor(Math.round(POS.Y)+Math.round(this.FOCUS.Position().Y)-lx.GetDimensions().height/2+this.FOCUS.SIZE.H/2)
+                };
+            }
+        },
         ON_SCREEN: function(POS, SIZE) {
             if (this.FOCUS != undefined) {
                 if (Math.abs(this.FOCUS.Position().X-POS.X) <= lx.GetDimensions().width/2+SIZE.W && Math.abs(this.FOCUS.Position().Y-POS.Y) <= lx.GetDimensions().height/2+SIZE.H) return true;
@@ -770,6 +790,15 @@ function Lynx2D() {
             h = sprite.Size().H;
         };
         
+        if (!lx.GAME.ON_SCREEN({
+            X: x,
+            Y: y
+        }, {
+            W: w,
+            H: h
+        }))
+            return;
+        
         sprite.RENDER(this.GAME.TRANSLATE_FROM_FOCUS({
             X: x, 
             Y: y
@@ -912,7 +941,8 @@ function Lynx2D() {
         };
         
         this.RENDER = function(POS, SIZE) {
-            if (SIZE == undefined) SIZE = this.Size();
+            if (SIZE == undefined) 
+                SIZE = this.Size();
             
             if (this.CLIP == undefined) {
                 if (this.ROTATION == 0) lx.CONTEXT.GRAPHICS.drawImage(this.IMG, POS.X, POS.Y, SIZE.W, SIZE.H);

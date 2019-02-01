@@ -91,9 +91,7 @@ namespace WebClashServer
 
         private void AttemptStopServer()
         {
-            if (running && 
-                p != null &&
-                !p.HasExited)
+            if (running)
             {
                 running = false;
 
@@ -101,7 +99,9 @@ namespace WebClashServer
 
                 startButton.Text = "Start";
 
-                p.Kill();
+                if (p != null &&
+                    !p.HasExited)
+                    p.Kill();
 
                 status.Text = "Server has been stopped.";
 

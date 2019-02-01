@@ -44,11 +44,6 @@ game.loadAllCharacters(function() {
 //Start server function
 
 function startServer() {
-    //Check NodeJS version
-    
-    if (!checkVersion())
-        return;
-    
     //Listen on specified port
 
     http.listen(properties.port, function(){
@@ -62,28 +57,6 @@ function startServer() {
     //Start game loop
     
     game.startLoop();
-}
-
-//Check version function
-
-function checkVersion() {
-    //Get version
-    
-    let major = parseInt(process.version.substr(1, process.version.indexOf('.')));
-    
-    //Check if the current version is compliant
-    
-    if (major < 8) {
-        output.give('WebClash requires NodeJS 8 or higher.');
-        
-        return false;
-    }
-    
-    //Print version that is being used
-    
-    output.give('Using NodeJS ' + process.version);
-    
-    return true;
 }
 
 //Exit handler

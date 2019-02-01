@@ -74,6 +74,10 @@ exports.handleCommand = function(socket, text)
                 if (arguments.length == 0)
                     return 'wrong';
                 
+                for (let i = 0; i < permissions.admins.length; i++)
+                    if (permissions.admins[i] == arguments[0])
+                        return 'success';
+                
                 permissions.admins.push(arguments[0]);
                 game.savePermissions();
                 
@@ -95,6 +99,10 @@ exports.handleCommand = function(socket, text)
             case 'ban':
                 if (arguments.length == 0)
                     return 'wrong';
+                
+                for (let i = 0; i < permissions.banned.length; i++)
+                    if (permissions.banned[i] == arguments[0])
+                        return 'success';
                 
                 permissions.banned.push(arguments[0]);
                 game.savePermissions();
