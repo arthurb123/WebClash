@@ -108,6 +108,7 @@ exports.cacheMap = function(map)
                     let property = tileset.tiles[i].properties[p];
 
                     this.maps_properties[id].push({
+                        tile: tileset.tiles[i].id,
                         name: property.name,
                         value: property.value,
                         rectangles: this.getMapTileRectangles(map, tileset.tiles[i].id)
@@ -128,12 +129,17 @@ exports.cacheMap = function(map)
 
 exports.checkPropertyWithRectangle = function(map_name, property_name, rectangle)
 {
-    let id = this.getMapIndex(map_name);
+    let id = this.getMapIndex(map_name),
+        data = {
+            near: false
+        };
     
     if (id == -1 ||
         this.maps_properties[id] === undefined ||
         this.maps_properties[id].length == 0)
-        return false;
+        return data;
+    
+    data.map = id;
     
     for (let p = 0; p < this.maps_properties[id].length; p++) {
         if (this.maps_properties[id][p].name !== property_name)
@@ -141,10 +147,33 @@ exports.checkPropertyWithRectangle = function(map_name, property_name, rectangle
         
         for (let r = 0; r < this.maps_properties[id][p].rectangles.length; r++)
             if (this.checkRectangularCollision(this.maps_properties[id][p].rectangles[r], rectangle)) 
-                return true;
+            {
+                data.near = true;
+                data.tile = this.maps_properties[id][p].tile;
+                
+                break;
+            }
     }
     
-    return false;
+    return data;
+};
+
+exports.getPropertiesFromTile = function(map, tile)
+{
+    let result = [];
+    
+    if (this.maps_properties[map] == undefined)
+        return result;
+    
+    for (let p = 0; p < this.maps_properties[map].length; p++) {
+        if (this.maps_properties[map][p].tile == tile)
+            result.push({
+                name: this.maps_properties[map][p].name,
+                value: this.maps_properties[map][p].value
+            });
+    }
+    
+    return result;
 };
 
 exports.checkCollisionWithRectangle = function(map_name, rectangle)

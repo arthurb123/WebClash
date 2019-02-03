@@ -58,7 +58,7 @@ const game = {
         
         go._nameplate.SHADOW = true;
         
-        this.players.push(go.Show(2));  
+        this.players.push(go.Show(3));  
     },
     setPlayerHealth: function(id, health) {
         if (this.players[id]._health !== undefined) {

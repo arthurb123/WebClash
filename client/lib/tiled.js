@@ -143,7 +143,7 @@ const tiled = {
         //Execute after load queue
 
         this.queue.forEach(function(cb) {
-            cb.cb(cb.parameter, offset_width, offset_height); 
+            cb.cb(cb.parameter); 
         });
         this.queue = [];
         
@@ -200,7 +200,7 @@ const tiled = {
 
                 //Check properties
 
-                this.checkProperties(tp, offset_width, offset_height, tileset, data[t]);
+                this.checkProperties(tp, tileset, data[t]);
              }
          }
     },
@@ -226,7 +226,7 @@ const tiled = {
             }
         }
     },
-    checkProperties: function(tile_coordinates, offset_width, offset_height, tileset, id)
+    checkProperties: function(tile_coordinates, tileset, id)
     {
         for (let i = 0; i < tileset.tiles.length; i++) {
             if (tileset.tiles[i].id+1 == id) {
@@ -237,7 +237,7 @@ const tiled = {
                       callbacks = [];
                 
                 for (let p = 0; p < properties.length; p++) {
-                    let f = this.handleProperty(properties[p], tileset, offset_width, offset_height);
+                    let f = this.handleProperty(properties[p], tileset);
                     
                     if (f !== undefined)
                         callbacks.push(f);
@@ -274,7 +274,7 @@ const tiled = {
             }
         }
     },
-    handleProperty: function(property, tileset, offset_width, offset_height)
+    handleProperty: function(property, tileset)
     {
         if (property === undefined)
             return;
@@ -287,28 +287,6 @@ const tiled = {
                         tiled.loading = true;
                         
                         socket.emit('CLIENT_REQUEST_MAP', property.value);
-                    }
-                };
-            case "positionX":
-                return function(go, ow, oh) {
-                    if (go === game.players[game.player])
-                    {
-                        if (ow === undefined)
-                            ow = offset_width;
-                        
-                        go.POS.X = Math.floor(property.value*tileset.tilewidth+ow);
-                        player.sync('position');
-                    }
-                };
-            case "positionY":
-                return function(go, ow, oh) {
-                    if (go === game.players[game.player])
-                    {
-                        if (oh === undefined)
-                            oh = offset_height;
-                        
-                        go.POS.Y = Math.floor(property.value*tileset.tileheight+oh)-go.Size().H/2;
-                        player.sync('position');
                     }
                 };
         }

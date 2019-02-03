@@ -192,9 +192,19 @@ exports.handleSocket = function(socket)
                 type = 'direction';
             }
             if (data.pos !== undefined) {
-                game.players[id].pos.X = Math.round(data.pos.X);
-                game.players[id].pos.Y = Math.round(data.pos.Y);
-                type = 'position';
+                //Check if valid movement
+                
+                if (Math.abs(game.players[id].pos.X-data.pos.X) <= game.players[id].character.movement.max*2 &&
+                    Math.abs(game.players[id].pos.Y-data.pos.Y) <= game.players[id].character.movement.max*2) {
+                    game.players[id].pos.X = Math.round(data.pos.X);
+                    game.players[id].pos.Y = Math.round(data.pos.Y);
+                               
+                    type = 'position';
+                } else {
+                    server.syncPlayerPartially(id, 'position', socket, false);
+                    
+                    console.log('hacking');
+                }
             }
 
             //Sync across all
@@ -235,23 +245,48 @@ exports.handleSocket = function(socket)
         
         //Get player index
         
-        let id = game.getPlayerIndex(socket.name);
+        let id = game.getPlayerIndex(socket.name),
+            next_map = tiled.getMapIndex(data);
         
         //Check if valid player and if
         //the player is on a different map
         
-        if (id == -1 || game.players[id].map == data)
+        if (id == -1 || next_map == -1 || game.players[id].map == data)
             return;
         
         //Check if player is near to a loadMap property
         
-        if (!tiled.checkPropertyWithRectangle(game.players[id].map, 'loadMap', {
+        let result = tiled.checkPropertyWithRectangle(game.players[id].map, 'loadMap', {
             x: game.players[id].pos.X-game.players[id].character.width/2,
             y: game.players[id].pos.Y-game.players[id].character.height/2,
             w: game.players[id].character.width*2,
             h: game.players[id].character.height*2
-        }))
+        });
+        
+        if (!result.near)
             return;
+        
+        //Check if positioning properties exist
+        
+        let properties = tiled.getPropertiesFromTile(result.map, result.tile),
+            done = false;
+        
+        for (let p = 0; p < properties.length; p++)
+        {
+            if (properties[p].name === 'positionX') {
+                game.players[id].pos.X = (properties[p].value-tiled.maps[next_map].width/2+.5)*tiled.maps[next_map].tilewidth-game.players[id].character.width/2;
+                
+                done = true;
+            }
+            if (properties[p].name === 'positionY') {
+                game.players[id].pos.Y = (properties[p].value-tiled.maps[next_map].height/2)*tiled.maps[next_map].tileheight-game.players[id].character.height/2;
+                
+                done = true;
+            }
+        }
+        
+        if (done)
+            server.syncPlayerPartially(id, 'position');
         
         //Send map to player
         
