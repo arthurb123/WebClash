@@ -117,9 +117,9 @@ const client = {
              if (data.direction !== undefined) 
                  game.players[id]._direction = data.direction;
              if (data.level !== undefined)
-                 game.players[id]._level = data.level;
+                 game.setPlayerLevel(id, data.level);
              if (data.stats !== undefined)
-                 game.players[id]._stats = data.stats;
+                 game.setPlayerStats(id, data.stats);
              if (data.health !== undefined)
                  game.setPlayerHealth(id, data.health);
              if (data.equipment !== undefined)

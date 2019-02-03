@@ -549,6 +549,10 @@ exports.killNPC = function(map, id)
     
     this.evaluateLootTable(map, id);
     
+    //Distribute exp
+    
+    this.distributeExperience(map, id);
+    
     //Add to timeout
     
     this.onTimeOut[map][id] = this.respawnTime*60;
@@ -664,4 +668,12 @@ exports.evaluateLootTable = function(map, id)
             );
         }
     }
+};
+
+exports.distributeExperience = function(map, id)
+{
+    //Cycle through all targets/participants
+
+    for (let p = 0; p < this.onMap[map][id].targets.length; p++)
+        game.addPlayerExperience(p, Math.ceil(this.onMap[map][id].targets[p]/this.onMap[map][id].data.health.max*this.onMap[map][id].data.stats.exp));
 };

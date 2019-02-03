@@ -1,17 +1,15 @@
 {
-    "serverName": "WebClash Server",
-    "clientName": "WebClash Client",
-    
     "port": 5315,
     
-    "maxPlayers": 0,
-    
+    "serverName": "WebClash Server",
+    "clientName": "WebClash Client",
     "welcomeMessage": "<b>Welcome to WebClash!</b>",
+    
+    "maxPlayers": 0,
     
     "playerStartingItems": [
         "Sword",
         "Magic Axe"
     ],
-    
     "startingMap": "1"
 }

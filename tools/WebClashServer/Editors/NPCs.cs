@@ -108,6 +108,8 @@ namespace WebClashServer.Editors
             {
                 level.Value = current.stats.level;
 
+                exp.Value = current.stats.exp;
+
                 power.Value = current.stats.power;
                 agility.Value = current.stats.agility;
                 intelligence.Value = current.stats.intelligence;
@@ -289,6 +291,11 @@ namespace WebClashServer.Editors
             current.health.cur = current.health.max = (int)health.Value;
         }
 
+        private void exp_ValueChanged(object sender, EventArgs e)
+        {
+            current.stats.exp = (int)exp.Value;
+        }
+
         private void editActions_Click(object sender, EventArgs e)
         {
             ActionSelection actionSelection = new ActionSelection("Set actions for '" + current.name + "'", current.actions);
@@ -377,6 +384,8 @@ namespace WebClashServer.Editors
     public class Stats
     {
         public int level = 1;
+
+        public int exp = 0;
 
         public int power = 0,
                    toughness = 0,

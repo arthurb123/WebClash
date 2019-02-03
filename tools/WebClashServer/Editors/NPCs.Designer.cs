@@ -46,6 +46,8 @@
             this.movementFree = new System.Windows.Forms.RadioButton();
             this.movementStatic = new System.Windows.Forms.RadioButton();
             this.statistics = new System.Windows.Forms.GroupBox();
+            this.exp = new System.Windows.Forms.NumericUpDown();
+            this.label14 = new System.Windows.Forms.Label();
             this.editLootTable = new System.Windows.Forms.Button();
             this.health = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
@@ -71,6 +73,7 @@
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.range)).BeginInit();
             this.statistics.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.exp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.health)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.vitality)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wisdom)).BeginInit();
@@ -262,6 +265,8 @@
             // 
             // statistics
             // 
+            this.statistics.Controls.Add(this.exp);
+            this.statistics.Controls.Add(this.label14);
             this.statistics.Controls.Add(this.editLootTable);
             this.statistics.Controls.Add(this.health);
             this.statistics.Controls.Add(this.label7);
@@ -289,6 +294,29 @@
             this.statistics.TabStop = false;
             this.statistics.Text = "Statistics";
             // 
+            // exp
+            // 
+            this.exp.Location = new System.Drawing.Point(278, 23);
+            this.exp.Maximum = new decimal(new int[] {
+            9999999,
+            0,
+            0,
+            0});
+            this.exp.Name = "exp";
+            this.exp.Size = new System.Drawing.Size(83, 21);
+            this.exp.TabIndex = 28;
+            this.exp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.exp.ValueChanged += new System.EventHandler(this.exp_ValueChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(241, 25);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(31, 15);
+            this.label14.TabIndex = 27;
+            this.label14.Text = "Exp.";
+            // 
             // editLootTable
             // 
             this.editLootTable.Location = new System.Drawing.Point(13, 162);
@@ -301,7 +329,7 @@
             // 
             // health
             // 
-            this.health.Location = new System.Drawing.Point(261, 23);
+            this.health.Location = new System.Drawing.Point(155, 24);
             this.health.Maximum = new decimal(new int[] {
             9999999,
             0,
@@ -326,7 +354,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(214, 25);
+            this.label7.Location = new System.Drawing.Point(109, 26);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(43, 15);
             this.label7.TabIndex = 24;
@@ -452,7 +480,7 @@
             // 
             // level
             // 
-            this.level.Location = new System.Drawing.Point(82, 24);
+            this.level.Location = new System.Drawing.Point(50, 24);
             this.level.Maximum = new decimal(new int[] {
             9999999,
             0,
@@ -464,7 +492,7 @@
             0,
             0});
             this.level.Name = "level";
-            this.level.Size = new System.Drawing.Size(80, 21);
+            this.level.Size = new System.Drawing.Size(53, 21);
             this.level.TabIndex = 1;
             this.level.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.level.Value = new decimal(new int[] {
@@ -477,7 +505,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(35, 26);
+            this.label5.Location = new System.Drawing.Point(8, 26);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(36, 15);
             this.label5.TabIndex = 0;
@@ -547,6 +575,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.range)).EndInit();
             this.statistics.ResumeLayout(false);
             this.statistics.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.exp)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.health)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.vitality)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.wisdom)).EndInit();
@@ -600,5 +629,7 @@
         private System.Windows.Forms.NumericUpDown health;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button editLootTable;
+        private System.Windows.Forms.NumericUpDown exp;
+        private System.Windows.Forms.Label label14;
     }
 }

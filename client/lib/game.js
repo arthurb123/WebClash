@@ -156,6 +156,26 @@ const game = {
         
         this.players[id]._equipment = result;
     },
+    setPlayerStats: function(id, stats) 
+    {
+        this.players[id]._stats = stats;
+        
+        if (id == game.player)
+            ui.status.setExperience(this.players[id]._stats.exp, this.players[id]._expTarget);
+    },
+    setPlayerLevel: function(id, level)
+    {
+        let oldLevel = game.players[id]._level;
+        game.players[id]._level = level; 
+        
+        if (id == game.player &&
+            oldLevel != undefined &&
+            level != oldLevel) {
+            player.requestExpTarget();
+            
+            ui.chat.addMessage('You are now level ' + level + '!');
+        }
+    },
     removePlayer: function(id) 
     {
         //Check if valid

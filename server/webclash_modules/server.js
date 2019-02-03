@@ -494,6 +494,26 @@ exports.handleSocket = function(socket)
             //Failure, notify user
         }
     });
+    
+    socket.on('CLIENT_REQUEST_EXP', function(callback) {
+         //Check if valid player
+        
+        if (socket.playing === undefined || !socket.playing)
+            return;
+        
+        //Get player id
+        
+        let id = game.getPlayerIndex(socket.name);
+        
+        //Check if valid
+        
+        if (id == -1)
+            return;
+        
+        //Callback current target xp
+        
+        callback(exptable[game.players[id].level-1]);
+    });
 };
 
 //Sync player partially function, if socket is undefined it will be globally emitted

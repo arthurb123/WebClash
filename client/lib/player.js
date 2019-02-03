@@ -55,6 +55,10 @@ const player = {
             
             lx.StopMouse(2);
         });
+        
+        //Request xp target
+        
+        player.requestExpTarget();
     },
     setCollider: function(collider) {
         game.players[game.player].ApplyCollider(
@@ -88,6 +92,14 @@ const player = {
         } 
         else
             this.equipment[equipment.equippable] = undefined;
+    },
+    requestExpTarget: function() {
+        socket.emit('CLIENT_REQUEST_EXP', function(data) {
+            game.players[game.player]._expTarget = data; 
+        
+            if (game.players[game.player]._stats != undefined)
+                ui.status.setExperience(game.players[game.player]._stats.exp, game.players[game.player]._expTarget);
+        });
     },
     faceMouse: function() {
         let dx = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-lx.GetDimensions().width/2,

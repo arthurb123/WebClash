@@ -200,6 +200,29 @@ exports.damagePlayer = function(id, damage)
     server.syncPlayerPartially(id, 'health');
 };
 
+exports.addPlayerExperience = function(id, exp)
+{
+    //Add experience
+    
+    this.players[id].stats.exp += exp;
+    
+    //Check if should level up
+    
+    if (this.players[id].stats.exp >= exptable[this.players[id].level-1])
+    {
+        this.players[id].level++;
+        this.players[id].stats.exp = 0;
+    }
+    
+    //Sync to map
+    
+    server.syncPlayerPartially(id, 'level');
+    
+    //Sync to player
+    
+    server.syncPlayerPartially(id, 'stats', this.players[id].socket, false);
+};
+
 exports.getPlayerIndex = function(name)
 {
     for (let i = 0; i < this.players.length; i++)
