@@ -200,11 +200,8 @@ exports.handleSocket = function(socket)
                     game.players[id].pos.Y = Math.round(data.pos.Y);
                                
                     type = 'position';
-                } else {
+                } else
                     server.syncPlayerPartially(id, 'position', socket, false);
-                    
-                    console.log('hacking');
-                }
             }
 
             //Sync across all
