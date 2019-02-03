@@ -56,6 +56,10 @@ exports.handleCommand = function(socket, text)
             
             arguments = wt.split(' ');
         }
+        
+        //Get player
+        
+        let p = game.getPlayerIndex(socket.name);
 
         //Check which command applies
         
@@ -149,6 +153,24 @@ exports.handleCommand = function(socket, text)
                 let s = server.getSocketWithName(arguments[0]);
                 if (s !== undefined)
                     game.loadMap(s, arguments[1]);
+                
+                return 'success';
+            //Spawn NPC command
+            case 'spawnnpc':
+                if (arguments.length < 1)
+                    return 'wrong';
+                
+                let map = tiled.getMapIndex(game.players[p].map);
+                npcs.createNPC(map, arguments[0], game.players[p].pos.X, game.players[p].pos.Y);
+                
+                server.syncNPC(map, npcs.onMap[map].length-1);
+                
+                return 'success';
+            //Set health command
+            case 'heal':
+                game.players[p].health.cur = game.players[p].health.max;
+                
+                server.syncPlayerPartially(p, 'health');
                 
                 return 'success';
         }

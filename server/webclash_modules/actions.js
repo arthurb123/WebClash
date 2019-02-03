@@ -261,6 +261,10 @@ exports.loadAction = function(location)
 
 exports.damageNPCs = function(owner, stats, actionData, action)
 {
+    if (npcs.onMap[actionData.map] == undefined ||
+        npcs.onMap[actionData.map].length == 0)
+        return;
+    
     for (let e = 0; e < actionData.elements.length; e++)
         for (let n = 0; n < npcs.onMap[actionData.map].length; n++)
         {   

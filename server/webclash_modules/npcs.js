@@ -81,63 +81,66 @@ exports.createNPCs = function(npc_property, map_id)
     //Cycle through all dimensions
     
     for (let i = 0; i < npc_property.rectangles.length; i++)
-    {
-        //Get specified NPC
+        this.createNPC(map_id, npc_property.value, npc_property.rectangles[i].x, npc_property.rectangles[i].y);
+};
+
+exports.createNPC = function(map, name, x, y)
+{
+    //Get specified NPC
     
-        let npc = {
-            data: this.loadNPC(npc_property.value)
-        };
-        
-        if (npc.data === undefined)
-            continue;
-        
-        //Setup NPC
-        
-        npc.id = this.onMap[map_id].length;
-        
-        //Setup NPC Movement
-        
-        npc.pos = {
-            X: npc_property.rectangles[i].x,
-            Y: npc_property.rectangles[i].y
-        };
-        npc.start_pos = {
-            X: npc_property.rectangles[i].x,
-            Y: npc_property.rectangles[i].y
-        };
-        
-        npc.movement = {
-            vel: {
-                x: 0,
-                y: 0
-            },
-            distance: 0,
-            cur: 0,
-            standard: 60
-        };
-        npc.moving = false;
-        npc.direction = 0;
-        
-        //Setup NPC Combat
-        
-        npc.targets = [];
-        npc.target = -1;
-        
-        npc.combat_cooldown = {
-            cur: 0,
-            standard: 0,
-            done: true,
-            start: function(cooldown) {
-                this.cur = 0;
-                this.standard = cooldown;
-                this.done = false;
-            }
-        };
-        
-        //Add NPC to map
-        
-        this.onMap[map_id].push(npc);
-    }
+    let npc = {
+        data: this.loadNPC(name)
+    };
+
+    if (npc.data === undefined)
+        return;
+
+    //Setup NPC
+
+    npc.id = this.onMap[map].length;
+
+    //Setup NPC Movement
+
+    npc.pos = {
+        X: x,
+        Y: y
+    };
+    npc.start_pos = {
+        X: x,
+        Y: y
+    };
+
+    npc.movement = {
+        vel: {
+            x: 0,
+            y: 0
+        },
+        distance: 0,
+        cur: 0,
+        standard: 60
+    };
+    npc.moving = false;
+    npc.direction = 0;
+
+    //Setup NPC Combat
+
+    npc.targets = [];
+    npc.target = -1;
+
+    npc.combat_cooldown = {
+        cur: 0,
+        standard: 0,
+        done: true,
+        start: function(cooldown) {
+            this.cur = 0;
+            this.standard = cooldown;
+            this.done = false;
+        }
+    };
+
+    //Add NPC to map
+
+    this.onMap[map].push(npc);
 };
 
 exports.loadNPC = function(name)

@@ -409,83 +409,83 @@ const game = {
         
         //Create item sprite
         
-        let sprite = new lx.Sprite(data.source);
+        let sprite = new lx.Sprite(data.source, undefined, undefined, undefined, undefined, function() {
+            //Create lynx gameobject
         
-        //Create lynx gameobject
-        
-        let worldItem = new lx.GameObject(
-            sprite,
-            data.pos.X-sprite.Size().W/2,
-            data.pos.Y-sprite.Size().H,
-            sprite.Size().W,
-            sprite.Size().H
-        );
-        
-        //Check how many items exist at position
-        
-        let dy = -12;
-        
-        for (let i = 0; i < this.items.length; i++)
-            if (this.items[i] != undefined &&
-                this.items[i].POS.X == worldItem.POS.X &&
-                this.items[i].POS.Y == worldItem.POS.Y)
-                    dy -= 13;
-        
-        //Add name label
-        
-        worldItem._nameplate = new lx.UIText(name, worldItem.Size().W/2, dy, 12, ui.inventory.getItemColor(data.rarity));
-        worldItem._nameplate.SHADOW = true;
-        
-        //Set owner
-        
-        worldItem._owner = data.owner;
-        
-        //Create collider
-        
-        worldItem.CreateCollider(true, function(coll_data) {
-            //Check if player
-            
-            if (game.players[game.player].COLLIDER !== coll_data.trigger)
-                return;
-            
-            //Check if player is owner
-            
-            if (game.items[data.id]._owner != -1 &&
-                game.players[game.player].name !== game.items[data.id]._owner)
-                return;
-            
-            //Check if player is moving
-            
-            if (game.players[game.player].MOVEMENT.VX == 0 &&
-                game.players[game.player].MOVEMENT.VY == 0)
-                return;
-            
-            //Add to loot window
-            
-            ui.loot.add(data);
+            let worldItem = new lx.GameObject(
+                sprite,
+                data.pos.X-sprite.Size().W/2,
+                data.pos.Y-sprite.Size().H,
+                sprite.Size().W,
+                sprite.Size().H
+            );
+
+            //Check how many items exist at position
+
+            let dy = -12;
+
+            for (let i = 0; i < game.items.length; i++)
+                if (game.items[i] != undefined &&
+                    game.items[i].POS.X == worldItem.POS.X &&
+                    game.items[i].POS.Y == worldItem.POS.Y)
+                        dy -= 13;
+
+            //Add name label
+
+            worldItem._nameplate = new lx.UIText(name, worldItem.Size().W/2, dy, 12, ui.inventory.getItemColor(data.rarity));
+            worldItem._nameplate.SHADOW = true;
+
+            //Set owner
+
+            worldItem._owner = data.owner;
+
+            //Create collider
+
+            worldItem.CreateCollider(true, function(coll_data) {
+                //Check if player
+
+                if (game.players[game.player].COLLIDER !== coll_data.trigger)
+                    return;
+
+                //Check if player is owner
+
+                if (game.items[data.id]._owner != -1 &&
+                    game.players[game.player].name !== game.items[data.id]._owner)
+                    return;
+
+                //Check if player is moving
+
+                if (game.players[game.player].MOVEMENT.VX == 0 &&
+                    game.players[game.player].MOVEMENT.VY == 0)
+                    return;
+
+                //Add to loot window
+
+                ui.loot.add(data);
+            });
+
+            worldItem.COLLIDER.Solid(false);
+
+            //Check owner
+
+            if (data.owner != -1 &&
+                game.players[this.player] != undefined &&
+                game.players[this.player].name !== data.owner)
+                worldItem._nameplate.Text('*' + name);
+
+            worldItem._nameplate
+                .Alignment('center')
+                .Follows(worldItem)
+                .Show();
+
+            //Add to items
+
+            game.items[data.id] = worldItem;
+
+            //Show world item
+
+            game.items[data.id].Show(1);
         });
-        
-        worldItem.COLLIDER.Solid(false);
-        
-        //Check owner
-        
-        if (data.owner != -1 &&
-            this.players[this.player] != undefined &&
-            this.players[this.player].name !== data.owner)
-            worldItem._nameplate.Text('*' + name);
-        
-        worldItem._nameplate
-            .Alignment('center')
-            .Follows(worldItem)
-            .Show();
-        
-        //Add to items
-        
-        this.items[data.id] = worldItem;
-        
-        //Show world item
-        
-        this.items[data.id].Show(1);
     },
     resetWorldItems: function() {
         //Cycle through all items and hide

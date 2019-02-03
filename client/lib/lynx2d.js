@@ -885,12 +885,16 @@ function Lynx2D() {
         };
     };
     
-    this.Sprite = function (source, c_x, c_y, c_w, c_h) {
+    this.Sprite = function (source, c_x, c_y, c_w, c_h, cb) {
         this.IMG = new Image();
+        
+        if (cb != undefined)
+            this.IMG.onload = cb;
+        
         this.IMG.src = source;
         this.ROTATION = 0;
         
-        if (c_x != undefined || c_y != undefined || c_w != undefined || c_h != undefined) this.CLIP = {
+        if (c_x != undefined && c_y != undefined && c_w != undefined && c_h != undefined) this.CLIP = {
             X: c_x,
             Y: c_y,
             W: c_w,
