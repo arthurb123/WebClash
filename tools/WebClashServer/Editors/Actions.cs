@@ -315,7 +315,7 @@ namespace WebClashServer.Editors
 
             ReloadActions();
 
-            charSelect.SelectedItem = current.name;
+            actionSelect.SelectedItem = current.name;
         }
 
         public int GetAmount()

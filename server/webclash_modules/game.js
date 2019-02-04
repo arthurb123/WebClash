@@ -17,6 +17,10 @@ exports.startLoop = function()
         //Update NPCs
 
         npcs.updateMaps();
+        
+        //Update action cooldowns
+        
+        actions.updateCooldowns();
     }, 1000/60);
     
     //Start real time loop
@@ -47,6 +51,12 @@ exports.addPlayer = function(socket)
             player.name = socket.name;
             player.character = game.characters[player.char_name];
             player.socket = socket;
+            
+            //Refresh actions
+            
+            for (let a = 0; a < player.actions.length; a++)
+                if (player.actions[a] != undefined)
+                    player.actions[a] = actions.createPlayerSlotAction(player.actions[a].name);
 
             //Add player
 

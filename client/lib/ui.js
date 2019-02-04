@@ -83,6 +83,7 @@ const ui = {
         }
     },
     actionbar: {
+        cooldowns: [],
         create: function() {
             if (this.slots !== undefined)
                 return;
@@ -131,6 +132,75 @@ const ui = {
                     '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;" onmouseover="ui.actionbar.displayBox(' + a + ')" onmouseleave="ui.actionbar.removeBox()"/>' + uses;
             }
         },
+        setCooldown: function(slot) {
+            if (this.slots === undefined)
+                return;
+            
+            //Get slot element
+            
+            let el = document.getElementById(this.slots[slot]);
+            
+            //Remove cooldown element, just to be sure
+            
+            ui.actionbar.removeCooldown(slot);
+            
+            //Create cooldown element
+            
+            let cd = document.createElement('div');
+            cd.id = this.slots[slot] + '_cooldown';
+            cd.classList.add('cooldown');
+            
+            //Add time label to cooldown element
+            
+            let cdTime = document.createElement('p');
+            
+            cdTime.classList.add('info');
+            cdTime.style.fontSize = '10px';
+            cdTime.style.position = 'relative';
+            cdTime.style.top = 9;
+            cdTime.style.left = 4;
+
+            cd.appendChild(cdTime);
+            
+            //Append cooldown elements
+            
+            el.appendChild(cd);
+            
+            //Add to cooldowns
+            
+            this.cooldowns[slot] = player.actions[slot].cooldown;
+            
+            //Create loop
+            
+            let cdLoopID = lx.GAME.ADD_LOOPS(function() {
+                 cd.style.width = (ui.actionbar.cooldowns[slot]/player.actions[slot].cooldown)*100 + '%';
+                
+                 let time = ui.actionbar.cooldowns[slot]/60;
+                 if (time > 1)
+                     time = Math.round(time);
+                 else
+                     time = time.toFixed(1);
+                
+                 cdTime.innerHTML = time + 's';
+                
+                 if (ui.actionbar.cooldowns[slot] <= 0) {
+                     ui.actionbar.cooldowns[slot] = undefined;
+                     ui.actionbar.removeCooldown(slot);
+                     
+                     lx.GAME.LOOPS[cdLoopID] = undefined;
+                 } else
+                    ui.actionbar.cooldowns[slot]--;
+            });
+        },
+        removeCooldown: function(slot) {
+            if (this.slots === undefined)
+                return;
+            
+            let cd = document.getElementById(this.slots[slot] + '_cooldown');
+            
+            if (cd != undefined)
+                cd.remove();
+        },
         displayBox: function(slot) {
             if (player.actions[slot] === undefined)
                 return;
@@ -142,16 +212,17 @@ const ui = {
             if (el != undefined)
                 return;
 
-            //Create displabox
+            //Create displaybox
             
             let displayBox = document.createElement('div');
 
             displayBox.id = 'displayBox';
             displayBox.classList.add('box');
-            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 16px; height: auto; text-align: center;';
+            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 18px; height: auto; text-align: center;';
             displayBox.innerHTML =
                     '<font class="header" style="font-size: 15px;">' + player.actions[slot].name + '</font><br>' + 
-                    '<font class="info" style="position: relative; top: 8px;">' + player.actions[slot].description + '</font><br>';
+                    '<font class="info" style="position: relative; top: 8px;">' + player.actions[slot].description + '</font><br>' +
+                    '<font class="info" style="position: relative; top: 12px; font-size: 10px;">CD: ' + (player.actions[slot].cooldown/60).toFixed(1) + 's</font><br>';
 
             //Append
             
@@ -703,10 +774,7 @@ const ui = {
             
             el.style.width = (value/max)*100 + '%';
             
-            if (value != max)
-                t_el.innerHTML = value;
-            else
-                t_el.innerHTML = '';
+            t_el.innerHTML = value;
         },
         setMana: function(value, max) {
             let el = document.getElementById('status_mana'),
@@ -714,10 +782,7 @@ const ui = {
             
             el.style.width = (value/max)*100 + '%';
             
-            if (value != max)
-                t_el.innerHTML = value;
-            else
-                t_el.innerHTML = '';
+            t_el.innerHTML = value;
         },
         setExperience: function(value, max) {
             let el = document.getElementById('status_exp'),
@@ -725,10 +790,7 @@ const ui = {
             
             el.style.width = (value/max)*100 + '%';
             
-            if (value != max)
-                t_el.innerHTML = value;
-            else
-                t_el.innerHTML = '';
+            t_el.innerHTML = value;
         }
     },
     floaties: {

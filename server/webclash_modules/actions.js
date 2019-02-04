@@ -4,6 +4,22 @@ const fs = require('fs');
 
 exports.collection = [];
 
+exports.updateCooldowns = function() {
+    for (let p = 0; p < game.players.length; p++)
+        if (game.players[p] != undefined &&
+            game.players[p].actions_cooldown != undefined)
+            for (let action in game.players[p].actions_cooldown)
+            {
+                if (game.players[p].actions_cooldown[action] == undefined)
+                    continue;
+                
+                game.players[p].actions_cooldown[action]--;
+                
+                if (game.players[p].actions_cooldown[action] <= 0)
+                    game.players[p].actions_cooldown[action] = undefined;
+            }
+};
+
 exports.getAction = function(name)
 {
     let id = this.getActionIndex(name);
@@ -34,6 +50,20 @@ exports.hasPlayerAction = function(name, id)
     return false;
 };
 
+exports.onCooldownPlayerAction = function(name, id)
+{
+    if (game.players[id] === undefined)
+        return false;
+    
+    if (game.players[id].actions_cooldown === undefined)
+        game.players[id].actions_cooldown = {};
+    
+    if (game.players[id].actions_cooldown[name] == undefined)
+        return false;
+    else 
+        return true;
+};
+
 exports.addPlayerAction = function(socket, name, id)
 {
     if (game.players[id] === undefined)
@@ -45,7 +75,7 @@ exports.addPlayerAction = function(socket, name, id)
     
     for (let a = 0; a < 7; a++)
         if (game.players[id].actions[a] === undefined) {
-            game.players[id].actions[a] = this.createPlayerSlotAction(name, a_id);
+            game.players[id].actions[a] = this.createPlayerSlotAction(name);
                 
             break;
         }
@@ -64,7 +94,7 @@ exports.setPlayerAction = function(socket, name, position, id)
     if (a_id == -1)
         return false;
     
-    game.players[id].actions[position] = this.createPlayerSlotAction(name, a_id);
+    game.players[id].actions[position] = this.createPlayerSlotAction(name);
     
     server.syncPlayerPartially(id, 'actions', socket, false);
     
@@ -89,11 +119,17 @@ exports.removePlayerAction = function(socket, name, id)
     return true;
 };
 
-exports.createPlayerSlotAction = function(name, id)
+exports.createPlayerSlotAction = function(name)
 {
+    let id = this.getActionIndex(name);
+    
+    if (id == -1)
+        return;
+    
     return {
         name: name,
         description: this.collection[id].description,
+        cooldown: this.collection[id].cooldown,
         src: this.collection[id].src
     };
 };
@@ -110,6 +146,11 @@ exports.createPlayerAction = function(name, id)
     //Check if player has the action
     
     if (!this.hasPlayerAction(name, id))
+        return false;
+    
+    //Check if the action is on cooldown
+    
+    if (this.onCooldownPlayerAction(name, id))
         return false;
     
     //Generate action data
@@ -159,9 +200,20 @@ exports.createPlayerAction = function(name, id)
     if (this.collection[a_id].heal > 0)
         this.healPlayers(actionData, this.collection[a_id].heal);
     
+    //Add cooldown to slot
+    
+    if (game.players[id].actions_cooldown === undefined)
+        game.players[id].actions_cooldown = {};
+    
+    game.players[id].actions_cooldown[name] = this.collection[a_id].cooldown;
+    
     //Sync action
     
     server.syncAction(actionData);
+    
+    //Return true
+    
+    return true;
 };
 
 exports.createNPCAction = function(possibleAction, map, id)
@@ -217,7 +269,7 @@ exports.createNPCAction = function(possibleAction, map, id)
     
     //Check for healing
     
-    //...
+    this.healNPCs(npcs.onMap[map][id].data.stats, actionData, this.collection[a_id]);
     
     //Sync action
     
@@ -288,6 +340,45 @@ exports.damageNPCs = function(owner, stats, actionData, action)
 
             if (tiled.checkRectangularCollision(actionRect, npcRect)) 
                 npcs.damageNPC(owner, actionData.map, n, this.calculateDamage(stats, action.scaling));
+        }
+};
+
+exports.healNPCs = function(actionData, action)
+{
+    if (npcs.onMap[actionData.map] == undefined ||
+        npcs.onMap[actionData.map].length == 0)
+        return;
+    
+    for (let e = 0; e < actionData.elements.length; e++)
+        for (let n = 0; n < npcs.onMap[actionData.map].length; n++)
+        {   
+            if (npcs.onMap[actionData.map][n].data.type !== 'hostile' ||
+                npcs.isTimedOut(actionData.map, n))
+                continue;
+
+            let actionRect = {
+                x: actionData.pos.X+actionData.elements[e].x,
+                y: actionData.pos.Y+actionData.elements[e].y,
+                w: actionData.elements[e].w,
+                h: actionData.elements[e].h
+            };
+            
+            let npcRect = {
+                x: npcs.onMap[actionData.map][n].pos.X,
+                y: npcs.onMap[actionData.map][n].pos.Y,
+                w: npcs.onMap[actionData.map][n].data.character.width,
+                h: npcs.onMap[actionData.map][n].data.character.height
+            };
+
+            if (tiled.checkRectangularCollision(actionRect, npcRect)) 
+            {
+                npcs.onMap[actionData.map][n].health.cur += action.heal;
+                
+                if (npcs.onMap[actionData.map][n].health.cur >= npcs.onMap[actionData.map][n].health.max)
+                    npcs.onMap[actionData.map][n].health.cur = npcs.onMap[actionData.map][n].health.max;
+                
+                server.syncNPCPartially(map, n, 'health');
+            }
         }
 };
 

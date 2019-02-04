@@ -215,9 +215,11 @@ exports.handleSocket = function(socket)
         }
     });
     
-    socket.on('CLIENT_PLAYER_ACTION', function(data) {
+    socket.on('CLIENT_PLAYER_ACTION', function(data, callback) {
          try 
          {
+             //Check if valid
+             
              if (socket.name === undefined)
                  return;
              
@@ -226,7 +228,13 @@ exports.handleSocket = function(socket)
              if (id == -1)
                  return;
              
-             actions.createPlayerAction(data, id);
+             //Try to create action
+             
+             let result = actions.createPlayerAction(data, id);
+             
+             //Callback result
+             
+             callback(result);
          } 
          catch (err)
          {

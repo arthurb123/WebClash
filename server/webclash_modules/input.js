@@ -160,10 +160,16 @@ exports.handleCommand = function(socket, text)
                 if (arguments.length < 1)
                     return 'wrong';
                 
-                let map = tiled.getMapIndex(game.players[p].map);
-                npcs.createNPC(map, arguments[0], game.players[p].pos.X, game.players[p].pos.Y);
+                let count = 1,
+                    map = tiled.getMapIndex(game.players[p].map);
                 
-                server.syncNPC(map, npcs.onMap[map].length-1);
+                if (arguments.length == 2)
+                    count = parseInt(arguments[1]);
+                
+                for (let i = 0; i < count; i++) {
+                    npcs.createNPC(map, arguments[0], game.players[p].pos.X, game.players[p].pos.Y);
+                    server.syncNPC(map, npcs.onMap[map].length-1);
+                }
                 
                 return 'success';
             //Set health command

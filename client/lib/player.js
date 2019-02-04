@@ -31,27 +31,21 @@ const player = {
         
         game.players.push(go.Show(3));  
         
-        //(Less) temporary code
+        //Mouse event handlers
         
         lx.OnMouse(0, function(data) {
-            if (data.state == 0 ||
-                player.actions[0] == undefined)
+            if (data.state == 0)
                 return;
             
-            player.faceMouse();
-            
-            socket.emit('CLIENT_PLAYER_ACTION', player.actions[0].name);
+            player.performAction(0);
             
             lx.StopMouse(0);
         });
         lx.OnMouse(2, function(data) {
-            if (data.state == 0 ||
-                player.actions[1] === undefined)
+            if (data.state == 0)
                 return;
             
-            player.faceMouse();
-            
-            socket.emit('CLIENT_PLAYER_ACTION', player.actions[1].name);
+            player.performAction(1);
             
             lx.StopMouse(2);
         });
@@ -113,6 +107,23 @@ const player = {
             else this.forceFrame.start(3);
         
         this.sync('direction');
+    },
+    performAction: function(slot) {
+        if (player.actions[slot] == undefined)
+            return;
+        
+        //Face mouse
+        
+        player.faceMouse();
+        
+        //Send action request
+            
+        socket.emit('CLIENT_PLAYER_ACTION', player.actions[slot].name, function(data) {
+            if (data)
+                ui.actionbar.setCooldown(slot);
+            
+            //...
+        });
     },
     unequip: function(equippable) {
         if (this.equipment[equippable] === undefined)
