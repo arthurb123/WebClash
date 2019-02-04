@@ -199,6 +199,8 @@ exports.damagePlayer = function(id, damage)
         
         this.players[id].pos.X = 0;
         this.players[id].pos.Y = 0;
+        
+        server.syncPlayerPartially(id, 'position');
          
         this.loadMap(this.players[id].socket, tiled.maps[0].name);
         
