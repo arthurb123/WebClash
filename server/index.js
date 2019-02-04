@@ -79,32 +79,13 @@ function exitHandler(shouldExit) {
     if (game.players.length === 0)
         return;
 
-    //Save all players recursively
-
-    let id = -1;
-
-    let cb = () => {
-        id++;
-
-        if (id >= game.players.length) {
-            //Output
-            
-            if (id !== -1)
-                output.give('Saved ' + id + ' players.');
-            
-            //Set has saved to avoid save loop
-            
-            hasSaved = true;
-            
-            //Exit process
-            
-            process.exit();
-        }
-        else
-            game.savePlayer(game.players[id].name, game.players[id], cb);
-    };
+    //Save all players
     
-    cb();
+    game.saveAllPlayers(function() {
+        hasSaved = true;
+        
+        process.exit();
+    });
 }
 
 //On close event listeners

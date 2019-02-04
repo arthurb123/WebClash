@@ -38,16 +38,12 @@ const player = {
                 return;
             
             player.performAction(0);
-            
-            lx.StopMouse(0);
         });
         lx.OnMouse(2, function(data) {
             if (data.state == 0)
                 return;
             
             player.performAction(1);
-            
-            lx.StopMouse(2);
         });
         
         //Request xp target
@@ -109,7 +105,15 @@ const player = {
         this.sync('direction');
     },
     performAction: function(slot) {
+        //Check if valid
+        
         if (player.actions[slot] == undefined)
+            return;
+        
+        //Check if cooldown
+        
+        if (game.players[game.player].actions_cooldown != undefined &&
+            game.players[game.player].actions_cooldown[slot] > 0)
             return;
         
         //Face mouse

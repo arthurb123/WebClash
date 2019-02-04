@@ -764,7 +764,7 @@ const ui = {
                     '</div>' + 
                     '<div id="status_exp_box" class="bar" style="text-align: center; height: 9px;">' +
                         '<div id="status_exp" class="bar_content" style="background-color: #BF4CE6; width: 100%;"></div>' +
-                        '<p id="status_exp_text" class="info" style="position: relative; top: -17px; font-size: 8px;"></p>' +
+                        '<p id="status_exp_text" class="info" style="position: relative; top: -17px; font-size: 7px;"></p>' +
                     '</div>' + 
                 '</div>';
         },

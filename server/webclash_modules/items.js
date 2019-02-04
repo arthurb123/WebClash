@@ -181,6 +181,11 @@ exports.setPlayerEquipment = function(socket, id, item)
         
         if (equippable === 'main')
             actions.setPlayerAction(socket, item.equippableAction, 0, id);
+        
+        //Set action at 1 if offhand
+        
+        if (equippable === 'offhand')
+            actions.setPlayerAction(socket, item.equippableAction, 1, id);
     }
     
     //Sync to others

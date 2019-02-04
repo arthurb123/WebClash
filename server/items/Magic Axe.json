@@ -1,1 +1,1 @@
-{"source":"res/items/3.png","rarity":"rare","value":32,"description":"This is one hot tool.","equippable":"main","equippableSource":"res/equipment/main/1.png","equippableAction":"Combust","stats":{"power":1,"toughness":0,"vitality":0,"intelligence":0,"wisdom":0,"agility":0}}
+{"source":"res/items/3.png","rarity":"rare","value":32,"description":"This is one hot tool.","equippable":"offhand","equippableSource":"res/equipment/main/1.png","equippableAction":"Combust","stats":{"power":1,"toughness":0,"vitality":0,"intelligence":0,"wisdom":0,"agility":0}}

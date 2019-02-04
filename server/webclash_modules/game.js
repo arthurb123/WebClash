@@ -127,6 +127,33 @@ exports.removePlayer = function(socket)
         }
 };
 
+exports.saveAllPlayers = function(callback)
+{   
+    //Save all players recursively
+
+    let id = -1;
+
+    let cb = () => {
+        id++;
+
+        if (id >= game.players.length) {
+            //Output
+            
+            if (id !== -1)
+                output.give('Saved ' + id + ' players.');
+            
+            //Execute callback
+            
+            if (callback !== undefined)
+                callback();
+        }
+        else
+            game.savePlayer(game.players[id].name, game.players[id], cb);
+    };
+    
+    cb();
+};
+
 exports.savePlayer = function(name, data, cb)
 {
     let player = data;
