@@ -51,18 +51,12 @@ exports.addPlayer = function(socket)
             player.name = socket.name;
             player.character = game.characters[player.char_name];
             player.socket = socket;
-            
-            //Refresh actions
-            
-            for (let a = 0; a < player.actions.length; a++)
-                if (player.actions[a] != undefined)
-                    player.actions[a] = actions.createPlayerSlotAction(player.actions[a].name);
 
             //Add player
 
             let id = game.players.length;
             game.players[id] = player;
-
+            
             //Load current world
 
             game.loadMap(socket, player.map); 

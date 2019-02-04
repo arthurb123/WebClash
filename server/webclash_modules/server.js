@@ -556,7 +556,14 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
             data.health = game.players[id].health;
             break;
         case 'actions':
-            data.actions = game.players[id].actions;
+            data.actions = [];
+            
+            for (let a = 0; a < game.players[id].actions.length; a++) {
+                if (game.players[id].actions == undefined)
+                    continue;
+                
+                data.actions[a] = actions.createPlayerSlotAction(game.players[id].actions[a]);
+            }
             break;
         case 'equipment':
             data.equipment = {};

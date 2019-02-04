@@ -44,7 +44,7 @@ exports.hasPlayerAction = function(name, id)
         return false;
     
     for (let a = 0; a < game.players[id].actions.length; a++)
-        if (game.players[id].actions[a].name === name)
+        if (game.players[id].actions[a] === name)
             return true;
     
     return false;
@@ -69,13 +69,9 @@ exports.addPlayerAction = function(socket, name, id)
     if (game.players[id] === undefined)
         return false;
     
-    let a_id = this.getActionIndex(name);
-    if (a_id == -1)
-        return false;
-    
     for (let a = 0; a < 7; a++)
         if (game.players[id].actions[a] === undefined) {
-            game.players[id].actions[a] = this.createPlayerSlotAction(name);
+            game.players[id].actions[a] = name;
                 
             break;
         }
@@ -90,11 +86,7 @@ exports.setPlayerAction = function(socket, name, position, id)
     if (game.players[id] === undefined)
         return false;
     
-    let a_id = this.getActionIndex(name);
-    if (a_id == -1)
-        return false;
-    
-    game.players[id].actions[position] = this.createPlayerSlotAction(name);
+    game.players[id].actions[position] = name;
     
     server.syncPlayerPartially(id, 'actions', socket, false);
     
@@ -108,7 +100,7 @@ exports.removePlayerAction = function(socket, name, id)
     
     for (let a = 0; a < game.players[id].actions.length; a++)
         if (game.players[id].actions[a] !== undefined &&
-            game.players[id].actions[a].name === name) {
+            game.players[id].actions[a] === name) {
             game.players[id].actions[a] = undefined;
             
             break;

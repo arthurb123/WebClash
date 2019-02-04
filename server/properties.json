@@ -8,8 +8,7 @@
     "maxPlayers": 0,
     
     "playerStartingItems": [
-        "Sword",
-        "Magic Axe"
+        "Sword"
     ],
     "startingMap": "1"
 }
