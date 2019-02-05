@@ -493,6 +493,12 @@ const ui = {
                 if (item.stats.agility > 0)
                     stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.agility + ' Agility</p>';
             }
+            
+            //Item type
+            
+            let type = 'item';
+            if (item.equippable !== '')
+                type = item.equippable;
 
             //Create displaybox
             
@@ -503,6 +509,7 @@ const ui = {
             displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 16px; height: auto; text-align: center;';
             displayBox.innerHTML =
                     '<font class="header" style="font-size: 15px; color: ' + color + ';">' + item.name + '</font><br>' + 
+                    '<font class="info" style="font-size: 10px;">' + type + '</font><br>' +
                     action +
                     '<font class="info" style="position: relative; top: 8px;">' + item.description + '</font><br>' +
                     stats +
