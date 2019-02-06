@@ -124,9 +124,11 @@ const ui = {
                 if (player.actions[a] == undefined)
                     continue;
                 
-                let uses = '';
-                if (player.actions[a].uses !== undefined)
-                    uses = '<font class="info" style="position: absolute; top: 25px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%;">' + player.actions[a].uses + '/' + player.actions[a].max + '</font>';
+                let uses = '', usesContent = '∞';
+                if (player.actions[a].uses != undefined)
+                    usesContent = player.actions[a].uses + '/' + player.actions[a].max;
+                
+                uses = '<font class="info" style="position: absolute; top: 100%; margin-top: -15px; margin-left: -6px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%; text-align: right;">' + usesContent + '</font>';
                 
                 document.getElementById(this.slots[a]).innerHTML = 
                     '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;" onmouseover="ui.actionbar.displayBox(' + a + ')" onmouseleave="ui.actionbar.removeBox()"/>' + uses;
@@ -218,11 +220,11 @@ const ui = {
 
             displayBox.id = 'displayBox';
             displayBox.classList.add('box');
-            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 18px; height: auto; text-align: center;';
+            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 15px; height: auto; text-align: center;';
             displayBox.innerHTML =
                     '<font class="header" style="font-size: 15px;">' + player.actions[slot].name + '</font><br>' + 
                     '<font class="info" style="position: relative; top: 8px;">' + player.actions[slot].description + '</font><br>' +
-                    '<font class="info" style="position: relative; top: 12px; font-size: 10px;">CD: ' + (player.actions[slot].cooldown/60).toFixed(1) + 's</font><br>';
+                    '<font class="info" style="position: relative; top: 9px; font-size: 10px;">CD: ' + (player.actions[slot].cooldown/60).toFixed(1) + 's</font>';
 
             //Append
             

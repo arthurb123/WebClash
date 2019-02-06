@@ -18,6 +18,8 @@ imported using the Maps interface.
 
 Colliders are supported, however only in
 the rectangular form.
+Colliders can be created using object layers
+or tile specific colliders.
 
 The custom properties available for Tiled 
 tileset objects are as follows:

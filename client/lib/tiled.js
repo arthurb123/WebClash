@@ -53,6 +53,16 @@ const tiled = {
         //the map content
     
         for (let l = 0; l < map.layers.length; l++) {
+            //Check if visible
+            
+            if (!map.layers[l].visible)
+                continue;
+            
+            //Check if tilelayer
+            
+            if (map.layers[l].type !== 'tilelayer')
+                continue;
+            
             const data = map.layers[l].data,
                   width = map.layers[l].width,
                   height = map.layers[l].height;
@@ -153,56 +163,92 @@ const tiled = {
     },
     checkObjects: function(map)
     {        
-         for (let l = 0; l < map.layers.length; l++) {
-             const data = map.layers[l].data,
-                   width = map.layers[l].width,
+        const offset_width = -map.width*map.tilewidth/2,
+              offset_height = -map.height*map.tileheight/2;
+
+        for (let l = 0; l < map.layers.length; l++) {
+             //Check if layer is visible
+            
+             if (!map.layers[l].visible)
+                 continue;
+
+             const width = map.layers[l].width,
                    height = map.layers[l].height;
-             
-             let offset_width = -map.width*map.tilewidth/2,
-                 offset_height = -map.height*map.tileheight/2;
-             
+
              if (map.layers[l].offsetx !== undefined) offset_width += map.layers[l].offsetx;
              if (map.layers[l].offsety !== undefined) offset_height += map.layers[l].offsety;
-             
-             for (let t = 0; t < data.length; t++)
-             {
-                //Skip empty tiles
 
-                if (data[t] == 0)
-                    continue;
+             //Tile layer
+             if (map.layers[l].type === 'tilelayer') {
+                 const data = map.layers[l].data;
 
-                //Get corresponding tileset
+                 for (let t = 0; t < data.length; t++)
+                 {
+                    //Skip empty tiles
 
-                let tileset;
+                    if (data[t] == 0)
+                        continue;
 
-                for (let i = 0; i < map.tilesets.length; i++) {
-                    if (tileset !== undefined && data[t] < tileset.firstgid)
-                        break;
+                    //Get corresponding tileset
 
-                    tileset = map.tilesets[i];
-                }
+                    let tileset;
 
-                //Check if tileset has objects
+                    for (let i = 0; i < map.tilesets.length; i++) {
+                        if (tileset !== undefined && data[t] < tileset.firstgid)
+                            break;
 
-                if (tileset.tiles === undefined)
-                    continue;
+                        tileset = map.tilesets[i];
+                    }
 
-                //Calculate tile coordinates
+                    //Check if tileset has objects
 
-                let tp = {
-                    x: t % width * map.tilewidth + offset_width,
-                    y: Math.floor(t / width) * map.tileheight + offset_height     
-                };
+                    if (tileset.tiles === undefined)
+                        continue;
 
-                //Check collider
+                    //Calculate tile coordinates
 
-                this.checkCollider(tp, tileset, data[t]);
+                    let tp = {
+                        x: t % width * map.tilewidth + offset_width,
+                        y: Math.floor(t / width) * map.tileheight + offset_height     
+                    };
 
-                //Check properties
+                    //Check collider
 
-                this.checkProperties(tp, tileset, data[t]);
+                    this.checkCollider(tp, tileset, data[t]);
+
+                    //Check properties
+
+                    this.checkProperties(tp, tileset, data[t]);
+                 }
              }
-         }
+
+             //Object layer
+             if (map.layers[l].type === 'objectgroup') {
+                 const data = map.layers[l].objects;
+
+                 for (let o = 0; o < data.length; o++)
+                 {
+                    //Check if visible
+
+                     if (!data[o].visible)
+                         continue;
+
+                    //Create collider
+
+                    new lx.Collider(
+                        data[o].x+offset_width,
+                        data[o].y+offset_height,
+                        data[o].width,
+                        data[o].height,
+                        true
+                    );
+
+                    //Check properties
+
+                    //...
+                 }
+             }
+        }
     },
     checkCollider: function(tile_coordinates, tileset, id)
     {
