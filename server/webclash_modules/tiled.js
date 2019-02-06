@@ -62,10 +62,14 @@ exports.getMapTileRectangles = function(map, id)
 {
     let rects = [];
     
+    let offset_width = -map.width*map.tilewidth/2,
+        offset_height = -map.height*map.tileheight/2;
+    
     for (let l = 0; l < map.layers.length; l++) {
-         let offset_width = -map.width*map.tilewidth/2,
-             offset_height = -map.height*map.tileheight/2;
-
+        if (!map.layers[l].visible ||
+            map.layers[l].type !== 'tilelayer')
+            continue;
+        
         if (map.layers[l].offsetx !== undefined) offset_width += map.layers[l].offsetx;
         if (map.layers[l].offsety !== undefined) offset_height += map.layers[l].offsety;  
         
