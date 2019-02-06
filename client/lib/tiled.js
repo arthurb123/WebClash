@@ -51,6 +51,8 @@ const tiled = {
         
         //Add OnLayerDraw events based on
         //the map content
+        
+        let actualLayer = 0;
     
         for (let l = 0; l < map.layers.length; l++) {
             //Check if visible
@@ -72,7 +74,7 @@ const tiled = {
             if (map.layers[l].offsety !== undefined) 
                 offset_height += map.layers[l].offsety;
             
-            lx.OnLayerDraw(l, function(gfx) {
+            lx.OnLayerDraw(actualLayer, function(gfx) {
                 let y_line = {
                     start: Math.floor((game.players[game.player].POS.Y-offset_height-lx.GetDimensions().height/2)/map.tileheight),
                     length: lx.GetDimensions().height/map.tileheight+2
@@ -144,6 +146,10 @@ const tiled = {
                         );
                     }
             });
+            
+            //Increment actual layer
+            
+            actualLayer++;
         }
         
         //Add world boundary colliders
@@ -179,6 +185,7 @@ const tiled = {
              if (map.layers[l].offsety !== undefined) offset_height += map.layers[l].offsety;
 
              //Tile layer
+            
              if (map.layers[l].type === 'tilelayer') {
                  const data = map.layers[l].data;
 
