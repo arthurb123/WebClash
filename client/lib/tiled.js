@@ -238,13 +238,14 @@ const tiled = {
                      
                     const properties = map.layers[l].objects[o].properties,
                           callbacks = [];
-                
-                    for (let p = 0; p < properties.length; p++) {
-                        let f = this.handleProperty(properties[p]);
+                     
+                    if (properties != undefined) 
+                        for (let p = 0; p < properties.length; p++) {
+                            let f = this.handleProperty(properties[p]);
 
-                        if (f !== undefined)
-                            callbacks.push(f);
-                    }
+                            if (f !== undefined)
+                                callbacks.push(f);
+                        }
                      
                     let coll = new lx.Collider(
                         data[o].x+offset_width,
