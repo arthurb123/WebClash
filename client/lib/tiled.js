@@ -223,6 +223,7 @@ const tiled = {
              }
 
              //Object layer
+            
              if (map.layers[l].type === 'objectgroup') {
                  const data = map.layers[l].objects;
 
@@ -233,9 +234,19 @@ const tiled = {
                      if (!data[o].visible)
                          continue;
 
-                    //Create collider
+                    //Create collider with properties
+                     
+                    const properties = map.layers[l].objects[o].properties,
+                          callbacks = [];
+                
+                    for (let p = 0; p < properties.length; p++) {
+                        let f = this.handleProperty(properties[p]);
 
-                    new lx.Collider(
+                        if (f !== undefined)
+                            callbacks.push(f);
+                    }
+                     
+                    let coll = new lx.Collider(
                         data[o].x+offset_width,
                         data[o].y+offset_height,
                         data[o].width,
@@ -243,9 +254,25 @@ const tiled = {
                         true
                     );
 
-                    //Check properties
+                    if (callbacks.length > 0) {
+                        coll.OnCollide = function(data) {
+                            let go = lx.FindGameObjectWithCollider(data.trigger);
 
-                    //...
+                            if (go === undefined)
+                                return;
+
+                            callbacks.forEach(function(cb) { 
+                                if (cb !== undefined) {
+                                    if (!tiled.loading)
+                                        cb(go);
+                                    else
+                                        tiled.executeAfterLoad(cb, go);
+                                }
+                            });
+                        };
+                        
+                        coll.Solid(false);
+                    }
                  }
              }
         }
@@ -283,7 +310,7 @@ const tiled = {
                       callbacks = [];
                 
                 for (let p = 0; p < properties.length; p++) {
-                    let f = this.handleProperty(properties[p], tileset);
+                    let f = this.handleProperty(properties[p]);
                     
                     if (f !== undefined)
                         callbacks.push(f);
@@ -320,7 +347,7 @@ const tiled = {
             }
         }
     },
-    handleProperty: function(property, tileset)
+    handleProperty: function(property)
     {
         if (property === undefined)
             return;

@@ -96,6 +96,8 @@ exports.cacheMap = function(map)
     if (map.tilesets === undefined)
         return;
     
+    //Cache tilesets
+    
     for (let t = 0; t < map.tilesets.length; t++)
     {
         let tileset = map.tilesets[t];
@@ -123,6 +125,58 @@ exports.cacheMap = function(map)
             
             if (tileset.tiles[i].objectgroup !== undefined)
                 this.maps_colliders[id].push(this.getMapTileRectangles(map, tileset.tiles[i].id));
+        }
+    }
+    
+    //Cache object layers
+    
+    for (let l = 0; l < map.layers.length; l++)
+    {
+        if (!map.layers[l].visible ||
+            map.layers[l].type !== 'objectgroup')
+            continue;
+        
+        //TEMPORARY: Get offset width and height
+            
+        let offset_width = -map.width*map.tilewidth/2,
+            offset_height = -map.height*map.tileheight/2;
+
+        if (map.layers[l].offsetx !== undefined) offset_width += map.layers[l].offsetx;
+        if (map.layers[l].offsety !== undefined) offset_height += map.layers[l].offsety;  
+        
+        //Cycle through all objects
+        
+        for (let o = 0; o < map.layers[l].objects.length; o++)
+        {
+            const data = map.layers[l].objects[o];
+            
+            //Get collision data
+            
+            let coll = {
+                x: data.x+offset_width,
+                y: data.y+offset_height,
+                w: data.width,
+                h: data.height
+            };
+            
+            //Check properties
+            
+            if (data.properties !== undefined)
+                for (let p = 0; p < data.properties.length; p++)
+                {
+                    let property = data.properties[p];
+
+                    this.maps_properties[id].push({
+                        object: o,
+                        name: property.name,
+                        value: property.value,
+                        rectangles: [coll]
+                    });
+                }
+
+            //Check colliders
+
+            this.maps_colliders[id].push([coll]);
         }
     }
     
@@ -154,6 +208,7 @@ exports.checkPropertyWithRectangle = function(map_name, property_name, rectangle
             {
                 data.near = true;
                 data.tile = this.maps_properties[id][p].tile;
+                data.object = this.maps_properties[id][p].object;
                 
                 break;
             }
@@ -171,6 +226,24 @@ exports.getPropertiesFromTile = function(map, tile)
     
     for (let p = 0; p < this.maps_properties[map].length; p++) {
         if (this.maps_properties[map][p].tile == tile)
+            result.push({
+                name: this.maps_properties[map][p].name,
+                value: this.maps_properties[map][p].value
+            });
+    }
+    
+    return result;
+};
+
+exports.getPropertiesFromObject = function(map, object)
+{
+    let result = [];
+    
+    if (this.maps_properties[map] == undefined)
+        return result;
+    
+    for (let p = 0; p < this.maps_properties[map].length; p++) {
+        if (this.maps_properties[map][p].object == object)
             result.push({
                 name: this.maps_properties[map][p].name,
                 value: this.maps_properties[map][p].value

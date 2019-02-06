@@ -273,25 +273,32 @@ exports.handleSocket = function(socket)
         
         //Check if positioning properties exist
         
-        let properties = tiled.getPropertiesFromTile(result.map, result.tile),
+        let properties,
             done = false;
         
-        for (let p = 0; p < properties.length; p++)
-        {
-            if (properties[p].name === 'positionX') {
-                game.players[id].pos.X = (properties[p].value-tiled.maps[next_map].width/2+.5)*tiled.maps[next_map].tilewidth-game.players[id].character.width/2;
-                
-                done = true;
-            }
-            if (properties[p].name === 'positionY') {
-                game.players[id].pos.Y = (properties[p].value-tiled.maps[next_map].height/2)*tiled.maps[next_map].tileheight-game.players[id].character.height/2;
-                
-                done = true;
-            }
-        }
+        if (result.tile != undefined)
+            properties = tiled.getPropertiesFromTile(result.map, result.tile);
+        else if (result.object != undefined)
+            properties = tiled.getPropertiesFromObject(result.map, result.object);
         
-        if (done)
-            server.syncPlayerPartially(id, 'position');
+        if (properties != undefined) {
+            for (let p = 0; p < properties.length; p++)
+            {
+                if (properties[p].name === 'positionX') {
+                    game.players[id].pos.X = (properties[p].value-tiled.maps[next_map].width/2+.5)*tiled.maps[next_map].tilewidth-game.players[id].character.width/2;
+
+                    done = true;
+                }
+                if (properties[p].name === 'positionY') {
+                    game.players[id].pos.Y = (properties[p].value-tiled.maps[next_map].height/2)*tiled.maps[next_map].tileheight-game.players[id].character.height/2;
+
+                    done = true;
+                }
+            }
+
+            if (done)
+                server.syncPlayerPartially(id, 'position');
+        }
         
         //Send map to player
         
