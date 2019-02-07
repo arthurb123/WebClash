@@ -158,7 +158,12 @@ exports.usePlayerItem = function(socket, id, name)
         if (item.heal > 0)
             game.healPlayer(id, item.heal);
         
-        //Mana, gold...
+        if (item.mana > 0)
+            game.deltaManaPlayer(id, item.mana);
+        
+        //Gold
+        
+        //...
         
         //Add action
         

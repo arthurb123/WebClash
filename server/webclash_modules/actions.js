@@ -73,7 +73,7 @@ exports.addPlayerAction = function(name, id, uses)
     let done = false;
     
     for (let a = 2; a < 7; a++)
-        if (game.players[id].actions[a] === undefined) {
+        if (game.players[id].actions[a] == undefined) {
             game.players[id].actions[a] = {
                 name: name   
             };
@@ -96,7 +96,7 @@ exports.addPlayerAction = function(name, id, uses)
 
 exports.setPlayerAction = function(socket, name, position, id)
 {
-    if (game.players[id] === undefined)
+    if (game.players[id] == undefined)
         return false;
     
     game.players[id].actions[position] = {
@@ -114,7 +114,7 @@ exports.removePlayerAction = function(socket, name, id)
         return true;
     
     for (let a = 0; a < game.players[id].actions.length; a++)
-        if (game.players[id].actions[a] !== undefined &&
+        if (game.players[id].actions[a] != undefined &&
             game.players[id].actions[a].name === name) {
             game.players[id].actions[a] = undefined;
             
@@ -143,9 +143,15 @@ exports.createPlayerSlotAction = function(action)
     };
 };
 
-exports.createPlayerAction = function(name, id)
+exports.createPlayerAction = function(slot, id)
 {
-    let a_id = this.getActionIndex(name);
+    //Check if action exists at slot
+    
+    if (game.players[id].actions[slot] == undefined)
+        return;
+    
+    let name = game.players[id].actions[slot].name,
+        a_id = this.getActionIndex(name);
     
     //Check if valid
     
@@ -161,6 +167,19 @@ exports.createPlayerAction = function(name, id)
     
     if (this.onCooldownPlayerAction(name, id))
         return false;
+    
+    //Decrement action usage if possible
+    
+    if (game.players[id].actions[slot].uses != undefined) {
+        game.players[id].actions[slot].uses--;
+
+        if (game.players[id].actions[slot].uses <= 0)
+        {
+            game.players[id].actions[slot] = undefined;
+
+            server.syncPlayerPartially(id, 'actions', game.players[id].socket, false);
+        }
+    }
     
     //Generate action data
     

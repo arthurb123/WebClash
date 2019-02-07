@@ -252,6 +252,24 @@ exports.healPlayer = function(id, heal)
     server.syncPlayerPartially(id, 'health');
 };
 
+exports.deltaManaPlayer = function(id, delta)
+{
+    //Add delta
+    
+    this.players[id].mana.cur += delta;
+    
+    //Check if player mana is capped
+    
+    if (this.players[id].mana.cur > this.players[id].mana.max)
+        this.players[id].mana.cur = this.players[id].mana.max;
+    else if (this.players[id].mana.cur < 0)
+        this.players[id].mana.cur = 0;
+    
+    //Sync mana
+
+    server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
+};
+
 exports.addPlayerExperience = function(id, exp)
 {
     //Add experience

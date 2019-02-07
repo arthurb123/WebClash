@@ -175,6 +175,15 @@ const ui = {
             //Create loop
             
             let cdLoopID = lx.GAME.ADD_LOOPS(function() {
+                 if (player.actions[slot] == undefined) {
+                     ui.actionbar.cooldowns[slot] = undefined;
+                     ui.actionbar.removeCooldown(slot);
+                     
+                     lx.GAME.LOOPS[cdLoopID] = undefined;
+                     
+                     return;
+                 }
+                
                  cd.style.width = (ui.actionbar.cooldowns[slot]/player.actions[slot].cooldown)*100 + '%';
                 
                  let time = ui.actionbar.cooldowns[slot]/60;
@@ -191,7 +200,7 @@ const ui = {
                      
                      lx.GAME.LOOPS[cdLoopID] = undefined;
                  } else
-                    ui.actionbar.cooldowns[slot]--;
+                     ui.actionbar.cooldowns[slot]--;
             });
         },
         removeCooldown: function(slot) {

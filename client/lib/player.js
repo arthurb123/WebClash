@@ -132,15 +132,19 @@ const player = {
         
         //Send action request
             
-        socket.emit('CLIENT_PLAYER_ACTION', player.actions[slot].name, function(data) {
-            if (data) {
+        socket.emit('CLIENT_PLAYER_ACTION', slot, function(data) {
+            if (data && player.actions[slot] != undefined) {
                 //Set cooldown
                 
                 ui.actionbar.setCooldown(slot);
                 
                 //Decrease usage
                 
-                //...
+                if (player.actions[slot].uses !== undefined) {
+                    player.actions[slot].uses--;
+                    
+                    ui.actionbar.reload();
+                }
             }
         });
     },
