@@ -139,6 +139,15 @@ const game = {
                 ui.status.setHealth(health.cur, health.max);
         }
     },
+    setPlayerMana: function(id, mana) 
+    {
+        this.players[id]._mana = mana;
+
+        //If player set UI mana
+
+        if (this.player == id)
+            ui.status.setMana(mana.cur, mana.max);
+    },
     setPlayerEquipment: function(id, equipment)
     {
         let result = [];

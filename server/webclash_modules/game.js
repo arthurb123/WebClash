@@ -73,6 +73,7 @@ exports.addPlayer = function(socket)
             
             server.syncPlayerPartially(id, 'stats', socket, false);
             server.syncPlayerPartially(id, 'health', socket, false);  
+            server.syncPlayerPartially(id, 'mana', socket, false);
             server.syncPlayerPartially(id, 'actions', socket, false);
             
             //Sync inventory
@@ -167,6 +168,7 @@ exports.savePlayer = function(name, data, cb)
             moving: false,
             direction: 0,
             health: { cur: 100, max: 100 },
+            mana: { cur: 100, max: 100 },
             level: 1,
             stats: {
                 exp: 0,
@@ -193,6 +195,7 @@ exports.savePlayer = function(name, data, cb)
         moving: player.moving,
         direction: player.direction,
         health: player.health,
+        mana: player.mana,
         level: player.level,
         stats: player.stats,
         actions: player.actions,

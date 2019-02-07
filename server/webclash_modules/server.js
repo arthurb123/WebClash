@@ -562,6 +562,9 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
         case 'health':
             data.health = game.players[id].health;
             break;
+        case 'mana':
+            data.mana = game.players[id].mana;
+            break;
         case 'actions':
             data.actions = [];
             

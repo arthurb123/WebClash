@@ -122,6 +122,8 @@ const client = {
                  game.setPlayerStats(id, data.stats);
              if (data.health !== undefined)
                  game.setPlayerHealth(id, data.health);
+             if (data.mana !== undefined)
+                 game.setPlayerMana(id, data.mana);
              if (data.equipment !== undefined)
                  game.setPlayerEquipment(id, data.equipment);
              if (data.actions !== undefined)
