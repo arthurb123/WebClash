@@ -53,15 +53,21 @@ exports.loadItem = function(location)
         
         let object = JSON.parse(fs.readFileSync(location, 'utf-8'));
         
-        //Create equippable icon if equippable action exists
+        //Create action icon if equippable or consumable action exists
         
-        if (object.equippableAction.length > 0)
-        {
-            let action = actions.getAction(object.equippableAction);
-            
-            if (action !== undefined)
-                object.equippableActionIcon = action.src;
-        }
+        let action;
+        
+        if (object.type === 'consumable' &&
+            object.consumableAction.length > 0)
+            action = actions.getAction(object.consumableAction);
+
+        if (object.type === 'equipment' &&
+            object.equippableAction.length > 0)
+            action = actions.getAction(object.equippableAction);
+        
+        if (action !== undefined)
+            object.actionIcon = action.src;
+        
         //Return object
         
         return object;
@@ -82,6 +88,13 @@ exports.addPlayerItem = function(socket, id, name)
     //Get free slot
     
     let slot = this.getPlayerFreeSlot(id);
+    
+    //Check if item is valid
+    
+    let item = this.getItemIndex(name);
+    
+    if (item == -1)
+        return false;
     
     //Add item
     
@@ -118,7 +131,7 @@ exports.usePlayerItem = function(socket, id, name)
     
     //Check if piece of equipment
     
-    if (item.equippable !== 'none')
+    if (item.type === 'equipment')
     {
         //Check if the item differs from the equipped item
         
@@ -136,8 +149,26 @@ exports.usePlayerItem = function(socket, id, name)
         this.removePlayerItem(id, name);
     }
     
-    //Check if consumable, scroll, etc.
-    //...
+    //Check if consumable
+    
+    if (item.type === 'consumable')
+    {
+        //Consume item
+        
+        if (item.heal > 0)
+            game.healPlayer(id, item.heal);
+        
+        //Mana, gold...
+        
+        //Add action
+        
+        if (!actions.addPlayerAction(item.consumableAction, id, item.consumableActionUses))
+            return false;
+        
+        //Remove player item
+        
+        this.removePlayerItem(id, name);
+    }
     
     return true;
 };

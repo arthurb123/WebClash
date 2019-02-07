@@ -23,6 +23,7 @@ namespace WebClashServer
             ReloadItems();
             ReloadActions();
 
+            SetTypes();
             SetRarities();
             SetEquippables();
 
@@ -60,6 +61,9 @@ namespace WebClashServer
         private void ReloadActions()
         {
             equippableAction.Items.Clear();
+            consumableAction.Items.Clear();
+
+            consumableAction.Items.Add("None");
 
             try
             {
@@ -72,7 +76,12 @@ namespace WebClashServer
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 foreach (string c in actions)
-                    equippableAction.Items.Add(c.Substring(c.LastIndexOf('\\') + 1, c.LastIndexOf('.') - c.LastIndexOf('\\') - 1));
+                {
+                    string a = c.Substring(c.LastIndexOf('\\') + 1, c.LastIndexOf('.') - c.LastIndexOf('\\') - 1);
+
+                    equippableAction.Items.Add(a);
+                    consumableAction.Items.Add(a);
+                }
             }
             catch (Exception exc)
             {
@@ -93,9 +102,25 @@ namespace WebClashServer
             src.Text = current.source;
 
             rarity.SelectedItem = FirstCharToUpper(current.rarity);
+            type.SelectedItem = FirstCharToUpper(current.type);
             value.Value = current.value;
 
             description.Text = current.description;
+
+            //Consumable settings
+
+            heals.Value = current.heal;
+            mana.Value = current.mana;
+            gold.Value = current.gold;
+
+            if (current.consumableAction != string.Empty)
+                consumableAction.SelectedItem = FirstCharToUpper(current.consumableAction);
+            else
+                consumableAction.SelectedItem = "None";
+
+            actionUses.Value = current.consumableActionUses;
+
+            //Equipment settings
 
             if (current.equippable != string.Empty)
                 equippable.SelectedItem = FirstCharToUpper(current.equippable);
@@ -150,6 +175,12 @@ namespace WebClashServer
                 return;
             }
 
+            if (current.consumableAction == "None")
+                current.consumableAction = string.Empty;
+
+            if (current.equippable == "None")
+                current.equippable = string.Empty;
+
             if (oldName != name.Text)
                 File.Delete(Program.main.location + "/items/" + oldName + ".json");
 
@@ -162,20 +193,22 @@ namespace WebClashServer
             itemList.SelectedItem = name.Text;
         }
 
+        private void SetTypes()
+        {
+            foreach (ItemType it in Enum.GetValues(typeof(ItemType)))
+                type.Items.Add(it.ToString());
+        }
+
         private void SetRarities()
         {
             foreach(Rarity rty in Enum.GetValues(typeof(Rarity)))
-            {
                 rarity.Items.Add(rty.ToString());
-            }
         }
 
         private void SetEquippables()
         {
             foreach (Equippable eqp in Enum.GetValues(typeof(Equippable)))
-            {
                 equippable.Items.Add(eqp.ToString());
-            }
         }
 
         public string FirstCharToUpper(string input)
@@ -206,6 +239,22 @@ namespace WebClashServer
             current.source = src.Text;
         }
 
+        private void type_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            current.type = type.SelectedItem.ToString().ToLower();
+
+            if (type.SelectedItem.ToString() == ItemType.Consumable.ToString())
+            {
+                consumablePanel.Visible = true;
+                equipmentPanel.Visible = false;
+            }
+            else if (type.SelectedItem.ToString() == ItemType.Equipment.ToString())
+            {
+                consumablePanel.Visible = false;
+                equipmentPanel.Visible = true;
+            }
+        }
+
         private void rarity_SelectedIndexChanged(object sender, EventArgs e)
         {
             current.rarity = rarity.SelectedItem.ToString().ToLower();
@@ -216,15 +265,81 @@ namespace WebClashServer
             current.value = (int)value.Value;
         }
 
-        private void equippable_SelectedIndexChanged(object sender, EventArgs e)
+        private void description_TextChanged(object sender, EventArgs e)
         {
-            if (equippable.SelectedIndex == 0)
-            {
-                current.equippable = string.Empty;
+            if (current == null)
+                return;
 
+            current.description = description.Text;
+        }
+
+        private void delete_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (current == null)
+            {
+                MessageBox.Show("Could not remove item as it is invalid.", "WebClash Server - Error");
                 return;
             }
 
+            File.Delete(Program.main.location + "/items/" + oldName + ".json");
+
+            ReloadItems();
+
+            if (itemList.Items.Count > 0)
+                itemList.SelectedItem = itemList.Items[0];
+            else
+                newLink_LinkClicked(sender, e);
+        }
+
+        //Consumable settings
+
+        private void heals_ValueChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.heal = (int)heals.Value;
+        }
+
+        private void gold_ValueChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.gold = (int)gold.Value;
+        }
+
+        private void mana_ValueChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.mana = (int)mana.Value;
+        }
+
+        private void consumableAction_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            if (consumableAction.SelectedItem == null)
+                return;
+
+            current.consumableAction = consumableAction.SelectedItem.ToString();
+        }
+
+        private void actionUses_ValueChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.consumableActionUses = (int)actionUses.Value;
+        }
+
+        //Equipment settings
+
+        private void equippable_SelectedIndexChanged(object sender, EventArgs e)
+        {
             if ((string)equippable.SelectedItem == nameof(Equippable.Main) ||
                 (string)equippable.SelectedItem == nameof(Equippable.Offhand))
             {
@@ -253,32 +368,6 @@ namespace WebClashServer
                 return;
 
             current.equippableAction = equippableAction.SelectedItem.ToString();
-        }
-        
-        private void description_TextChanged(object sender, EventArgs e)
-        {
-            if (current == null)
-                return;
-
-            current.description = description.Text;
-        }
-        
-        private void delete_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            if (current == null)
-            {
-                MessageBox.Show("Could not remove item as it is invalid.", "WebClash Server - Error");
-                return;
-            }
-
-            File.Delete(Program.main.location + "/items/" + oldName + ".json");
-
-            ReloadItems();
-
-            if (itemList.Items.Count > 0)
-                itemList.SelectedItem = itemList.Items[0];
-            else
-                newLink_LinkClicked(sender, e);
         }
 
         private void power_ValueChanged(object sender, EventArgs e)
@@ -349,11 +438,23 @@ namespace WebClashServer
                 Item temp = JsonConvert.DeserializeObject<Item>(File.ReadAllText(src));
 
                 source = temp.source;
+                type = temp.type;
                 rarity = temp.rarity;
 
                 description = temp.description;
 
                 value = temp.value;
+
+                //Consumable settings
+
+                heal = temp.heal;
+                mana = temp.mana;
+                gold = temp.gold;
+
+                consumableAction = temp.consumableAction;
+                consumableActionUses = temp.consumableActionUses;
+
+                //Equipment settings
 
                 equippable = temp.equippable;
                 equippableSource = temp.equippableSource;
@@ -369,11 +470,23 @@ namespace WebClashServer
         }
 
         public string source = string.Empty;
+        public string type = "consumable";
         public string rarity = "common";
 
         public int value = 0;
 
         public string description = "";
+
+        //Consumable settings
+
+        public int heal = 0;
+        public int mana = 0;
+        public int gold = 0;
+
+        public string consumableAction = string.Empty;
+        public int consumableActionUses = 1;
+
+        //Equipment settings
 
         public string equippable = "none";
         public string equippableSource = string.Empty;
@@ -392,16 +505,10 @@ namespace WebClashServer
         public int agility = 0;
     }
 
-    public enum Equippable
+    public enum ItemType
     {
-        None = 0,
-        Head,
-        Torso,
-        Hands,
-        Legs,
-        Feet, 
-        Main,
-        Offhand
+        Consumable = 0,
+        Equipment
     }
 
     public enum Rarity
@@ -412,5 +519,16 @@ namespace WebClashServer
         Rare,
         Exotic,
         Legendary
+    }
+
+    public enum Equippable
+    {
+        Head = 0,
+        Torso,
+        Hands,
+        Legs,
+        Feet, 
+        Main,
+        Offhand
     }
 }

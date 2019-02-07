@@ -46,6 +46,16 @@ const player = {
             player.performAction(1);
         });
         
+        //Key event handlers
+        
+        for (let i = 1; i < 6; i++)
+            lx.OnKey(i, function(data) {
+                if (data.state == 0)
+                    return;
+                
+                player.performAction(i+1);
+            });
+        
         //Request xp target
         
         player.requestExpTarget();
@@ -123,10 +133,15 @@ const player = {
         //Send action request
             
         socket.emit('CLIENT_PLAYER_ACTION', player.actions[slot].name, function(data) {
-            if (data)
+            if (data) {
+                //Set cooldown
+                
                 ui.actionbar.setCooldown(slot);
-            
-            //...
+                
+                //Decrease usage
+                
+                //...
+            }
         });
     },
     unequip: function(equippable) {

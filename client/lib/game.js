@@ -5,7 +5,8 @@ const game = {
     items: [],
     tilesets: [],
     
-    getPlayerIndex: function(name) {
+    getPlayerIndex: function(name) 
+    {
         //Grab the player index by checking for the player name
         
         for (let i = 0; i < this.players.length; i++)
@@ -13,14 +14,16 @@ const game = {
         
         return -1;
     },
-    instantiatePlayer: function(name) {
+    instantiatePlayer: function(name) 
+    {
         //Instantiate Lynx2D GameObject for player
         
         player.instantiate(name);
         
         this.player = this.players.length-1;
     },
-    instantiateOther: function(name) {
+    instantiateOther: function(name) 
+    {
         //Instantiate Lynx2D GameObject for other player
         
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
@@ -60,7 +63,8 @@ const game = {
         
         this.players.push(go.Show(3));  
     },
-    setPlayerHealth: function(id, health) {
+    setPlayerHealth: function(id, health) 
+    {
         if (this.players[id]._health !== undefined) {
             let delta = -(this.players[id]._health.cur-health.cur);
             
@@ -200,7 +204,8 @@ const game = {
         
         this.player = this.getPlayerIndex(name);
     },
-    resetPlayers: function() {
+    resetPlayers: function() 
+    {
         //Cycle through all online players and
         //remove all, except for the player itself
         
@@ -208,7 +213,8 @@ const game = {
             if (i != this.player) 
                 this.removePlayer(i);
     },
-    resetPlayer: function() {
+    resetPlayer: function() 
+    {
         //Check if the player exists
         
         if (this.player == -1)
@@ -219,7 +225,8 @@ const game = {
         this.players[this.player].Movement(0, 0);
     },
     
-    instantiateNPC: function(id, name) {
+    instantiateNPC: function(id, name) 
+    {
         //Instantiate Lynx2D GameObject for NPC
         
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
@@ -273,7 +280,8 @@ const game = {
         
         this.npcs[id] = go.Show(2);
     },
-    setNPCHealth: function(id, health) {
+    setNPCHealth: function(id, health) 
+    {
         if (this.npcs[id] != undefined &&
             this.npcs[id]._health !== undefined)
         {
@@ -340,7 +348,8 @@ const game = {
         else if (this.npcs[id] != undefined)
             this.npcs[id]._health = health;
     },
-    removeNPC: function(id) {
+    removeNPC: function(id) 
+    {
         if (this.npcs[id] === undefined)
             return;
         
@@ -355,7 +364,8 @@ const game = {
         
         this.npcs[id] = undefined;
     },
-    resetNPCs: function() {
+    resetNPCs: function() 
+    {
         //Cycle through all NPCs and hide them
         
         for (let i = 0; i < this.npcs.length; i++)
@@ -365,7 +375,8 @@ const game = {
         
         this.npcs = [];
     },
-    resetColliders: function() {
+    resetColliders: function() 
+    {
         if (this.players === undefined || 
             this.player === undefined ||
             this.players[this.player] === undefined)
@@ -386,7 +397,8 @@ const game = {
             this.players[this.player].COLLIDER = c.Enable();
         }
     },
-    createWorldItem: function(data) {
+    createWorldItem: function(data) 
+    {
         //Check if valid
         
         if (data == undefined)
@@ -507,7 +519,8 @@ const game = {
             game.items[data.id].Show(1);
         });
     },
-    resetWorldItems: function() {
+    resetWorldItems: function() 
+    {
         //Cycle through all items and hide
         
         for (let i = 0; i < this.items.length; i++)
@@ -517,7 +530,8 @@ const game = {
         
         this.items = [];
     },
-    removeWorldItem: function(id) {
+    removeWorldItem: function(id) 
+    {
         //If item exists remove it
         
         if (this.items[id] != undefined) {
@@ -527,12 +541,14 @@ const game = {
             this.items[id] = undefined;
         }
     },
-    loadMap: function(map) {
+    loadMap: function(map) 
+    {
         tiled.convertAndLoadMap(map);
         
         //...
     },
-    getTileset: function(src) {
+    getTileset: function(src) 
+    {
         if (this.tilesets[src] === undefined) {
             let s = src.lastIndexOf('/')+1;
             
@@ -544,7 +560,13 @@ const game = {
         return this.tilesets[src];
     },
     
-    initialize: function() {
+    initialize: function() 
+    {
+        //Check if Lynx2D is already running
+        
+        if (lx.GAME.RUNNING)
+            window.location.reload(true);
+        
         //Initialize and start Lynx2D
         
         lx

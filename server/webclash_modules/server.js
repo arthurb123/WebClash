@@ -566,7 +566,7 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
             data.actions = [];
             
             for (let a = 0; a < game.players[id].actions.length; a++) {
-                if (game.players[id].actions == undefined)
+                if (game.players[id].actions[a] == undefined)
                     continue;
                 
                 data.actions[a] = actions.createPlayerSlotAction(game.players[id].actions[a]);

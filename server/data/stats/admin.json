@@ -23,9 +23,15 @@
    "wisdom": 1
   }
  },
- "actions": [],
- "inventory": [
-  "Sword"
+ "actions": [
+  {
+   "name": "Slash"
+  }
  ],
- "equipment": {}
+ "inventory": [
+  null
+ ],
+ "equipment": {
+  "main": "Sword"
+ }
 }

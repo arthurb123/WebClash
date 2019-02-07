@@ -57,10 +57,14 @@ function finishLoading()
     client.connect(function() {   
         //Cleanup
     
-        let st = document.getElementById('status_text');
-        st.parentNode.removeChild(st);
+        let st = document.getElementById('status_text'),
+            ls = document.getElementById('loader');
         
-        let ls = document.getElementById('loader');
+        if (st == undefined ||
+            ls == undefined)
+            window.location.reload(true);
+        
+        st.parentNode.removeChild(st);
         ls.parentNode.removeChild(ls);
     });
 }

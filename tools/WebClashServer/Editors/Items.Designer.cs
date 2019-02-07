@@ -31,6 +31,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Items));
             this.itemList = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.type = new System.Windows.Forms.ComboBox();
+            this.label15 = new System.Windows.Forms.Label();
             this.value = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -43,7 +45,7 @@
             this.icon = new System.Windows.Forms.PictureBox();
             this.newLink = new System.Windows.Forms.LinkLabel();
             this.saveLink = new System.Windows.Forms.LinkLabel();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.equipmentSettings = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.vitality = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
@@ -63,13 +65,26 @@
             this.label7 = new System.Windows.Forms.Label();
             this.equippable = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.consumableSettings = new System.Windows.Forms.GroupBox();
+            this.actionUses = new System.Windows.Forms.NumericUpDown();
+            this.label20 = new System.Windows.Forms.Label();
+            this.consumableAction = new System.Windows.Forms.ComboBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.mana = new System.Windows.Forms.NumericUpDown();
+            this.label18 = new System.Windows.Forms.Label();
+            this.gold = new System.Windows.Forms.NumericUpDown();
+            this.label17 = new System.Windows.Forms.Label();
+            this.heals = new System.Windows.Forms.NumericUpDown();
+            this.label16 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.description = new System.Windows.Forms.RichTextBox();
             this.delete = new System.Windows.Forms.LinkLabel();
+            this.consumablePanel = new System.Windows.Forms.Panel();
+            this.equipmentPanel = new System.Windows.Forms.Panel();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.value)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.icon)).BeginInit();
-            this.groupBox2.SuspendLayout();
+            this.equipmentSettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.vitality)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wisdom)).BeginInit();
@@ -77,7 +92,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.toughness)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.agility)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.power)).BeginInit();
+            this.consumableSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.actionUses)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mana)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gold)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.heals)).BeginInit();
             this.groupBox3.SuspendLayout();
+            this.consumablePanel.SuspendLayout();
+            this.equipmentPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // itemList
@@ -85,12 +107,14 @@
             this.itemList.FormattingEnabled = true;
             this.itemList.Location = new System.Drawing.Point(2, 2);
             this.itemList.Name = "itemList";
-            this.itemList.Size = new System.Drawing.Size(120, 355);
+            this.itemList.Size = new System.Drawing.Size(120, 381);
             this.itemList.TabIndex = 0;
             this.itemList.SelectedIndexChanged += new System.EventHandler(this.itemList_SelectedIndexChanged);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.type);
+            this.groupBox1.Controls.Add(this.label15);
             this.groupBox1.Controls.Add(this.value);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label4);
@@ -103,14 +127,33 @@
             this.groupBox1.Controls.Add(this.icon);
             this.groupBox1.Location = new System.Drawing.Point(126, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(316, 126);
+            this.groupBox1.Size = new System.Drawing.Size(316, 147);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "General Settings";
             // 
+            // type
+            // 
+            this.type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.type.FormattingEnabled = true;
+            this.type.Location = new System.Drawing.Point(49, 68);
+            this.type.Name = "type";
+            this.type.Size = new System.Drawing.Size(135, 21);
+            this.type.TabIndex = 17;
+            this.type.SelectedIndexChanged += new System.EventHandler(this.type_SelectedIndexChanged);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(9, 72);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(31, 13);
+            this.label15.TabIndex = 16;
+            this.label15.Text = "Type";
+            // 
             // value
             // 
-            this.value.Location = new System.Drawing.Point(49, 98);
+            this.value.Location = new System.Drawing.Point(49, 121);
             this.value.Maximum = new decimal(new int[] {
             -1981284353,
             -1966660860,
@@ -125,7 +168,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 100);
+            this.label5.Location = new System.Drawing.Point(9, 123);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(34, 13);
             this.label5.TabIndex = 14;
@@ -144,7 +187,7 @@
             // 
             this.rarity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.rarity.FormattingEnabled = true;
-            this.rarity.Location = new System.Drawing.Point(49, 69);
+            this.rarity.Location = new System.Drawing.Point(49, 94);
             this.rarity.Name = "rarity";
             this.rarity.Size = new System.Drawing.Size(135, 21);
             this.rarity.TabIndex = 10;
@@ -153,7 +196,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 72);
+            this.label3.Location = new System.Drawing.Point(8, 97);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(34, 13);
             this.label3.TabIndex = 9;
@@ -208,7 +251,7 @@
             this.newLink.ActiveLinkColor = System.Drawing.Color.Blue;
             this.newLink.AutoSize = true;
             this.newLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.newLink.Location = new System.Drawing.Point(7, 366);
+            this.newLink.Location = new System.Drawing.Point(4, 386);
             this.newLink.Name = "newLink";
             this.newLink.Size = new System.Drawing.Size(29, 13);
             this.newLink.TabIndex = 2;
@@ -222,7 +265,7 @@
             this.saveLink.ActiveLinkColor = System.Drawing.Color.Blue;
             this.saveLink.AutoSize = true;
             this.saveLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.saveLink.Location = new System.Drawing.Point(47, 366);
+            this.saveLink.Location = new System.Drawing.Point(47, 386);
             this.saveLink.Name = "saveLink";
             this.saveLink.Size = new System.Drawing.Size(32, 13);
             this.saveLink.TabIndex = 3;
@@ -231,21 +274,21 @@
             this.saveLink.VisitedLinkColor = System.Drawing.Color.Blue;
             this.saveLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.saveLink_LinkClicked);
             // 
-            // groupBox2
+            // equipmentSettings
             // 
-            this.groupBox2.Controls.Add(this.groupBox4);
-            this.groupBox2.Controls.Add(this.equippableAction);
-            this.groupBox2.Controls.Add(this.label8);
-            this.groupBox2.Controls.Add(this.equippableSource);
-            this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Controls.Add(this.equippable);
-            this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Location = new System.Drawing.Point(126, 209);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(316, 170);
-            this.groupBox2.TabIndex = 4;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Equipment Settings";
+            this.equipmentSettings.Controls.Add(this.groupBox4);
+            this.equipmentSettings.Controls.Add(this.equippableAction);
+            this.equipmentSettings.Controls.Add(this.label8);
+            this.equipmentSettings.Controls.Add(this.equippableSource);
+            this.equipmentSettings.Controls.Add(this.label7);
+            this.equipmentSettings.Controls.Add(this.equippable);
+            this.equipmentSettings.Controls.Add(this.label6);
+            this.equipmentSettings.Location = new System.Drawing.Point(0, 0);
+            this.equipmentSettings.Name = "equipmentSettings";
+            this.equipmentSettings.Size = new System.Drawing.Size(316, 171);
+            this.equipmentSettings.TabIndex = 4;
+            this.equipmentSettings.TabStop = false;
+            this.equipmentSettings.Text = "Equipment Settings";
             // 
             // groupBox4
             // 
@@ -262,16 +305,16 @@
             this.groupBox4.Controls.Add(this.power);
             this.groupBox4.Controls.Add(this.label14);
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox4.Location = new System.Drawing.Point(28, 14);
+            this.groupBox4.Location = new System.Drawing.Point(28, 19);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(256, 97);
+            this.groupBox4.Size = new System.Drawing.Size(256, 92);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Stat increase";
             // 
             // vitality
             // 
-            this.vitality.Location = new System.Drawing.Point(181, 69);
+            this.vitality.Location = new System.Drawing.Point(183, 65);
             this.vitality.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -286,7 +329,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(127, 71);
+            this.label11.Location = new System.Drawing.Point(129, 67);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(37, 13);
             this.label11.TabIndex = 10;
@@ -294,7 +337,7 @@
             // 
             // wisdom
             // 
-            this.wisdom.Location = new System.Drawing.Point(181, 45);
+            this.wisdom.Location = new System.Drawing.Point(183, 41);
             this.wisdom.Maximum = new decimal(new int[] {
             -1530494977,
             232830,
@@ -309,7 +352,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(127, 47);
+            this.label12.Location = new System.Drawing.Point(129, 43);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(45, 13);
             this.label12.TabIndex = 8;
@@ -317,7 +360,7 @@
             // 
             // intelligence
             // 
-            this.intelligence.Location = new System.Drawing.Point(181, 20);
+            this.intelligence.Location = new System.Drawing.Point(183, 16);
             this.intelligence.Maximum = new decimal(new int[] {
             -727379969,
             232,
@@ -332,7 +375,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(127, 22);
+            this.label13.Location = new System.Drawing.Point(129, 18);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(40, 13);
             this.label13.TabIndex = 6;
@@ -340,7 +383,7 @@
             // 
             // toughness
             // 
-            this.toughness.Location = new System.Drawing.Point(59, 69);
+            this.toughness.Location = new System.Drawing.Point(61, 65);
             this.toughness.Maximum = new decimal(new int[] {
             -727379969,
             232,
@@ -355,7 +398,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(10, 71);
+            this.label10.Location = new System.Drawing.Point(12, 67);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(41, 13);
             this.label10.TabIndex = 4;
@@ -363,7 +406,7 @@
             // 
             // agility
             // 
-            this.agility.Location = new System.Drawing.Point(59, 45);
+            this.agility.Location = new System.Drawing.Point(61, 41);
             this.agility.Maximum = new decimal(new int[] {
             99999999,
             0,
@@ -378,7 +421,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(10, 47);
+            this.label9.Location = new System.Drawing.Point(12, 43);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(34, 13);
             this.label9.TabIndex = 2;
@@ -386,7 +429,7 @@
             // 
             // power
             // 
-            this.power.Location = new System.Drawing.Point(59, 20);
+            this.power.Location = new System.Drawing.Point(61, 16);
             this.power.Maximum = new decimal(new int[] {
             999999999,
             0,
@@ -401,7 +444,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(10, 22);
+            this.label14.Location = new System.Drawing.Point(12, 18);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(37, 13);
             this.label14.TabIndex = 0;
@@ -463,10 +506,150 @@
             this.label6.TabIndex = 16;
             this.label6.Text = "Slot";
             // 
+            // consumableSettings
+            // 
+            this.consumableSettings.Controls.Add(this.actionUses);
+            this.consumableSettings.Controls.Add(this.label20);
+            this.consumableSettings.Controls.Add(this.consumableAction);
+            this.consumableSettings.Controls.Add(this.label19);
+            this.consumableSettings.Controls.Add(this.mana);
+            this.consumableSettings.Controls.Add(this.label18);
+            this.consumableSettings.Controls.Add(this.gold);
+            this.consumableSettings.Controls.Add(this.label17);
+            this.consumableSettings.Controls.Add(this.heals);
+            this.consumableSettings.Controls.Add(this.label16);
+            this.consumableSettings.Location = new System.Drawing.Point(0, 0);
+            this.consumableSettings.Name = "consumableSettings";
+            this.consumableSettings.Size = new System.Drawing.Size(316, 131);
+            this.consumableSettings.TabIndex = 21;
+            this.consumableSettings.TabStop = false;
+            this.consumableSettings.Text = "Consumable Settings";
+            // 
+            // actionUses
+            // 
+            this.actionUses.Location = new System.Drawing.Point(211, 100);
+            this.actionUses.Maximum = new decimal(new int[] {
+            -1981284353,
+            -1966660860,
+            0,
+            0});
+            this.actionUses.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.actionUses.Name = "actionUses";
+            this.actionUses.Size = new System.Drawing.Size(90, 20);
+            this.actionUses.TabIndex = 26;
+            this.actionUses.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.actionUses.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.actionUses.ValueChanged += new System.EventHandler(this.actionUses_ValueChanged);
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(172, 103);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(31, 13);
+            this.label20.TabIndex = 25;
+            this.label20.Text = "Uses";
+            // 
+            // consumableAction
+            // 
+            this.consumableAction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.consumableAction.FormattingEnabled = true;
+            this.consumableAction.Location = new System.Drawing.Point(49, 99);
+            this.consumableAction.Name = "consumableAction";
+            this.consumableAction.Size = new System.Drawing.Size(112, 21);
+            this.consumableAction.TabIndex = 24;
+            this.consumableAction.SelectedIndexChanged += new System.EventHandler(this.consumableAction_SelectedIndexChanged);
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(7, 102);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(37, 13);
+            this.label19.TabIndex = 23;
+            this.label19.Text = "Action";
+            // 
+            // mana
+            // 
+            this.mana.Location = new System.Drawing.Point(49, 52);
+            this.mana.Maximum = new decimal(new int[] {
+            -1981284353,
+            -1966660860,
+            0,
+            0});
+            this.mana.Name = "mana";
+            this.mana.Size = new System.Drawing.Size(90, 20);
+            this.mana.TabIndex = 22;
+            this.mana.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.mana.ValueChanged += new System.EventHandler(this.mana_ValueChanged);
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(10, 54);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(34, 13);
+            this.label18.TabIndex = 21;
+            this.label18.Text = "Mana";
+            // 
+            // gold
+            // 
+            this.gold.Location = new System.Drawing.Point(211, 26);
+            this.gold.Maximum = new decimal(new int[] {
+            -1981284353,
+            -1966660860,
+            0,
+            0});
+            this.gold.Name = "gold";
+            this.gold.Size = new System.Drawing.Size(90, 20);
+            this.gold.TabIndex = 20;
+            this.gold.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.gold.ValueChanged += new System.EventHandler(this.gold_ValueChanged);
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(172, 28);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(29, 13);
+            this.label17.TabIndex = 19;
+            this.label17.Text = "Gold";
+            // 
+            // heals
+            // 
+            this.heals.Location = new System.Drawing.Point(49, 26);
+            this.heals.Maximum = new decimal(new int[] {
+            -1981284353,
+            -1966660860,
+            0,
+            0});
+            this.heals.Name = "heals";
+            this.heals.Size = new System.Drawing.Size(90, 20);
+            this.heals.TabIndex = 18;
+            this.heals.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.heals.ValueChanged += new System.EventHandler(this.heals_ValueChanged);
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(10, 28);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(29, 13);
+            this.label16.TabIndex = 0;
+            this.label16.Text = "Heal";
+            // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.description);
-            this.groupBox3.Location = new System.Drawing.Point(126, 133);
+            this.groupBox3.Location = new System.Drawing.Point(126, 153);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(316, 73);
             this.groupBox3.TabIndex = 5;
@@ -490,7 +673,7 @@
             this.delete.AutoSize = true;
             this.delete.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.delete.LinkColor = System.Drawing.Color.Red;
-            this.delete.Location = new System.Drawing.Point(94, 366);
+            this.delete.Location = new System.Drawing.Point(97, 386);
             this.delete.Name = "delete";
             this.delete.Size = new System.Drawing.Size(23, 13);
             this.delete.TabIndex = 6;
@@ -499,14 +682,37 @@
             this.delete.VisitedLinkColor = System.Drawing.Color.Red;
             this.delete.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.delete_LinkClicked);
             // 
+            // consumablePanel
+            // 
+            this.consumablePanel.AutoSize = true;
+            this.consumablePanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.consumablePanel.Controls.Add(this.consumableSettings);
+            this.consumablePanel.Location = new System.Drawing.Point(126, 229);
+            this.consumablePanel.Name = "consumablePanel";
+            this.consumablePanel.Size = new System.Drawing.Size(319, 134);
+            this.consumablePanel.TabIndex = 22;
+            this.consumablePanel.Visible = false;
+            // 
+            // equipmentPanel
+            // 
+            this.equipmentPanel.AutoSize = true;
+            this.equipmentPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.equipmentPanel.Controls.Add(this.equipmentSettings);
+            this.equipmentPanel.Location = new System.Drawing.Point(126, 228);
+            this.equipmentPanel.Name = "equipmentPanel";
+            this.equipmentPanel.Size = new System.Drawing.Size(319, 174);
+            this.equipmentPanel.TabIndex = 23;
+            this.equipmentPanel.Visible = false;
+            // 
             // Items
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(451, 385);
+            this.ClientSize = new System.Drawing.Size(451, 403);
+            this.Controls.Add(this.equipmentPanel);
+            this.Controls.Add(this.consumablePanel);
             this.Controls.Add(this.delete);
             this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.saveLink);
             this.Controls.Add(this.newLink);
             this.Controls.Add(this.groupBox1);
@@ -514,8 +720,8 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(467, 424);
-            this.MinimumSize = new System.Drawing.Size(467, 424);
+            this.MaximumSize = new System.Drawing.Size(467, 442);
+            this.MinimumSize = new System.Drawing.Size(467, 442);
             this.Name = "Items";
             this.Text = "WebClash Server - Items";
             this.Load += new System.EventHandler(this.Items_Load);
@@ -523,8 +729,8 @@
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.value)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.icon)).EndInit();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.equipmentSettings.ResumeLayout(false);
+            this.equipmentSettings.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.vitality)).EndInit();
@@ -533,7 +739,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.toughness)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.agility)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.power)).EndInit();
+            this.consumableSettings.ResumeLayout(false);
+            this.consumableSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.actionUses)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mana)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gold)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.heals)).EndInit();
             this.groupBox3.ResumeLayout(false);
+            this.consumablePanel.ResumeLayout(false);
+            this.equipmentPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -553,7 +767,7 @@
         private System.Windows.Forms.ComboBox rarity;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox equipmentSettings;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.NumericUpDown value;
         private System.Windows.Forms.ComboBox equippableAction;
@@ -578,5 +792,20 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.NumericUpDown power;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.ComboBox type;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.GroupBox consumableSettings;
+        private System.Windows.Forms.NumericUpDown mana;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.NumericUpDown gold;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.NumericUpDown heals;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.NumericUpDown actionUses;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.ComboBox consumableAction;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Panel consumablePanel;
+        private System.Windows.Forms.Panel equipmentPanel;
     }
 }

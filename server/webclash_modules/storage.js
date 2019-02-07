@@ -2,7 +2,8 @@
 
 const fs = require('fs');
 
-exports.load = function(dir, name, cb) {
+exports.load = function(dir, name, cb) 
+{
     this.exists(dir, name, function(is) {
         try {
             if (is)
@@ -31,7 +32,8 @@ exports.load = function(dir, name, cb) {
     });
 };
 
-exports.exists = function(dir, name, cb) {
+exports.exists = function(dir, name, cb) 
+{
     try {
         fs.stat('data/' + dir + '/' + name + '.json', function(err, stat) {
             if(err == null)
@@ -48,7 +50,8 @@ exports.exists = function(dir, name, cb) {
     }
 };
 
-exports.save = function(dir, name, data, cb) {
+exports.save = function(dir, name, data, cb) 
+{
     try 
     {
         fs.writeFile('data/' + dir + '/' + name + '.json', JSON.stringify(data, null, 1), 'utf8', function(err) {

@@ -233,6 +233,22 @@ exports.damagePlayer = function(id, damage)
     server.syncPlayerPartially(id, 'health');
 };
 
+exports.healPlayer = function(id, heal)
+{
+    //Add damage
+    
+    this.players[id].health.cur += heal;
+    
+    //Check if player health is capped
+    
+    if (this.players[id].health.cur > this.players[id].health.max)
+        this.players[id].health.cur = this.players[id].health.max;
+    
+    //Sync health
+
+    server.syncPlayerPartially(id, 'health');
+};
+
 exports.addPlayerExperience = function(id, exp)
 {
     //Add experience

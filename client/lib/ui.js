@@ -297,7 +297,10 @@ const ui = {
         reloadEquipment: function(equippable) {
             let slot = this.getEquippableIndex(equippable);
             
-            if (player.equipment[equippable] !== undefined || slot == -1) {
+            if (slot == -1)
+                return;
+            
+            if (player.equipment[equippable] !== undefined) {
                 document.getElementById(this.slots[slot]).innerHTML = 
                     '<img src="' + player.equipment[equippable].source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>';
                 
@@ -459,29 +462,49 @@ const ui = {
             let color = this.getItemColor(item.rarity);
             let note = '';
 
-            if (item.equippable !== 'none') {
+            if (item.type === 'consumable') 
+                note = '(Click to use)';
+            
+            if (item.type === 'equipment') {
                 if (player.equipment[slot] === undefined)
                     note = '(Click to equip)';
                 else
                     note = '(Click to unequip)';
-            }
+            }            
             
             //Action
             
-            let action = '';
+            let action = '',
+                actionName = '';
             
-            if (item.equippableAction.length > 0) {
-                action = '<div class="inner-box" style="width: auto; height: auto; white-space: nowrap; position: relative; top: 4px; margin-bottom: 3px;">' +
-                            '<img class="thumb" src="' + item.equippableActionIcon + '" style="display: inline-block; margin: 0px; margin-left: 6px; position: relative; top: 2px;"/>' +
-                            '<p class="info" style="font-size: 11px; display: inline-block; margin: 0px; margin-right: 2px; position: relative; top: -3px;">' + item.equippableAction + '</p>' +
+            if (item.type === 'consumable' &&
+                item.consumableAction.length > 0) 
+                actionName = item.consumableAction;
+            if (item.type === 'equipment' &&
+                item.equippableAction.length > 0) 
+                actionName = item.equippableAction;
+
+            if (actionName !== '')
+                action = '<div class="inner-box" style="width: auto; height: auto; white-space: nowrap; position: relative; top: 4px; margin-bottom: 5px;">' +
+                            '<img class="thumb" src="' + item.actionIcon + '" style="display: inline-block; margin: 0px; margin-left: 6px; position: relative; top: 2px;"/>' +
+                            '<p class="info" style="font-size: 11px; display: inline-block; margin: 0px; margin-right: 2px; position: relative; top: -3px;">' + actionName + '</p>' +
                          '</div>'
-            }
             
             //Stats
             
             let stats = '';
             
-            if (item.stats != undefined) {
+            if (item.type === 'consumable') {
+                if (item.heal > 0)
+                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.heal + ' Health</p>';
+                if (item.mana > 0)
+                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.mana + ' Mana</p>';
+                if (item.gold > 0)
+                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.gold + ' Gold</p>';
+            }
+            
+            if (item.type === 'equipment' &&
+                item.stats != undefined) {
                 if (item.stats.power > 0)
                     stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.power + ' Power</p>';
                 if (item.stats.intelligence > 0)
@@ -498,8 +521,9 @@ const ui = {
             
             //Item type
             
-            let type = 'item';
-            if (item.equippable !== '')
+            let type = item.type;
+            
+            if (item.type === 'equipment')
                 type = item.equippable;
 
             //Create displaybox
@@ -513,7 +537,7 @@ const ui = {
                     '<font class="header" style="font-size: 15px; color: ' + color + ';">' + item.name + '</font><br>' + 
                     '<font class="info" style="font-size: 10px;">' + type + '</font><br>' +
                     action +
-                    '<font class="info" style="position: relative; top: 8px;">' + item.description + '</font><br>' +
+                    '<font class="info" style="position: relative; top: 6px;">' + item.description + '</font><br>' +
                     stats +
                     '<font class="info" style="position: relative; top: 10px; font-size: 11px; margin-top: 5px;">' + note + '</font><br>' +
                     '<font class="info" style="position: relative; top: 10px; font-size: 11px; color: yellow;">' + item.value + ' Gold</font><br>';

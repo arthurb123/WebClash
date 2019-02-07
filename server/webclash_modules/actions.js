@@ -44,7 +44,8 @@ exports.hasPlayerAction = function(name, id)
         return false;
     
     for (let a = 0; a < game.players[id].actions.length; a++)
-        if (game.players[id].actions[a] === name)
+        if (game.players[id].actions[a] != undefined &&
+            game.players[id].actions[a].name === name)
             return true;
     
     return false;
@@ -64,21 +65,33 @@ exports.onCooldownPlayerAction = function(name, id)
         return true;
 };
 
-exports.addPlayerAction = function(socket, name, id)
+exports.addPlayerAction = function(name, id, uses)
 {
     if (game.players[id] === undefined)
         return false;
     
-    for (let a = 0; a < 7; a++)
+    let done = false;
+    
+    for (let a = 2; a < 7; a++)
         if (game.players[id].actions[a] === undefined) {
-            game.players[id].actions[a] = name;
+            game.players[id].actions[a] = {
+                name: name   
+            };
+            
+            if (uses !== undefined) {
+                game.players[id].actions[a].uses = uses;
+                game.players[id].actions[a].max = uses;
+            }
+            
+            done = true;
                 
             break;
         }
     
-    server.syncPlayerPartially(id, 'actions', socket, false);
+    if (done)
+        server.syncPlayerPartially(id, 'actions', game.players[id].socket, false);
     
-    return true;
+    return done;
 };
 
 exports.setPlayerAction = function(socket, name, position, id)
@@ -86,7 +99,9 @@ exports.setPlayerAction = function(socket, name, position, id)
     if (game.players[id] === undefined)
         return false;
     
-    game.players[id].actions[position] = name;
+    game.players[id].actions[position] = {
+        name: name
+    };
     
     server.syncPlayerPartially(id, 'actions', socket, false);
     
@@ -100,7 +115,7 @@ exports.removePlayerAction = function(socket, name, id)
     
     for (let a = 0; a < game.players[id].actions.length; a++)
         if (game.players[id].actions[a] !== undefined &&
-            game.players[id].actions[a] === name) {
+            game.players[id].actions[a].name === name) {
             game.players[id].actions[a] = undefined;
             
             break;
@@ -111,15 +126,17 @@ exports.removePlayerAction = function(socket, name, id)
     return true;
 };
 
-exports.createPlayerSlotAction = function(name)
+exports.createPlayerSlotAction = function(action)
 {
-    let id = this.getActionIndex(name);
+    let id = this.getActionIndex(action.name);
     
     if (id == -1)
         return;
     
     return {
-        name: name,
+        name: action.name,
+        uses: action.uses,
+        max: action.max,
         description: this.collection[id].description,
         cooldown: this.collection[id].cooldown,
         src: this.collection[id].src

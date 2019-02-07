@@ -179,6 +179,21 @@ exports.handleCommand = function(socket, text)
                 server.syncPlayerPartially(p, 'health');
                 
                 return 'success';
+            //Give item command
+            case 'giveitem':
+                let item = '';
+                
+                for (let i = 0; i < arguments.length; i++)
+                {
+                    if (i > 0)
+                        item += ' ';
+                    
+                    item += arguments[i];
+                }
+                
+                items.addPlayerItem(game.players[p].socket, p, item);
+                
+                return 'success';
         }
     }
     catch (err)

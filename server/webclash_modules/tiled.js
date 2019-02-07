@@ -6,7 +6,8 @@ exports.maps = [];
 exports.maps_properties = [];
 exports.maps_colliders = [];
 
-exports.loadAllMaps = function(cb) {
+exports.loadAllMaps = function(cb) 
+{
     fs.readdir('maps', (err, files) => {
         let count = 0;
         
@@ -23,7 +24,8 @@ exports.loadAllMaps = function(cb) {
     });
 };
 
-exports.loadMap = function(name) {
+exports.loadMap = function(name) 
+{
     try 
     {
         let location = 'maps/' + name;
@@ -273,7 +275,8 @@ exports.checkCollisionWithRectangle = function(map_name, rectangle)
     return false;
 };
 
-exports.checkRectangleInMap = function(id, rect) {
+exports.checkRectangleInMap = function(id, rect) 
+{
     for (let l = 0; l < this.maps[id].layers.length; l++) {
         let map = {
             x: -this.maps[id].width*this.maps[id].tilewidth/2,
@@ -292,7 +295,8 @@ exports.checkRectangleInMap = function(id, rect) {
     return true;
 };
 
-exports.checkRectangularCollision = function(rect1, rect2) {
+exports.checkRectangularCollision = function(rect1, rect2) 
+{
     if (rect1.x < rect2.x + rect2.w &&
         rect1.x + rect1.w > rect2.x &&
         rect1.y < rect2.y + rect2.h &&
