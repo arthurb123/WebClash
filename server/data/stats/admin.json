@@ -3,7 +3,7 @@
  "char_name": "player",
  "pos": {
   "X": 0,
-  "Y": 0
+  "Y": -7
  },
  "moving": false,
  "direction": 0,

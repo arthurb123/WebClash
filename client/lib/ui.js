@@ -23,10 +23,10 @@ const ui = {
             }
             
             view.dom.innerHTML += 
-                '<div id="chat_box" class="box" style="position: absolute; top: 100%; left: 35px; margin-top: -235px; width: 340px; height: 180px;">' +
+                '<div id="chat_box" class="box" style="position: absolute; top: 100%; left: 35px; margin-top: -235px; width: 340px; height: 182px;">' +
                     '<div id="chat_box_content" class="content" style="overflow-y: auto; height: 155px;"></div>' +
-                    '<input id="chat_box_message" type="text" style="width: 260px;"></input>' +
-                    '<button onclick="ui.chat.sendMessage()" style="position: relative; left: 3px; height: 20px; width: 70px; padding-top: 2px; margin: 0px;">Send</button>' +
+                    '<input id="chat_box_message" type="text" style="width: 263px;"></input>' +
+                    '<button onclick="ui.chat.sendMessage()" style="height: 21px; width: 70px; padding-top: 2px; margin: 0px;">Send</button>' +
                 '</div>';
             
             this.dom = {
@@ -235,11 +235,11 @@ const ui = {
 
             displayBox.id = 'displayBox';
             displayBox.classList.add('box');
-            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 15px; height: auto; text-align: center;';
+            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 12px; height: auto; text-align: center;';
             displayBox.innerHTML =
                     '<font class="header" style="font-size: 15px;">' + player.actions[slot].name + '</font><br>' + 
-                    '<font class="info" style="position: relative; top: 8px;">' + player.actions[slot].description + '</font><br>' +
-                    '<font class="info" style="position: relative; top: 9px; font-size: 10px;">CD: ' + (player.actions[slot].cooldown/60).toFixed(1) + 's</font>';
+                    '<font class="info" style="position: relative; top: 6px;">' + player.actions[slot].description + '</font><br>' +
+                    '<font class="info" style="position: relative; top: 8px; font-size: 10px;">CD: ' + (player.actions[slot].cooldown/60).toFixed(1) + 's</font>';
 
             //Append
             

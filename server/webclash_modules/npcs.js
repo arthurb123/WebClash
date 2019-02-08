@@ -674,6 +674,15 @@ exports.distributeExperience = function(map, id)
 {
     //Cycle through all targets/participants
 
-    for (let p = 0; p < this.onMap[map][id].targets.length; p++)
-        game.addPlayerExperience(p, Math.ceil(this.onMap[map][id].targets[p]/this.onMap[map][id].data.health.max*this.onMap[map][id].data.stats.exp));
+    for (let p = 0; p < this.onMap[map][id].targets.length; p++) {
+        if (this.onMap[map][id].targets[p] == undefined)
+            continue;
+        
+        let xp = Math.round(this.onMap[map][id].targets[p]/this.onMap[map][id].data.health.max*this.onMap[map][id].data.stats.exp);
+        
+        if (xp == null || xp < 0)
+            xp = 0;
+        
+        game.addPlayerExperience(p, xp);
+    }
 };
