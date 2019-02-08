@@ -24,8 +24,8 @@ const ui = {
             view.dom.innerHTML += 
                 '<div id="chat_box" class="box" style="position: absolute; top: 100%; left: 35px; margin-top: -235px; width: 340px; height: 180px;">' +
                     '<div id="chat_box_content" class="content" style="overflow-y: auto; height: 155px;"></div>' +
-                    '<input id="chat_box_message" type="text" style="width: 262px;"></input>' +
-                    '<button onclick="ui.chat.sendMessage()" style="position: relative; left: 2px; height: 20px; width: 70px; padding-top: 2px;">Send</button>' +
+                    '<input id="chat_box_message" type="text" style="width: 260px;"></input>' +
+                    '<button onclick="ui.chat.sendMessage()" style="position: relative; left: 3px; height: 20px; width: 70px; padding-top: 2px; margin: 0px;">Send</button>' +
                 '</div>';
             
             this.dom = {
@@ -240,15 +240,13 @@ const ui = {
             view.dom.appendChild(displayBox);
             
             //Create mouse following
-
-            el = document.getElementById('displayBox');
             
-            el.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-el.offsetWidth/2;
-            el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight-12;
+            displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-displayBox.offsetWidth/2 + 'px';
+            displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-displayBox.offsetHeight-12 + 'px';
 
             this.displayBoxLoopID = lx.GAME.ADD_LOOPS(function() {
-                el.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-el.offsetWidth/2;
-                el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight-12;
+                displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-displayBox.offsetWidth/2 + 'px';
+                displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-displayBox.offsetHeight-12 + 'px';
             });
         },
         removeBox: function() {
@@ -388,7 +386,7 @@ const ui = {
                 }
             
             document.getElementById('inventory_box').innerHTML +=
-                '<font class="info" style="position: relative; top: 4px; font-size: 11px; color: yellow;">0 Gold</font>';
+                '<font class="info" style="font-size: 11px; color: yellow;">0 Gold</font>';
         },
         reload: function() {
             if (this.slots === undefined)
@@ -557,14 +555,12 @@ const ui = {
             
             //Create mouse following
 
-            el = document.getElementById('displayBox');
-            
-            el.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-el.offsetWidth-8;
-            el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight;
+            displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-displayBox.offsetWidth-8 + 'px';
+            displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-displayBox.offsetHeight + 'px';
 
             this.displayBoxLoopID = lx.GAME.ADD_LOOPS(function() {
-                 el.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-el.offsetWidth-8;
-                 el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight;
+                 displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-displayBox.offsetWidth-8 + 'px';
+                 displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-displayBox.offsetHeight + 'px';
             });
         },
         removeBox: function() {
@@ -619,10 +615,8 @@ const ui = {
             
             //Set position
             
-            el = document.getElementById('contextBox');
-            
-            el.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-el.offsetWidth-8;
-            el.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-el.offsetHeight;
+            contextBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-contextBox.offsetWidth-8 + 'px';
+            contextBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-contextBox.offsetHeight + 'px';
         },
         removeContext: function() {
             if (document.getElementById('contextBox') == null)

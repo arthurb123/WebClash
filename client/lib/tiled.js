@@ -169,7 +169,7 @@ const tiled = {
     },
     checkObjects: function(map)
     {        
-        const offset_width = -map.width*map.tilewidth/2,
+        let offset_width = -map.width*map.tilewidth/2,
               offset_height = -map.height*map.tileheight/2;
 
         for (let l = 0; l < map.layers.length; l++) {
