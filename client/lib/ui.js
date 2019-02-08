@@ -165,8 +165,8 @@ const ui = {
             cdTime.classList.add('info');
             cdTime.style.fontSize = '10px';
             cdTime.style.position = 'relative';
-            cdTime.style.top = 9;
-            cdTime.style.left = 4;
+            cdTime.style.top = '9px';
+            cdTime.style.left = '4px';
 
             cd.appendChild(cdTime);
             

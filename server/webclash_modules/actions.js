@@ -437,7 +437,7 @@ exports.damagePlayers = function(stats, actionData, action)
         }
 }
 
-exports.healPlayers = function(actionData, action)
+exports.healPlayers = function(actionData, heal)
 {
     for (let e = 0; e < actionData.elements.length; e++)
         for (let p = 0; p < game.players.length; p++)
@@ -460,14 +460,7 @@ exports.healPlayers = function(actionData, action)
             };
             
             if (tiled.checkRectangularCollision(actionRect, playerRect)) 
-            {
-                game.players[p].health.cur += action.heal;
-                
-                if (game.players[p].health.cur >= game.players[p].health.max)
-                    game.players[p].health.cur = game.players[p].health.max;
-                
-                server.syncPlayerPartially(p, 'health');
-            }
+                game.healPlayer(p, heal);
         }
 };
 
