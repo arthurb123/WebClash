@@ -10,6 +10,7 @@ const ui = {
         lx.Loops(this.floaties.update);
     },
     chat: {
+        cache: [],
         create: function() {
             if (this.dom !== undefined) {
                 if (this.dom.box.parentNode !== undefined &&
@@ -59,7 +60,12 @@ const ui = {
             if (this.dom === undefined)
                 return;
             
-            this.dom.content.innerHTML += '<font style="display: inline;" class="info">' + this.timeformat() + content + '</font><br>';
+            this.cache.push('<font style="display: inline;" class="info">' + this.timeformat() + content + '</font><br>');
+            
+            if (this.cache.length > 16)
+                this.cache.splice(0, 1);
+            
+            this.dom.content.innerHTML = this.cache.join('');
             
             this.dom.content.scrollTo(0, this.dom.content.scrollHeight);
         },
