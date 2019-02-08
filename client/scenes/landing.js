@@ -23,17 +23,17 @@ const landingScene = new lx.Scene(function() {
     
     let server_name = new lx.UIText('Connected to: -', lx.GetDimensions().width/2, lx.GetDimensions().height-20, 11, '#3d3d3d')
         .Loops(function() {
+            this.Text('Connected to: ' + client.serverName);
             this.Position(lx.GetDimensions().width/2, lx.GetDimensions().height-20);
         })
         .Alignment('center')
         .Show();
     
-    lx.Loops(function() { server_name.Text('Connected to: ' + client.serverName); });
     
     //Set innerHTML
         
     view.dom.innerHTML = 
-        '<div id="sceneWindow" class="box" style="text-align: center; position: absolute; top: 50%; left: 50%; width: 180px; height: 220px; margin-left: -96px; margin-top: -110px;">' +
+        '<div id="sceneWindow" class="box" style="text-align: center; position: absolute; top: 50%; left: 50%; width: 180px; height: 210px; margin-left: -96px; margin-top: -110px;">' +
             '<form>' +
                 '<p id="windowTitle" class="header">Login</p><br>' +
                 '<p>Username</p>' +
