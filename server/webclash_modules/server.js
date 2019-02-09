@@ -37,6 +37,11 @@ exports.handleSocket = function(socket)
         
         let name = data.name.toString();
         
+        //Check if callback is provided
+            
+        if (callback == undefined)
+            return;
+        
         //Grab entry with username
         
         storage.load('accounts', name, function(player) {
@@ -101,6 +106,11 @@ exports.handleSocket = function(socket)
         //Convert name to string
         
         let name = data.name.toString();
+        
+        //Check if callback is provided
+            
+        if (callback == undefined)
+            return;
         
         //Check profanity
         
@@ -242,7 +252,8 @@ exports.handleSocket = function(socket)
              
              //Callback result
              
-             callback(result);
+             if (callback != undefined)
+                callback(result);
          } 
          catch (err)
          {
@@ -535,7 +546,8 @@ exports.handleSocket = function(socket)
         
         //Callback current target xp
         
-        callback(exptable[game.players[id].level-1]);
+        if (callback != undefined)
+            callback(exptable[game.players[id].level-1]);
     });
 };
 
