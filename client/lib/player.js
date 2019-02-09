@@ -144,7 +144,10 @@ const player = {
                 
                 //Set cooldown
                 
-                ui.actionbar.setCooldown(slot);
+                for (let a = 0; a < player.actions.length; a++)
+                    if (player.actions[a] != undefined && 
+                        player.actions[a].name === player.actions[slot].name)
+                        ui.actionbar.setCooldown(a);
             }
         });
     },
