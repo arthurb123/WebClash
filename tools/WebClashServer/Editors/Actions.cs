@@ -360,6 +360,8 @@ namespace WebClashServer.Editors
             {
                 properties.Visible = true;
 
+                propertyView.SelectedItem = propertyView.Items[0];
+
                 LoadProperties();
             }
         }
@@ -523,6 +525,20 @@ namespace WebClashServer.Editors
         private void cooldown_ValueChanged(object sender, EventArgs e)
         {
             current.cooldown = (int)(cooldown.Value / 16);
+        }
+
+        private void propertyView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (propertyView.SelectedItem.ToString() == "Appearance")
+            {
+                appearancePanel.Visible = true;
+                behaviourPanel.Visible = false;
+            }
+            else if (propertyView.SelectedItem.ToString() == "Behaviour")
+            {
+                appearancePanel.Visible = false;
+                behaviourPanel.Visible = true;
+            }
         }
     }
 

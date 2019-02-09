@@ -33,9 +33,13 @@ exports.handleSocket = function(socket)
         if (data === undefined || data.name === undefined)
             return;
         
+        //Convert name to string
+        
+        let name = data.name.toString();
+        
         //Grab entry with username
         
-        storage.load('accounts', data.name, function(player) {
+        storage.load('accounts', name, function(player) {
             if (player === undefined)
             {
                 callback('none');
@@ -61,7 +65,7 @@ exports.handleSocket = function(socket)
 
             //Check if banned
 
-            if (permissions.banned.indexOf(data.name) != -1)
+            if (permissions.banned.indexOf(name) != -1)
             {
                 callback('banned');
                 return;
@@ -69,7 +73,7 @@ exports.handleSocket = function(socket)
 
             //Check if already logged in
 
-            if (game.getPlayerIndex(data.name) != -1)
+            if (game.getPlayerIndex(name) != -1)
             {
                 callback('loggedin');
                 return;
@@ -77,11 +81,11 @@ exports.handleSocket = function(socket)
 
             //Output
 
-            output.give('User \'' + data.name + '\' has logged in.');
+            output.give('User \'' + name + '\' has logged in.');
 
             //Set variables
 
-            socket.name = data.name;
+            socket.name = name;
 
             //Request game page
 
@@ -94,9 +98,13 @@ exports.handleSocket = function(socket)
         if (data === undefined || data.name === undefined)
             return;
         
+        //Convert name to string
+        
+        let name = data.name.toString();
+        
         //Check profanity
         
-        if (input.filterText(data.name).indexOf('*') != -1)
+        if (input.filterText(name).indexOf('*') != -1)
         {
             callback('invalid');
             return;
@@ -104,7 +112,7 @@ exports.handleSocket = function(socket)
         
         //Check if account already exists
         
-        storage.exists('accounts', data.name, function(is) {
+        storage.exists('accounts', name, function(is) {
             if (is)
             {
                 callback('taken');
@@ -122,21 +130,21 @@ exports.handleSocket = function(socket)
 
             //Insert account
 
-            storage.save('accounts', data.name, {
+            storage.save('accounts', name, {
                 pass: data.pass
             });
 
             //Insert and save default stats
 
-            game.savePlayer(data.name);
+            game.savePlayer(name);
 
             //Give output
 
-            output.give('New user \'' + data.name + '\' created.');
+            output.give('New user \'' + name + '\' created.');
 
             //Set variables
 
-            socket.name = data.name;
+            socket.name = name;
 
             //Request game page
 
