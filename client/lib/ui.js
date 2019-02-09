@@ -23,7 +23,7 @@ const ui = {
             }
             
             view.dom.innerHTML += 
-                '<div id="chat_box" class="box" style="position: absolute; top: 100%; left: 35px; margin-top: -235px; width: 340px; height: 182px;">' +
+                '<div id="chat_box" class="box" style="position: absolute; top: 100%; left: 35px; transform: translate(0, -100%); margin-top: -40px; width: 340px; height: 182px;">' +
                     '<div id="chat_box_content" class="content" style="overflow-y: auto; height: 155px;"></div>' +
                     '<input id="chat_box_message" type="text" style="width: 263px;"></input>' +
                     '<button onclick="ui.chat.sendMessage()" style="height: 21px; width: 70px; padding-top: 2px; margin: 0px;">Send</button>' +
@@ -95,7 +95,7 @@ const ui = {
                 return;
                 
             view.dom.innerHTML += 
-                '<div id="actionbar_box" class="box" style="position: absolute; top: 100%; left: 50%; margin-left: -176px; margin-top: -105px; width: 338px; height: 48px;">' +
+                '<div id="actionbar_box" class="box" style="position: absolute; top: 100%; left: 50%; margin-left: -176px; transform: translate(0, -100%); margin-top: -40px; width: 338px; height: 48px;">' +
                     '<div class="slot" id="actionbar_slot0"></div>' +
                     '<div class="slot" id="actionbar_slot1"></div>' +
                     '<div class="slot" id="actionbar_slot2"></div>' +
@@ -271,7 +271,7 @@ const ui = {
                 return;
                 
             view.dom.innerHTML += 
-                '<div id="equipmentbar_box" class="box" style="position: absolute; top: 50%; left: 100%; margin-left: -83px; margin-top: -250px; width: 48px; height: 335px; text-align: center;">' +
+                '<div id="equipmentbar_box" class="box" style="position: absolute; top: 50%; left: 100%; margin-left: -83px; transform: translate(0, -75%); width: 48px; height: 335px; text-align: center;">' +
                 '</div>';
 
             this.slots = [
@@ -377,7 +377,7 @@ const ui = {
             this.slots = [];
                 
             view.dom.innerHTML += 
-                '<div id="inventory_box" class="box" style="position: absolute; top: 100%; left: 100%; margin-left: -230px; margin-top: -315px; width: 195px; height: 260px; text-align: center;">' +
+                '<div id="inventory_box" class="box" style="position: absolute; top: 100%; left: 100%; margin-left: -230px; transform: translate(0, -100%); margin-top: -40px; width: 195px; height: 260px; text-align: center;">' +
                 '</div>';
             
             for (let y = 0; y < this.size.height; y++)

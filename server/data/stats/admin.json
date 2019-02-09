@@ -3,7 +3,7 @@
  "char_name": "player",
  "pos": {
   "X": 0,
-  "Y": -7
+  "Y": 0
  },
  "moving": false,
  "direction": 0,
@@ -27,15 +27,9 @@
    "wisdom": 1
   }
  },
- "actions": [
-  {
-   "name": "Slash"
-  }
- ],
+ "actions": [],
  "inventory": [
-  null
+  "Sword"
  ],
- "equipment": {
-  "main": "Sword"
- }
+ "equipment": {}
 }

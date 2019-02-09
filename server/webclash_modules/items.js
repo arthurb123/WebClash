@@ -80,14 +80,14 @@ exports.loadItem = function(location)
 
 exports.addPlayerItem = function(socket, id, name)
 {
-    //Check if player has enough space
-    
-    if (game.players[id].inventory.length >= game.playerConstraints.inventory_size)
-        return false;
-    
     //Get free slot
     
     let slot = this.getPlayerFreeSlot(id);
+    
+    //Check if slot is valid
+    
+    if (slot == -1)
+        return false;
     
     //Check if item is valid
     
@@ -241,13 +241,13 @@ exports.getPlayerFreeSlot = function(id)
 {
     //Search for a undefined/non-existing slot
     
-    for (let i = 0; i < game.players[id].inventory.length; i++)
+    for (let i = 0; i < game.playerConstraints.inventory_size; i++)
         if (game.players[id].inventory[i] == null)
             return i;
     
-    //Otherwise return the length
+    //Otherwise return an invalid slot
     
-    return game.players[id].inventory.length;
+    return -1;
 };
 
 exports.createWorldItem = function(owner, map, x, y, name)
