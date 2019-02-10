@@ -76,7 +76,8 @@ const client = {
              if (data === undefined || data.name === undefined)
                  return;
             
-             //Check if in-game
+             //Check if in-game and tiled is not loading
+            
              if (!client.inGame)
                  return;
             

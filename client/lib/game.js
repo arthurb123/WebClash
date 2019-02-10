@@ -193,13 +193,13 @@ const game = {
     {
         //Check if valid
         
-        if (id === undefined || this.players[id] === undefined || this.player == id)
+        if (id === undefined || this.players[id] == undefined)
             return;
         
         //Hide target GameObject
         
-        this.players[id].Hide();
         this.players[id]._nameplate.Hide();
+        this.players[id].Hide();
         
         //Get player name
         
@@ -218,8 +218,8 @@ const game = {
         //Cycle through all online players and
         //remove all, except for the player itself
         
-        for (let i = 0; i < this.players.length; i++)
-            if (i != this.player) 
+        for (let i = this.players.length-1; i >= 0; i--)
+            if (i !== this.player) 
                 this.removePlayer(i);
     },
     resetPlayer: function() 

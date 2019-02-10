@@ -317,7 +317,22 @@ const tiled = {
                 const properties = tileset.tiles[i].properties,
                       callbacks = [];
                 
+                let isMapEvent = false;
+                
                 for (let p = 0; p < properties.length; p++) {
+                    if (properties[p].name === 'loadMap')  
+                    {
+                        isMapEvent = true;
+                        
+                        break;
+                    }
+                }
+                
+                for (let p = 0; p < properties.length; p++) {
+                    if (properties[p].name === 'positionX' || properties[p].name === 'positionY')
+                        if (isMapEvent)
+                            continue;
+                    
                     let f = this.handleProperty(properties[p]);
                     
                     if (f !== undefined)
@@ -370,6 +385,12 @@ const tiled = {
                         socket.emit('CLIENT_REQUEST_MAP', property.value);
                     }
                 };
+            case "positionX":
+            case "positionY":
+                return function(go) {
+                    if (go === game.players[game.player])
+                        player.propertyInteraction.interact();
+                }
         }
     },
     createWorldBoundaries: function(map, offset_width, offset_height) {

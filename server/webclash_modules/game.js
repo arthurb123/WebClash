@@ -321,7 +321,7 @@ exports.sendPlayers = function(socket)
     //Send all players in the same map
     
     for (let i = 0; i < this.players.length; i++)
-            if (i != id && this.players[id].map == this.players[i].map) 
+            if (i != id && this.players[id].map === this.players[i].map)
                 server.syncPlayer(i, socket, false);
 }
 

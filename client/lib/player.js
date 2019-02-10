@@ -17,6 +17,33 @@ const player = {
         cur: 0,
         standard: 12
     },
+    propertyInteraction: {
+        cooldown: {
+            update: function() {
+                if (!this.on)
+                    return;
+                
+                this.cur++;
+                
+                if (this.cur >= this.standard) {
+                    this.cur = 0;
+                    
+                    this.on = false;
+                }
+            },
+            on: false,
+            cur: 0,
+            standard: 60
+        },
+        interact: function() {
+            if (this.cooldown.on)
+                return;
+            
+            socket.emit('CLIENT_INTERACT_PROPERTIES');
+            
+            this.cooldown.on = true;
+        }  
+    },
     instantiate: function(name) {
         let go = new lx.GameObject(undefined, 0, 0, 0, 0);
         
@@ -159,7 +186,14 @@ const player = {
         
         socket.emit('CLIENT_UNEQUIP_ITEM', equippable);
     },
+    getEquipmentSprite: function(equippable) {
+        if (player.equipment[equippable] !== undefined &&
+            player.equipment[equippable]._sprite !== undefined)
+            return player.equipment[equippable]._sprite;
+    },
     update: function() {
+        player.propertyInteraction.cooldown.update();
+        
         this.POS.X = Math.round(this.POS.X);
         this.POS.Y = Math.round(this.POS.Y);
         
@@ -185,8 +219,8 @@ const player = {
                     player.forceFrame.reset();
             }
             
-            if (!game.players[game.player]._moving) {
-                game.players[game.player]._moving = true;
+            if (!this._moving) {
+                this._moving = true;
                 
                 player.sync('moving');
             }
@@ -195,8 +229,8 @@ const player = {
         } else {   
             player.forceFrame.reset();
             
-            if (game.players[game.player]._moving) {
-                game.players[game.player]._moving = false;
+            if (this._moving) {
+                this._moving = false;
                 
                 player.sync('moving');
             }
@@ -207,35 +241,25 @@ const player = {
     draws: function() {
         let equipment = [];
         
-        if (player.equipment['torso'] !== undefined &&
-            player.equipment['torso']._sprite !== undefined)
-            equipment.push(player.equipment['hands']._sprite);
+        equipment.push(player.getEquipmentSprite('torso'));
+        equipment.push(player.getEquipmentSprite('hands'));
+        equipment.push(player.getEquipmentSprite('head'));
+        equipment.push(player.getEquipmentSprite('legs'));
+        equipment.push(player.getEquipmentSprite('feet'));
         
-        if (player.equipment['hands'] !== undefined &&
-            player.equipment['hands']._sprite !== undefined)
-            equipment.push(player.equipment['hands']._sprite);
-        
-        if (player.equipment['head'] !== undefined &&
-            player.equipment['head']._sprite !== undefined)
-            equipment.push(player.equipment['head']._sprite);
-        
-        if (player.equipment['feet'] !== undefined &&
-            player.equipment['feet']._sprite !== undefined)
-            equipment.push(player.equipment['feet']._sprite);
-        
-        if (player.equipment['legs'] !== undefined &&
-            player.equipment['legs']._sprite !== undefined)
-            equipment.push(player.equipment['legs']._sprite);
-        
-        if (player.equipment['main'] !== undefined &&
-            player.equipment['main']._sprite !== undefined)
-            equipment.push(player.equipment['main']._sprite);
-        
-        if (player.equipment['offhand'] !== undefined &&
-            player.equipment['offhand']._sprite !== undefined)
-            equipment.push(player.equipment['offhand']._sprite);
+        if (this._direction == 1 || this._direction == 0) {
+            equipment.push(player.getEquipmentSprite('main'));
+            equipment.push(player.getEquipmentSprite('offhand'));
+        }
+        else if (this._direction == 2 || this._direction == 3) {
+            equipment.push(player.getEquipmentSprite('offhand'));
+            equipment.push(player.getEquipmentSprite('main'));
+        }
         
         for (let i = 0; i < equipment.length; i++) {
+            if (equipment[i] == undefined)
+                continue;
+            
             equipment[i].CLIP = this.SPRITE.CLIP;
             
             lx.DrawSprite(equipment[i], this.POS.X, this.POS.Y, this.POS.W, this.POS.H);

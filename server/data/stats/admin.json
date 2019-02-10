@@ -1,9 +1,9 @@
 {
- "map": "1",
+ "map": "2",
  "char_name": "player",
  "pos": {
-  "X": 0,
-  "Y": 0
+  "X": 124,
+  "Y": 74
  },
  "moving": false,
  "direction": 0,

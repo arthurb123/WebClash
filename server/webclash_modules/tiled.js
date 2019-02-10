@@ -219,6 +219,21 @@ exports.checkPropertyWithRectangle = function(map_name, property_name, rectangle
     return data;
 };
 
+exports.getPropertiesWithRectangle = function(id, rectangle) 
+{
+    if (id == -1 ||
+        this.maps_properties[id] === undefined ||
+        this.maps_properties[id].length == 0)
+        return [];
+    
+    for (let p = 0; p < this.maps_properties[id].length; p++)
+        for (let r = 0; r < this.maps_properties[id][p].rectangles.length; r++)
+            if (this.checkRectangularCollision(this.maps_properties[id][p].rectangles[r], rectangle)) 
+                return this.maps_properties[id];
+    
+    return [];
+}
+
 exports.getPropertiesFromTile = function(map, tile)
 {
     let result = [];

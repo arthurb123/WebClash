@@ -281,10 +281,10 @@ exports.handleSocket = function(socket)
         //Check if player is near to a loadMap property
         
         let result = tiled.checkPropertyWithRectangle(game.players[id].map, 'loadMap', {
-            x: game.players[id].pos.X-game.players[id].character.width/2,
-            y: game.players[id].pos.Y-game.players[id].character.height/2,
-            w: game.players[id].character.width*2,
-            h: game.players[id].character.height*2
+            x: game.players[id].pos.X,
+            y: game.players[id].pos.Y,
+            w: game.players[id].character.width,
+            h: game.players[id].character.height
         });
         
         if (!result.near)
@@ -527,6 +527,57 @@ exports.handleSocket = function(socket)
         {
             //Failure, notify user
         }
+    });
+    
+    socket.on('CLIENT_INTERACT_PROPERTIES', function() {
+        //Check if valid player
+        
+        if (socket.playing === undefined || !socket.playing)
+            return;
+        
+        //Get player id
+        
+        let id = game.getPlayerIndex(socket.name);
+        
+        //Check if valid
+        
+        if (id == -1)
+            return;
+        
+        //Get map id
+        
+        let map = tiled.getMapIndex(game.players[id].map);
+        
+        //Get all properties that the player collided with
+        
+        let properties = tiled.getPropertiesWithRectangle(map, {
+            x: game.players[id].pos.X,
+            y: game.players[id].pos.Y,
+            w: game.players[id].character.width,
+            h: game.players[id].character.height
+        });
+        
+        //Check all available properties
+        
+        if (properties != undefined) {
+            for (let p = 0; p < properties.length; p++)
+            {
+                if (properties[p].name === 'positionX') {
+                    game.players[id].pos.X = (properties[p].value-tiled.maps[map].width/2+.5)*tiled.maps[map].tilewidth-game.players[id].character.width/2;
+
+                    done = true;
+                }
+                if (properties[p].name === 'positionY') {
+                    game.players[id].pos.Y = (properties[p].value-tiled.maps[map].height/2)*tiled.maps[map].tileheight-game.players[id].character.height/2;
+
+                    done = true;
+                }
+            }
+
+            if (done)
+                server.syncPlayerPartially(id, 'position');
+        }
+        
     });
     
     socket.on('CLIENT_REQUEST_EXP', function(callback) {
