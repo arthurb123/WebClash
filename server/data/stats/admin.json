@@ -1,14 +1,14 @@
 {
- "map": "2",
+ "map": "1",
  "char_name": "player",
  "pos": {
-  "X": 124,
-  "Y": 74
+  "X": -160,
+  "Y": 13
  },
  "moving": false,
  "direction": 0,
  "health": {
-  "cur": 100,
+  "cur": 81,
   "max": 100
  },
  "mana": {
@@ -17,7 +17,7 @@
  },
  "level": 1,
  "stats": {
-  "exp": 0,
+  "exp": 4,
   "attributes": {
    "power": 1,
    "toughness": 1,
@@ -27,9 +27,21 @@
    "wisdom": 1
   }
  },
- "actions": [],
- "inventory": [
-  "Sword"
+ "actions": [
+  {
+   "name": "Slash"
+  },
+  null,
+  {
+   "name": "Heal",
+   "uses": 3,
+   "max": 3
+  }
  ],
- "equipment": {}
+ "inventory": [
+  null
+ ],
+ "equipment": {
+  "main": "Sword"
+ }
 }

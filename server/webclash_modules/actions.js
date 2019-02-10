@@ -297,7 +297,7 @@ exports.createNPCAction = function(possibleAction, map, id)
     
     //Check for healing
     
-    this.healNPCs(npcs.onMap[map][id].data.stats, actionData, this.collection[a_id]);
+    this.healNPCs(actionData, this.collection[a_id]);
     
     //Sync action
     
@@ -305,7 +305,7 @@ exports.createNPCAction = function(possibleAction, map, id)
     
     //Set NPC cooldown
     
-    npcs.onMap[map][id].combat_cooldown.start(this.collection[a_id].cooldown+possibleAction.extraCooldown);
+    npcs.onMap[map][id].combat_cooldown.start(this.collection[a_id].name, this.collection[a_id].cooldown+possibleAction.extraCooldown);
 };
 
 exports.loadAllActions = function(cb)
@@ -383,7 +383,7 @@ exports.healNPCs = function(actionData, action)
             if (npcs.onMap[actionData.map][n].data.type !== 'hostile' ||
                 npcs.isTimedOut(actionData.map, n))
                 continue;
-
+            
             let actionRect = {
                 x: actionData.pos.X+actionData.elements[e].x,
                 y: actionData.pos.Y+actionData.elements[e].y,
@@ -400,12 +400,12 @@ exports.healNPCs = function(actionData, action)
 
             if (tiled.checkRectangularCollision(actionRect, npcRect)) 
             {
-                npcs.onMap[actionData.map][n].health.cur += action.heal;
+                npcs.onMap[actionData.map][n].data.health.cur += action.heal;
                 
-                if (npcs.onMap[actionData.map][n].health.cur >= npcs.onMap[actionData.map][n].health.max)
-                    npcs.onMap[actionData.map][n].health.cur = npcs.onMap[actionData.map][n].health.max;
+                if (npcs.onMap[actionData.map][n].data.health.cur >= npcs.onMap[actionData.map][n].data.health.max)
+                    npcs.onMap[actionData.map][n].data.health.cur = npcs.onMap[actionData.map][n].data.health.max;
                 
-                server.syncNPCPartially(map, n, 'health');
+                server.syncNPCPartially(actionData.map, n, 'health');
             }
         }
 };

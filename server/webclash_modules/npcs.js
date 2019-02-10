@@ -128,13 +128,13 @@ exports.createNPC = function(map, name, x, y)
     npc.target = -1;
 
     npc.combat_cooldown = {
-        cur: 0,
-        standard: 0,
-        done: true,
-        start: function(cooldown) {
-            this.cur = 0;
-            this.standard = cooldown;
-            this.done = false;
+        actual: [],
+        start: function(name, cooldown) {
+            this.actual[name] = {
+                cur: 0,
+                standard: cooldown,
+                done: false
+            };
         }
     };
 
@@ -336,17 +336,17 @@ exports.updateNPCCombat = function(map, id)
         return;
     }
     
-    //Check combat cooldown
+    //Update cooldown
     
-    if (!this.onMap[map][id].combat_cooldown.done)
-    {
-        this.onMap[map][id].combat_cooldown.cur++;
+    for (let key in this.onMap[map][id].combat_cooldown.actual) {
+        if (this.onMap[map][id].combat_cooldown.actual[key].done)
+            continue;
         
-        if (this.onMap[map][id].combat_cooldown.cur >= this.onMap[map][id].combat_cooldown.standard)
-            this.onMap[map][id].combat_cooldown.done = true;
-        else
-            return;
-    }
+        this.onMap[map][id].combat_cooldown.actual[key].cur++;
+
+        if (this.onMap[map][id].combat_cooldown.actual[key].cur >= this.onMap[map][id].combat_cooldown.actual[key].standard)
+            this.onMap[map][id].combat_cooldown.actual[key].done = true;
+    };
     
     //Calculate distance to target
     
@@ -362,6 +362,12 @@ exports.updateNPCCombat = function(map, id)
             Math.abs(dx) <= this.onMap[map][id].data.actions[i].range &&
             Math.abs(dy) <= this.onMap[map][id].data.actions[i].range)
             {
+                //Check action cooldown
+                
+                if (this.onMap[map][id].combat_cooldown.actual[this.onMap[map][id].data.actions[i].action] != undefined &&
+                    !this.onMap[map][id].combat_cooldown.actual[this.onMap[map][id].data.actions[i].action].done)
+                    continue;
+                
                 nextAction = i;
                 
                 break;

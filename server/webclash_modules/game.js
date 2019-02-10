@@ -220,13 +220,14 @@ exports.damagePlayer = function(id, damage)
         this.players[id].health.cur = this.players[id].health.max;
         
         server.syncPlayerPartially(id, 'health');
+ 
+        if (this.players[id].map !== properties.startingMap)
+            this.loadMap(this.players[id].socket, properties.startingMap);
         
         this.players[id].pos.X = 0;
         this.players[id].pos.Y = 0;
         
         server.syncPlayerPartially(id, 'position');
-         
-        this.loadMap(this.players[id].socket, tiled.maps[0].name);
         
         return;
     }
@@ -280,13 +281,25 @@ exports.addPlayerExperience = function(id, exp)
     
     if (this.players[id].stats.exp >= exptable[this.players[id].level-1])
     {
+        //Level up and reset xp
+        
         this.players[id].level++;
         this.players[id].stats.exp = 0;
+        
+        //Restore health and other stats
+        
+        this.players[id].health.cur = this.players[id].health.max;
+        this.players[id].mana.cur = this.players[id].mana.max;
+          
+        //Sync to map
+    
+        server.syncPlayerPartially(id, 'level');
+        
+        //Sync to player
+        
+        server.syncPlayerPartially(id, 'health', this.players[id].socket, false);
+        server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
     }
-    
-    //Sync to map
-    
-    server.syncPlayerPartially(id, 'level');
     
     //Sync to player
     
@@ -344,9 +357,12 @@ exports.loadMap = function(socket, map)
         return;
     }
     
-    //Get player ID
+    //Get player id
     
     let id = this.getPlayerIndex(socket.name);
+    
+    //Check if valid player
+    
     if (id == -1)
         return;
     
