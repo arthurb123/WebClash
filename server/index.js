@@ -64,7 +64,7 @@ function startServer() {
 
 let hasSaved = false;
 
-function exitHandler(shouldExit) {
+function exitHandler() {
     //Check if exit handler has already been executed
     
     if (hasSaved)
@@ -76,8 +76,13 @@ function exitHandler(shouldExit) {
     
     //Check if there are players that need to be saved
     
-    if (game.players.length === 0)
+    if (game.players.length === 0) {
+        hasSaved = true;
+        
+        process.exit();
+        
         return;
+    }
 
     //Save all players
     
