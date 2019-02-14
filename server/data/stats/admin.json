@@ -2,8 +2,8 @@
  "map": "1",
  "char_name": "player",
  "pos": {
-  "X": -160,
-  "Y": -24
+  "X": 0,
+  "Y": 0
  },
  "moving": false,
  "direction": 0,
@@ -27,16 +27,9 @@
    "wisdom": 1
   }
  },
- "actions": [
-  {
-   "name": "Arrow"
-  }
- ],
+ "actions": [],
  "inventory": [
-  "Sword",
-  null
+  "Sword"
  ],
- "equipment": {
-  "main": "Ring of Arrows"
- }
+ "equipment": {}
 }

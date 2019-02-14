@@ -1480,6 +1480,18 @@ function Lynx2D() {
             return this;
         };
         
+        this.Loops = function(callback) {
+            this.LOOPS = callback;
+            
+            return this;
+        };
+        
+        this.ClearLoops = function() {
+            this.LOOPS = undefined;
+            
+            return this;
+        };
+        
         this.Speed = function(speed) {
             if (speed != undefined) this.TIMER.STANDARD = speed;
             else return this.TIMER.STANDARD;
@@ -1498,6 +1510,9 @@ function Lynx2D() {
         
         this.UPDATE = function() {
             this.TIMER.CURRENT++;
+            
+            if (this.LOOPS != undefined)
+                this.LOOPS();
             
             if (this.TIMER.CURRENT >= this.TIMER.STANDARD) {
                 this.TIMER.CURRENT = 0;

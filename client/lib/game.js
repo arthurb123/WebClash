@@ -602,7 +602,13 @@ const game = {
                          if (sprites.length == 0)
                              return;
 
-                         new lx.Animation(sprites, data.elements[i].speed).Show(
+                         let action = new lx.Animation(sprites, data.elements[i].speed)
+                             .Loops(function() {
+                                if (tiled.current !== this._map ||
+                                    tiled.loading)
+                                    this.Hide();
+                             })
+                             .Show(
                              4, 
                              data.pos.X+data.elements[i].x,
                              data.pos.Y+data.elements[i].y,
@@ -610,6 +616,8 @@ const game = {
                              data.elements[i].h,
                              0
                          );
+                     
+                     action._map = tiled.current;
                  });
              }
              else if (data.elements[i].type === 'projectile') {
@@ -653,7 +661,9 @@ const game = {
                             this._distance.y += Math.abs(this.MOVEMENT.VY);
                             
                             if (this._distance.x > data.elements[i].projectileDistance ||
-                                this._distance.y > data.elements[i].projectileDistance)
+                                this._distance.y > data.elements[i].projectileDistance ||
+                                tiled.current !== this._map ||
+                                tiled.loading)
                                 this.Hide();
                         })
                         .Show(4);
@@ -662,6 +672,7 @@ const game = {
                             x: 0,
                             y: 0
                         };
+                        projectile._map = tiled.current;
                  });
              }
          }

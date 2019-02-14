@@ -1,6 +1,7 @@
 const tiled = {
     loading: false,
     queue: [],
+    current: '',
     executeAfterLoad: function(cb, parameter) {
         this.queue.push({
             cb: cb,
@@ -11,6 +12,10 @@ const tiled = {
         //Set loading
         
         this.loading = true;
+        
+        //Change map name
+        
+        this.current = map.name;
         
         //Remove all (online) players
         

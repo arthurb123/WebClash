@@ -37,7 +37,7 @@
             this.canvas = new System.Windows.Forms.PictureBox();
             this.properties = new System.Windows.Forms.GroupBox();
             this.behaviourPanel = new System.Windows.Forms.Panel();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.projectilePanel = new System.Windows.Forms.Panel();
             this.projectileDistance = new System.Windows.Forms.NumericUpDown();
             this.projectileSpeed = new System.Windows.Forms.NumericUpDown();
             this.label20 = new System.Windows.Forms.Label();
@@ -90,7 +90,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.properties.SuspendLayout();
             this.behaviourPanel.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.projectilePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.projectileDistance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.projectileSpeed)).BeginInit();
             this.appearancePanel.SuspendLayout();
@@ -174,7 +174,7 @@
             // behaviourPanel
             // 
             this.behaviourPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.behaviourPanel.Controls.Add(this.panel1);
+            this.behaviourPanel.Controls.Add(this.projectilePanel);
             this.behaviourPanel.Controls.Add(this.propertyType);
             this.behaviourPanel.Controls.Add(this.label18);
             this.behaviourPanel.Location = new System.Drawing.Point(9, 38);
@@ -184,16 +184,17 @@
             this.behaviourPanel.TabIndex = 18;
             this.behaviourPanel.Visible = false;
             // 
-            // panel1
+            // projectilePanel
             // 
-            this.panel1.Controls.Add(this.projectileDistance);
-            this.panel1.Controls.Add(this.projectileSpeed);
-            this.panel1.Controls.Add(this.label20);
-            this.panel1.Controls.Add(this.label19);
-            this.panel1.Location = new System.Drawing.Point(9, 47);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(221, 89);
-            this.panel1.TabIndex = 17;
+            this.projectilePanel.Controls.Add(this.projectileDistance);
+            this.projectilePanel.Controls.Add(this.projectileSpeed);
+            this.projectilePanel.Controls.Add(this.label20);
+            this.projectilePanel.Controls.Add(this.label19);
+            this.projectilePanel.Location = new System.Drawing.Point(9, 47);
+            this.projectilePanel.Name = "projectilePanel";
+            this.projectilePanel.Size = new System.Drawing.Size(221, 89);
+            this.projectilePanel.TabIndex = 17;
+            this.projectilePanel.Visible = false;
             // 
             // projectileDistance
             // 
@@ -823,8 +824,8 @@
             this.properties.PerformLayout();
             this.behaviourPanel.ResumeLayout(false);
             this.behaviourPanel.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.projectilePanel.ResumeLayout(false);
+            this.projectilePanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.projectileDistance)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.projectileSpeed)).EndInit();
             this.appearancePanel.ResumeLayout(false);
@@ -907,7 +908,7 @@
         private System.Windows.Forms.Panel behaviourPanel;
         private System.Windows.Forms.ComboBox propertyType;
         private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel projectilePanel;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.NumericUpDown projectileDistance;

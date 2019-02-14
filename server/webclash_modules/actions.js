@@ -42,26 +42,76 @@ exports.updateProjectiles = function() {
                     continue;
                 }
                 
-                if (game.players[this.projectiles[m][p].owner] == undefined)
-                    continue;
-                
                 //Player projectile handling
                 
-                if (this.damageNPCs(
-                    this.projectiles[m][p].owner, 
-                    game.players[this.projectiles[m][p].owner].stats.attributes, 
-                    this.projectiles[m][p], 
-                    this.collection[this.projectiles[m][p].a_id]
-                )) {                  
-                    server.removeAction(this.projectiles[m][p].elements[0].p_id, this.projectiles[m][p].map);
+                if (this.projectiles[m][p].playerOwner != undefined) {
+                    if (game.players[this.projectiles[m][p].playerOwner] == undefined)
+                        continue;
                     
-                    this.projectiles[m][p] = undefined;
-                    
-                    continue;
+                    if (this.damageNPCs(
+                        this.projectiles[m][p].playerOwner, 
+                        game.players[this.projectiles[m][p].playerOwner].stats.attributes, 
+                        this.projectiles[m][p], 
+                        this.collection[this.projectiles[m][p].a_id]
+                    )) {                  
+                        server.removeAction(this.projectiles[m][p].elements[0].p_id, this.projectiles[m][p].map);
+
+                        this.projectiles[m][p] = undefined;
+
+                        continue;
+                    }
                 }
                 
-                //TODO: Implement NPC projectiles ....
+                //NPC projectile handling
+                
+                if (this.projectiles[m][p].npcOwner != undefined) {
+                    if (npcs.isTimedOut(this.projectiles[m][p].map, this.projectiles[m][p].npcOwner))
+                        continue;
+                    
+                    if (this.damagePlayers(
+                        npcs.onMap[this.projectiles[m][p].map][this.projectiles[m][p].npcOwner].data.stats, 
+                        this.projectiles[m][p], 
+                        this.collection[this.projectiles[m][p].a_id]
+                    )) {                  
+                        server.removeAction(this.projectiles[m][p].elements[0].p_id, this.projectiles[m][p].map);
+
+                        this.projectiles[m][p] = undefined;
+
+                        continue;
+                    }
+                }
             }
+};
+
+exports.loadAllActions = function(cb)
+{
+    let location = 'actions';
+    
+    fs.readdir(location, (err, files) => {
+        let count = 0;
+        
+        files.forEach(file => {
+            actions.collection.push(actions.loadAction(location + '/' + file));
+            
+            count++;
+        });
+        
+        output.give('Loaded ' + count + ' action(s).');
+        
+        if (cb !== undefined)
+            cb();
+    });
+};
+
+exports.loadAction = function(location)
+{
+    try {
+        return JSON.parse(fs.readFileSync(location, 'utf-8'));
+    }
+    catch (err)
+    {
+        output.give(err);
+    }
 };
 
 exports.getAction = function(name)
@@ -80,6 +130,86 @@ exports.getActionIndex = function(name)
             return i;
     
     return -1;
+};
+
+exports.convertActionData = function(actionData, a_id, direction, character) 
+{
+    //Convert projectiles
+    
+    for (let e = 0; e < actionData.elements.length; e++)
+        if (actionData.elements[e].type === 'projectile') {
+            let dx = actionData.elements[e].x+actionData.elements[e].w/2-this.collection[a_id].sw/2,
+                dy = actionData.elements[e].y+actionData.elements[e].h/2-this.collection[a_id].sh/2
+            
+            let wl = this.collection[a_id].sw/6,
+                hl = this.collection[a_id].sh/6;
+            
+            if (dx > wl)
+                dx = wl;
+            else if (dx < -wl)
+                dx = -wl;
+            
+            if (dy > hl)
+                dy = hl;
+            else if (dy < -hl)
+                dy = -hl;
+            
+            actionData.elements[e].projectileSpeed = {
+                x: dx/wl*actionData.elements[e].projectileSpeed,
+                y: dy/hl*actionData.elements[e].projectileSpeed
+            };
+            
+            actionData.elements[e].projectileDistance = 
+                actionData.elements[e].projectileDistance * (tiled.maps[actionData.map].tilewidth+tiled.maps[actionData.map].tileheight)/2;
+        }
+    
+    //Positional correcting
+    
+    if (direction == 1 || direction == 2)
+         for (let e = 0; e < actionData.elements.length; e++) {
+             let x = actionData.elements[e].x;
+             
+             actionData.elements[e].x = actionData.elements[e].y;
+             actionData.elements[e].y = x+character.height;
+             
+             if (direction == 1) {
+                 actionData.elements[e].x = this.collection[a_id].sw-actionData.elements[e].x-actionData.elements[e].w+character.width;
+                 
+                 if (actionData.elements[e].type === 'projectile') {
+                     let y = actionData.elements[e].projectileSpeed.y;
+                     
+                     actionData.elements[e].projectileSpeed.y = actionData.elements[e].projectileSpeed.x;
+                     actionData.elements[e].projectileSpeed.x = -y;
+                 }
+             }
+             else {
+                 actionData.elements[e].x -= character.width;
+                 
+                 if (actionData.elements[e].type === 'projectile') {
+                     let y = actionData.elements[e].projectileSpeed.y;
+                     
+                     actionData.elements[e].projectileSpeed.y = actionData.elements[e].projectileSpeed.x;
+                     actionData.elements[e].projectileSpeed.x = y;
+                 }
+             }
+         }
+    
+    if (direction == 3)
+        for (let e = 0; e < actionData.elements.length; e++) {
+             actionData.elements[e].y = this.collection[a_id].sh-actionData.elements[e].y-actionData.elements[e].h+character.height*2;
+            
+             if (actionData.elements[e].type === 'projectile')
+                 actionData.elements[e].projectileSpeed.y *= -1;
+        }
+    
+    //Set action data position
+    
+    actionData.pos.X+=character.width/2-this.collection[a_id].sw/2;
+    actionData.pos.Y+=-this.collection[a_id].sh/2-character.height/2;
+    
+    //Return converted data
+    
+    return actionData;
 };
 
 exports.hasPlayerAction = function(name, id)
@@ -227,91 +357,21 @@ exports.createPlayerAction = function(slot, id)
     
     //Generate action data
     
-    let actionData = {
-        pos: game.calculateFace(
-            game.players[id].pos, 
-            game.players[id].character.width,
-            game.players[id].character.height,
-            game.players[id].direction
-        ),
-        map: tiled.getMapIndex(game.players[id].map),
-        elements: JSON.parse(JSON.stringify(this.collection[a_id].elements))
-    };
-    
-    //Calculate speed for projectile elements
-    //and create player projectile
-    
-    for (let e = 0; e < actionData.elements.length; e++)
-        if (actionData.elements[e].type === 'projectile') {
-            let dx = actionData.elements[e].x+actionData.elements[e].w/2-this.collection[a_id].sw/2,
-                dy = actionData.elements[e].y+actionData.elements[e].h/2-this.collection[a_id].sh/2
-            
-            let wl = this.collection[a_id].sw/6,
-                hl = this.collection[a_id].sh/6;
-            
-            if (dx > wl)
-                dx = wl;
-            else if (dx < -wl)
-                dx = -wl;
-            
-            if (dy > hl)
-                dy = hl;
-            else if (dy < -hl)
-                dy = -hl;
-            
-            actionData.elements[e].projectileSpeed = {
-                x: dx/wl*actionData.elements[e].projectileSpeed,
-                y: dy/hl*actionData.elements[e].projectileSpeed
-            };
-            
-            actionData.elements[e].projectileDistance = 
-                actionData.elements[e].projectileDistance * (tiled.maps[actionData.map].tilewidth+tiled.maps[actionData.map].tileheight)/2;
-        }
-    
-    //Positional and projectile speed correction
-    
-    if (game.players[id].direction == 1 ||
-        game.players[id].direction == 2)
-         for (let e = 0; e < actionData.elements.length; e++) {
-             let x = actionData.elements[e].x;
-             
-             actionData.elements[e].x = actionData.elements[e].y;
-             actionData.elements[e].y = x+game.players[id].character.height;
-             
-             if (game.players[id].direction == 1) {
-                 actionData.elements[e].x = this.collection[a_id].sw-actionData.elements[e].x-actionData.elements[e].w+game.players[id].character.width;
-                 
-                 if (actionData.elements[e].type === 'projectile') {
-                     let y = actionData.elements[e].projectileSpeed.y;
-                     
-                     actionData.elements[e].projectileSpeed.y = actionData.elements[e].projectileSpeed.x;
-                     actionData.elements[e].projectileSpeed.x = -y;
-                 }
-             }
-             else {
-                 actionData.elements[e].x -= game.players[id].character.width;
-                 
-                 if (actionData.elements[e].type === 'projectile') {
-                     let y = actionData.elements[e].projectileSpeed.y;
-                     
-                     actionData.elements[e].projectileSpeed.y = actionData.elements[e].projectileSpeed.x;
-                     actionData.elements[e].projectileSpeed.x = y;
-                 }
-             }
-         }
-    
-    if (game.players[id].direction == 3)
-        for (let e = 0; e < actionData.elements.length; e++) {
-             actionData.elements[e].y = this.collection[a_id].sh-actionData.elements[e].y-actionData.elements[e].h+game.players[id].character.height*2;
-            
-             if (actionData.elements[e].type === 'projectile')
-                 actionData.elements[e].projectileSpeed.y *= -1;
-        }
-    
-    //Set action data position
-    
-    actionData.pos.X+=game.players[id].character.width/2-this.collection[a_id].sw/2;
-    actionData.pos.Y+=-this.collection[a_id].sh/2-game.players[id].character.height/2;
+    let actionData = this.convertActionData(
+        {
+            pos: game.calculateFace(
+                game.players[id].pos, 
+                game.players[id].character.width,
+                game.players[id].character.height,
+                game.players[id].direction
+            ),
+            map: tiled.getMapIndex(game.players[id].map),
+            elements: JSON.parse(JSON.stringify(this.collection[a_id].elements))
+        },
+        a_id,
+        game.players[id].direction,
+        game.players[id].character
+    );
     
     //Damage NPCs
     
@@ -344,39 +404,6 @@ exports.createPlayerAction = function(slot, id)
     return true;
 };
 
-exports.createPlayerProjectile = function(id, actionData, e_id, a_id) 
-{
-    let projectileData = actionData.elements[e_id],
-        p_id = -1;
-    
-    if (this.projectiles[actionData.map] == undefined)
-        this.projectiles[actionData.map] = [];
-    
-    for (let p = 0; p < this.projectiles[actionData.map].length+1; p++) {
-        if (this.projectiles[actionData.map][p] == undefined) {
-            this.projectiles[actionData.map][p] = {
-                pos: actionData.pos,
-                map: actionData.map,
-                elements: [actionData.elements[e_id]]
-            };
-            
-            this.projectiles[actionData.map][p].a_id = a_id;
-            this.projectiles[actionData.map][p].owner = id;
-   
-            this.projectiles[actionData.map][p].distance = {
-                x: 0,
-                y: 0
-            };
-            
-            p_id = p;
-            
-            break;
-        }
-    }
-    
-    return p_id;
-};
-
 exports.createNPCAction = function(possibleAction, map, id)
 {
     let a_id = this.getActionIndex(possibleAction.action);
@@ -388,41 +415,21 @@ exports.createNPCAction = function(possibleAction, map, id)
     
     //Generate action data
     
-    let actionData = {
-        pos: game.calculateFace(
-            npcs.onMap[map][id].pos, 
-            npcs.onMap[map][id].data.character.width,
-            npcs.onMap[map][id].data.character.height,
-            npcs.onMap[map][id].direction
-        ),
-        map: map,
-        elements: JSON.parse(JSON.stringify(this.collection[a_id].elements))
-    };
-    
-    //Positional correction
-    
-    if (npcs.onMap[map][id].direction == 1 ||
-        npcs.onMap[map][id].direction == 2)
-         for (let e = 0; e < actionData.elements.length; e++) {
-             let x = actionData.elements[e].x;
-             
-             actionData.elements[e].x = actionData.elements[e].y;
-             actionData.elements[e].y = x+npcs.onMap[map][id].data.character.height;
-             
-             if (npcs.onMap[map][id].direction == 1)
-                 actionData.elements[e].x = this.collection[a_id].sw-actionData.elements[e].x-actionData.elements[e].w+npcs.onMap[map][id].data.character.width;
-             else 
-                 actionData.elements[e].x -= npcs.onMap[map][id].data.character.width;
-         }
-    
-    if (npcs.onMap[map][id].direction == 3)
-        for (let e = 0; e < actionData.elements.length; e++)
-             actionData.elements[e].y = this.collection[a_id].sh-actionData.elements[e].y-actionData.elements[e].h+npcs.onMap[map][id].data.character.height*2;
-    
-    //Set action data position
-    
-    actionData.pos.X+=npcs.onMap[map][id].data.character.width/2-this.collection[a_id].sw/2;
-    actionData.pos.Y+=-this.collection[a_id].sh/2-npcs.onMap[map][id].data.character.height/2;
+    let actionData = this.convertActionData(
+        {
+            pos: game.calculateFace(
+                npcs.onMap[map][id].pos, 
+                npcs.onMap[map][id].data.character.width,
+                npcs.onMap[map][id].data.character.height,
+                npcs.onMap[map][id].direction
+            ),
+            map: map,
+            elements: JSON.parse(JSON.stringify(this.collection[a_id].elements))
+        },
+        a_id,
+        npcs.onMap[map][id].direction,
+        npcs.onMap[map][id].data.character
+    );
     
     //Damage players
     
@@ -432,6 +439,12 @@ exports.createNPCAction = function(possibleAction, map, id)
     
     this.healNPCs(actionData, this.collection[a_id]);
     
+    //Add projectiles
+    
+    for (let e = 0; e < actionData.elements.length; e++)
+        if (actionData.elements[e].type === 'projectile')
+            actionData.elements[e].p_id = this.createNPCProjectile(id, actionData, e, a_id);
+    
     //Sync action
     
     server.syncAction(actionData);
@@ -439,37 +452,6 @@ exports.createNPCAction = function(possibleAction, map, id)
     //Set NPC cooldown
     
     npcs.onMap[map][id].combat_cooldown.start(this.collection[a_id].name, this.collection[a_id].cooldown+possibleAction.extraCooldown);
-};
-
-exports.loadAllActions = function(cb)
-{
-    let location = 'actions';
-    
-    fs.readdir(location, (err, files) => {
-        let count = 0;
-        
-        files.forEach(file => {
-            actions.collection.push(actions.loadAction(location + '/' + file));
-            
-            count++;
-        });
-        
-        output.give('Loaded ' + count + ' action(s).');
-        
-        if (cb !== undefined)
-            cb();
-    });
-};
-
-exports.loadAction = function(location)
-{
-    try {
-        return JSON.parse(fs.readFileSync(location, 'utf-8'));
-    }
-    catch (err)
-    {
-        output.give(err);
-    }
 };
 
 exports.damageNPCs = function(owner, stats, actionData, action)
@@ -553,6 +535,8 @@ exports.healNPCs = function(actionData, action)
 
 exports.damagePlayers = function(stats, actionData, action)
 {
+    let done = false;
+    
     for (let e = 0; e < actionData.elements.length; e++)
         for (let p = 0; p < game.players.length; p++)
         {
@@ -573,9 +557,14 @@ exports.damagePlayers = function(stats, actionData, action)
                 h: game.players[p].character.height
             };
             
-            if (tiled.checkRectangularCollision(actionRect, playerRect)) 
+            if (tiled.checkRectangularCollision(actionRect, playerRect)) {
                 game.damagePlayer(p, this.calculateDamage(stats, action.scaling));
+                
+                done = true;
+            }
         }
+    
+    return done;
 }
 
 exports.healPlayers = function(actionData, heal)
@@ -603,6 +592,69 @@ exports.healPlayers = function(actionData, heal)
             if (tiled.checkRectangularCollision(actionRect, playerRect)) 
                 game.healPlayer(p, heal);
         }
+};
+
+exports.createProjectile = function(type, id, actionData, e_id, a_id) 
+{
+    let projectileData = actionData.elements[e_id],
+        p_id = -1;
+    
+    //Check if projectiles on map exist
+    
+    if (this.projectiles[actionData.map] == undefined)
+        this.projectiles[actionData.map] = [];
+    
+    //Fill an empty spot with the new projectile
+    
+    for (let p = 0; p < this.projectiles[actionData.map].length+1; p++) {
+        if (this.projectiles[actionData.map][p] == undefined) {
+            //Hard copy the action data and set the projectile as an element
+            
+            this.projectiles[actionData.map][p] = {
+                pos: actionData.pos,
+                map: actionData.map,
+                elements: [actionData.elements[e_id]]
+            };
+            
+            //Set action id
+            
+            this.projectiles[actionData.map][p].a_id = a_id;
+            
+            //Switch the owner type
+            
+            switch (type) {
+                case 'player':
+                    this.projectiles[actionData.map][p].playerOwner = id;
+                    break;
+                case 'npc':
+                    this.projectiles[actionData.map][p].npcOwner = id;
+                    break;
+            };
+            
+            //Set the empty distance
+   
+            this.projectiles[actionData.map][p].distance = {
+                x: 0,
+                y: 0
+            };
+            
+            p_id = p;
+            
+            break;
+        }
+    }
+    
+    return p_id;
+};
+
+exports.createPlayerProjectile = function(id, actionData, e_id, a_id) 
+{
+    return this.createProjectile('player', id, actionData, e_id, a_id)
+};
+
+exports.createNPCProjectile = function(id, actionData, e_id, a_id) 
+{
+    return this.createProjectile('npc', id, actionData, e_id, a_id)
 };
 
 exports.calculateDamage = function(stats, scaling)

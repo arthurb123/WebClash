@@ -217,7 +217,10 @@ namespace WebClashServer.Editors
                     }
 
                     DrawRectangle:
-                        g.DrawRectangle(Pens.Purple, r);
+                        if (i == curElement)
+                            g.DrawRectangle(Pens.Blue, r);
+                        else
+                            g.DrawRectangle(Pens.Purple, r);
                     
                     //Draw projectile arrow (if projectile)
 
@@ -388,7 +391,8 @@ namespace WebClashServer.Editors
             {
                 properties.Visible = true;
 
-                propertyView.SelectedItem = propertyView.Items[0];
+                if (propertyView.SelectedItem == null)
+                    propertyView.SelectedItem = propertyView.Items[0];
 
                 LoadProperties();
             }
@@ -596,6 +600,11 @@ namespace WebClashServer.Editors
                 return;
 
             current.elements[curElement].type = propertyType.SelectedItem.ToString().ToLower();
+
+            if (current.elements[curElement].type == "projectile")
+                projectilePanel.Visible = true;
+            else
+                projectilePanel.Visible = false;
 
             canvas.Invalidate();
         }
