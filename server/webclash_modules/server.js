@@ -809,7 +809,26 @@ exports.syncAction = function(data, socket, broadcast)
         else
             socket.broadcast.to(data.map).emit('GAME_ACTION_UPDATE', data);
     }
-}
+};
+
+//Remove Action function, if socket is undefined it will be globally emitted
+
+exports.removeAction = function(id, map, socket, broadcast)
+{
+    let data = {
+        remove: true,
+        id: id
+    };
+    
+    if (socket === undefined) 
+        io.to(map).emit('GAME_ACTION_UPDATE', data);
+    else {
+        if (broadcast === undefined || !broadcast)
+            socket.emit('GAME_ACTION_UPDATE', data);
+        else
+            socket.broadcast.to(map).emit('GAME_ACTION_UPDATE', data);
+    }
+};
 
 //Sync single inventory item function, if socket is undefined it will be globally emitted
 

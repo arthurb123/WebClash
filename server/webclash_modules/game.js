@@ -21,6 +21,10 @@ exports.startLoop = function()
         //Update action cooldowns
         
         actions.updateCooldowns();
+        
+        //Update action projectiles
+        
+        actions.updateProjectiles();
     }, 1000/60);
     
     //Start real time loop

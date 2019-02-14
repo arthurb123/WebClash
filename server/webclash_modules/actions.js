@@ -4,6 +4,8 @@ const fs = require('fs');
 
 exports.collection = [];
 
+exports.projectiles = [];
+
 exports.updateCooldowns = function() {
     for (let p = 0; p < game.players.length; p++)
         if (game.players[p] != undefined &&
@@ -17,6 +19,45 @@ exports.updateCooldowns = function() {
                 
                 if (game.players[p].actions_cooldown[action] <= 0)
                     game.players[p].actions_cooldown[action] = undefined;
+            }
+};
+
+exports.updateProjectiles = function() {
+    for (let m = 0; m < this.projectiles.length; m++)
+        if (this.projectiles[m] != undefined)
+            for (let p = 0; p < this.projectiles[m].length; p++) {
+                if (this.projectiles[m][p] == undefined)
+                    continue;
+                
+                this.projectiles[m][p].elements[0].x += this.projectiles[m][p].elements[0].projectileSpeed.x;
+                this.projectiles[m][p].elements[0].y += this.projectiles[m][p].elements[0].projectileSpeed.y;
+                
+                this.projectiles[m][p].distance.x += Math.abs(this.projectiles[m][p].elements[0].projectileSpeed.x);
+                this.projectiles[m][p].distance.y += Math.abs(this.projectiles[m][p].elements[0].projectileSpeed.y);
+                
+                if (this.projectiles[m][p].distance.x >= this.projectiles[m][p].elements[0].projectileDistance ||
+                    this.projectiles[m][p].distance.y >= this.projectiles[m][p].elements[0].projectileDistance) {
+                    this.projectiles[m][p] = undefined;
+                    
+                    continue;
+                }
+                
+                //Player projectile handling
+                
+                if (this.damageNPCs(
+                    this.projectiles[m][p].owner, 
+                    game.players[this.projectiles[m][p].owner].stats.attributes, 
+                    this.projectiles[m][p], 
+                    this.collection[this.projectiles[m][p].a_id]
+                )) {                  
+                    server.removeAction(this.projectiles[m][p].elements[0].p_id, this.projectiles[m][p].map);
+                    
+                    this.projectiles[m][p] = undefined;
+                    
+                    continue;
+                }
+                
+                //TODO: Implement NPC projectiles ....
             }
 };
 
@@ -195,6 +236,7 @@ exports.createPlayerAction = function(slot, id)
     };
     
     //Calculate speed for projectile elements
+    //and create player projectile
     
     for (let e = 0; e < actionData.elements.length; e++)
         if (actionData.elements[e].type === 'projectile') {
@@ -220,7 +262,7 @@ exports.createPlayerAction = function(slot, id)
             };
             
             actionData.elements[e].projectileDistance = 
-                actionData.elements[e].projectileDistance * (tiled.maps[actionData.map].tilewidth+tiled.maps[actionData.map].tileheight)/2
+                actionData.elements[e].projectileDistance * (tiled.maps[actionData.map].tilewidth+tiled.maps[actionData.map].tileheight)/2;
         }
     
     //Positional and projectile speed correction
@@ -279,7 +321,9 @@ exports.createPlayerAction = function(slot, id)
     
     //Add projectiles
     
-    this.createPlayerProjectiles(id, actionData, this.collection[a_id]);
+    for (let e = 0; e < actionData.elements.length; e++)
+        if (actionData.elements[e].type === 'projectile')
+            actionData.elements[e].p_id = this.createPlayerProjectile(id, actionData, e, a_id);
     
     //Add cooldown to slot
     
@@ -297,9 +341,35 @@ exports.createPlayerAction = function(slot, id)
     return true;
 };
 
-exports.createPlayerProjectiles = function(id, actionData, action) 
+exports.createPlayerProjectile = function(id, actionData, e_id, a_id) 
 {
+    let projectileData = actionData.elements[e_id],
+        p_id = -1;
     
+    if (this.projectiles[actionData.map] == undefined)
+        this.projectiles[actionData.map] = [];
+    
+    for (let p = 0; p < this.projectiles[actionData.map].length+1; p++) {
+        if (this.projectiles[actionData.map][p] == undefined) {
+            this.projectiles[actionData.map][p] = actionData;
+            
+            this.projectiles[actionData.map][p].a_id = a_id;
+            this.projectiles[actionData.map][p].owner = id;
+   
+            this.projectiles[actionData.map][p].distance = {
+                x: 0,
+                y: 0
+            };
+            
+            this.projectiles[actionData.map][p].elements = [this.projectiles[actionData.map][p].elements[e_id]];
+            
+            p_id = p;
+            
+            break;
+        }
+    }
+    
+    return p_id;
 };
 
 exports.createNPCAction = function(possibleAction, map, id)
@@ -401,9 +471,11 @@ exports.damageNPCs = function(owner, stats, actionData, action)
 {
     if (npcs.onMap[actionData.map] == undefined ||
         npcs.onMap[actionData.map].length == 0)
-        return;
+        return false;
     
-    for (let e = 0; e < actionData.elements.length; e++)
+    let result = false;
+    
+    for (let e = 0; e < actionData.elements.length; e++) {
         for (let n = 0; n < npcs.onMap[actionData.map].length; n++)
         {   
             if (npcs.onMap[actionData.map][n].data.type !== 'hostile' ||
@@ -424,9 +496,15 @@ exports.damageNPCs = function(owner, stats, actionData, action)
                 h: npcs.onMap[actionData.map][n].data.character.height
             };
 
-            if (tiled.checkRectangularCollision(actionRect, npcRect)) 
+            if (tiled.checkRectangularCollision(actionRect, npcRect)) {
                 npcs.damageNPC(owner, actionData.map, n, this.calculateDamage(stats, action.scaling));
+                
+                result = true;
+            }
         }
+    }
+    
+    return result;
 };
 
 exports.healNPCs = function(actionData, action)

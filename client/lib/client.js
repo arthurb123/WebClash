@@ -213,6 +213,15 @@ const client = {
              if (!client.inGame)
                  return;
             
+             //Check if removal package
+            
+             if (data.remove != undefined &&
+                 data.remove) {
+                 game.removeAction(data.id);
+                 
+                 return;
+             }
+            
              //Handle data
 
              game.createAction(data);

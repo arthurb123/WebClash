@@ -641,6 +641,7 @@ const game = {
                             data.elements[i].w,
                             data.elements[i].h,
                         )
+                        .Identifier(data.elements[i].p_id)
                         .Rotation(angle)
                         .MovementDecelerates(false)
                         .Movement(
@@ -664,6 +665,12 @@ const game = {
                  });
              }
          }
+    },
+    removeAction: function(id) {
+        let go = lx.FindGameObjectWithIdentifier(id);
+        
+        if (go != undefined)
+            go.Hide();
     },
     
     initialize: function() 
