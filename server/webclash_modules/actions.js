@@ -42,6 +42,9 @@ exports.updateProjectiles = function() {
                     continue;
                 }
                 
+                if (game.players[this.projectiles[m][p].owner] == undefined)
+                    continue;
+                
                 //Player projectile handling
                 
                 if (this.damageNPCs(
@@ -351,7 +354,11 @@ exports.createPlayerProjectile = function(id, actionData, e_id, a_id)
     
     for (let p = 0; p < this.projectiles[actionData.map].length+1; p++) {
         if (this.projectiles[actionData.map][p] == undefined) {
-            this.projectiles[actionData.map][p] = actionData;
+            this.projectiles[actionData.map][p] = {
+                pos: actionData.pos,
+                map: actionData.map,
+                elements: [actionData.elements[e_id]]
+            };
             
             this.projectiles[actionData.map][p].a_id = a_id;
             this.projectiles[actionData.map][p].owner = id;
@@ -360,8 +367,6 @@ exports.createPlayerProjectile = function(id, actionData, e_id, a_id)
                 x: 0,
                 y: 0
             };
-            
-            this.projectiles[actionData.map][p].elements = [this.projectiles[actionData.map][p].elements[e_id]];
             
             p_id = p;
             
