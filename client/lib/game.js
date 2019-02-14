@@ -647,7 +647,7 @@ const game = {
                             data.pos.X+data.elements[i].x,
                             data.pos.Y+data.elements[i].y,
                             data.elements[i].w,
-                            data.elements[i].h,
+                            data.elements[i].h
                         )
                         .Identifier(data.elements[i].p_id)
                         .Rotation(angle)

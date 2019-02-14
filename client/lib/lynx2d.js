@@ -114,17 +114,26 @@ function Lynx2D() {
             });
             
             //GameObjects
-            this.BUFFER.forEach(function(layer) {
-                if (layer != undefined) layer.forEach(function(obj) {
-                    if (obj != undefined && obj.UPDATES) {
-                        try {
-                            obj.UPDATE();
-                        } catch (err) {
-                            console.log(err);
-                        };
-                    }
-                });
-            });
+            for (let i = 0; i < this.BUFFER.length; i++) {
+                if (this.BUFFER[i] != undefined) {
+                    let done = 0;
+                    
+                    this.BUFFER[i].forEach(function(obj) {
+                        if (obj != undefined && obj.UPDATES) {
+                            try {
+                                obj.UPDATE();
+                                
+                                done++;
+                            } catch (err) {
+                                console.log(err);
+                            };
+                        }
+                    });
+                    
+                    if (done == 0)
+                        this.BUFFER[i] = [];
+                }
+            };
             
             //Colliders
             this.COLLIDERS.forEach(function(coll1) {
