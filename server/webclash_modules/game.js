@@ -38,7 +38,10 @@ exports.startLoop = function()
 
 exports.savePermissions = function () 
 {
-    fs.writeFile('permissions.json', JSON.stringify(permissions, null, 1), 'utf8');
+    fs.writeFile('permissions.json', JSON.stringify(permissions, null, 1), 'utf8', function(err) {
+        if (err)
+            throw err;
+    });
 };
 
 exports.addPlayer = function(socket)
