@@ -572,7 +572,10 @@ exports.respawnNPC = function(map, id)
 {
     //Reset position
     
-    this.onMap[map][id].pos = this.onMap[map][id].start_pos;
+    this.onMap[map][id].pos = {
+        X: this.onMap[map][id].start_pos.X,
+        Y: this.onMap[map][id].start_pos.Y
+    };
     
     //Reset health to max
     

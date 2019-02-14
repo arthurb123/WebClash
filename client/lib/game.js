@@ -569,6 +569,103 @@ const game = {
         return this.tilesets[src];
     },
     
+    createAction: function(data)
+    {
+        for (let i = 0; i < data.elements.length; i++)
+         {
+             if (data.elements[i].src.length == 0)
+                 continue;
+
+             if (data.elements[i].type == undefined ||
+                 data.elements[i].type === 'static') {
+                 let sprite = new lx.Sprite(data.elements[i].src, undefined, undefined, undefined, undefined,
+                     function() {
+                         let sprites = [];
+
+                         if (data.elements[i].direction === 'horizontal')
+                             for (let x = 0; x < sprite.Size().W/data.elements[i].w; x++)
+                                 sprites.push(new lx.Sprite(data.elements[i].src,
+                                     x*data.elements[i].w, 
+                                     0, 
+                                     data.elements[i].w, 
+                                     data.elements[i].h
+                                 ));
+                         if (data.elements[i].direction === 'vertical')
+                             for (let y = 0; y < sprite.Size().H/data.elements[i].h; y++)
+                                 sprites.push(new lx.Sprite(data.elements[i].src,
+                                     0, 
+                                     y*data.elements[i].h, 
+                                     data.elements[i].w, 
+                                     data.elements[i].h
+                                 ));
+
+                         if (sprites.length == 0)
+                             return;
+
+                         new lx.Animation(sprites, data.elements[i].speed).Show(
+                             4, 
+                             data.pos.X+data.elements[i].x,
+                             data.pos.Y+data.elements[i].y,
+                             data.elements[i].w,
+                             data.elements[i].h,
+                             0
+                         );
+                 });
+             }
+             else if (data.elements[i].type === 'projectile') {
+                 let sprite = new lx.Sprite(data.elements[i].src, undefined, undefined, undefined, undefined,
+                     function() {
+                        let angle = 0;
+                     
+                        if (data.elements[i].projectileSpeed.y != 0 &&
+                            data.elements[i].projectileSpeed.x != 0)
+                                angle = -Math.atan2(data.elements[i].projectileSpeed.x, data.elements[i].projectileSpeed.y);
+
+                        if (angle == 0) {
+                            if (data.elements[i].projectileSpeed.x == 0 &&
+                                data.elements[i].projectileSpeed.y < 0)
+                                angle = Math.PI;
+                            
+                            else if (data.elements[i].projectileSpeed.y == 0) {
+                                if (data.elements[i].projectileSpeed.x < 0)
+                                    angle = Math.PI/2;
+                                else if (data.elements[i].projectileSpeed.x > 0)
+                                    angle = -Math.PI/2;
+                            }
+                        }
+                     
+                        let projectile = new lx.GameObject(
+                            sprite, 
+                            data.pos.X+data.elements[i].x,
+                            data.pos.Y+data.elements[i].y,
+                            data.elements[i].w,
+                            data.elements[i].h,
+                        )
+                        .Rotation(angle)
+                        .MovementDecelerates(false)
+                        .Movement(
+                            data.elements[i].projectileSpeed.x, 
+                            data.elements[i].projectileSpeed.y
+                        )
+                        .Loops(function() {
+                            this._distance.x += Math.abs(this.MOVEMENT.VX);
+                            this._distance.y += Math.abs(this.MOVEMENT.VY);
+                            
+                            if (this._distance.x > data.elements[i].projectileDistance ||
+                                this._distance.y > data.elements[i].projectileDistance)
+                                this.Hide();
+                        })
+                        .Show(4);
+                     
+                        projectile._distance = { 
+                            x: 0,
+                            y: 0
+                        };
+                 });
+             }
+         }
+    },
+    
     initialize: function() 
     {
         //Check if Lynx2D is already running

@@ -218,6 +218,34 @@ namespace WebClashServer.Editors
 
                     DrawRectangle:
                         g.DrawRectangle(Pens.Purple, r);
+                    
+                    //Draw projectile arrow (if projectile)
+
+                    if (el.type == "projectile")
+                    {
+                        Pen p = new Pen(Color.FromArgb(125, Color.Black), 6);
+
+                        p.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
+
+                        int x = el.x + el.w / 2,
+                            y = el.y + el.h / 2;
+
+                        int dx = (x - current.sw / 2),
+                            dy = (y - current.sh / 2);
+
+                        int l = current.sw/6;
+
+                        if (dx > l)
+                            dx = l;
+                        else if (dx < -l)
+                            dx = -l;
+                        if (dy > l)
+                            dy = l;
+                        else if (dy < -l)
+                            dy = -l;
+
+                        g.DrawLine(p, x, y, x + dx, y + dy);
+                    }
                 }
             }
             catch (Exception exc)
@@ -538,7 +566,38 @@ namespace WebClashServer.Editors
             {
                 appearancePanel.Visible = false;
                 behaviourPanel.Visible = true;
+
+                propertyType.SelectedItem = char.ToUpper(current.elements[curElement].type[0]) + current.elements[curElement].type.Substring(1, current.elements[curElement].type.Length - 1);
+
+                projectileSpeed.Value = current.elements[curElement].projectileSpeed;
+                projectileDistance.Value = current.elements[curElement].projectileDistance;
             }
+        }
+
+        private void projectileSpeed_ValueChanged(object sender, EventArgs e)
+        {
+            if (current.elements[curElement] == null)
+                return;
+
+            current.elements[curElement].projectileSpeed = (int)projectileSpeed.Value;
+        }
+
+        private void projectileDistance_ValueChanged(object sender, EventArgs e)
+        {
+            if (current.elements[curElement] == null)
+                return;
+
+            current.elements[curElement].projectileDistance = (int)projectileDistance.Value;
+        }
+
+        private void propertyType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (current.elements[curElement] == null)
+                return;
+
+            current.elements[curElement].type = propertyType.SelectedItem.ToString().ToLower();
+
+            canvas.Invalidate();
         }
     }
 
@@ -627,10 +686,16 @@ namespace WebClashServer.Editors
         public int w = 64,
                    h = 64;
 
+        public string type = "static";
+
         public string src = "";
 
         public int speed = 8;
         public string direction = "horizontal";
+
+        public int projectileSpeed = 1;
+
+        public int projectileDistance = 0;
     }
 
     public class Frame

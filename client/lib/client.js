@@ -215,45 +215,7 @@ const client = {
             
              //Handle data
 
-             for (let i = 0; i < data.elements.length; i++)
-             {
-                 if (data.elements[i].src.length == 0)
-                     continue;
-                 
-                 let sprite = new lx.Sprite(data.elements[i].src, undefined, undefined, undefined, undefined,
-                     function() {
-                         let sprites = [];
-
-                         if (data.elements[i].direction === 'horizontal')
-                             for (let x = 0; x < sprite.Size().W/data.elements[i].w; x++)
-                                 sprites.push(new lx.Sprite(data.elements[i].src,
-                                     x*data.elements[i].w, 
-                                     0, 
-                                     data.elements[i].w, 
-                                     data.elements[i].h
-                                 ));
-                         if (data.elements[i].direction === 'vertical')
-                             for (let y = 0; y < sprite.Size().H/data.elements[i].h; y++)
-                                 sprites.push(new lx.Sprite(data.elements[i].src,
-                                     0, 
-                                     y*data.elements[i].h, 
-                                     data.elements[i].w, 
-                                     data.elements[i].h
-                                 ));
-
-                         if (sprites.length == 0)
-                             return;
-
-                         new lx.Animation(sprites, data.elements[i].speed).Show(
-                             4, 
-                             data.pos.X+data.elements[i].x,
-                             data.pos.Y+data.elements[i].y,
-                             data.elements[i].w,
-                             data.elements[i].h,
-                             0
-                         );
-                 });
-             }
+             game.createAction(data);
         });
         socket.on('GAME_INVENTORY_UPDATE', function(data) {
              //Check if the recieved data is valid

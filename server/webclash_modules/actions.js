@@ -194,7 +194,36 @@ exports.createPlayerAction = function(slot, id)
         elements: JSON.parse(JSON.stringify(this.collection[a_id].elements))
     };
     
-    //Positional correction
+    //Calculate speed for projectile elements
+    
+    for (let e = 0; e < actionData.elements.length; e++)
+        if (actionData.elements[e].type === 'projectile') {
+            let dx = actionData.elements[e].x+actionData.elements[e].w/2-this.collection[a_id].sw/2,
+                dy = actionData.elements[e].y+actionData.elements[e].h/2-this.collection[a_id].sh/2
+            
+            let wl = this.collection[a_id].sw/6,
+                hl = this.collection[a_id].sh/6;
+            
+            if (dx > wl)
+                dx = wl;
+            else if (dx < -wl)
+                dx = -wl;
+            
+            if (dy > hl)
+                dy = hl;
+            else if (dy < -hl)
+                dy = -hl;
+            
+            actionData.elements[e].projectileSpeed = {
+                x: dx/wl*actionData.elements[e].projectileSpeed,
+                y: dy/hl*actionData.elements[e].projectileSpeed
+            };
+            
+            actionData.elements[e].projectileDistance = 
+                actionData.elements[e].projectileDistance * (tiled.maps[actionData.map].tilewidth+tiled.maps[actionData.map].tileheight)/2
+        }
+    
+    //Positional and projectile speed correction
     
     if (game.players[id].direction == 1 ||
         game.players[id].direction == 2)
@@ -204,15 +233,35 @@ exports.createPlayerAction = function(slot, id)
              actionData.elements[e].x = actionData.elements[e].y;
              actionData.elements[e].y = x+game.players[id].character.height;
              
-             if (game.players[id].direction == 1)
+             if (game.players[id].direction == 1) {
                  actionData.elements[e].x = this.collection[a_id].sw-actionData.elements[e].x-actionData.elements[e].w+game.players[id].character.width;
-             else 
+                 
+                 if (actionData.elements[e].type === 'projectile') {
+                     let y = actionData.elements[e].projectileSpeed.y;
+                     
+                     actionData.elements[e].projectileSpeed.y = actionData.elements[e].projectileSpeed.x;
+                     actionData.elements[e].projectileSpeed.x = -y;
+                 }
+             }
+             else {
                  actionData.elements[e].x -= game.players[id].character.width;
+                 
+                 if (actionData.elements[e].type === 'projectile') {
+                     let y = actionData.elements[e].projectileSpeed.y;
+                     
+                     actionData.elements[e].projectileSpeed.y = actionData.elements[e].projectileSpeed.x;
+                     actionData.elements[e].projectileSpeed.x = y;
+                 }
+             }
          }
     
     if (game.players[id].direction == 3)
-        for (let e = 0; e < actionData.elements.length; e++)
+        for (let e = 0; e < actionData.elements.length; e++) {
              actionData.elements[e].y = this.collection[a_id].sh-actionData.elements[e].y-actionData.elements[e].h+game.players[id].character.height*2;
+            
+             if (actionData.elements[e].type === 'projectile')
+                 actionData.elements[e].projectileSpeed.y *= -1;
+        }
     
     //Set action data position
     
@@ -228,6 +277,10 @@ exports.createPlayerAction = function(slot, id)
     if (this.collection[a_id].heal > 0)
         this.healPlayers(actionData, this.collection[a_id].heal);
     
+    //Add projectiles
+    
+    this.createPlayerProjectiles(id, actionData, this.collection[a_id]);
+    
     //Add cooldown to slot
     
     if (game.players[id].actions_cooldown === undefined)
@@ -242,6 +295,11 @@ exports.createPlayerAction = function(slot, id)
     //Return true
     
     return true;
+};
+
+exports.createPlayerProjectiles = function(id, actionData, action) 
+{
+    
 };
 
 exports.createNPCAction = function(possibleAction, map, id)
@@ -358,7 +416,7 @@ exports.damageNPCs = function(owner, stats, actionData, action)
                 w: actionData.elements[e].w,
                 h: actionData.elements[e].h
             };
-            
+
             let npcRect = {
                 x: npcs.onMap[actionData.map][n].pos.X,
                 y: npcs.onMap[actionData.map][n].pos.Y,
