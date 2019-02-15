@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using WebClashServer.Classes;
 
 namespace WebClashServer.Editors
 {
@@ -320,9 +321,16 @@ namespace WebClashServer.Editors
 
         private void dialogButton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("NPC dialog has not been implemented yet.", "WebClash Server - Oof");
+            Dialogue npcDialogue = new Dialogue(current.dialog.ToList(), current.dialogElements.ToList());
 
-            //...
+            npcDialogue.Text = "Edit dialog for '" + current.name + "'";
+
+            npcDialogue.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                current.dialog = npcDialogue.dialogSystem.items.ToArray();
+                current.dialogElements = npcDialogue.elements.ToArray();
+            };
+
+            npcDialogue.ShowDialog();
         }
     }
 
@@ -356,6 +364,10 @@ namespace WebClashServer.Editors
                 actions = temp.actions;
 
                 items = temp.items;
+
+                dialog = temp.dialog;
+
+                dialogElements = temp.dialogElements;
             }
             catch (Exception e)
             {
@@ -379,6 +391,10 @@ namespace WebClashServer.Editors
         public PossibleAction[] actions = new PossibleAction[0];
 
         public PossibleItem[] items = new PossibleItem[0];
+
+        public DialogueItem[] dialog = new DialogueItem[0];
+
+        public CanvasElement[] dialogElements = new CanvasElement[0];
     }
 
     public class Stats

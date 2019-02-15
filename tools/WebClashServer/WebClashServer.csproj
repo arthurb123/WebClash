@@ -54,11 +54,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\DialogueSystem.cs" />
     <Compile Include="Editors\Actions.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Editors\Actions.Designer.cs">
       <DependentUpon>Actions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editors\Dialogue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\Dialogue.Designer.cs">
+      <DependentUpon>Dialogue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editors\DialogueProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\DialogueProperties.Designer.cs">
+      <DependentUpon>DialogueProperties.cs</DependentUpon>
     </Compile>
     <Compile Include="Editors\ItemSelection.cs">
       <SubType>Form</SubType>
@@ -106,6 +119,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Editors\Actions.resx">
       <DependentUpon>Actions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\Dialogue.resx">
+      <DependentUpon>Dialogue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\DialogueProperties.resx">
+      <DependentUpon>DialogueProperties.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\ItemSelection.resx">
       <DependentUpon>ItemSelection.cs</DependentUpon>
