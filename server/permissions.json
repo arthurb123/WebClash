@@ -2,9 +2,7 @@
  "admins": [
   "admin"
  ],
- "banned": [
-     
- ],
+ "banned": [],
  "censoredWords": [
   "<",
   ">",
