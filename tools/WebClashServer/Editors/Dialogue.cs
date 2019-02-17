@@ -147,72 +147,80 @@ namespace WebClashServer.Editors
             //Draw all elements
 
             foreach (CanvasElement ca in elements)
-                drawDialogueItem(g, ca);
+                if (ca != null)
+                    drawDialogueItem(g, ca);
         }
 
         private void drawDialogueItem(Graphics g, CanvasElement ca)
         {
-            Rectangle r = new Rectangle(ca.p, ca.size);
-            Pen p = new Pen(Brushes.Black, 2);
-
-            p.CustomEndCap = new AdjustableArrowCap(4, 4);
-
-            if (dialogSystem.items[ca.id].entry)
-                g.DrawLine(
-                    p,
-                    0,
-                    canvas.Height/2,
-                    ca.p.X,
-                    ca.p.Y + ca.size.Height / 2
-                );
-
-            for (int i = 0; i < dialogSystem.items[ca.id].options.Count; i++)
+            try
             {
-                if (dialogSystem.items[ca.id].options[i].next == -1)
-                {
-                    int x = ca.p.X + ca.size.Width,
-                        y = ca.p.Y + ca.size.Height / 2;
+                Rectangle r = new Rectangle(ca.p, ca.size);
+                Pen p = new Pen(Brushes.Black, 2);
 
+                p.CustomEndCap = new AdjustableArrowCap(4, 4);
+
+                if (dialogSystem.items[ca.id].entry)
                     g.DrawLine(
                         p,
-                        x, y,
-                        x + ca.size.Width/2,
-                        y
+                        0,
+                        canvas.Height / 2,
+                        ca.p.X,
+                        ca.p.Y + ca.size.Height / 2
                     );
 
-                    g.DrawString(
-                        "Exit",
-                        DefaultFont,
-                        Brushes.Black,
-                        new Point(
-                            x + ca.size.Width/2 + 4,
-                            y - 4
-                        )
-                    );
-                }
-                else
+                for (int i = 0; i < dialogSystem.items[ca.id].options.Count; i++)
                 {
-                    CanvasElement target = elements[dialogSystem.items[ca.id].options[i].next];
+                    if (dialogSystem.items[ca.id].options[i].next == -1)
+                    {
+                        int x = ca.p.X + ca.size.Width,
+                            y = ca.p.Y + ca.size.Height / 2;
 
-                    g.DrawLine(
-                        p,
-                        ca.p.X + ca.size.Width,
-                        ca.p.Y + ca.size.Height / 2,
-                        target.p.X,
-                        target.p.Y + target.size.Height / 2
-                    );
+                        g.DrawLine(
+                            p,
+                            x, y,
+                            x + ca.size.Width / 2,
+                            y
+                        );
+
+                        g.DrawString(
+                            "Exit",
+                            DefaultFont,
+                            Brushes.Black,
+                            new Point(
+                                x + ca.size.Width / 2 + 4,
+                                y - 4
+                            )
+                        );
+                    }
+                    else if (dialogSystem.items[ca.id].options[i].next < elements.Count)
+                    {
+                        CanvasElement target = elements[dialogSystem.items[ca.id].options[i].next];
+
+                        g.DrawLine(
+                            p,
+                            ca.p.X + ca.size.Width,
+                            ca.p.Y + ca.size.Height / 2,
+                            target.p.X,
+                            target.p.Y + target.size.Height / 2
+                        );
+                    }
                 }
+
+                g.FillRectangle(Brushes.WhiteSmoke, r);
+                g.DrawRectangle(Pens.Black, r);
+
+                g.DrawString(
+                    "#" + ca.id + ": " + dialogSystem.items[ca.id].text,
+                    DefaultFont,
+                    Brushes.Black,
+                    r
+                );
             }
-
-            g.FillRectangle(Brushes.WhiteSmoke, r);
-            g.DrawRectangle(Pens.Black, r);
-
-            g.DrawString(
-                "#" + ca.id + ": " + dialogSystem.items[ca.id].text,
-                DefaultFont,
-                Brushes.Black,
-                r
-            );
+            catch (Exception e)
+            {
+                //...
+            }
         }
 
         private void newItemToolStripMenuItem_Click(object sender, EventArgs e)
