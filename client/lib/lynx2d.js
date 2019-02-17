@@ -505,7 +505,10 @@ function Lynx2D() {
                     if (this.GO_MOUSE_EVENTS[i].GO == undefined)
                         this.GO_MOUSE_EVENTS[i] = undefined;
                     else if (lx.GAME.GET_MOUSE_IN_BOX(this.GO_MOUSE_EVENTS[i].GO.POS, this.GO_MOUSE_EVENTS[i].GO.SIZE))
-                        this.GO_MOUSE_EVENTS[i].CALLBACK();
+                        this.GO_MOUSE_EVENTS[i].CALLBACK({ 
+                            mousePosition: lx.CONTEXT.CONTROLLER.MOUSE.POS, 
+                            state: 1 
+                        });
                       
             //...
         },

@@ -5,6 +5,7 @@ const ui = {
         this.equipment.create();
         this.status.create();
         this.loot.create();
+        this.dialog.create();
         this.chat.create();
         
         lx.Loops(this.floaties.update);
@@ -86,6 +87,76 @@ const ui = {
                 return true;
             
             return false;
+        }
+    },
+    dialog: 
+    {
+        showing: false,
+        create: function() 
+        {
+            view.dom.innerHTML += 
+                '<div id="dialog_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 70%; transform: translate(-50%, -50%); width: auto; min-width: 260px; max-width: 340px; height: auto; text-align: center;">' +
+                    '<p id="dialog_box_content" style="white-space: pre-wrap; overflow-y: auto; width: auto; font-size: 14px;"></p>' +
+                    '<br>' +
+                    '<div id="dialog_box_options" style="position: relative; top: -3px;"></div>' +
+                '</div>';
+        },
+        startDialog: function(name, dialog) 
+        {
+            let start = -1;
+            
+            for (let i = 0; i < dialog.length; i++)
+                    if (dialog[i].entry) {
+                        start = i;
+
+                        break;        
+                    }
+            
+            if (start == -1)
+                return;
+            
+            this.cur = dialog;
+            this.name = name;
+            
+            this.setDialog(start);
+        },
+        setDialog: function(id) 
+        {
+            let contentEl = document.getElementById('dialog_box_content'),
+                optionsEl = document.getElementById('dialog_box_options');
+            
+            contentEl.innerHTML = '<b>' + this.name + '</b><br>';
+            
+            if (this.cur[id].portrait != undefined)
+                contentEl.innerHTML += '<img src="' + this.cur[id].portrait + '" class="portrait"/><br>';
+            
+            contentEl.innerHTML += this.cur[id].text;
+            optionsEl.innerHTML = '';
+            
+            this.cur[id].options.forEach(function(option) {
+                let cb = 'ui.dialog.hideDialog()';
+                
+                if (option.next != -1)
+                    cb = 'ui.dialog.setDialog(' + option.next + ')';
+                
+                optionsEl.innerHTML += '<button class="link_button" style="margin-left: 0px;" onclick="' + cb + '">[ ' + option.text + ' ]</button>';
+            });
+            
+            document.getElementById('dialog_box').style.visibility = 'visible';
+            
+            this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
+                if (data.state == 0)
+                    return;
+                
+                ui.dialog.hideDialog();
+                
+                lx.StopMouse(0);
+            });
+        },
+        hideDialog: function() {
+            document.getElementById('dialog_box').style.visibility = 'hidden';
+            
+            lx.GAME.CLEAR_EVENT('mousebutton', this.mouse);
         }
     },
     actionbar: {
@@ -659,7 +730,7 @@ const ui = {
         items: [],
         create: function() {
             view.dom.innerHTML += 
-                '<div id="loot_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 25%; margin-left: -75px; margin-top: -45px; width: auto; max-width: 150px; height: auto; text-align: center;">' +
+                '<div id="loot_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 25%; transform: translate(-50%, -50%); width: auto; max-width: 150px; height: auto; text-align: center;">' +
                     '<p class="info" style="font-size: 14px; margin: 3px;">Loot</p>' +
                     '<div id="loot_box_content" style="text-align: left;"></div>' +
                     '<p class="link" onclick="ui.loot.hide()" style="font-size: 12px; color: red;">Close</p>'
@@ -701,10 +772,6 @@ const ui = {
                 '<div class="slot" id="loot_slot' + data.id + '" style="border: 1px solid ' + ui.inventory.getItemColor(data.rarity) + ';" onclick="ui.loot.pickup(' + data.id + ')">' +
                     '<img src="' + data.source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' +
                 '</div>';
-            
-            //Set new top position
-            
-            el.style.marginTop = -el.offsetHeight/2;
             
             //Show loot box
             

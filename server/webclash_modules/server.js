@@ -745,6 +745,9 @@ exports.syncNPCPartially = function(map, id, type, socket, broadcast)
         case 'health':
             data.health = npcs.onMap[map][id].data.health;
             break;
+        case 'dialog':
+            data.dialog = npcs.onMap[map][id].data.dialog;
+            break;
     }
     
     if (socket === undefined) 
@@ -766,6 +769,12 @@ exports.syncNPC = function(map, id, socket, broadcast)
     this.syncNPCPartially(map, id, 'direction', socket, broadcast);
     this.syncNPCPartially(map, id, 'character', socket, broadcast);
     this.syncNPCPartially(map, id, 'type', socket, broadcast);
+    
+    //Some (friendly NPCs) have dialog, send it if it exists
+    
+    if (npcs.onMap[map][id].data.type === 'friendly' &&
+        npcs.onMap[map][id].data.dialog != undefined)
+        this.syncNPCPartially(map, id, 'dialog', socket, broadcast);
     
     //Some NPCs don't have stats, so we dont send it if
     //it is empty

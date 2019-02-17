@@ -47,7 +47,7 @@ namespace WebClashServer.Editors
                     return;
                 }
 
-                portrait.Image = Image.FromFile(Program.main.location + "/../client/" + src);
+                portrait.BackgroundImage = Image.FromFile(Program.main.location + "/../client/" + src);
 
                 current.portrait = src;
             }

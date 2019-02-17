@@ -89,7 +89,9 @@
             // 
             // portrait
             // 
-            this.portrait.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.portrait.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.portrait.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.portrait.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.portrait.Location = new System.Drawing.Point(221, 28);
             this.portrait.Name = "portrait";
             this.portrait.Size = new System.Drawing.Size(80, 80);

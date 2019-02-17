@@ -246,9 +246,9 @@ const game = {
                     this._nameplate.Position().Y == 0)
                     this._nameplate.Position(this.Size().W/2, -Math.floor(this.Size().H/5));
                 
-                if (this._type == 'friendly')
+                if (this._type === 'friendly') 
                     this._nameplate.Color('black');
-                else if (this._type == 'hostile')
+                else if (this._type === 'hostile')
                     this._nameplate.Color('red');
                 
                 if (this._stats !== undefined)
@@ -356,6 +356,22 @@ const game = {
         }
         else if (this.npcs[id] != undefined)
             this.npcs[id]._health = health;
+    },
+    setNPCDialog: function(id, dialog)
+    {
+        this.npcs[id]._dialog = dialog;
+        
+        if (this.npcs[id].CLICK_ID.length == 0)
+            this.npcs[id].OnMouse(0, function(data) {
+                if (game.npcs[id]._type !== 'friendly' ||
+                    game.npcs[id]._dialog == undefined ||
+                    data.state == 0)
+                     return;
+                
+                lx.StopMouse(0);
+
+                ui.dialog.startDialog(game.npcs[id].name, game.npcs[id]._dialog);
+            });  
     },
     removeNPC: function(id) 
     {

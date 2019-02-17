@@ -192,6 +192,8 @@ const client = {
                  game.npcs[data.id]._stats = data.stats;
              if (data.health !== undefined)
                  game.setNPCHealth(data.id, data.health);
+             if (data.dialog !== undefined)
+                 game.setNPCDialog(data.id, data.dialog);
              if (data.character !== undefined) {
                  game.npcs[data.id].SPRITE = new lx.Sprite(data.character.src);
                  game.npcs[data.id].SPRITE.Clip(0, 0, data.character.width, data.character.height);

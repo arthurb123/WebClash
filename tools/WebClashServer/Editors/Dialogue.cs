@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using WebClashServer.Classes;
 
@@ -44,9 +45,25 @@ namespace WebClashServer.Editors
 
         private void canvasMouseDown(object sender, MouseEventArgs e)
         {
-            oldMouse = canvas.PointToClient(MousePosition);
+            if (e.Button == MouseButtons.Left)
+            {
+                oldMouse = canvas.PointToClient(MousePosition);
 
-            curElement = grabElement();
+                curElement = grabElement();
+            }
+            else
+            {
+                int el = grabElement();
+
+                if (el != -1)
+                {
+                    dialogSystem.items[elements[el].id] = null;
+
+                    elements.RemoveAt(el);
+
+                    canvas.Invalidate();
+                }
+            }
         }
 
         private void openDialogueItem(object sender, MouseEventArgs e)
@@ -60,6 +77,18 @@ namespace WebClashServer.Editors
 
             dp.FormClosed += (object s, FormClosedEventArgs fcea) => {
                 dialogSystem.items[elements[item].id] = dp.current;
+
+                if (dp.current.entry)
+                    for (int i = 0; i < dialogSystem.items.Count; i++)
+                        if (i != elements[item].id &&
+                            dialogSystem.items[i].entry)
+                        {
+                            dp.current.entry = false;
+
+                            MessageBox.Show("The dialog item could not be set as the entry point, as an entry point already exists.", "WebClash Server - Error");
+
+                            break;
+                        }
 
                 canvas.Invalidate();
             };
@@ -124,13 +153,16 @@ namespace WebClashServer.Editors
         private void drawDialogueItem(Graphics g, CanvasElement ca)
         {
             Rectangle r = new Rectangle(ca.p, ca.size);
+            Pen p = new Pen(Brushes.Black, 2);
+
+            p.CustomEndCap = new AdjustableArrowCap(4, 4);
 
             if (dialogSystem.items[ca.id].entry)
                 g.DrawLine(
-                    Pens.Black,
+                    p,
                     0,
                     canvas.Height/2,
-                    ca.p.X + ca.size.Width / 2,
+                    ca.p.X,
                     ca.p.Y + ca.size.Height / 2
                 );
 
@@ -138,13 +170,13 @@ namespace WebClashServer.Editors
             {
                 if (dialogSystem.items[ca.id].options[i].next == -1)
                 {
-                    int x = ca.p.X + ca.size.Width / 2,
+                    int x = ca.p.X + ca.size.Width,
                         y = ca.p.Y + ca.size.Height / 2;
 
                     g.DrawLine(
-                        Pens.Black,
+                        p,
                         x, y,
-                        x + ca.size.Width,
+                        x + ca.size.Width/2,
                         y
                     );
 
@@ -153,7 +185,7 @@ namespace WebClashServer.Editors
                         DefaultFont,
                         Brushes.Black,
                         new Point(
-                            x + ca.size.Width + 6,
+                            x + ca.size.Width/2 + 4,
                             y - 4
                         )
                     );
@@ -163,10 +195,10 @@ namespace WebClashServer.Editors
                     CanvasElement target = elements[dialogSystem.items[ca.id].options[i].next];
 
                     g.DrawLine(
-                        Pens.Black,
-                        ca.p.X + ca.size.Width / 2,
+                        p,
+                        ca.p.X + ca.size.Width,
                         ca.p.Y + ca.size.Height / 2,
-                        target.p.X + target.size.Width / 2,
+                        target.p.X,
                         target.p.Y + target.size.Height / 2
                     );
                 }
