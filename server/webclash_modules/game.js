@@ -378,6 +378,9 @@ exports.calculatePlayerStats = function(id, sync)
     const oldHealth = this.players[id].health.max;
     this.players[id].health.max = 90 + 10 * result.vitality;
     
+    if (this.players[id].health.cur >= this.players[id].health.max)
+        this.players[id].health.cur = this.players[id].health.max;
+    
     if (oldHealth !== this.players[id].health.max && sync)
         server.syncPlayerPartially(id, 'health');
     
@@ -385,6 +388,9 @@ exports.calculatePlayerStats = function(id, sync)
     
     const oldMana = this.players[id].mana.max;
     this.players[id].mana.max = 90 + 10 * result.wisdom;
+    
+    if (this.players[id].mana.cur >= this.players[id].mana.max)
+        this.players[id].mana.cur = this.players[id].mana.max;
     
     if (oldMana !== this.players[id].mana.max && sync)
         server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
