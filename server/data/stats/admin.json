@@ -2,13 +2,13 @@
  "map": "1",
  "char_name": "player",
  "pos": {
-  "X": 156,
-  "Y": 123
+  "X": 0,
+  "Y": 0
  },
  "moving": false,
- "direction": 1,
+ "direction": 0,
  "health": {
-  "cur": 97,
+  "cur": 100,
   "max": 100
  },
  "mana": {
@@ -17,7 +17,7 @@
  },
  "level": 1,
  "stats": {
-  "exp": 4,
+  "exp": 0,
   "attributes": {
    "power": 1,
    "toughness": 1,
@@ -27,20 +27,9 @@
    "wisdom": 1
   }
  },
- "actions": [
-  {
-   "name": "Slash"
-  },
-  {
-   "name": "Combust"
-  }
- ],
+ "actions": [],
  "inventory": [
-  "Iron Helm",
-  null
+  "Sword"
  ],
- "equipment": {
-  "main": "Sword",
-  "offhand": "Magic Axe"
- }
+ "equipment": {}
 }

@@ -375,7 +375,7 @@ exports.createPlayerAction = function(slot, id)
     
     //Damage NPCs
     
-    this.damageNPCs(id, game.players[id].stats.attributes, actionData, this.collection[a_id]);
+    this.damageNPCs(id, game.players[id].attributes, actionData, this.collection[a_id]);
     
     //Check for healing
     

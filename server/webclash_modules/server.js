@@ -497,6 +497,10 @@ exports.handleSocket = function(socket)
         
         game.players[id].equipment[data] = undefined;
         
+        //Calculate new stats
+        
+        game.calculatePlayerStats(id, true);
+        
         //Sync to others
     
         server.syncPlayerPartially(id, 'equipment', socket, true);
@@ -628,7 +632,11 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
             data.level = game.players[id].level;
             break;
         case 'stats':
-            data.stats = game.players[id].stats;
+            data.stats = {
+                exp: game.players[id].stats.exp,
+                attributes: game.players[id].attributes
+            };
+            
             break;
         case 'health':
             data.health = game.players[id].health;

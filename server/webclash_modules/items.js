@@ -224,11 +224,15 @@ exports.setPlayerEquipment = function(socket, id, item)
             actions.setPlayerAction(socket, item.equippableAction, 1, id);
     }
     
+    //Calculate new attributes
+    
+    game.calculatePlayerStats(id, true);
+    
     //Sync to others
     
     server.syncPlayerPartially(id, 'equipment', socket, true);
     
-    //Sync to player
+    //Sync equipment to player
     
     server.syncEquipmentItem(equippable, id, socket, false);
     

@@ -68,12 +68,20 @@ const game = {
         if (this.players[id]._health !== undefined) {
             let delta = -(this.players[id]._health.cur-health.cur);
             
-            this.players[id]._health = health;
+            this.players[id]._health.cur = health.cur;
         
             //If player set UI health
                 
             if (this.player == id)
                 ui.status.setHealth(health.cur, health.max);
+            
+            //Check if max health has changed
+            
+            if (health.max !== this.players[id]._health.max) {
+                this.players[id]._health.max = health.max;
+                
+                return;
+            }
             
             if (delta == 0) {
                 //Miss floaty

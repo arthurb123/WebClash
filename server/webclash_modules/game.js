@@ -64,6 +64,10 @@ exports.addPlayer = function(socket)
             let id = game.players.length;
             game.players[id] = player;
             
+            //Calculate stat attributes
+            
+            game.calculatePlayerStats(id);
+            
             //Load current world
 
             game.loadMap(socket, player.map); 
@@ -213,6 +217,13 @@ exports.savePlayer = function(name, data, cb)
 
 exports.damagePlayer = function(id, damage)
 {
+    //Subtract toughness from damage
+    
+    damage += this.players[id].attributes.toughness-1;
+    
+    if (damage >= 0)
+        damage = 0;
+    
     //Add damage
     
     this.players[id].health.cur += damage;
@@ -311,6 +322,77 @@ exports.addPlayerExperience = function(id, exp)
     //Sync to player
     
     server.syncPlayerPartially(id, 'stats', this.players[id].socket, false);
+};
+
+exports.calculatePlayerStats = function(id, sync)
+{
+    //Check if sync is undefined
+    
+    if (sync == undefined)
+        sync = false;
+    
+    //Grab base attributes
+    
+    const result = {
+        power: this.players[id].stats.attributes.power,
+        intelligence: this.players[id].stats.attributes.intelligence,
+        toughness: this.players[id].stats.attributes.toughness,
+        vitality: this.players[id].stats.attributes.vitality,
+        wisdom: this.players[id].stats.attributes.wisdom,
+        agility: this.players[id].stats.attributes.agility
+    };
+    
+    //Add stats based on equipment
+    
+    for (let equippable in this.players[id].equipment) {
+        if (equippable == undefined ||
+            this.players[id].equipment[equippable] == undefined)
+            continue;
+        
+        let item = items.getItem(this.players[id].equipment[equippable]);
+        
+        if (item.stats != undefined) {
+            if (item.stats.power > 0)
+                result.power += item.stats.power;
+            if (item.stats.intelligence > 0)
+                result.intelligence += item.stats.intelligence;
+            if (item.stats.toughness > 0)
+                result.toughness += item.stats.toughness;
+            if (item.stats.vitality > 0)
+                result.vitality += item.stats.vitality;
+            if (item.stats.wisdom > 0)
+                result.wisdom += item.stats.wisdom;
+            if (item.stats.agility > 0)
+                result.agility += item.stats.agility;
+        }
+    }
+    
+    //Set the attributes property
+    
+    this.players[id].attributes = result;
+    
+    //Handle each attribute accordingly
+    
+    //Vitality attribute - max health
+    
+    const oldHealth = this.players[id].health.max;
+    this.players[id].health.max = 90 + 10 * result.vitality;
+    
+    if (oldHealth !== this.players[id].health.max && sync)
+        server.syncPlayerPartially(id, 'health');
+    
+    //Wisdom attribute - max mana
+    
+    const oldMana = this.players[id].mana.max;
+    this.players[id].mana.max = 90 + 10 * result.wisdom;
+    
+    if (oldMana !== this.players[id].mana.max && sync)
+        server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
+    
+    //Sync to player if sync is true
+    
+    if (result !== this.players[id].stats.attributes && sync)
+        server.syncPlayerPartially(id, 'stats', this.players[id].socket, false);
 };
 
 exports.getPlayerIndex = function(name)
