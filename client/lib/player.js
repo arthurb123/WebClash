@@ -58,30 +58,34 @@ const player = {
         
         game.players.push(go.Show(3));  
         
-        //Mouse event handlers
+        //Add event handlers if not on mobile
         
-        lx.OnMouse(0, function(data) {
-            if (data.state == 0)
-                return;
-            
-            player.performAction(0);
-        });
-        lx.OnMouse(2, function(data) {
-            if (data.state == 0)
-                return;
-            
-            player.performAction(1);
-        });
+        if (!game.isMobile) {
+            //Mouse event handlers
         
-        //Key event handlers
-        
-        for (let i = 1; i < 6; i++)
-            lx.OnKey(i, function(data) {
+            lx.OnMouse(0, function(data) {
                 if (data.state == 0)
                     return;
-                
-                player.performAction(i+1);
+
+                player.performAction(0);
             });
+            lx.OnMouse(2, function(data) {
+                if (data.state == 0)
+                    return;
+
+                player.performAction(1);
+            });
+
+            //Key event handlers
+
+            for (let i = 1; i < 6; i++)
+                lx.OnKey(i, function(data) {
+                    if (data.state == 0)
+                        return;
+
+                    player.performAction(i+1);
+                });
+        }
         
         //Request xp target
         
@@ -155,7 +159,8 @@ const player = {
         
         //Face mouse
         
-        player.faceMouse();
+        if (!game.isMobile)
+            player.faceMouse();
         
         //Send action request
             

@@ -4,6 +4,7 @@ const game = {
     npcs: [],
     items: [],
     tilesets: [],
+    isMobile: false,
     
     getPlayerIndex: function(name) 
     {
@@ -723,6 +724,8 @@ const game = {
             .Start(60);
         
         //Check if is mobile
+        
+        this.isMobile = isMobile;
         
         if (isMobile)
             ui.fullscreen.append();
