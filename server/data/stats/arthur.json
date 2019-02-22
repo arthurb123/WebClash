@@ -2,16 +2,12 @@
  "map": "1",
  "char_name": "player",
  "pos": {
-  "X": -66,
-  "Y": 0
+  "X": -114,
+  "Y": -5
  },
  "moving": false,
- "direction": 1,
+ "direction": 0,
  "health": {
-  "cur": 100,
-  "max": 100
- },
- "mana": {
   "cur": 100,
   "max": 100
  },
@@ -27,9 +23,17 @@
    "wisdom": 1
   }
  },
- "actions": [],
- "inventory": [
-  "Sword"
+ "actions": [
+  null,
+  {
+   "name": "Combust"
+  }
  ],
- "equipment": {}
+ "inventory": [
+  "Sword",
+  null
+ ],
+ "equipment": {
+  "offhand": "Magic Axe"
+ }
 }

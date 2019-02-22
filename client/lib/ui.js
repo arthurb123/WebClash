@@ -10,7 +10,8 @@ const ui = {
         
         lx.Loops(this.floaties.update);
     },
-    chat: {
+    chat: 
+    {
         cache: [],
         create: function() {
             if (this.dom !== undefined) {
@@ -159,7 +160,8 @@ const ui = {
             lx.GAME.CLEAR_EVENT('mousebutton', this.mouse);
         }
     },
-    actionbar: {
+    actionbar: 
+    {
         cooldowns: [],
         create: function() {
             if (this.slots !== undefined)
@@ -336,7 +338,8 @@ const ui = {
             document.getElementById('displayBox').remove();
         }
     },
-    equipment: {
+    equipment: 
+    {
         create: function() {
             if (this.slots !== undefined)
                 return;
@@ -436,7 +439,8 @@ const ui = {
             }
         }
     },
-    inventory: {
+    inventory: 
+    {
         size: {
             width: 4,
             height: 5
@@ -726,7 +730,8 @@ const ui = {
             return color;
         }
     },
-    loot: {
+    loot: 
+    {
         items: [],
         create: function() {
             view.dom.innerHTML += 
@@ -859,7 +864,8 @@ const ui = {
             el.style.visibility = 'hidden';
         }
     },
-    status: {
+    status: 
+    {
        create: function() {
             view.dom.innerHTML += 
                 '<div id="status_box" class="box" style="position: absolute; top: 20px; left: 20px; width: 195px; height: 65px;">' +
@@ -902,7 +908,8 @@ const ui = {
             t_el.innerHTML = value;
         }
     },
-    floaties: {
+    floaties: 
+    {
         buffer: [],
         add: function(uitext, duration)
         {
