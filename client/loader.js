@@ -31,9 +31,15 @@ function addScript(src)
 
 function loadAllScripts()
 {
+    //Check if mobile
+    
+    let isMobile = mobileAndTabletCheck();
+    
     //Add event listener
     
-    window.onload = finishLoading;
+    window.onload = function() {
+        finishLoading(isMobile);
+    }
     
     //Load all scripts
     
@@ -42,17 +48,17 @@ function loadAllScripts()
     
     //Load UI based on system
     
-    if (!mobileAndTabletCheck())
+    if (!isMobile)
         addScript('lib/ui.js');
     else
         addScript('lib/ui-mobile.js');
 }
 
-function finishLoading()
+function finishLoading(isMobile)
 {
     //Initialize game/Lynx2D
     
-    game.initialize();
+    game.initialize(isMobile);
     
     //Set status
     

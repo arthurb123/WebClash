@@ -13,14 +13,14 @@ const client = {
                 //Set status text
 
                 document.getElementById('status_text').innerHTML = 'Server is not available';
-            }, 5000);
-
+            }, 8000);
+            
             //Try to make a connection
 
             window['socket'] = io.connect(
                 (properties.address.length > 0 ? (properties.address + ":" + properties.port) : undefined)
             );
-
+            
             //Set on connect callback
 
             window['socket']._callbacks.$connect.push(function() {
