@@ -177,12 +177,12 @@
                         {
                          "name":"positionX",
                          "type":"int",
-                         "value":23
+                         "value":22
                         }, 
                         {
                          "name":"positionY",
                          "type":"int",
-                         "value":16
+                         "value":17
                         }],
                  "rotation":0,
                  "type":"",
