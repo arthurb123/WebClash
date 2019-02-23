@@ -6,6 +6,7 @@ const ui = {
         this.dialog.create();
         this.loot.create();
         this.inventory.create();
+        this.equipment.create();
         this.status.create();
         this.chat.create();
         
@@ -772,8 +773,107 @@ const ui = {
     },
     equipment:
     {
-        reloadEquipment: function() {
+        create: function() {
+            if (this.slots !== undefined)
+                return;
+                
+            /*
+            view.dom.innerHTML += 
+                '<div id="equipmentbar_box" style="visibility: hidden; position: absolute; top: 15px; left: 100%; margin-left: -15px; transform: translate(-100%, 0); width: 45%; height: auto; pointer-events: auto; overflow: hidden;">' +
+                '</div>';
+                */
+
+            this.slots = [
+                'equipmentbar_slot0',
+                'equipmentbar_slot1',
+                'equipmentbar_slot2',
+                'equipmentbar_slot3',
+                'equipmentbar_slot4',
+                'equipmentbar_slot5',
+                'equipmentbar_slot6'
+            ];
             
+            for (let i = 0; i < this.slots.length; i++) {
+                let equippable = this.getEquippableAtIndex(i);
+                
+                document.getElementById('inventory_box_content').innerHTML += '<div class="slot" id="' + this.slots[i] + '" style="display: flex-inline; width: 24px; height: 24px;" ontouchend="player.unequip(\'' + equippable + '\')"></div>';
+            }
+            
+            this.reload();
+        },
+        reload: function() {
+            if (this.slots === undefined)
+                return;
+            
+            for (let i = 0; i < this.slots.length; i++) 
+                document.getElementById(this.slots[i]).innerHTML = '';
+            
+            this.reloadEquipment('main');
+            this.reloadEquipment('offhand');
+            this.reloadEquipment('head');
+            this.reloadEquipment('torso');
+            this.reloadEquipment('hands');
+            this.reloadEquipment('legs');
+            this.reloadEquipment('feet');
+        },
+        reloadEquipment: function(equippable) {
+            let slot = this.getEquippableIndex(equippable);
+            
+            if (slot == -1)
+                return;
+            
+            let indicator = '<p style="position: absolute; left: 2px; top: 2px; color: #373737; opacity: .85; font-size: 7px; width: 100%; margin: 0px;">' + equippable + '</p>';
+            
+            if (player.equipment[equippable] !== undefined) {
+                document.getElementById(this.slots[slot]).innerHTML = 
+                    indicator + '<img src="' + player.equipment[equippable].source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px;"/>';
+                
+                document.getElementById(this.slots[slot]).style.border = '1px solid ' + ui.inventory.getItemColor(player.equipment[equippable].rarity);
+            }
+            else {
+                document.getElementById(this.slots[slot]).innerHTML = indicator;
+                
+                document.getElementById(this.slots[slot]).style.border = '1px solid gray';
+            }
+        },
+        getEquippableIndex: function(equippable) {
+            switch (equippable)
+            {
+                case 'head':
+                    return 0;
+                case 'torso':
+                    return 1;
+                case 'hands':
+                    return 2;
+                case 'legs':
+                    return 3;
+                case 'feet':
+                    return 4;
+                case 'main':
+                    return 5;
+                case 'offhand':
+                    return 6;
+            }
+            
+            return -1;
+        },
+        getEquippableAtIndex: function(index) {
+            switch (index) {
+                case 0:
+                    return 'head';
+                case 1:
+                    return 'torso';
+                case 2:
+                    return 'hands';
+                case 3:
+                    return 'legs';
+                case 4:
+                    return 'feet';
+                case 5:
+                    return 'main';
+                case 6:
+                    return 'offhand';
+            }
         }
     },
     status:
