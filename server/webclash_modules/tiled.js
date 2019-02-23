@@ -54,7 +54,7 @@ exports.mapWithName = function(name)
 exports.getMapIndex = function(name)
 {
     for (let i = 0; i < this.maps.length; i++)
-        if (this.maps[i].name == name) 
+        if (this.maps[i].name === name) 
             return i;
     
     return -1;
@@ -176,8 +176,15 @@ exports.cacheMap = function(map)
                     });
                 }
 
-            //Check colliders
-
+            //Check if not a point
+            
+            if (data.width === 0 ||
+                data.height === 0 ||
+                data.point)
+                continue;
+            
+            //Add collider
+            
             this.maps_colliders[id].push([coll]);
         }
     }

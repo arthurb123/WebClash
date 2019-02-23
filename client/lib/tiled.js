@@ -78,7 +78,7 @@ const tiled = {
                 offset_width += map.layers[l].offsetx;
             if (map.layers[l].offsety !== undefined) 
                 offset_height += map.layers[l].offsety;
-            
+
             lx.OnLayerDraw(actualLayer, function(gfx) {
                 if (game.player === -1 ||
                     game.players[game.player] == undefined)
@@ -106,11 +106,16 @@ const tiled = {
 
                         //Get corresponding tile sprite
 
-                        let sprite;
+                        let sprite,
+                            actual = data[t];
 
                         for (let i = 0; i < map.tilesets.length; i++)
-                            if (data[t] >= map.tilesets[i].firstgid)
+                            if (data[t] >= map.tilesets[i].firstgid) {
                                 sprite = game.getTileset(map.tilesets[i].image);
+                                
+                                if (i != 0)
+                                    actual = data[t] - map.tilesets[i].firstgid + 1;
+                            }
                             else
                                 break;
 
@@ -129,8 +134,8 @@ const tiled = {
                         //Calculate tile coordinates
 
                         let tc = {
-                            x: (data[t] % sprite._tilewidth - 1) * map.tilewidth,
-                            y: (Math.ceil(data[t] / sprite._tilewidth) -1) * map.tileheight
+                            x: (actual % sprite._tilewidth - 1) * map.tilewidth,
+                            y: (Math.ceil(actual / sprite._tilewidth) -1) * map.tileheight
                         },
                             tp = {
                             x: t % width * map.tilewidth,
@@ -247,7 +252,10 @@ const tiled = {
                  {
                     //Check if visible
 
-                     if (!data[o].visible)
+                     if (!data[o].visible ||
+                         data.point ||
+                         data[o].width === 0 ||
+                         data[o].height === 0)
                          continue;
 
                     //Create collider with properties

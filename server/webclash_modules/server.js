@@ -563,6 +563,8 @@ exports.handleSocket = function(socket)
         
         //Check all available properties
         
+        let done = false;
+        
         if (properties != undefined) {
             for (let p = 0; p < properties.length; p++)
             {

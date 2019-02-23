@@ -117,7 +117,7 @@ exports.createNPC = function(map, name, x, y)
         },
         distance: 0,
         cur: 0,
-        standard: 60
+        standard: this.randomNPCMovementTimeout()
     };
     npc.moving = false;
     npc.direction = 0;
@@ -191,6 +191,11 @@ exports.updateNPC = function(map, id)
     }
 };
 
+exports.randomNPCMovementTimeout = function()
+{
+    return 60 + Math.round(Math.random()*180);
+};
+
 exports.updateNPCMovement = function(map, id)
 {        
     //Standard NPC movement
@@ -208,7 +213,7 @@ exports.updateNPCMovement = function(map, id)
             this.onMap[map][id].movement.vel.y = 0;
             this.onMap[map][id].movement.distance = 0;
             this.onMap[map][id].movement.cur = 0;
-            this.onMap[map][id].movement.standard = 60 + Math.round(Math.random()*120);
+            this.onMap[map][id].movement.standard = this.randomNPCMovementTimeout();
 
             //Set random direction
 
