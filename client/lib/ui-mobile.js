@@ -6,6 +6,7 @@ const ui = {
         this.dialog.create();
         this.loot.create();
         this.inventory.create();
+        this.status.create();
         this.chat.create();
         
         lx.Loops(this.floaties.update);
@@ -40,20 +41,20 @@ const ui = {
             let border = document.getElementById('joypad_border');
             
             let delta = {
-                x: Math.round(e.touches[0].pageX+border.offsetWidth)-border.offsetLeft,
-                y: Math.round(e.touches[0].pageY+border.offsetHeight)-border.offsetTop
+                x: Math.round(e.changedTouches[0].pageX+border.offsetWidth/2)-border.offsetLeft,
+                y: Math.round(e.changedTouches[0].pageY+border.offsetHeight/2)-border.offsetTop
             };
             
             if (Math.abs(delta.x) > Math.abs(delta.y)) {
-                if (delta.x < this.size/2)
+                if (delta.x < 0)
                     player.forceFrame.start(1);
-                else if (delta.x > this.size/2)
+                else if (delta.x > 0)
                     player.forceFrame.start(2);
             }
             else {
-                if (delta.y < this.size/2)
+                if (delta.y < 0)
                     player.forceFrame.start(3);
-                else if (delta.y > this.size/2)
+                else if (delta.y > 0)
                     player.forceFrame.start(0);
             }
             
@@ -424,6 +425,7 @@ const ui = {
     },
     inventory:
     {
+        showingContext: false,
         size: {
             width: 4,
             height: 5
@@ -436,8 +438,8 @@ const ui = {
                 
             view.dom.innerHTML += 
                 '<div id="inventory_box" style="position: absolute; top: 15px; left: 100%; margin-left: -15px; transform: translate(-100%, 0); width: 45%; height: 64px; pointer-events: auto; overflow: hidden; white-space: nowrap;">' +
-                    '<div id="inventory_box_content" style="position: absolute; top: 0px; left: 0px; width: auto; height: auto;  overflow: hidden; white-space: nowrap;" ontouchstart="ui.inventory.oldTouchX = Math.round(event.touches[0].pageX);" ontouchmove="ui.inventory.move(event);"></div>' +
-                    '<div id="inventory_box_slider" style="position: absolute; top: 42px; left: 0px; height: 4px; border-radius: 3px; background-color: rgba(175, 175, 175, .85);"></div>' + 
+                    '<div id="inventory_box_content" style="position: absolute; top: 0px; left: 0px; width: auto; height: auto;  overflow: hidden; white-space: nowrap;" ontouchstart="ui.inventory.oldTouchX = Math.round(event.touches[0].pageX);" ontouchmove="ui.inventory.move(event);" ontouchend="ui.inventory.removeBox();"></div>' +
+                    '<div id="inventory_box_slider" style="border: 1px solid gray; position: absolute; top: 42px; left: 0px; width: 24px; height: 4px; border-radius: 3px; background-color: rgba(175, 175, 175, .85);"></div>' + 
                 '</div>';
             
             for (let y = 0; y < this.size.height; y++)
@@ -445,7 +447,7 @@ const ui = {
                     let i = (y*this.size.width+x);
                     
                     document.getElementById('inventory_box_content').innerHTML += 
-                        '<div class="slot" style="display: flex-inline; width: 24px; height: 24px;" id="inventory_slot' + i + '" oncontextmenu="ui.inventory.displayContext(' + i + ')" ontouchstart="ui.inventory.useItem(' + i + ')">' +
+                        '<div class="slot" style="display: flex-inline; width: 24px; height: 24px;" id="inventory_slot' + i + '" oncontextmenu="ui.inventory.displayContext(' + i + ')" ontouchend="ui.inventory.useItem(' + i + ')">' +
                         '</div>';
                     
                     this.slots[i] = 'inventory_slot' + i;
@@ -467,27 +469,31 @@ const ui = {
             let x = Math.round(e.touches[0].pageX),
                 d = x - this.oldTouchX;
             
-            let el = document.getElementById('inventory_box_content'),
-                nx = el.offsetLeft + d;
+            let content = document.getElementById('inventory_box_content'),
+                box = document.getElementById('inventory_box'),
+                nx = content.offsetLeft + d;
             
-            if (nx < -this.size.width*this.size.height*24)
-                nx = -this.size.width*this.size.height*24;
+            if (nx < box.offsetWidth-content.offsetWidth)
+                nx = box.offsetWidth-content.offsetWidth;
             else if (nx > 0)
                 nx = 0;
             
-            el.style.left = nx + 'px';
+            content.style.left = nx + 'px';
             
             this.oldTouchX = x;
             
             this.setSlider();
+            
+            let currentItem = Math.floor(content.offsetLeft / (box.offsetWidth-content.offsetWidth) * (this.size.width*this.size.height));
+            
+            this.displayBox(currentItem, box.offsetLeft-box.offsetWidth/2-60, box.offsetTop+40);
         },
         setSlider: function() {
             let box = document.getElementById('inventory_box'),
-                content = box = document.getElementById('inventory_box_content'),
+                content = document.getElementById('inventory_box_content'),
                 slider = document.getElementById('inventory_box_slider');
             
-            slider.style.width = (box.offsetWidth/content.offsetWidth*24) + 'px';
-            slider.style.left = -(content.offsetLeft / (this.size.width*this.size.height*64) * (box.offsetWidth-slider.offsetWidth)) + 'px';
+            slider.style.left = (content.offsetLeft / (box.offsetWidth-content.offsetWidth) * (box.offsetWidth - slider.offsetWidth)) + 'px';
         },
         reload: function() {
             if (this.slots === undefined)
@@ -518,7 +524,8 @@ const ui = {
             }
         },
         useItem: function(slot) {
-            if (player.inventory[slot] !== undefined) {
+            if (player.inventory[slot] !== undefined &&
+                !this.showingContext) {
                 //Send to server
                 
                 socket.emit('CLIENT_USE_ITEM', player.inventory[slot].name);
@@ -543,18 +550,28 @@ const ui = {
                 ui.inventory.removeContext();
             }
         },
-        displayBox: function(slot) {
-            if (player.inventory[slot] === undefined && player.equipment[slot] === undefined)
-                return;
-            
+        displayBox: function(slot, x, y) {
             //Element
             
             let el = document.getElementById('displayBox'),
                 context_el = document.getElementById('contextBox');
             
             if (el != undefined ||
-                context_el != undefined)
+                context_el != undefined) {
+                if (el._slot !== slot) 
+                    this.removeBox();
+                else
+                    return;
+            }
+            
+            //Check if valid
+            
+            if (player.inventory[slot] === undefined && player.equipment[slot] === undefined)
                 return;
+            
+            //Highlight slot
+            
+            document.getElementById(this.slots[slot]).style.backgroundColor = 'rgba(215, 215, 215, .85)';
             
             //Item
             
@@ -591,39 +608,41 @@ const ui = {
                 actionName = item.equippableAction;
 
             if (actionName !== '')
-                action = '<div class="inner-box" style="width: auto; height: auto; white-space: nowrap; position: relative; top: 4px; margin-bottom: 5px;">' +
+                action = '<div class="inner-box" style="width: auto; height: auto; white-space: nowrap; position: relative; top: 4px; margin-bottom: 3px;">' +
                             '<img class="thumb" src="' + item.actionIcon + '" style="display: inline-block; margin: 0px; margin-left: 6px; position: relative; top: 2px;"/>' +
-                            '<p class="info" style="font-size: 11px; display: inline-block; margin: 0px; margin-right: 2px; position: relative; top: -3px;">' + actionName + '</p>' +
+                            '<p class="info" style="font-size: 10px; display: inline-block; margin: 0px; margin-right: 2px; position: relative; top: -3px;">' + actionName + '</p>' +
                          '</div>'
             
             //Stats
             
-            let stats = '';
+            let stats = '<div style="position: relative; top: 3px;">';
             
             if (item.type === 'consumable') {
                 if (item.heal > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.heal + ' Health</p>';
+                    stats += '<p class="info" style="font-size: 11px;">+' + item.heal + ' Health</p>';
                 if (item.mana > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.mana + ' Mana</p>';
+                    stats += '<p class="info" style="font-size: 11px;">+' + item.mana + ' Mana</p>';
                 if (item.gold > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.gold + ' Gold</p>';
+                    stats += '<p class="info" style="font-size: 11px;">+' + item.gold + ' Gold</p>';
             }
             
             if (item.type === 'equipment' &&
                 item.stats != undefined) {
                 if (item.stats.power > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.power + ' Power</p>';
+                    stats += '<p class="info" style="font-size: 11px;">+' + item.stats.power + ' Power</p>';
                 if (item.stats.intelligence > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.intelligence + ' Intelligence</p>';
+                    stats += '<p class="info" style="font-size: 11px;">+' + item.stats.intelligence + ' Intelligence</p>';
                 if (item.stats.toughness > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.toughness + ' Toughness</p>';
+                    stats += '<p class="info" style="font-size: 11px;">+' + item.stats.toughness + ' Toughness</p>';
                 if (item.stats.vitality > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.vitality + ' Vitality</p>';
+                    stats += '<p class="info" style="font-size: 11px;">+' + item.stats.vitality + ' Vitality</p>';
                 if (item.stats.wisdom > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.wisdom + ' Wisdom</p>';
+                    stats += '<p class="info" style="font-size: 11px;">+' + item.stats.wisdom + ' Wisdom</p>';
                 if (item.stats.agility > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.agility + ' Agility</p>';
+                    stats += '<p class="info" style="font-size: 11px;">+' + item.stats.agility + ' Agility</p>';
             }
+            
+            stats + '</div>';
             
             //Item type
             
@@ -638,42 +657,39 @@ const ui = {
 
             displayBox.id = 'displayBox';
             displayBox.classList.add('box');
-            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 16px; height: auto; text-align: center;';
+            displayBox.style = 'position: absolute; top: ' + y + 'px; left: ' + x + 'px; width: 120px; padding: 4px; padding-bottom: 8px; height: auto; text-align: center;';
             displayBox.innerHTML =
-                    '<font class="header" style="font-size: 15px; color: ' + color + ';">' + item.name + '</font><br>' + 
-                    '<font class="info" style="font-size: 10px;">' + type + '</font><br>' +
+                    '<font class="header" style="font-size: 14px; color: ' + color + ';">' + item.name + '</font><br>' + 
+                    '<font class="info" style="font-size: 9px;">' + type + '</font><br>' +
                     action +
-                    '<font class="info" style="position: relative; top: 6px;">' + item.description + '</font><br>' +
+                    '<font class="info" style="position: relative; top: 4px;">' + item.description + '</font><br>' +
                     stats +
-                    '<font class="info" style="position: relative; top: 10px; font-size: 11px; margin-top: 5px;">' + note + '</font><br>' +
-                    '<font class="info" style="position: relative; top: 10px; font-size: 11px; color: yellow;">' + item.value + ' Gold</font><br>';
-
+                    '<font class="info" style="font-size: 10px;">' + note + '</font><br>' +
+                    '<font class="info" style="font-size: 10px; color: yellow;">' + item.value + ' Gold</font><br>';
+            
+            displayBox._slot = slot;
+            
             //Append
             
             view.dom.appendChild(displayBox);
-            
-            //Create mouse following
-
-            displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-displayBox.offsetWidth-8 + 'px';
-            displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-displayBox.offsetHeight + 'px';
-
-            this.displayBoxLoopID = lx.GAME.ADD_LOOPS(function() {
-                 displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-displayBox.offsetWidth-8 + 'px';
-                 displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-displayBox.offsetHeight + 'px';
-            });
         },
         removeBox: function() {
-            if (document.getElementById('displayBox') == null ||
-               this.displayBoxLoopID === undefined)
+            let el = document.getElementById('displayBox');
+            
+            if (el == null)
                 return;
             
-            lx.ClearLoop(this.displayBoxLoopID);
+            document.getElementById(this.slots[el._slot]).style.backgroundColor = 'rgba(175, 175, 175, .85)';
             
-            document.getElementById('displayBox').remove();
+            el.remove();
         },
         displayContext: function(slot) {
             if (player.inventory[slot] === undefined && player.equipment[slot] === undefined)
                 return;
+            
+            //Set context boolean to true
+            
+            this.showingContext = true;
             
             //Element
             
@@ -714,12 +730,18 @@ const ui = {
             
             //Set position
             
-            contextBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-contextBox.offsetWidth-8 + 'px';
-            contextBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-contextBox.offsetHeight + 'px';
+            contextBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-contextBox.offsetWidth/2 + 'px';
+            contextBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y+8 + 'px';
         },
         removeContext: function() {
             if (document.getElementById('contextBox') == null)
                 return;
+            
+            //Set context boolean to true
+            
+            this.showingContext = false;
+            
+            //Remove context
             
             document.getElementById('contextBox').remove();
         },
@@ -756,14 +778,46 @@ const ui = {
     },
     status:
     {
-        setHealth: function() {
-            
+        create: function() {
+            view.dom.innerHTML += 
+                '<div id="status_box" style="position: absolute; top: 100%; left: 100%; margin-top: -19px; margin-left: -' + (ui.controller.size+30) + 'px; transform: translate(-100%, -100%); width: 180px; height: auto;">' +
+                    '<div id="status_health_box" class="bar" style="text-align: center; height: 9px; margin-top: 0px;">' +
+                        '<div id="status_health" class="bar_content" style="background-color: #E87651; width: 100%;"></div>' +
+                        '<p id="status_health_text" class="info" style="position: relative; top: -13px; font-size: 9px;"></p>' +
+                    '</div>' + 
+                    '<div id="status_mana_box" class="bar" style="text-align: center; height: 9px; margin-top: 2px;">' +
+                        '<div id="status_mana" class="bar_content" style="background-color: #2B92ED; width: 100%;"></div>' +
+                        '<p id="status_mana_text" class="info" style="position: relative; top: -13px; font-size: 9px;"></p>' +
+                    '</div>' + 
+                    '<div id="status_exp_box" class="bar" style="text-align: center; height: 9px; margin-top: 2px;">' +
+                        '<div id="status_exp" class="bar_content" style="background-color: #BF4CE6; width: 100%;"></div>' +
+                        '<p id="status_exp_text" class="info" style="position: relative; top: -13px; font-size: 9px;"></p>' +
+                    '</div>' + 
+                '</div>';
         },
-        setMana: function() {
-
-        },
-        setExperience: function() {
+        setHealth: function(value, max) {
+            let el = document.getElementById('status_health'),
+                t_el = document.getElementById('status_health_text');
             
+            el.style.width = (value/max)*100 + '%';
+            
+            t_el.innerHTML = value;
+        },
+        setMana: function(value, max) {
+            let el = document.getElementById('status_mana'),
+                t_el = document.getElementById('status_mana_text');
+            
+            el.style.width = (value/max)*100 + '%';
+            
+            t_el.innerHTML = value;
+        },
+        setExperience: function(value, max) {
+            let el = document.getElementById('status_exp'),
+                t_el = document.getElementById('status_exp_text');
+            
+            el.style.width = (value/max)*100 + '%';
+            
+            t_el.innerHTML = value;
         }
     },
     loot:
@@ -771,10 +825,10 @@ const ui = {
         items: [],
         create: function() {
             view.dom.innerHTML += 
-                '<div id="loot_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 25%; transform: translate(-50%, -50%); width: auto; max-width: 150px; height: auto; text-align: center;">' +
-                    '<p class="info" style="font-size: 12px; margin: 3px;">Loot</p>' +
+                '<div id="loot_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 25%; transform: translate(-50%, -50%); width: auto; max-width: 120px; height: auto; text-align: center; padding-top: 1px; padding-bottom: 1px;">' +
+                    '<p class="info" style="font-size: 12px; margin: 2px;">Loot</p>' +
                     '<div id="loot_box_content" style="text-align: left;"></div>' +
-                    '<p class="link" onclick="ui.loot.hide()" style="font-size: 12px; color: red;">Close</p>'
+                    '<p class="link" onclick="ui.loot.hide()" style="font-size: 11px; color: red;">Close</p>'
                 '</div>';
         },
         reset: function() {

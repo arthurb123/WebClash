@@ -178,7 +178,7 @@ function Lynx2D() {
             
             //Audio
             this.AUDIO.UPDATE();
-            
+            ``
             this.LOG.UPDATE();
             
             this.LOG.DATA.UPDATES++;
