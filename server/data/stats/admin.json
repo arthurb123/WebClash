@@ -2,11 +2,11 @@
  "map": "1",
  "char_name": "player",
  "pos": {
-  "X": 0,
-  "Y": 0
+  "X": -128,
+  "Y": 52
  },
  "moving": false,
- "direction": 0,
+ "direction": 2,
  "health": {
   "cur": 100,
   "max": 100

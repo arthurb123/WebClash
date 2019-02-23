@@ -544,6 +544,9 @@ function Lynx2D() {
         window.onresize = function() {
             lx.CONTEXT.CANVAS.width = self.innerWidth;
             lx.CONTEXT.CANVAS.height = self.innerHeight;
+            
+            if (lx.GAME.ON_RESIZE != undefined)
+                lx.GAME.ON_RESIZE();
         };
         window.onresize();
         
@@ -688,6 +691,13 @@ function Lynx2D() {
     
     this.GetFocus = function() {
         return this.GAME.FOCUS;
+    };
+    
+    this.OnResize = function(cb) {
+        if (cb != undefined) this.GAME.ON_RESIZE = cb;
+        else return this.GAME.ON_RESIZE;
+        
+        return this;
     };
     
     this.ResetCentering = function() {

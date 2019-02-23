@@ -166,11 +166,11 @@ const ui = {
 
                     this.dom = undefined;
                 }
-            }
+            } 
             
             view.dom.innerHTML += 
-                '<div id="chat_box" style="position: absolute; top: 15px; left: 15px; width: 180px; height: 155px;">' +
-                    '<input id="chat_box_message" type="text" style="pointer-events: auto; width: 180px;"></input>' +
+                '<div id="chat_box" style="position: absolute; top: 15px; left: 15px; width: 180px; height: 155px; pointer-events: auto; ">' +
+                    '<input id="chat_box_message" type="text" style="width: 180px;"></input>' +
                     '<div id="chat_box_content" style="position: relative; overflow-y: auto; width: auto; height: auto; max-height: 139px;"></div>' +
                 '</div>';
             
@@ -200,7 +200,7 @@ const ui = {
             
             this.cache.push('<font style="display: inline;" class="info">' + this.timeformat() + content + '</font><br>');
             
-            if (this.cache.length > 8)
+            if (this.cache.length > 12)
                 this.cache.splice(0, 1);
             
             this.dom.content.innerHTML = this.cache.join('');
@@ -438,9 +438,8 @@ const ui = {
             this.slots = [];
                 
             view.dom.innerHTML += 
-                '<div id="inventory_box" style="position: absolute; top: 15px; left: 100%; margin-left: -15px; transform: translate(-100%, 0); width: 45%; height: 64px; pointer-events: auto; overflow: hidden; white-space: nowrap;">' +
-                    '<div id="inventory_box_content" style="position: absolute; top: 0px; left: 0px; width: auto; height: auto;  overflow: hidden; white-space: nowrap;" ontouchstart="ui.inventory.oldTouchX = Math.round(event.touches[0].pageX);" ontouchmove="ui.inventory.move(event);" ontouchend="ui.inventory.removeBox();"></div>' +
-                    '<div id="inventory_box_slider" style="border: 1px solid gray; position: absolute; top: 42px; left: 0px; width: 24px; height: 4px; border-radius: 3px; background-color: rgba(175, 175, 175, .85);"></div>' + 
+                '<div id="inventory_box" style="position: absolute; top: 15px; left: 100%; margin-left: -15px; transform: translate(-100%, 0); width: 45%; height: 42px; pointer-events: auto; overflow-x: auto; white-space: nowrap;">' +
+                    '<div id="inventory_box_content" style="position: absolute; top: 0px; left: 0px; width: auto; height: auto; white-space: nowrap;" ontouchmove="ui.inventory.move();" ontouchend="ui.inventory.removeBox();"></div>' +
                 '</div>';
             
             for (let y = 0; y < this.size.height; y++)
@@ -459,42 +458,17 @@ const ui = {
                 '<font class="info" style="font-size: 11px; color: yellow;">0 Gold</font>';
                 */
             
-            this.setSlider();
-            
             this.reload();
         },
-        move: function(e) {
-            if (this.oldTouchX == undefined)
-                return;
-            
-            let x = Math.round(e.touches[0].pageX),
-                d = x - this.oldTouchX;
-            
+        move: function() {
             let content = document.getElementById('inventory_box_content'),
-                box = document.getElementById('inventory_box'),
-                nx = content.offsetLeft + d;
+                box = document.getElementById('inventory_box');
             
-            if (nx < box.offsetWidth-content.offsetWidth)
-                nx = box.offsetWidth-content.offsetWidth;
-            else if (nx > 0)
-                nx = 0;
+            let currentItem = Math.round(-box.scrollLeft / (box.offsetWidth-content.offsetWidth) * (this.size.width*this.size.height));
+            if (currentItem > this.size.width*this.size.height-1)
+                currentItem = this.size.width*this.size.height-1;
             
-            content.style.left = nx + 'px';
-            
-            this.oldTouchX = x;
-            
-            this.setSlider();
-            
-            let currentItem = Math.floor(content.offsetLeft / (box.offsetWidth-content.offsetWidth) * (this.size.width*this.size.height));
-            
-            this.displayBox(currentItem, box.offsetLeft-box.offsetWidth/2-60, box.offsetTop+40);
-        },
-        setSlider: function() {
-            let box = document.getElementById('inventory_box'),
-                content = document.getElementById('inventory_box_content'),
-                slider = document.getElementById('inventory_box_slider');
-            
-            slider.style.left = (content.offsetLeft / (box.offsetWidth-content.offsetWidth) * (box.offsetWidth - slider.offsetWidth)) + 'px';
+            this.displayBox(currentItem, box.offsetLeft-box.offsetWidth, box.offsetTop+40);
         },
         reload: function() {
             if (this.slots === undefined)
@@ -776,12 +750,6 @@ const ui = {
         create: function() {
             if (this.slots !== undefined)
                 return;
-                
-            /*
-            view.dom.innerHTML += 
-                '<div id="equipmentbar_box" style="visibility: hidden; position: absolute; top: 15px; left: 100%; margin-left: -15px; transform: translate(-100%, 0); width: 45%; height: auto; pointer-events: auto; overflow: hidden;">' +
-                '</div>';
-                */
 
             this.slots = [
                 'equipmentbar_slot0',
