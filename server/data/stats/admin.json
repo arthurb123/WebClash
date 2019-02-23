@@ -1,23 +1,23 @@
 {
- "map": "1",
+ "map": "2",
  "char_name": "player",
  "pos": {
-  "X": -66,
-  "Y": 0
+  "X": 32,
+  "Y": 136
  },
  "moving": false,
- "direction": 1,
+ "direction": 2,
  "health": {
-  "cur": 100,
+  "cur": 97,
   "max": 100
  },
  "mana": {
   "cur": 100,
   "max": 100
  },
- "level": 1,
+ "level": 2,
  "stats": {
-  "exp": 0,
+  "exp": 8,
   "attributes": {
    "power": 1,
    "toughness": 1,
@@ -27,9 +27,19 @@
    "wisdom": 1
   }
  },
- "actions": [],
+ "actions": [
+  null,
+  {
+   "name": "Combust"
+  },
+  null
+ ],
  "inventory": [
+  "Healing Slab",
+  null,
   "Sword"
  ],
- "equipment": {}
+ "equipment": {
+  "offhand": "Magic Axe"
+ }
 }
