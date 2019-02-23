@@ -80,6 +80,10 @@ const tiled = {
                 offset_height += map.layers[l].offsety;
             
             lx.OnLayerDraw(actualLayer, function(gfx) {
+                if (game.player === -1 ||
+                    game.players[game.player] == undefined)
+                    return;
+                
                 let y_line = {
                     start: Math.floor((game.players[game.player].POS.Y-offset_height-lx.GetDimensions().height/2)/map.tileheight),
                     length: lx.GetDimensions().height/map.tileheight+2

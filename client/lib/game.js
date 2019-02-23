@@ -4,6 +4,7 @@ const game = {
     npcs: [],
     items: [],
     tilesets: [],
+    isMobile: false,
     
     getPlayerIndex: function(name) 
     {
@@ -708,7 +709,7 @@ const game = {
             go.Hide();
     },
     
-    initialize: function() 
+    initialize: function(isMobile) 
     {
         //Check if Lynx2D is already running
         
@@ -721,5 +722,12 @@ const game = {
             .Initialize(document.title)
             .Smoothing(false)
             .Start(60);
+        
+        //Check if is mobile
+        
+        this.isMobile = isMobile;
+        
+        if (isMobile)
+            ui.fullscreen.append();
     }
 };

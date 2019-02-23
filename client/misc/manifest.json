@@ -1,0 +1,16 @@
+{
+  "short_name": "Client",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "type": "image/x-icon",
+      "sizes": "128x128"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#282828",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "scope": "/",
+  "theme_color": "#282828"
+}
