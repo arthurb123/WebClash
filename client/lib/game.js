@@ -298,7 +298,7 @@ const game = {
         
         go._nameplate.SHADOW = true;
         
-        this.npcs[id] = go.Show(2);
+        this.npcs[id] = go.Show(3);
     },
     setNPCType: function(id, type) {
         //Set NPC type
@@ -642,7 +642,7 @@ const game = {
 
             //Show world item
 
-            game.items[data.id].Show(1);
+            game.items[data.id].Show(2);
         });
     },
     resetWorldItems: function() 

@@ -1016,7 +1016,6 @@ function Lynx2D() {
         this.SPRITE = sprite;
         this.BUFFER_ID = -1;
         this.CLICK_ID = [];
-        this.LOOPS = [];
         this.BUFFER_LAYER = 0;
         this.UPDATES = true;
         

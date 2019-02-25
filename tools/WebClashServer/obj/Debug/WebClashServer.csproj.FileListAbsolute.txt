@@ -21,3 +21,4 @@ C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClas
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.ItemSelection.resources
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.Dialogue.resources
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.DialogueProperties.resources
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.DialogueEventProperties.resources

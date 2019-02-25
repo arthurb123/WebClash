@@ -67,6 +67,12 @@
     <Compile Include="Editors\Dialogue.Designer.cs">
       <DependentUpon>Dialogue.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\DialogueEventProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\DialogueEventProperties.Designer.cs">
+      <DependentUpon>DialogueEventProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="Editors\DialogueProperties.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -122,6 +128,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\Dialogue.resx">
       <DependentUpon>Dialogue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\DialogueEventProperties.resx">
+      <DependentUpon>DialogueEventProperties.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\DialogueProperties.resx">
       <DependentUpon>DialogueProperties.cs</DependentUpon>

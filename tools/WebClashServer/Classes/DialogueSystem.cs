@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using WebClashServer.Editors;
 
 namespace WebClashServer.Classes
 {
@@ -21,7 +23,22 @@ namespace WebClashServer.Classes
         {
             items.Add(new DialogueItem());
 
-            return items.Count-1;
+            return items.Count - 1;
+        }
+
+        public int addDialogueEvent(EventType et)
+        {
+            switch (et)
+            {
+                case EventType.GiveItem:
+                    items.Add(new GiveItemEvent());
+                    break;
+                case EventType.LoadMap:
+                    items.Add(new LoadMapEvent());
+                    break;
+            }
+
+            return items.Count - 1;
         }
     }
 
@@ -59,5 +76,43 @@ namespace WebClashServer.Classes
 
         public string text = "";
         public int next = -1;
+    }
+    
+    public class DialogueEvent : DialogueItem
+    {
+        public DialogueEvent(EventType et) : base()
+        {
+            eventType = Enum.GetName(typeof(EventType), et);
+        }
+
+        public string eventType = "";
+
+        public bool repeatable = false;
+    }
+
+    //Custom events
+
+    public class GiveItemEvent : DialogueEvent
+    {
+        public GiveItemEvent() : base(EventType.GiveItem)
+        {
+            //...
+        }
+
+        public string item = "";
+        public int amount = 1;
+    }
+
+    public class LoadMapEvent : DialogueEvent
+    {
+        public LoadMapEvent() : base(EventType.LoadMap)
+        {
+            //...
+        }
+
+        public string map = "";
+
+        public int positionX = 0,
+                   positionY = 0;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -73,29 +74,48 @@ namespace WebClashServer.Editors
             if (item == -1)
                 return;
 
-            DialogueProperties dp = new DialogueProperties(dialogSystem.items[elements[item].id]);
+            if (!elements[item].isEvent)
+            {
+                DialogueProperties dp = new DialogueProperties(dialogSystem.items[elements[item].id]);
 
-            dp.FormClosed += (object s, FormClosedEventArgs fcea) => {
-                dialogSystem.items[elements[item].id] = dp.current;
+                dp.FormClosed += (object s, FormClosedEventArgs fcea) =>
+                {
+                    dialogSystem.items[elements[item].id] = dp.current;
 
-                if (dp.current.entry)
-                    for (int i = 0; i < dialogSystem.items.Count; i++)
-                        if (i != elements[item].id &&
-                            dialogSystem.items[i].entry)
-                        {
-                            dp.current.entry = false;
+                    if (dp.current.entry)
+                        for (int i = 0; i < dialogSystem.items.Count; i++)
+                            if (i != elements[item].id &&
+                                dialogSystem.items[i].entry)
+                            {
+                                dp.current.entry = false;
 
-                            MessageBox.Show("The dialog item could not be set as the entry point, as an entry point already exists.", "WebClash Server - Error");
+                                MessageBox.Show("The dialog item could not be set as the entry point, as an entry point already exists.", "WebClash Server - Error");
 
-                            break;
-                        }
+                                break;
+                            }
 
-                canvas.Invalidate();
-            };
+                    canvas.Invalidate();
+                };
 
-            dp.Text = "Edit item #" + item;
+                dp.Text = "Edit item #" + elements[item].id;
 
-            dp.ShowDialog();
+                dp.ShowDialog();
+            }
+            else
+            {
+                DialogueEventProperties dep = new DialogueEventProperties((DialogueEvent)dialogSystem.items[elements[item].id]);
+
+                dep.FormClosed += (object s, FormClosedEventArgs fcea) =>
+                {
+                    dialogSystem.items[elements[item].id] = dep.current;
+
+                    canvas.Invalidate();
+                };
+
+                dep.Text = "Edit event #" + elements[item].id;
+
+                dep.ShowDialog();
+            }
         }
 
         private void canvasMouseUp(object sender, MouseEventArgs e)
@@ -160,7 +180,8 @@ namespace WebClashServer.Editors
 
                 p.CustomEndCap = new AdjustableArrowCap(4, 4);
 
-                if (dialogSystem.items[ca.id].entry)
+                if (dialogSystem.items[ca.id].entry &&
+                    !ca.isEvent)
                     g.DrawLine(
                         p,
                         0,
@@ -210,12 +231,23 @@ namespace WebClashServer.Editors
                 g.FillRectangle(Brushes.WhiteSmoke, r);
                 g.DrawRectangle(Pens.Black, r);
 
-                g.DrawString(
-                    "#" + ca.id + ": " + dialogSystem.items[ca.id].text,
-                    DefaultFont,
-                    Brushes.Black,
-                    r
-                );
+                if (!ca.isEvent)
+                    g.DrawString(
+                        "#" + ca.id + ": " + dialogSystem.items[ca.id].text,
+                        DefaultFont,
+                        Brushes.Black,
+                        r
+                    );
+                else {
+                    DialogueEvent de = (DialogueEvent)dialogSystem.items[ca.id];
+
+                    g.DrawString(
+                        "#" + ca.id + ": " + de.eventType,
+                        DefaultFont,
+                        Brushes.Black,
+                        r
+                    );
+                }
             }
             catch (Exception e)
             {
@@ -232,19 +264,66 @@ namespace WebClashServer.Editors
 
             canvas.Invalidate();
         }
+
+        private void addCanvasEventElement(EventType et)
+        {
+            elements.Add(new CanvasElement(
+                new Point(20, canvas.Height / 2 - 40),
+                dialogSystem,
+                et
+            ));
+
+            canvas.Invalidate();
+        }
+
+        private void giveItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addCanvasEventElement(EventType.GiveItem);
+
+            canvas.Invalidate();
+        }
+
+        private void loadMapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addCanvasEventElement(EventType.LoadMap);
+
+            canvas.Invalidate();
+        }
     }
 
     public class CanvasElement
     {
+        [JsonConstructor]
         public CanvasElement(Point p, int id)
         {
             this.p = p;
             this.id = id;
+
+            size = new Size(100, 80);
+        }
+
+        public CanvasElement(Point p, DialogueSystem ds, EventType tp)
+        {
+            this.p = p;
+
+            isEvent = true;
+
+            id = ds.addDialogueEvent(tp);
+
+            size = new Size(80, 20);
         }
 
         public Point p = default(Point);
         public int id = 0;
 
-        public Size size = new Size(100, 80);
+        public bool isEvent = false;
+
+        public Size size;
+    }
+
+    public enum EventType
+    {
+        GiveItem = 0,
+        LoadMap
     }
 }

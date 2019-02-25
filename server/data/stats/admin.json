@@ -1,23 +1,23 @@
 {
- "map": "1",
+ "map": "2",
  "char_name": "player",
  "pos": {
-  "X": -126,
-  "Y": 56
+  "X": -16,
+  "Y": 32
  },
  "moving": false,
- "direction": 2,
+ "direction": 0,
  "health": {
-  "cur": 100,
+  "cur": 84,
   "max": 100
  },
  "mana": {
   "cur": 100,
   "max": 100
  },
- "level": 1,
+ "level": 2,
  "stats": {
-  "exp": 0,
+  "exp": 8,
   "attributes": {
    "power": 1,
    "toughness": 1,
@@ -33,7 +33,7 @@
   }
  ],
  "inventory": [
-  null
+  "Healing Slab"
  ],
  "equipment": {
   "main": "Sword"
