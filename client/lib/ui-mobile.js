@@ -438,7 +438,7 @@ const ui = {
             this.slots = [];
                 
             view.dom.innerHTML += 
-                '<div id="inventory_box" style="position: absolute; top: 15px; left: 100%; margin-left: -15px; transform: translate(-100%, 0); width: 45%; height: 42px; pointer-events: auto; overflow-x: visible; white-space: nowrap;">' +
+                '<div id="inventory_box" style="position: absolute; top: 15px; left: 100%; margin-left: -15px; transform: translate(-100%, 0); width: 45%; height: 42px; pointer-events: auto; overflow-x: auto; white-space: nowrap;">' +
                     '<div id="inventory_box_content" style="position: absolute; top: 0px; left: 0px; width: auto; height: auto; white-space: nowrap;" ontouchmove="ui.inventory.move();" ontouchend="ui.inventory.removeBox();"></div>' +
                 '</div>';
             
