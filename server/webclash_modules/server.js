@@ -615,93 +615,88 @@ exports.handleSocket = function(socket)
         if (map == -1)
             return;
         
-        //If in dialog range interact with properties
-        
-        if (npcs.inDialogRange(map, data.npc, game.players[id].pos.X, game.players[id].pos.Y))
-        {
-            //Get dialog event data
+        //Get dialog event data
             
-            const dialogEvent = npcs.onMap[map][data.npc].data.dialog[data.id];
-            
-            //Check if valid
-            
-            if (dialogEvent == undefined ||
-                !dialogEvent.isEvent)
-                return;
-            
-            //Get unique global variable name for this event
-                
-            let eventName = 
-                map +                   //Map to make sure the event can occur on other maps
-                data.npc +              //NPC name for uniqueness
-                dialogEvent.eventType;  //Event type for uniqueness
-                    
-            //Check if the event has already occured
-                    
-            if (game.getPlayerGlobalVariable(id, eventName) &&
-                !dialogEvent.repeatable) {
-                //Callback false (occurred)
+        const dialogEvent = npcs.onMap[map][data.npc].data.dialog[data.id];
 
-                if (callback != undefined)
-                    callback(false);
-                
-                return;
-            }
-            
-            //Handle events
-            
-            //Load map event
-            
-            if (dialogEvent.eventType === 'LoadMap') {
-                //Get map index
-                
-                let new_map = tiled.getMapIndex(dialogEvent.map);
-                
-                //Check if map is valid
-                
-                if (new_map === -1)
-                    return;
-                
-                //Load map
-                
-                game.loadMap(socket, dialogEvent.map);
-                
-                //Set position
-                
-                game.setPlayerTilePosition(
-                    socket, 
-                    id, 
-                    new_map, 
-                    dialogEvent.positionX, 
-                    dialogEvent.positionY
-                );
-            }
-            
-            //Give item event
-            
-            else if (dialogEvent.eventType === 'GiveItem') {
-                //Add item(s)
-                
-                for (let a = 0; a < dialogEvent.amount; a++)
-                    items.addPlayerItem(socket, id, dialogEvent.item);
-            }
-            
-            //Check if event is repeatable,
-            //if not set a player global variable
-            
-            if (!dialogEvent.repeatable) {
-                game.setPlayerGlobalVariable(
-                    id,
-                    eventName,
-                    true
-                );
-            }
-            
-            //Callback true (success)
-            
+        //Check if valid
+
+        if (dialogEvent == undefined ||
+            !dialogEvent.isEvent)
+            return;
+
+        //Get unique global variable name for this event
+
+        let eventName = 
+            map +                   //Map to make sure the event can occur on other maps
+            data.npc +              //NPC name for uniqueness
+            dialogEvent.eventType;  //Event type for uniqueness
+
+        //Check if the event has already occured
+
+        if (game.getPlayerGlobalVariable(id, eventName) &&
+            !dialogEvent.repeatable) {
+            //Callback false (occurred)
+
             if (callback != undefined)
-                callback(true);
+                callback(false);
+
+            return;
         }
+
+        //Handle events
+
+        //Load map event
+
+        if (dialogEvent.eventType === 'LoadMap') {
+            //Get map index
+
+            let new_map = tiled.getMapIndex(dialogEvent.map);
+
+            //Check if map is valid
+
+            if (new_map === -1)
+                return;
+
+            //Load map
+
+            game.loadMap(socket, dialogEvent.map);
+
+            //Set position
+
+            game.setPlayerTilePosition(
+                socket, 
+                id, 
+                new_map, 
+                dialogEvent.positionX, 
+                dialogEvent.positionY
+            );
+        }
+
+        //Give item event
+
+        else if (dialogEvent.eventType === 'GiveItem') {
+            //Add item(s)
+
+            for (let a = 0; a < dialogEvent.amount; a++)
+                items.addPlayerItem(socket, id, dialogEvent.item);
+        }
+
+        //Check if event is repeatable,
+        //if not set a player global variable
+
+        if (!dialogEvent.repeatable) {
+            game.setPlayerGlobalVariable(
+                id,
+                eventName,
+                true
+            );
+        }
+
+        //Callback true (success)
+
+        if (callback != undefined)
+            callback(true);
     });
     
     socket.on('CLIENT_REQUEST_DIALOG', function(data, callback) {
