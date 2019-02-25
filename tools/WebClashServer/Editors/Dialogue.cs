@@ -85,6 +85,7 @@ namespace WebClashServer.Editors
                     if (dp.current.entry)
                         for (int i = 0; i < dialogSystem.items.Count; i++)
                             if (i != elements[item].id &&
+                                dialogSystem.items[i] != null &&
                                 dialogSystem.items[i].entry)
                             {
                                 dp.current.entry = false;
@@ -103,7 +104,7 @@ namespace WebClashServer.Editors
             }
             else
             {
-                DialogueEventProperties dep = new DialogueEventProperties((DialogueEvent)dialogSystem.items[elements[item].id]);
+                DialogueEventProperties dep = new DialogueEventProperties(dialogSystem.items[elements[item].id]);
 
                 dep.FormClosed += (object s, FormClosedEventArgs fcea) =>
                 {
@@ -180,12 +181,11 @@ namespace WebClashServer.Editors
 
                 p.CustomEndCap = new AdjustableArrowCap(4, 4);
 
-                if (dialogSystem.items[ca.id].entry &&
-                    !ca.isEvent)
+                if (dialogSystem.items[ca.id].entry)
                     g.DrawLine(
                         p,
                         0,
-                        canvas.Height / 2,
+                        ca.p.Y + ca.size.Height / 2,
                         ca.p.X,
                         ca.p.Y + ca.size.Height / 2
                     );
@@ -231,23 +231,12 @@ namespace WebClashServer.Editors
                 g.FillRectangle(Brushes.WhiteSmoke, r);
                 g.DrawRectangle(Pens.Black, r);
 
-                if (!ca.isEvent)
-                    g.DrawString(
-                        "#" + ca.id + ": " + dialogSystem.items[ca.id].text,
-                        DefaultFont,
-                        Brushes.Black,
-                        r
-                    );
-                else {
-                    DialogueEvent de = (DialogueEvent)dialogSystem.items[ca.id];
-
-                    g.DrawString(
-                        "#" + ca.id + ": " + de.eventType,
-                        DefaultFont,
-                        Brushes.Black,
-                        r
-                    );
-                }
+                g.DrawString(
+                    "#" + ca.id + ": " + (ca.isEvent ? dialogSystem.items[ca.id].eventType : dialogSystem.items[ca.id].text),
+                    DefaultFont,
+                    Brushes.Black,
+                    r
+                );
             }
             catch (Exception e)
             {
@@ -259,7 +248,7 @@ namespace WebClashServer.Editors
         {
             elements.Add(new CanvasElement(
                 new Point(20, canvas.Height/2-40),
-                dialogSystem.addDialogueItem()
+                dialogSystem.addDialogueItem(false)
             ));
 
             canvas.Invalidate();
@@ -267,11 +256,16 @@ namespace WebClashServer.Editors
 
         private void addCanvasEventElement(EventType et)
         {
-            elements.Add(new CanvasElement(
+            CanvasEventElement cee = new CanvasEventElement(
                 new Point(20, canvas.Height / 2 - 40),
                 dialogSystem,
                 et
-            ));
+            );
+
+            dialogSystem.items[cee.id].eventType = Enum.GetName(typeof(EventType), et);
+            dialogSystem.items[cee.id].options.Add(new DialogueOption(-1));
+
+            elements.Add(cee);
 
             canvas.Invalidate();
         }
@@ -293,7 +287,6 @@ namespace WebClashServer.Editors
 
     public class CanvasElement
     {
-        [JsonConstructor]
         public CanvasElement(Point p, int id)
         {
             this.p = p;
@@ -302,23 +295,22 @@ namespace WebClashServer.Editors
             size = new Size(100, 80);
         }
 
-        public CanvasElement(Point p, DialogueSystem ds, EventType tp)
-        {
-            this.p = p;
-
-            isEvent = true;
-
-            id = ds.addDialogueEvent(tp);
-
-            size = new Size(80, 20);
-        }
-
         public Point p = default(Point);
         public int id = 0;
 
         public bool isEvent = false;
 
         public Size size;
+    }
+
+    public class CanvasEventElement : CanvasElement
+    {
+        public CanvasEventElement(Point p, DialogueSystem ds, EventType tp) : base(p, ds.addDialogueItem(true))
+        {
+            isEvent = true;
+
+            size = new Size(80, 20);
+        }
     }
 
     public enum EventType

@@ -1,23 +1,23 @@
 {
- "map": "2",
+ "map": "1",
  "char_name": "player",
  "pos": {
-  "X": -16,
-  "Y": 32
+  "X": -80,
+  "Y": 104
  },
- "moving": false,
+ "moving": true,
  "direction": 0,
  "health": {
-  "cur": 84,
+  "cur": 96,
   "max": 100
  },
  "mana": {
   "cur": 100,
   "max": 100
  },
- "level": 2,
+ "level": 4,
  "stats": {
-  "exp": 8,
+  "exp": 17,
   "attributes": {
    "power": 1,
    "toughness": 1,
@@ -30,12 +30,37 @@
  "actions": [
   {
    "name": "Slash"
-  }
+  },
+  {
+   "name": "Combust"
+  },
+  {
+   "name": "Heal",
+   "uses": 3,
+   "max": 3
+  },
+  {
+   "name": "Heal",
+   "uses": 2,
+   "max": 3
+  },
+  null
  ],
  "inventory": [
-  "Healing Slab"
+  "Iron Helm",
+  "Iron Helm",
+  "Iron Helm",
+  "Iron Helm",
+  "Magic Axe",
+  "Iron Helm",
+  "Iron Helm",
+  "Magic Axe",
+  "Magic Axe",
+  "Magic Axe",
+  null
  ],
  "equipment": {
+  "offhand": "Magic Axe",
   "main": "Sword"
  }
 }

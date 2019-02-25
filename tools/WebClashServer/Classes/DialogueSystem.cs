@@ -6,50 +6,42 @@ namespace WebClashServer.Classes
 {
     public class DialogueSystem
     {
-        public List<DialogueItem> items;
+        public List<DialogueItem> items = new List<DialogueItem>();
 
         public void loadSystem(List<DialogueItem> items)
         {
             if (items == null ||
                 items.Count == 0)
-            {
-                items = new List<DialogueItem>();
-            }
+                return;
 
             this.items = items;
         }
 
-        public int addDialogueItem()
+        public int addDialogueItem(bool isEvent)
         {
-            items.Add(new DialogueItem());
+            int id = items.Count;
 
-            return items.Count - 1;
-        }
-
-        public int addDialogueEvent(EventType et)
-        {
-            switch (et)
-            {
-                case EventType.GiveItem:
-                    items.Add(new GiveItemEvent());
+            for (int i = 0; i < items.Count; i++)
+                if (items[i] == null)
+                {
+                    id = i;
                     break;
-                case EventType.LoadMap:
-                    items.Add(new LoadMapEvent());
-                    break;
-            }
+                }
 
-            return items.Count - 1;
+            items[id] = new DialogueItem(isEvent);
+
+            return id;
         }
     }
 
     public class DialogueItem
     {
-        public DialogueItem()
+        public DialogueItem(bool isEvent)
         {
             text = "";
             portrait = "";
 
-            entry = false;
+            this.isEvent = isEvent;
 
             options = new List<DialogueOption>();
         }
@@ -57,9 +49,30 @@ namespace WebClashServer.Classes
         public string text;
         public string portrait;
 
-        public bool entry;
+        public bool entry = false;
+
+        public bool isEvent = false;
 
         public List<DialogueOption> options;
+        
+        //Event stuff
+
+        public string eventType = "";
+
+        public bool repeatable = false;
+
+        //Give item event
+
+        public string item = "";
+
+        public int amount = 1;
+
+        //Load map event
+
+        public string map = "";
+
+        public int positionX = 0,
+                   positionY = 0;
     }
 
     public class DialogueOption
@@ -76,43 +89,5 @@ namespace WebClashServer.Classes
 
         public string text = "";
         public int next = -1;
-    }
-    
-    public class DialogueEvent : DialogueItem
-    {
-        public DialogueEvent(EventType et) : base()
-        {
-            eventType = Enum.GetName(typeof(EventType), et);
-        }
-
-        public string eventType = "";
-
-        public bool repeatable = false;
-    }
-
-    //Custom events
-
-    public class GiveItemEvent : DialogueEvent
-    {
-        public GiveItemEvent() : base(EventType.GiveItem)
-        {
-            //...
-        }
-
-        public string item = "";
-        public int amount = 1;
-    }
-
-    public class LoadMapEvent : DialogueEvent
-    {
-        public LoadMapEvent() : base(EventType.LoadMap)
-        {
-            //...
-        }
-
-        public string map = "";
-
-        public int positionX = 0,
-                   positionY = 0;
     }
 }

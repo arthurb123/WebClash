@@ -123,6 +123,16 @@ const ui = {
         },
         setDialog: function(id) 
         {
+            if (this.cur[id].isEvent)
+            {
+                if (this.cur[id].options[0].next == -1)
+                    this.hideDialog();
+                else
+                    this.setDialog(this.cur[id].options[0].next);
+                
+                return;
+            }
+            
             let contentEl = document.getElementById('dialog_box_content'),
                 optionsEl = document.getElementById('dialog_box_options');
             
@@ -166,27 +176,21 @@ const ui = {
         create: function() {
             if (this.slots !== undefined)
                 return;
+            
+            this.slots = [];
+            
+            let r = '<div id="actionbar_box" class="box" style="position: absolute; top: 100%; left: 50%; transform: translate(-50%, -100%); margin-top: -30px; width: 338px; height: 48px;">';
+            
+            for (let i = 0; i < 7; i++)
+            {
+                this.slots[i] = 'actionbar_slot' + i;
                 
-            view.dom.innerHTML += 
-                '<div id="actionbar_box" class="box" style="position: absolute; top: 100%; left: 50%; transform: translate(-50%, -100%); margin-top: -30px; width: 338px; height: 48px;">' +
-                    '<div class="slot" id="actionbar_slot0"></div>' +
-                    '<div class="slot" id="actionbar_slot1"></div>' +
-                    '<div class="slot" id="actionbar_slot2"></div>' +
-                    '<div class="slot" id="actionbar_slot3"></div>' +
-                    '<div class="slot" id="actionbar_slot4"></div>' +
-                    '<div class="slot" id="actionbar_slot5"></div>' +
-                    '<div class="slot" id="actionbar_slot6"></div>' +
-                '</div>';
-
-            this.slots = [
-                'actionbar_slot0',
-                'actionbar_slot1',
-                'actionbar_slot2',
-                'actionbar_slot3',
-                'actionbar_slot4',
-                'actionbar_slot5',
-                'actionbar_slot6'
-            ];
+                r += '<div class="slot" id="' + this.slots[i] + '"></div>';
+            }
+                
+            r += '</div>';
+            
+            view.dom.innerHTML += r;
         },
         reload: function() {
             if (this.slots === undefined)
@@ -199,18 +203,31 @@ const ui = {
                 document.getElementById(this.slots[i]).innerHTML = '';
             }
             
-            for (let a = 0; a < player.actions.length; a++) {
-                if (player.actions[a] == undefined)
+            for (let a = 0; a < 7; a++) {
+                let indicator = '<font class="info" style="position: absolute; top: -1px; left: 2px; font-size: 9px; z-index: 1;">';
+                
+                if (a > 1)
+                    indicator += (a-1).toString();
+                else 
+                    indicator += (a === 0 ? 'LMB' : 'RMB');
+                
+                indicator += '</font>';
+                
+                if (player.actions[a] == undefined) {
+                    document.getElementById(this.slots[a]).innerHTML = indicator;
+                    
                     continue;
+                }
                 
                 let uses = '', usesContent = '∞';
+                
                 if (player.actions[a].uses != undefined)
                     usesContent = player.actions[a].uses + '/' + player.actions[a].max;
                 
-                uses = '<font class="info" style="position: absolute; top: 100%; margin-top: -15px; margin-left: -6px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%; text-align: right;">' + usesContent + '</font>';
+                uses = '<font class="info" style="position: absolute; top: 100%; margin-top: -15px; margin-left: -6px; font-size: 10px; width: 100%; text-align: right; color: #333333; z-index: 2">' + usesContent + '</font>';
                 
                 document.getElementById(this.slots[a]).innerHTML = 
-                    '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;" onmouseover="ui.actionbar.displayBox(' + a + ')" onmouseleave="ui.actionbar.removeBox()"/>' + uses;
+                    indicator + '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;" onmouseover="ui.actionbar.displayBox(' + a + ')" onmouseleave="ui.actionbar.removeBox()"/>' + uses;
             }
         },
         setCooldown: function(slot) {

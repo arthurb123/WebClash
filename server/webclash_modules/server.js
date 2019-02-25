@@ -628,7 +628,8 @@ exports.handleSocket = function(socket)
         //Check if in proximity
         
         if (dx <= tiled.maps[map].tilewidth*proximity &&
-            dy <= tiled.maps[map].tileheight*proximity)
+            dy <= tiled.maps[map].tileheight*proximity &&
+            callback != undefined)
             callback(npcs.onMap[map][data].data.dialog);
     });
     
