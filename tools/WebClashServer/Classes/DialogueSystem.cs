@@ -19,18 +19,17 @@ namespace WebClashServer.Classes
 
         public int addDialogueItem(bool isEvent)
         {
-            int id = items.Count;
-
             for (int i = 0; i < items.Count; i++)
                 if (items[i] == null)
                 {
-                    id = i;
-                    break;
+                    items[i] = new DialogueItem(isEvent);
+
+                    return i;
                 }
 
-            items[id] = new DialogueItem(isEvent);
+            items.Add(new DialogueItem(isEvent));
 
-            return id;
+            return items.Count - 1;
         }
     }
 

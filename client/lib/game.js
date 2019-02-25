@@ -400,7 +400,7 @@ const game = {
 
                     //Start dialog
 
-                    ui.dialog.startDialog(game.npcs[id].name, data);
+                    ui.dialog.startDialog(id, game.npcs[id].name, data);
                 });
             }); 
             

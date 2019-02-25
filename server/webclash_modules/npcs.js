@@ -646,6 +646,28 @@ exports.isTimedOut = function(map, id)
     return false;
 };
 
+exports.inDialogRange = function(map, id, x, y)
+{
+    //Check if NPC exists and has a valid dialog
+        
+    if (this.onMap[map][id] == undefined ||
+        this.onMap[map][id].data.dialog == undefined)
+        return false;
+
+    //Get position difference
+
+    let dx = Math.abs(x-this.onMap[map][id].pos.X),
+        dy = Math.abs(y-this.onMap[map][id].pos.Y);
+
+    //Proximity distance in tiles
+
+    let proximity = 3;
+
+    //Return proximity result
+
+    return (dx <= tiled.maps[map].tilewidth*proximity && dy <= tiled.maps[map].tileheight*proximity);
+};
+
 exports.evaluateLootTable = function(map, id)
 {
     //Check if loot table exists

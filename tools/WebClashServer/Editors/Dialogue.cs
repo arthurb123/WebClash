@@ -263,6 +263,8 @@ namespace WebClashServer.Editors
             );
 
             dialogSystem.items[cee.id].eventType = Enum.GetName(typeof(EventType), et);
+
+            dialogSystem.items[cee.id].options.Add(new DialogueOption(-1));
             dialogSystem.items[cee.id].options.Add(new DialogueOption(-1));
 
             elements.Add(cee);

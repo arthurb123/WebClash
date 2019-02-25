@@ -102,7 +102,7 @@ const ui = {
                     '<div id="dialog_box_options" style="position: relative; top: -3px;"></div>' +
                 '</div>';
         },
-        startDialog: function(name, dialog) 
+        startDialog: function(npc, name, dialog) 
         {
             let start = -1;
             
@@ -117,6 +117,7 @@ const ui = {
                 return;
             
             this.cur = dialog;
+            this.npc = npc;
             this.name = name;
             
             this.setDialog(start);
@@ -125,10 +126,17 @@ const ui = {
         {
             if (this.cur[id].isEvent)
             {
-                if (this.cur[id].options[0].next == -1)
-                    this.hideDialog();
-                else
-                    this.setDialog(this.cur[id].options[0].next);
+                socket.emit('CLIENT_DIALOG_EVENT', {
+                    npc: this.npc,
+                    id: id
+                }, function(data) {
+                    let next = (data ? 0 : 1);
+                    
+                    if (ui.dialog.cur[id].options[next].next == -1)
+                        ui.dialog.hideDialog();
+                    else
+                        ui.dialog.setDialog(ui.dialog.cur[id].options[next].next);
+                });
                 
                 return;
             }

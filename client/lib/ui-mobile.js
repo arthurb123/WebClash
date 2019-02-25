@@ -232,7 +232,7 @@ const ui = {
                     '<div id="dialog_box_options" style="position: relative; top: -3px;"></div>' +
                 '</div>';
         },
-        startDialog: function(name, dialog) 
+        startDialog: function(npc, name, dialog) 
         {
             let start = -1;
             
@@ -247,12 +247,30 @@ const ui = {
                 return;
             
             this.cur = dialog;
+            this.npc = npc;
             this.name = name;
             
             this.setDialog(start);
         },
         setDialog: function(id) 
         {
+            if (this.cur[id].isEvent)
+            {
+                socket.emit('CLIENT_DIALOG_EVENT', {
+                    npc: this.npc,
+                    id: id
+                }, function(data) {
+                    let next = (data ? 0 : 1);
+                    
+                    if (ui.dialog.cur[id].options[next].next == -1)
+                        ui.dialog.hideDialog();
+                    else
+                        ui.dialog.setDialog(ui.dialog.cur[id].options[next].next);
+                });
+                
+                return;
+            }
+            
             let contentEl = document.getElementById('dialog_box_content'),
                 optionsEl = document.getElementById('dialog_box_options');
             

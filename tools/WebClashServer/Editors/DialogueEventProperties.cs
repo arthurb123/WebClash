@@ -32,7 +32,9 @@ namespace WebClashServer.Editors
             }
 
             repeatable.Checked = current.repeatable;
+
             nextIndex.Value = current.options[0].next;
+            nextIndex1.Value = current.options[1].next;
         }
 
         private void DialogueEventProperties_Load(object sender, EventArgs e)
@@ -48,6 +50,11 @@ namespace WebClashServer.Editors
         private void nextIndex_ValueChanged(object sender, EventArgs e)
         {
             current.options[0].next = (int)nextIndex.Value;
+        }
+        
+        private void nextIndex1_ValueChanged(object sender, EventArgs e)
+        {
+            current.options[1].next = (int)nextIndex1.Value;
         }
 
         //Load map event

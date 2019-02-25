@@ -561,29 +561,147 @@ exports.handleSocket = function(socket)
             h: game.players[id].character.height
         });
         
-        //Check all available properties
-        
-        let done = false;
+        //Handle unique properties
         
         if (properties != undefined) {
             for (let p = 0; p < properties.length; p++)
             {
-                if (properties[p].name === 'positionX') {
-                    game.players[id].pos.X = (properties[p].value-tiled.maps[map].width/2+.5)*tiled.maps[map].tilewidth-game.players[id].character.width/2;
-
-                    done = true;
-                }
-                if (properties[p].name === 'positionY') {
-                    game.players[id].pos.Y = (properties[p].value-tiled.maps[map].height/2)*tiled.maps[map].tileheight-game.players[id].character.height/2;
-
-                    done = true;
-                }
+                //Position X property
+                
+                if (properties[p].name === 'positionX') 
+                    game.setPlayerTilePosition(
+                        socket,
+                        id,
+                        map,
+                        properties[p].value
+                    );
+                    
+                //Position Y property
+                
+                else if (properties[p].name === 'positionY')
+                    game.setPlayerTilePosition(
+                        socket,
+                        id,
+                        map,
+                        undefined,
+                        properties[p].value
+                    );
             }
-
-            if (done)
-                server.syncPlayerPartially(id, 'position');
         }
         
+    });
+    
+    socket.on('CLIENT_DIALOG_EVENT', function(data, callback) {
+         //Check if valid player
+        
+        if (socket.playing === undefined || !socket.playing)
+            return;
+        
+        //Get player id
+        
+        let id = game.getPlayerIndex(socket.name);
+        
+        //Check if valid
+        
+        if (id == -1)
+            return;
+        
+        //Get map index
+        
+        let map = tiled.getMapIndex(game.players[id].map);
+        
+        //Check if valid
+        
+        if (map == -1)
+            return;
+        
+        //If in dialog range interact with properties
+        
+        if (npcs.inDialogRange(map, data.npc, game.players[id].pos.X, game.players[id].pos.Y))
+        {
+            //Get dialog event data
+            
+            const dialogEvent = npcs.onMap[map][data.npc].data.dialog[data.id];
+            
+            //Check if valid
+            
+            if (dialogEvent == undefined ||
+                !dialogEvent.isEvent)
+                return;
+            
+            //Get unique global variable name for this event
+                
+            let eventName = 
+                map +                   //Map to make sure the event can occur on other maps
+                data.npc +              //NPC name for uniqueness
+                dialogEvent.eventType;  //Event type for uniqueness
+                    
+            //Check if the event has already occured
+                    
+            if (game.getPlayerGlobalVariable(id, eventName) &&
+                !dialogEvent.repeatable) {
+                //Callback false (occurred)
+
+                if (callback != undefined)
+                    callback(false);
+                
+                return;
+            }
+            
+            //Handle events
+            
+            //Load map event
+            
+            if (dialogEvent.eventType === 'LoadMap') {
+                //Get map index
+                
+                let new_map = tiled.getMapIndex(dialogEvent.map);
+                
+                //Check if map is valid
+                
+                if (new_map === -1)
+                    return;
+                
+                //Load map
+                
+                game.loadMap(socket, dialogEvent.map);
+                
+                //Set position
+                
+                game.setPlayerTilePosition(
+                    socket, 
+                    id, 
+                    new_map, 
+                    dialogEvent.positionX, 
+                    dialogEvent.positionY
+                );
+            }
+            
+            //Give item event
+            
+            else if (dialogEvent.eventType === 'GiveItem') {
+                //Add item(s)
+                
+                for (let a = 0; a < dialogEvent.amount; a++)
+                    items.addPlayerItem(socket, id, dialogEvent.item);
+            }
+            
+            //Check if event is repeatable,
+            //if not set a player global variable
+            
+            if (!dialogEvent.repeatable) {
+                game.setPlayerGlobalVariable(
+                    id,
+                    eventName,
+                    true
+                );
+            }
+            
+            //Callback true (success)
+            
+            if (callback != undefined)
+                callback(true);
+        }
     });
     
     socket.on('CLIENT_REQUEST_DIALOG', function(data, callback) {
@@ -610,25 +728,9 @@ exports.handleSocket = function(socket)
         if (map == -1)
             return;
         
-        //Check if NPC exists and has a valid dialog
+        //If in dialog range callback the dialog
         
-        if (npcs.onMap[map][data] == undefined ||
-            npcs.onMap[map][data].data.dialog == undefined)
-            return;
-        
-        //Get position difference
-        
-        let dx = Math.abs(game.players[id].pos.X-npcs.onMap[map][data].pos.X),
-            dy = Math.abs(game.players[id].pos.Y-npcs.onMap[map][data].pos.Y);
-        
-        //Proximity distance in tiles
-        
-        let proximity = 3;
-        
-        //Check if in proximity
-        
-        if (dx <= tiled.maps[map].tilewidth*proximity &&
-            dy <= tiled.maps[map].tileheight*proximity &&
+        if (npcs.inDialogRange(map, data, game.players[id].pos.X, game.players[id].pos.Y) &&
             callback != undefined)
             callback(npcs.onMap[map][data].data.dialog);
     });

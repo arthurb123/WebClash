@@ -192,6 +192,7 @@ exports.savePlayer = function(name, data, cb)
                     wisdom: 1
                 }
             },
+            gvars: {},
             actions: [],
             equipment: {},
             inventory: properties.playerStartingItems,
@@ -211,7 +212,8 @@ exports.savePlayer = function(name, data, cb)
         stats: player.stats,
         actions: player.actions,
         inventory: player.inventory,
-        equipment: player.equipment
+        equipment: player.equipment,
+        gvars: player.gvars
     }, cb);
 }
 
@@ -432,6 +434,35 @@ exports.sendPlayers = function(socket)
             if (i != id && this.players[id].map === this.players[i].map)
                 server.syncPlayer(i, socket, false);
 }
+
+exports.setPlayerTilePosition = function(socket, id, map, x, y)
+{
+    //Calculate actual position 
+    
+    if (x != undefined)
+        this.players[id].pos.X = (x-tiled.maps[map].width/2+.5)*tiled.maps[map].tilewidth-game.players[id].character.width/2;
+    
+    if (y != undefined)
+        this.players[id].pos.Y = (y-tiled.maps[map].height/2)*tiled.maps[map].tileheight-game.players[id].character.height/2;
+    
+    //Sync to players on the same map
+    
+    server.syncPlayerPartially(id, 'position');
+};
+
+exports.setPlayerGlobalVariable = function(id, name, value)
+{
+    //Set player global variable
+    
+    game.players[id].gvars[name] = value;
+};
+
+exports.getPlayerGlobalVariable = function(id, name)
+{
+    //Return player global variable
+    
+    return game.players[id].gvars[name];
+};
 
 exports.loadMap = function(socket, map)
 {
