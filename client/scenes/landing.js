@@ -13,7 +13,7 @@ const landingScene = new lx.Scene(function() {
         lx.DrawSprite(
             logo_sprite,
             lx.GetDimensions().width/2-logo_sprite.Size().W/2,
-            lx.GetDimensions().height*.2-logo_sprite.Size().H/2
+            lx.GetDimensions().height*.175-logo_sprite.Size().H/2
         );
     });
     
@@ -33,15 +33,14 @@ const landingScene = new lx.Scene(function() {
     //Set innerHTML
         
     view.dom.innerHTML = 
-        '<div id="sceneWindow" class="box" style="text-align: center; position: absolute; top: 50%; left: 50%; width: 180px; height: 210px; margin-left: -96px; margin-top: -110px;">' +
+        '<div id="sceneWindow" class="box" style="text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 180px; height: auto; padding-bottom: 10px;">' +
             '<form>' +
-                '<p id="windowTitle" class="header">Login</p><br>' +
-                '<p>Username</p>' +
+                '<p class="info" style="font-size: 14px;">Username</p>' +
                 '<input id="windowName" autocomplete="username" maxlength="16" type="text" style="width: 95%;"></input><br>' +
-                '<p>Password</p>' +
+                '<p class="info" style="font-size: 14px;">Password</p>' +
                 '<input id="windowPassword" autocomplete="current-password" type="password" style="width: 95%;"></input><br>' +
             '</form>' +
-            '<p id="windowErrorText" style="margin: 10px; height: 20px; color: red; font-size: 11px;"></p>' +
+            '<p id="windowErrorText" style="margin: 6px; height: 18px; color: #ff4d4d; font-size: 11px;"></p>' +
         '</div>';
 
     //Add buttons

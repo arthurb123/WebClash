@@ -345,7 +345,7 @@ const ui = {
                 return;
                 
             view.dom.innerHTML += 
-                '<div id="equipmentbar_box" class="box" style="position: absolute; top: 50%; left: 100%; margin-left: -30px; transform: translate(-100%, -75%); width: 48px; height: 335px; text-align: center;">' +
+                '<div id="equipmentbar_box" class="box" style="position: absolute; top: 30px; left: 100%; margin-left: -30px; transform: translate(-100%, 0); width: 336px; height: 46px; text-align: center;">' +
                 '</div>';
 
             this.slots = [

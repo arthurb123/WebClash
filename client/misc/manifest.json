@@ -7,7 +7,6 @@
       "sizes": "128x128"
     }
   ],
-  "start_url": "/",
   "background_color": "#282828",
   "display": "fullscreen",
   "orientation": "landscape",

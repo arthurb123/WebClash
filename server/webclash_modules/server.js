@@ -613,7 +613,7 @@ exports.handleSocket = function(socket)
         //Check if NPC exists and has a valid dialog
         
         if (npcs.onMap[map][data] == undefined ||
-            npcs.onMap[map][data].dialog == undefined)
+            npcs.onMap[map][data].data.dialog == undefined)
             return;
         
         //Get position difference
