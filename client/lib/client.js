@@ -183,7 +183,7 @@ const client = {
              if (data.pos !== undefined)
                  game.npcs[data.id].POS = data.pos;
              if (data.type !== undefined)
-                 game.npcs[data.id]._type = data.type;
+                 game.setNPCType(data.id, data.type);
              if (data.moving !== undefined) 
                  game.npcs[data.id]._moving = data.moving;
              if (data.direction !== undefined) 
@@ -192,8 +192,6 @@ const client = {
                  game.npcs[data.id]._stats = data.stats;
              if (data.health !== undefined)
                  game.setNPCHealth(data.id, data.health);
-             if (data.dialog !== undefined)
-                 game.setNPCDialog(data.id, data.dialog);
              if (data.character !== undefined) {
                  game.npcs[data.id].SPRITE = new lx.Sprite(data.character.src);
                  game.npcs[data.id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
@@ -286,6 +284,6 @@ const client = {
         });
         socket.on('GAME_CHAT_UPDATE', function (data) {
             ui.chat.addMessage(data);
-        })
+        });
     }
 }

@@ -17,6 +17,13 @@ const tiled = {
         
         this.current = map.name;
         
+        //Set new tilewidth and tileheight
+        
+        this.tile = {
+            width: map.tilewidth,
+            height: map.tileheight
+        };
+        
         //Remove all (online) players
         
         game.resetPlayers();

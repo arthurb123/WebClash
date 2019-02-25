@@ -4,6 +4,7 @@ const game = {
     npcs: [],
     items: [],
     tilesets: [],
+    sprites: [],
     isMobile: false,
     
     getPlayerIndex: function(name) 
@@ -286,6 +287,7 @@ const game = {
             });
         
         go.name = name;
+        
         go._moving = false;
         go._direction = 0;
         
@@ -297,6 +299,112 @@ const game = {
         go._nameplate.SHADOW = true;
         
         this.npcs[id] = go.Show(2);
+    },
+    setNPCType: function(id, type) {
+        //Set NPC type
+        
+        this.npcs[id]._type = type;
+        
+        if (type == 'friendly') 
+        {
+            //Check if mobile
+            
+            if (!this.isMobile) {
+                
+                //Add a mouse hover draw event to draw
+                //the dialog option when in range
+
+                this.npcs[id].OnHoverDraw(function(data) {
+
+                    //Get position difference
+
+                    let pos = game.players[game.player].POS;
+
+                    let dx = Math.abs(pos.X-data.position.X),
+                        dy = Math.abs(pos.Y-data.position.Y);
+
+                    //Proximity distance in tiles
+
+                    let proximity = 3;
+
+                    //Check if in proximity
+
+                    if (dx > tiled.tile.width*proximity ||
+                        dy > tiled.tile.height*proximity)
+                        return;
+
+                    //Draw dialog sprite
+
+                    let sprite = game.getSprite('res/ui/dialog.png');
+
+                    lx.DrawSprite(
+                        sprite,
+                        data.position.X+data.size.W/2,
+                        data.position.Y-sprite.Size().H/2
+                    );
+                });
+            } else {
+                
+                //Add NPC specific draws that checks if the dialog
+                //button should be displayed
+                
+                this.npcs[id].Draws(function(data) {
+                    //Get position difference
+
+                    let pos = game.players[game.player].POS;
+
+                    let dx = Math.abs(pos.X-data.position.X),
+                        dy = Math.abs(pos.Y-data.position.Y);
+
+                    //Proximity distance in tiles
+
+                    let proximity = 3;
+
+                    //Check if in proximity
+
+                    if (dx > tiled.tile.width*proximity ||
+                        dy > tiled.tile.height*proximity)
+                        return;
+
+                    //Draw dialog sprite
+
+                    let sprite = game.getSprite('res/ui/dialog.png');
+
+                    lx.DrawSprite(
+                        sprite,
+                        data.position.X+data.size.W/2,
+                        data.position.Y-sprite.Size().H/2
+                    );
+                });
+            }
+            
+            //Give NPC the possibility to engage in dialog
+            //through a click event
+            
+            this.npcs[id].OnMouse(0, function(data) {
+                if (data.state == 0)
+                     return;
+                
+                //Stop mouse
+                
+                lx.StopMouse(0);
+                
+                //Request dialog
+                
+                socket.emit('CLIENT_REQUEST_DIALOG', id, function(data) {
+                    //Check if data is valid
+
+                    if (data == undefined ||
+                        !data)
+                        return;
+
+                    //Start dialog
+
+                    ui.dialog.startDialog(game.npcs[id].name, data);
+                });
+            }); 
+            
+        }
     },
     setNPCHealth: function(id, health) 
     {
@@ -365,22 +473,6 @@ const game = {
         }
         else if (this.npcs[id] != undefined)
             this.npcs[id]._health = health;
-    },
-    setNPCDialog: function(id, dialog)
-    {
-        this.npcs[id]._dialog = dialog;
-        
-        if (this.npcs[id].CLICK_ID.length == 0)
-            this.npcs[id].OnMouse(0, function(data) {
-                if (game.npcs[id]._type !== 'friendly' ||
-                    game.npcs[id]._dialog == undefined ||
-                    data.state == 0)
-                     return;
-                
-                lx.StopMouse(0);
-
-                ui.dialog.startDialog(game.npcs[id].name, game.npcs[id]._dialog);
-            });  
     },
     removeNPC: function(id) 
     {
@@ -580,6 +672,15 @@ const game = {
         tiled.convertAndLoadMap(map);
         
         //...
+    },
+    getSprite: function(src)
+    {
+        if (this.sprites[src] === undefined)
+            this.sprites[src] = new lx.Sprite(src);
+        
+        this.sprites[src].CLIP = undefined;
+        
+        return this.sprites[src]; 
     },
     getTileset: function(src) 
     {

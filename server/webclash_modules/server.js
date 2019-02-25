@@ -586,6 +586,52 @@ exports.handleSocket = function(socket)
         
     });
     
+    socket.on('CLIENT_REQUEST_DIALOG', function(data, callback) {
+        //Check if valid player
+        
+        if (socket.playing === undefined || !socket.playing)
+            return;
+        
+        //Get player id
+        
+        let id = game.getPlayerIndex(socket.name);
+        
+        //Check if valid
+        
+        if (id == -1)
+            return;
+        
+        //Get map index
+        
+        let map = tiled.getMapIndex(game.players[id].map);
+        
+        //Check if valid
+        
+        if (map == -1)
+            return;
+        
+        //Check if NPC exists and has a valid dialog
+        
+        if (npcs.onMap[map][data] == undefined ||
+            npcs.onMap[map][data].dialog == undefined)
+            return;
+        
+        //Get position difference
+        
+        let dx = Math.abs(game.players[id].pos.X-npcs.onMap[map][data].pos.X),
+            dy = Math.abs(game.players[id].pos.Y-npcs.onMap[map][data].pos.Y);
+        
+        //Proximity distance in tiles
+        
+        let proximity = 3;
+        
+        //Check if in proximity
+        
+        if (dx <= tiled.maps[map].tilewidth*proximity &&
+            dy <= tiled.maps[map].tileheight*proximity)
+            callback(npcs.onMap[map][data].data.dialog);
+    });
+    
     socket.on('CLIENT_REQUEST_EXP', function(callback) {
          //Check if valid player
         
@@ -755,9 +801,6 @@ exports.syncNPCPartially = function(map, id, type, socket, broadcast)
         case 'health':
             data.health = npcs.onMap[map][id].data.health;
             break;
-        case 'dialog':
-            data.dialog = npcs.onMap[map][id].data.dialog;
-            break;
     }
     
     if (socket === undefined) 
@@ -779,12 +822,6 @@ exports.syncNPC = function(map, id, socket, broadcast)
     this.syncNPCPartially(map, id, 'direction', socket, broadcast);
     this.syncNPCPartially(map, id, 'character', socket, broadcast);
     this.syncNPCPartially(map, id, 'type', socket, broadcast);
-    
-    //Some (friendly NPCs) have dialog, send it if it exists
-    
-    if (npcs.onMap[map][id].data.type === 'friendly' &&
-        npcs.onMap[map][id].data.dialog != undefined)
-        this.syncNPCPartially(map, id, 'dialog', socket, broadcast);
     
     //Some NPCs don't have stats, so we dont send it if
     //it is empty

@@ -635,9 +635,11 @@ function Lynx2D() {
         this.CONTEXT.CANVAS.addEventListener('mousedown', function(EVENT) { 
             lx.GAME.AUDIO.CAN_PLAY = true; 
             
-            if (lx.CONTEXT.CONTROLLER.MOUSE.STOPPED_BUTTONS[EVENT.button]) return; 
+            if (lx.CONTEXT.CONTROLLER.MOUSE.STOPPED_BUTTONS[EVENT.button]) 
+                return; 
+            
             lx.CONTEXT.CONTROLLER.MOUSE.BUTTONS[EVENT.button] = true; 
-            lx.GAME.HANDLE_MOUSE_CLICK(EVENT.button); 
+            lx.GAME.HANDLE_MOUSE_CLICK(EVENT.button);
         });
         
         this.CONTEXT.CANVAS.addEventListener('mouseup', function(EVENT) { 
@@ -1014,6 +1016,7 @@ function Lynx2D() {
         this.SPRITE = sprite;
         this.BUFFER_ID = -1;
         this.CLICK_ID = [];
+        this.LOOPS = [];
         this.BUFFER_LAYER = 0;
         this.UPDATES = true;
         
@@ -1290,10 +1293,27 @@ function Lynx2D() {
             return this;
         };
         
+        this.OnHoverDraw = function(callback) {
+            if (this.ON_HOVER != undefined) {
+                console.log(lx.GAME.LOG.TIMEFORMAT() + 'GameObject already has a mousehover handler.');
+                
+                return this;
+            } else 
+                this.ON_HOVER = callback;
+            
+            return this;
+        };
+        
         this.RemoveMouse = function(button) {
             if (this.CLICK_ID[button] == undefined) return this;
             else lx.GAME.REMOVE_GO_MOUSE_EVENT(this.CLICK_ID[button]);
                 
+            return this;
+        };
+        
+        this.RemoveHover = function() {
+            this.ON_HOVER = undefined;
+            
             return this;
         };
 
@@ -1309,11 +1329,20 @@ function Lynx2D() {
                 if (this.ANIMATION == undefined) this.SPRITE.RENDER(lx.GAME.TRANSLATE_FROM_FOCUS(this.POS), this.SIZE);
                 else this.ANIMATION.RENDER(lx.GAME.TRANSLATE_FROM_FOCUS(this.POS), this.SIZE);
                 
-                if (this.DRAWS != undefined) this.DRAWS({
-                    graphics: lx.CONTEXT.GRAPHICS,
-                    position: this.POS,
-                    size: this.SIZE
-                });
+                if (this.ON_HOVER != undefined)
+                    if (lx.GAME.GET_MOUSE_IN_BOX(this.POS, this.SIZE))
+                        this.ON_HOVER({
+                            graphics: lx.CONTEXT.GRAPHICS,
+                            position: this.POS,
+                            size: this.SIZE
+                        });
+                
+                if (this.DRAWS != undefined) 
+                    this.DRAWS({
+                        graphics: lx.CONTEXT.GRAPHICS,
+                        position: this.POS,
+                        size: this.SIZE
+                    });
             }
         };
         

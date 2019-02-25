@@ -549,6 +549,46 @@ exports.damageNPC = function(owner, map, id, delta)
         this.killNPC(map, id);
 };
 
+exports.setNPCTarget = function(owner, map, id)
+{
+    //Check if valid
+    
+    if (this.onMap[map] === undefined ||
+        this.onMap[map][id] === undefined ||
+        this.isTimedOut(map, id))
+        return;
+    
+    //Make sure the owner is not the current target
+    
+    if (this.onMap[map][id].target == owner)
+        return;
+    
+    //Get target with highest priority (damage)
+    
+    let newTarget = -1,
+        highestDamage = 0;
+    
+    for (let i = 0; i < this.onMap[map][id].targets.length; i++)
+        if (this.onMap[map][id].targets[i] > highestDamage)
+        {
+            newTarget = i;
+            highestDamage = this.onMap[map][id].targets[i];
+        }
+    
+    //Check if target has changed
+    
+    if (newTarget == this.onMap[map][id].target)
+        return;
+    
+    //Save old target
+    
+    let old = this.onMap[map][id].target;
+    
+    //Set new target
+    
+    this.onMap[map][id].target = newTarget;
+};
+
 exports.killNPC = function(map, id)
 {
     //Check if valid
@@ -604,46 +644,6 @@ exports.isTimedOut = function(map, id)
         return true;
     
     return false;
-};
-
-exports.setNPCTarget = function(owner, map, id)
-{
-    //Check if valid
-    
-    if (this.onMap[map] === undefined ||
-        this.onMap[map][id] === undefined ||
-        this.isTimedOut(map, id))
-        return;
-    
-    //Make sure the owner is not the current target
-    
-    if (this.onMap[map][id].target == owner)
-        return;
-    
-    //Get target with highest priority (damage)
-    
-    let newTarget = -1,
-        highestDamage = 0;
-    
-    for (let i = 0; i < this.onMap[map][id].targets.length; i++)
-        if (this.onMap[map][id].targets[i] > highestDamage)
-        {
-            newTarget = i;
-            highestDamage = this.onMap[map][id].targets[i];
-        }
-    
-    //Check if target has changed
-    
-    if (newTarget == this.onMap[map][id].target)
-        return;
-    
-    //Save old target
-    
-    let old = this.onMap[map][id].target;
-    
-    //Set new target
-    
-    this.onMap[map][id].target = newTarget;
 };
 
 exports.evaluateLootTable = function(map, id)

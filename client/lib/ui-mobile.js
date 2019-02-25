@@ -438,7 +438,7 @@ const ui = {
             this.slots = [];
                 
             view.dom.innerHTML += 
-                '<div id="inventory_box" style="position: absolute; top: 15px; left: 100%; margin-left: -15px; transform: translate(-100%, 0); width: 45%; height: 42px; pointer-events: auto; overflow-x: auto; white-space: nowrap;">' +
+                '<div id="inventory_box" style="position: absolute; top: 15px; left: 100%; margin-left: -15px; transform: translate(-100%, 0); width: 45%; height: 42px; pointer-events: auto; overflow-x: visible; white-space: nowrap;">' +
                     '<div id="inventory_box_content" style="position: absolute; top: 0px; left: 0px; width: auto; height: auto; white-space: nowrap;" ontouchmove="ui.inventory.move();" ontouchend="ui.inventory.removeBox();"></div>' +
                 '</div>';
             
@@ -848,7 +848,7 @@ const ui = {
     {
         create: function() {
             view.dom.innerHTML += 
-                '<div id="status_box" style="position: absolute; top: 100%; left: 100%; margin-top: -19px; margin-left: -' + (ui.controller.size+30) + 'px; transform: translate(-100%, -100%); width: 180px; height: auto;">' +
+                '<div id="status_box" style="position: absolute; top: 100%; left: 100%; margin-top: -19px; margin-left: -' + (ui.controller.size+30) + 'px; transform: translate(-100%, -100%); width: 20%; height: auto;">' +
                     '<div id="status_health_box" class="bar" style="text-align: center; height: 9px; margin-top: 0px;">' +
                         '<div id="status_health" class="bar_content" style="background-color: #E87651; width: 100%;"></div>' +
                         '<p id="status_health_text" class="info" style="position: relative; top: -13px; font-size: 9px;"></p>' +

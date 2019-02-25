@@ -2,8 +2,8 @@
  "map": "1",
  "char_name": "player",
  "pos": {
-  "X": -128,
-  "Y": 52
+  "X": -126,
+  "Y": 56
  },
  "moving": false,
  "direction": 2,
@@ -27,9 +27,15 @@
    "wisdom": 1
   }
  },
- "actions": [],
- "inventory": [
-  "Sword"
+ "actions": [
+  {
+   "name": "Slash"
+  }
  ],
- "equipment": {}
+ "inventory": [
+  null
+ ],
+ "equipment": {
+  "main": "Sword"
+ }
 }
