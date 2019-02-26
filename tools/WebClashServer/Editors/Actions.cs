@@ -340,7 +340,7 @@ namespace WebClashServer.Editors
             if (current == null)
                 return;
 
-            File.WriteAllText(Program.main.location + "/actions/" + current.name + ".json", JsonConvert.SerializeObject(current));
+            File.WriteAllText(Program.main.location + "/actions/" + current.name + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
             MessageBox.Show("Action has been saved!", "WebClash Server - Message");
 
@@ -628,6 +628,8 @@ namespace WebClashServer.Editors
                 scaling = temp.scaling;
 
                 name = temp.name;
+
+                heal = temp.heal;
 
                 src = temp.src;
 

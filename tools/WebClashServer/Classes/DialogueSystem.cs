@@ -60,18 +60,13 @@ namespace WebClashServer.Classes
 
         public bool repeatable = false;
 
-        //Give item event
+        //Events
 
-        public string item = "";
+        public GiveItemEvent giveItemEvent = null;
 
-        public int amount = 1;
+        public LoadMapEvent loadMapEvent = null;
 
-        //Load map event
-
-        public string map = "";
-
-        public int positionX = 0,
-                   positionY = 0;
+        public AffectPlayerEvent affectPlayerEvent = null;
     }
 
     public class DialogueOption
@@ -88,5 +83,29 @@ namespace WebClashServer.Classes
 
         public string text = "";
         public int next = -1;
+    }
+
+    //Events
+
+    public class GiveItemEvent
+    {
+        public string item = "";
+
+        public int amount = 1;
+    }
+
+    public class LoadMapEvent
+    {
+        public string map = "";
+
+        public int positionX = 0,
+                   positionY = 0;
+    }
+
+    public class AffectPlayerEvent
+    {
+        public int healthDifference = 0;
+        public int manaDifference = 0;
+        public int goldDifference = 0;
     }
 }

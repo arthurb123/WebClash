@@ -652,7 +652,7 @@ exports.handleSocket = function(socket)
         if (dialogEvent.eventType === 'LoadMap') {
             //Get map index
 
-            let new_map = tiled.getMapIndex(dialogEvent.map);
+            let new_map = tiled.getMapIndex(dialogEvent.loadMapEvent.map);
 
             //Check if map is valid
 
@@ -661,7 +661,7 @@ exports.handleSocket = function(socket)
 
             //Load map
 
-            game.loadMap(socket, dialogEvent.map);
+            game.loadMap(socket, dialogEvent.loadMapEvent.map);
 
             //Set position
 
@@ -669,8 +669,8 @@ exports.handleSocket = function(socket)
                 socket, 
                 id, 
                 new_map, 
-                dialogEvent.positionX, 
-                dialogEvent.positionY
+                dialogEvent.loadMapEvent.positionX, 
+                dialogEvent.loadMapEvent.positionY
             );
         }
 
@@ -679,8 +679,29 @@ exports.handleSocket = function(socket)
         else if (dialogEvent.eventType === 'GiveItem') {
             //Add item(s)
 
-            for (let a = 0; a < dialogEvent.amount; a++)
-                items.addPlayerItem(socket, id, dialogEvent.item);
+            for (let a = 0; a < dialogEvent.giveItemEvent.amount; a++)
+                items.addPlayerItem(socket, id, dialogEvent.giveItemEvent.item);
+        }
+        
+        //Affect player event
+        
+        else if (dialogEvent.eventType === 'AffectPlayer') {
+            //Add differences
+            
+            //Health
+            
+            if (dialogEvent.affectPlayerEvent.healthDifference > 0)
+                game.healPlayer(id, dialogEvent.affectPlayerEvent.healthDifference);
+            else if (dialogEvent.affectPlayerEvent.healthDifference < 0)
+                game.damagePlayer(id, dialogEvent.affectPlayerEvent.healthDifference);
+            
+            //Mana
+            
+            game.deltaManaPlayer(id, dialogEvent.affectPlayerEvent.manaDifference);
+            
+            //Gold
+            
+            game.deltaGoldPlayer(id, dialogEvent.affectPlayerEvent.goldDifference);
         }
 
         //Check if event is repeatable,

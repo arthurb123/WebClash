@@ -218,6 +218,9 @@ namespace WebClashServer.Editors
                     {
                         CanvasElement target = elements[dialogSystem.items[ca.id].options[i].next];
 
+                        if (target == null)
+                            continue;
+
                         g.DrawLine(
                             p,
                             ca.p.X + ca.size.Width,
@@ -264,6 +267,19 @@ namespace WebClashServer.Editors
 
             dialogSystem.items[cee.id].eventType = Enum.GetName(typeof(EventType), et);
 
+            switch (dialogSystem.items[cee.id].eventType)
+            {
+                case "GiveItem":
+                    dialogSystem.items[cee.id].giveItemEvent = new GiveItemEvent();
+                    break;
+                case "LoadMap":
+                    dialogSystem.items[cee.id].loadMapEvent = new LoadMapEvent();
+                    break;
+                case "AffectPlayer":
+                    dialogSystem.items[cee.id].affectPlayerEvent = new AffectPlayerEvent();
+                    break;
+            }
+
             dialogSystem.items[cee.id].options.Add(new DialogueOption(-1));
             dialogSystem.items[cee.id].options.Add(new DialogueOption(-1));
 
@@ -282,6 +298,13 @@ namespace WebClashServer.Editors
         private void loadMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
             addCanvasEventElement(EventType.LoadMap);
+
+            canvas.Invalidate();
+        }
+
+        private void affectPlayerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addCanvasEventElement(EventType.AffectPlayer);
 
             canvas.Invalidate();
         }
@@ -318,6 +341,7 @@ namespace WebClashServer.Editors
     public enum EventType
     {
         GiveItem = 0,
-        LoadMap
+        LoadMap,
+        AffectPlayer
     }
 }

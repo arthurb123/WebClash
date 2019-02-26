@@ -29,6 +29,11 @@ namespace WebClashServer.Editors
 
                     LoadMapOptions();
                     break;
+                case "AffectPlayer":
+                    affectPlayerPanel.Visible = true;
+
+                    LoadAffectPlayerOptions();
+                    break;
             }
 
             repeatable.Checked = current.repeatable;
@@ -63,10 +68,10 @@ namespace WebClashServer.Editors
         {
             LoadMapsList();
 
-            mapList.SelectedItem = current.map;
+            mapList.SelectedItem = current.loadMapEvent.map;
 
-            positionX.Value = current.positionX;
-            positionY.Value = current.positionY;
+            positionX.Value = current.loadMapEvent.positionX;
+            positionY.Value = current.loadMapEvent.positionY;
         }
 
         private void LoadMapsList()
@@ -94,17 +99,17 @@ namespace WebClashServer.Editors
 
         private void mapList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            current.map = mapList.SelectedItem.ToString();
+            current.loadMapEvent.map = mapList.SelectedItem.ToString();
         }
 
         private void positionX_ValueChanged(object sender, EventArgs e)
         {
-            current.positionX = (int)positionX.Value;
+            current.loadMapEvent.positionX = (int)positionX.Value;
         }
 
         private void positionY_ValueChanged(object sender, EventArgs e)
         {
-            current.positionY = (int)positionY.Value;
+            current.loadMapEvent.positionY = (int)positionY.Value;
         }
 
         //Give item event
@@ -113,8 +118,8 @@ namespace WebClashServer.Editors
         {
             LoadItemList();
 
-            itemList.SelectedItem = current.item;
-            itemAmount.Value = current.amount;
+            itemList.SelectedItem = current.giveItemEvent.item;
+            itemAmount.Value = current.giveItemEvent.amount;
         }
 
         private void LoadItemList()
@@ -146,12 +151,36 @@ namespace WebClashServer.Editors
 
         private void itemList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            current.item = itemList.SelectedItem.ToString();
+            current.giveItemEvent.item = itemList.SelectedItem.ToString();
         }
 
         private void itemAmount_ValueChanged(object sender, EventArgs e)
         {
-            current.amount = (int)itemAmount.Value;
+            current.giveItemEvent.amount = (int)itemAmount.Value;
+        }
+
+        //Affect player event
+
+        private void LoadAffectPlayerOptions()
+        {
+            healthDifference.Value = current.affectPlayerEvent.healthDifference;
+            manaDifference.Value = current.affectPlayerEvent.manaDifference;
+            goldDifference.Value = current.affectPlayerEvent.goldDifference;
+        }
+
+        private void healthDifference_ValueChanged(object sender, EventArgs e)
+        {
+            current.affectPlayerEvent.healthDifference = (int)healthDifference.Value;
+        }
+
+        private void manaDifference_ValueChanged(object sender, EventArgs e)
+        {
+            current.affectPlayerEvent.manaDifference = (int)manaDifference.Value;
+        }
+
+        private void goldDifference_ValueChanged(object sender, EventArgs e)
+        {
+            current.affectPlayerEvent.goldDifference = (int)goldDifference.Value;
         }
     }
 }

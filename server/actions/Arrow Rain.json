@@ -1,1 +1,55 @@
-{"sw":320,"sh":320,"name":"Arrow Rain","src":"res/icons/9.png","description":"Shoot multiple arrows.","scaling":{"power":0.01,"agility":0.25,"intelligence":0.0,"wisdom":0.0,"toughness":0.0,"vitality":0.0},"elements":[{"x":145,"y":195,"w":32,"h":32,"type":"projectile","src":"res/actions/12.png","speed":8,"direction":"vertical","projectileSpeed":5,"projectileDistance":8},{"x":108,"y":183,"w":32,"h":32,"type":"projectile","src":"res/actions/12.png","speed":8,"direction":"vertical","projectileSpeed":5,"projectileDistance":8},{"x":182,"y":182,"w":32,"h":32,"type":"projectile","src":"res/actions/12.png","speed":8,"direction":"vertical","projectileSpeed":5,"projectileDistance":8}],"heal":0,"cooldown":15}
+{
+  "sw": 320,
+  "sh": 320,
+  "name": "Arrow Rain",
+  "src": "res/icons/9.png",
+  "description": "Shoot multiple arrows.",
+  "scaling": {
+    "power": 0.05,
+    "agility": 0.12,
+    "intelligence": 0.0,
+    "wisdom": 0.0,
+    "toughness": 0.0,
+    "vitality": 0.0
+  },
+  "elements": [
+    {
+      "x": 145,
+      "y": 195,
+      "w": 32,
+      "h": 32,
+      "type": "projectile",
+      "src": "res/actions/12.png",
+      "speed": 8,
+      "direction": "vertical",
+      "projectileSpeed": 5,
+      "projectileDistance": 8
+    },
+    {
+      "x": 108,
+      "y": 183,
+      "w": 32,
+      "h": 32,
+      "type": "projectile",
+      "src": "res/actions/12.png",
+      "speed": 8,
+      "direction": "vertical",
+      "projectileSpeed": 5,
+      "projectileDistance": 8
+    },
+    {
+      "x": 182,
+      "y": 182,
+      "w": 32,
+      "h": 32,
+      "type": "projectile",
+      "src": "res/actions/12.png",
+      "speed": 8,
+      "direction": "vertical",
+      "projectileSpeed": 5,
+      "projectileDistance": 8
+    }
+  ],
+  "heal": 0,
+  "cooldown": 15
+}

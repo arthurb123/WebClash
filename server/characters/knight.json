@@ -1,1 +1,19 @@
-{"src":"res/characters/50.png","width":32,"height":48,"animation":{"direction":"horizontal","speed":11},"collider":{"x":6,"y":30,"width":20,"height":12},"movement":{"acceleration":0.03,"max":0.8}}
+{
+  "src": "res/characters/50.png",
+  "width": 32,
+  "height": 48,
+  "animation": {
+    "direction": "horizontal",
+    "speed": 11
+  },
+  "collider": {
+    "x": 6,
+    "y": 30,
+    "width": 20,
+    "height": 12
+  },
+  "movement": {
+    "acceleration": 0.03,
+    "max": 0.8
+  }
+}

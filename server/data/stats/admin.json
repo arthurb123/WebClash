@@ -1,12 +1,12 @@
 {
- "map": "2",
+ "map": "1",
  "char_name": "player",
  "pos": {
-  "X": -32,
-  "Y": -56
+  "X": 0,
+  "Y": 0
  },
  "moving": false,
- "direction": 1,
+ "direction": 0,
  "health": {
   "cur": 100,
   "max": 100
@@ -29,11 +29,9 @@
  },
  "actions": [],
  "inventory": [
-  "Sword",
-  "Ring of Arrows"
+  "Sword"
  ],
  "equipment": {},
- "gvars": {
-  "0GiveItem": true
- }
+ "gold": 0,
+ "gvars": {}
 }

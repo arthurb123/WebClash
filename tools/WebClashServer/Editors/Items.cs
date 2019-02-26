@@ -184,7 +184,7 @@ namespace WebClashServer
             if (oldName != name.Text)
                 File.Delete(Program.main.location + "/items/" + oldName + ".json");
 
-            File.WriteAllText(Program.main.location + "/items/" + name.Text + ".json", JsonConvert.SerializeObject(current));
+            File.WriteAllText(Program.main.location + "/items/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
             MessageBox.Show("Item has been saved!", "WebClash Server - Message");
 

@@ -214,6 +214,7 @@ exports.savePlayer = function(name, data, cb)
         actions: player.actions,
         inventory: player.inventory,
         equipment: player.equipment,
+        gold: player.gold,
         gvars: player.gvars
     }, cb);
 }
@@ -290,6 +291,26 @@ exports.deltaManaPlayer = function(id, delta)
     //Sync mana
 
     server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
+};
+
+exports.deltaGoldPlayer = function(id, delta)
+{
+    //Check if possible
+    
+    if (this.players[id].gold+delta < 0)
+        return false;
+    
+    //Add delta
+    
+    this.players[id].gold += delta;
+    
+    //Sync gold
+
+    server.syncPlayerPartially(id, 'gold', this.players[id].socket, false);
+    
+    //Return true
+    
+    return true;
 };
 
 exports.addPlayerExperience = function(id, exp)

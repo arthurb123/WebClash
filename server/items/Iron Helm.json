@@ -1,1 +1,23 @@
-{"source":"res/items/6.png","type":"equipment","rarity":"uncommon","value":18,"description":"A sturdy helm.","heal":0,"mana":0,"gold":0,"consumableAction":"","consumableActionUses":1,"equippable":"head","equippableSource":"res/equipment/head/1.png","equippableAction":"","stats":{"power":0,"toughness":1,"vitality":1,"intelligence":0,"wisdom":0,"agility":0}}
+{
+  "source": "res/items/6.png",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "value": 18,
+  "description": "A sturdy helm.",
+  "heal": 0,
+  "mana": 0,
+  "gold": 0,
+  "consumableAction": "",
+  "consumableActionUses": 1,
+  "equippable": "head",
+  "equippableSource": "res/equipment/head/1.png",
+  "equippableAction": "",
+  "stats": {
+    "power": 0,
+    "toughness": 1,
+    "vitality": 1,
+    "intelligence": 0,
+    "wisdom": 0,
+    "agility": 0
+  }
+}

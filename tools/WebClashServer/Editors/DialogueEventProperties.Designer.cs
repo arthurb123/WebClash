@@ -47,6 +47,13 @@
             this.repeatable = new System.Windows.Forms.CheckBox();
             this.nextIndex1 = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
+            this.affectPlayerPanel = new System.Windows.Forms.Panel();
+            this.healthDifference = new System.Windows.Forms.NumericUpDown();
+            this.label9 = new System.Windows.Forms.Label();
+            this.manaDifference = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
+            this.goldDifference = new System.Windows.Forms.NumericUpDown();
+            this.label11 = new System.Windows.Forms.Label();
             this.loadMapPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.positionY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.positionX)).BeginInit();
@@ -54,6 +61,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.itemAmount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nextIndex)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nextIndex1)).BeginInit();
+            this.affectPlayerPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.healthDifference)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.manaDifference)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.goldDifference)).BeginInit();
             this.SuspendLayout();
             // 
             // loadMapPanel
@@ -286,11 +297,110 @@
             this.label5.TabIndex = 37;
             this.label5.Text = "Next (Occurred)";
             // 
+            // affectPlayerPanel
+            // 
+            this.affectPlayerPanel.Controls.Add(this.goldDifference);
+            this.affectPlayerPanel.Controls.Add(this.label11);
+            this.affectPlayerPanel.Controls.Add(this.manaDifference);
+            this.affectPlayerPanel.Controls.Add(this.label10);
+            this.affectPlayerPanel.Controls.Add(this.healthDifference);
+            this.affectPlayerPanel.Controls.Add(this.label9);
+            this.affectPlayerPanel.Location = new System.Drawing.Point(12, 12);
+            this.affectPlayerPanel.Name = "affectPlayerPanel";
+            this.affectPlayerPanel.Size = new System.Drawing.Size(286, 126);
+            this.affectPlayerPanel.TabIndex = 7;
+            this.affectPlayerPanel.Visible = false;
+            // 
+            // healthDifference
+            // 
+            this.healthDifference.Location = new System.Drawing.Point(174, 9);
+            this.healthDifference.Maximum = new decimal(new int[] {
+            1215752191,
+            23,
+            0,
+            0});
+            this.healthDifference.Minimum = new decimal(new int[] {
+            -727379969,
+            232,
+            0,
+            -2147483648});
+            this.healthDifference.Name = "healthDifference";
+            this.healthDifference.Size = new System.Drawing.Size(102, 20);
+            this.healthDifference.TabIndex = 4;
+            this.healthDifference.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.healthDifference.ValueChanged += new System.EventHandler(this.healthDifference_ValueChanged);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(12, 11);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(72, 13);
+            this.label9.TabIndex = 2;
+            this.label9.Text = "Health (Delta)";
+            // 
+            // manaDifference
+            // 
+            this.manaDifference.Location = new System.Drawing.Point(174, 35);
+            this.manaDifference.Maximum = new decimal(new int[] {
+            1215752191,
+            23,
+            0,
+            0});
+            this.manaDifference.Minimum = new decimal(new int[] {
+            -727379969,
+            232,
+            0,
+            -2147483648});
+            this.manaDifference.Name = "manaDifference";
+            this.manaDifference.Size = new System.Drawing.Size(102, 20);
+            this.manaDifference.TabIndex = 6;
+            this.manaDifference.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.manaDifference.ValueChanged += new System.EventHandler(this.manaDifference_ValueChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(12, 37);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(68, 13);
+            this.label10.TabIndex = 5;
+            this.label10.Text = "Mana (Delta)";
+            // 
+            // goldDifference
+            // 
+            this.goldDifference.Location = new System.Drawing.Point(174, 61);
+            this.goldDifference.Maximum = new decimal(new int[] {
+            1215752191,
+            23,
+            0,
+            0});
+            this.goldDifference.Minimum = new decimal(new int[] {
+            -727379969,
+            232,
+            0,
+            -2147483648});
+            this.goldDifference.Name = "goldDifference";
+            this.goldDifference.Size = new System.Drawing.Size(102, 20);
+            this.goldDifference.TabIndex = 8;
+            this.goldDifference.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.goldDifference.ValueChanged += new System.EventHandler(this.goldDifference_ValueChanged);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(12, 63);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(63, 13);
+            this.label11.TabIndex = 7;
+            this.label11.Text = "Gold (Delta)";
+            // 
             // DialogueEventProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(312, 215);
+            this.Controls.Add(this.affectPlayerPanel);
             this.Controls.Add(this.nextIndex1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.giveItemPanel);
@@ -316,6 +426,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.itemAmount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nextIndex)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nextIndex1)).EndInit();
+            this.affectPlayerPanel.ResumeLayout(false);
+            this.affectPlayerPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.healthDifference)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.manaDifference)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.goldDifference)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -341,5 +456,12 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.NumericUpDown nextIndex1;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Panel affectPlayerPanel;
+        private System.Windows.Forms.NumericUpDown healthDifference;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.NumericUpDown manaDifference;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.NumericUpDown goldDifference;
+        private System.Windows.Forms.Label label11;
     }
 }

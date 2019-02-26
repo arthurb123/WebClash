@@ -152,7 +152,7 @@ namespace WebClashServer.Editors
                 return;
             }
 
-            File.WriteAllText(Program.main.location + "/npcs/" + name.Text + ".json", JsonConvert.SerializeObject(current));
+            File.WriteAllText(Program.main.location + "/npcs/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
             MessageBox.Show("NPC has been saved!", "WebClash Server - Message");
 

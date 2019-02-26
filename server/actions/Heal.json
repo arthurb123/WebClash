@@ -1,1 +1,31 @@
-{"sw":320,"sh":320,"name":"Heal","src":"res/icons/8.png","description":"Heals 15 health.","scaling":{"power":0.0,"agility":0.0,"intelligence":0.0,"wisdom":0.0,"toughness":0.0,"vitality":0.0},"elements":[{"x":137,"y":140,"w":48,"h":48,"src":"res/actions/2.png","speed":4,"direction":"horizontal"}],"heal":15,"cooldown":312}
+{
+  "sw": 320,
+  "sh": 320,
+  "name": "Heal",
+  "src": "res/icons/8.png",
+  "description": "Heals 15 health.",
+  "scaling": {
+    "power": 0.0,
+    "agility": 0.0,
+    "intelligence": 0.0,
+    "wisdom": 0.0,
+    "toughness": 0.0,
+    "vitality": 0.0
+  },
+  "elements": [
+    {
+      "x": 137,
+      "y": 140,
+      "w": 48,
+      "h": 48,
+      "type": "static",
+      "src": "res/actions/2.png",
+      "speed": 4,
+      "direction": "horizontal",
+      "projectileSpeed": 1,
+      "projectileDistance": 0
+    }
+  ],
+  "heal": 15,
+  "cooldown": 312
+}
