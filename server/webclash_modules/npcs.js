@@ -89,6 +89,7 @@ exports.createNPC = function(map, name, x, y)
     //Get specified NPC
     
     let npc = {
+        name: name,
         data: this.loadNPC(name)
     };
 
@@ -521,7 +522,7 @@ exports.damageNPC = function(owner, map, id, delta)
         this.isTimedOut(map, id))
         return;
     
-    //Add delta correctly
+    //Add delta accordingly
     
     this.onMap[map][id].data.health.cur+=delta;
     
@@ -545,7 +546,7 @@ exports.damageNPC = function(owner, map, id, delta)
     
     //Check if health is equal to 0 - if so kill
     
-    if (this.onMap[map][id].data.health.cur == 0)
+    if (this.onMap[map][id].data.health.cur <= 0)
         this.killNPC(map, id);
 };
 

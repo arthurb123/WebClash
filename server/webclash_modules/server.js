@@ -628,9 +628,10 @@ exports.handleSocket = function(socket)
         //Get unique global variable name for this event
 
         let eventName = 
-            map +                   //Map to make sure the event can occur on other maps
-            data.npc +              //NPC name for uniqueness
-            dialogEvent.eventType;  //Event type for uniqueness
+            map.toString() +                    //Map to make sure the event can occur on other maps
+            npcs.onMap[map][data.npc].name +    //NPC name for uniqueness
+            dialogEvent.eventType +             //Event type for uniqueness
+            data.id;                            //Dialog ID for uniqueness
 
         //Check if the event has already occured
 

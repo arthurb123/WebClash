@@ -566,10 +566,14 @@ const ui = {
             
             //Item
             
-            let item = player.inventory[slot];
+            let item = player.inventory[slot],
+                isEquipment = false;
             
-            if (item === undefined) 
+            if (item === undefined) {
                 item = player.equipment[slot];
+                
+                isEquipment = true;
+            }
             
             //Color
             
@@ -660,14 +664,22 @@ const ui = {
             
             view.dom.appendChild(displayBox);
             
-            //Create mouse following
+            //Create mouse following with the according offset
+            
+            let offset = {
+                x: -displayBox.offsetWidth-8,
+                y: -displayBox.offsetHeight
+            };
+            
+            if (isEquipment)
+                offset.y = 8;
 
-            displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-displayBox.offsetWidth-8 + 'px';
-            displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-displayBox.offsetHeight + 'px';
+            displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X+offset.x + 'px';
+            displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y+offset.y + 'px';
 
             this.displayBoxLoopID = lx.GAME.ADD_LOOPS(function() {
-                 displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-displayBox.offsetWidth-8 + 'px';
-                 displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-displayBox.offsetHeight + 'px';
+                 displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X+offset.x + 'px';
+                 displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y+offset.y + 'px';
             });
         },
         removeBox: function() {
