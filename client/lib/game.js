@@ -627,8 +627,8 @@ const game = {
             //Check owner
 
             if (data.owner != -1 &&
-                game.players[this.player] != undefined &&
-                game.players[this.player].name !== data.owner)
+                game.players[game.player] != undefined &&
+                game.players[game.player].name !== data.owner)
                 worldItem._nameplate.Text('*' + name);
 
             worldItem._nameplate
