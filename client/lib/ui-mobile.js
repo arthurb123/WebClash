@@ -456,7 +456,7 @@ const ui = {
             this.slots = [];
                 
             view.dom.innerHTML += 
-                '<div id="inventory_box" style="position: absolute; top: 15px; left: 100%; margin-left: -15px; transform: translate(-100%, 0); width: 45%; height: 42px; pointer-events: auto; overflow-x: auto; white-space: nowrap;">' +
+                '<div id="inventory_box" style="position: absolute; top: 15px; left: 100%; margin-left: -15px; transform: translate(-100%, 0); width: 45%; height: 48px; pointer-events: auto; overflow-x: auto; white-space: nowrap;">' +
                     '<div id="inventory_box_content" style="position: absolute; top: 0px; left: 0px; width: auto; height: auto; white-space: nowrap;" ontouchmove="ui.inventory.move();" ontouchend="ui.inventory.removeBox();"></div>' +
                 '</div>';
             
@@ -471,10 +471,8 @@ const ui = {
                     this.slots[i] = 'inventory_slot' + i;
                 }
             
-            /*
-            document.getElementById('inventory_box').innerHTML +=
-                '<font class="info" style="font-size: 11px; color: yellow;">0 Gold</font>';
-                */
+            view.dom.innerHTML +=
+                '<font id="gold_label" class="info" style="font-size: 11px; color: yellow; position: absolute; left: 100%; top: 62px; margin-left: -20px; transform: translate(-100%, 0); width: auto; text-align: right; white-space: nowrap;">0 Gold</font>';
             
             this.reload();
         },
@@ -515,6 +513,9 @@ const ui = {
                 
                 document.getElementById(this.slots[slot]).style.border = '1px solid gray';
             }
+        },
+        setGold: function(gold) {
+            document.getElementById('gold_label').innerHTML = gold + ' Gold';
         },
         useItem: function(slot) {
             if (player.inventory[slot] !== undefined &&

@@ -129,6 +129,12 @@ const client = {
                  game.setPlayerEquipment(id, data.equipment);
              if (data.actions !== undefined)
                  player.setActions(data.actions);
+             if (data.gold !== undefined) {
+                 game.players[id]._gold = data.gold;   
+                 
+                 if (id === game.player)
+                     ui.inventory.setGold(data.gold);
+             }
              if (data.character !== undefined) {
                  game.players[id].SPRITE = new lx.Sprite(data.character.src);
                  game.players[id].SPRITE.Clip(0, 0, data.character.width, data.character.height);

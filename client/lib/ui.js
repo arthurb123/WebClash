@@ -493,7 +493,7 @@ const ui = {
                 }
             
             document.getElementById('inventory_box').innerHTML +=
-                '<font class="info" style="font-size: 11px; color: yellow;">0 Gold</font>';
+                '<font id="gold_label" class="info" style="font-size: 11px; color: yellow;">0 Gold</font>';
         },
         reload: function() {
             if (this.slots === undefined)
@@ -524,6 +524,9 @@ const ui = {
                 
                 document.getElementById(this.slots[slot]).style.border = '1px solid gray';
             }
+        },
+        setGold: function(gold) {
+            document.getElementById('gold_label').innerHTML = gold + ' Gold';
         },
         useItem: function(slot) {
             if (player.inventory[slot] !== undefined) {

@@ -785,6 +785,9 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
             };
             
             break;
+        case 'gold':
+            data.gold = game.players[id].gold;
+            break;
         case 'health':
             data.health = game.players[id].health;
             break;

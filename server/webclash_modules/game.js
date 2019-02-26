@@ -86,6 +86,7 @@ exports.addPlayer = function(socket)
             server.syncPlayerPartially(id, 'health', socket, false);  
             server.syncPlayerPartially(id, 'mana', socket, false);
             server.syncPlayerPartially(id, 'actions', socket, false);
+            server.syncPlayerPartially(id, 'gold', socket, false);
             
             //Sync inventory
             for (let i = 0; i < game.players[id].inventory.length; i++)
