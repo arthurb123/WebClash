@@ -33,10 +33,11 @@
             this.import = new System.Windows.Forms.Button();
             this.delete = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.mapTypeHelp = new System.Windows.Forms.Button();
+            this.mapType = new System.Windows.Forms.ComboBox();
             this.fixTilesets = new System.Windows.Forms.LinkLabel();
             this.mapTilesets = new System.Windows.Forms.Label();
             this.mapSize = new System.Windows.Forms.Label();
-            this.mapID = new System.Windows.Forms.Label();
             this.mapTilesetStatus = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -80,10 +81,11 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.mapTypeHelp);
+            this.groupBox1.Controls.Add(this.mapType);
             this.groupBox1.Controls.Add(this.fixTilesets);
             this.groupBox1.Controls.Add(this.mapTilesets);
             this.groupBox1.Controls.Add(this.mapSize);
-            this.groupBox1.Controls.Add(this.mapID);
             this.groupBox1.Controls.Add(this.mapTilesetStatus);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label3);
@@ -96,6 +98,30 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Map Information";
+            // 
+            // mapTypeHelp
+            // 
+            this.mapTypeHelp.Location = new System.Drawing.Point(210, 19);
+            this.mapTypeHelp.Name = "mapTypeHelp";
+            this.mapTypeHelp.Size = new System.Drawing.Size(21, 25);
+            this.mapTypeHelp.TabIndex = 12;
+            this.mapTypeHelp.Text = "?";
+            this.mapTypeHelp.UseVisualStyleBackColor = true;
+            this.mapTypeHelp.Click += new System.EventHandler(this.mapTypeHelp_Click);
+            // 
+            // mapType
+            // 
+            this.mapType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.mapType.FormattingEnabled = true;
+            this.mapType.Items.AddRange(new object[] {
+            "Protected",
+            "Neutral",
+            "Hostile"});
+            this.mapType.Location = new System.Drawing.Point(112, 20);
+            this.mapType.Name = "mapType";
+            this.mapType.Size = new System.Drawing.Size(97, 23);
+            this.mapType.TabIndex = 11;
+            this.mapType.SelectedIndexChanged += new System.EventHandler(this.mapType_SelectedIndexChanged);
             // 
             // fixTilesets
             // 
@@ -123,21 +149,12 @@
             // 
             // mapSize
             // 
-            this.mapSize.Location = new System.Drawing.Point(72, 54);
+            this.mapSize.Location = new System.Drawing.Point(72, 66);
             this.mapSize.Name = "mapSize";
             this.mapSize.Size = new System.Drawing.Size(159, 15);
             this.mapSize.TabIndex = 7;
             this.mapSize.Text = "-";
             this.mapSize.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // mapID
-            // 
-            this.mapID.Location = new System.Drawing.Point(72, 24);
-            this.mapID.Name = "mapID";
-            this.mapID.Size = new System.Drawing.Size(159, 15);
-            this.mapID.TabIndex = 6;
-            this.mapID.Text = "-";
-            this.mapID.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // mapTilesetStatus
             // 
@@ -154,14 +171,14 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(12, 90);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(52, 15);
+            this.label5.Size = new System.Drawing.Size(49, 15);
             this.label5.TabIndex = 4;
-            this.label5.Text = "Tilesets:";
+            this.label5.Text = "Tilesets";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 54);
+            this.label3.Location = new System.Drawing.Point(11, 66);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(31, 15);
             this.label3.TabIndex = 2;
@@ -172,9 +189,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(11, 24);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(22, 15);
+            this.label2.Size = new System.Drawing.Size(33, 15);
             this.label2.TabIndex = 1;
-            this.label2.Text = "ID:";
+            this.label2.Text = "Type";
             // 
             // label1
             // 
@@ -231,8 +248,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button help;
         private System.Windows.Forms.Label mapSize;
-        private System.Windows.Forms.Label mapID;
         private System.Windows.Forms.Label mapTilesets;
         private System.Windows.Forms.LinkLabel fixTilesets;
+        private System.Windows.Forms.ComboBox mapType;
+        private System.Windows.Forms.Button mapTypeHelp;
     }
 }

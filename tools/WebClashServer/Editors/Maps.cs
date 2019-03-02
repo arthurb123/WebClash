@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -54,12 +55,17 @@ namespace WebClashServer.Editors
                 return;
            
             current = new Map(Program.main.location + "/maps/" + mapName + ".json");
-
-            mapID.Text = mapList.SelectedIndex.ToString();
+            
             mapSize.Text = current.width + "x" + current.height;
             mapTilesets.Text = current.tilesets.Length.ToString();
 
             CheckTilesets();
+
+            if (current.mapType != null &&
+                current.mapType != string.Empty)
+                mapType.SelectedItem = current.mapType[0].ToString().ToUpper() + current.mapType.Substring(1, current.mapType.Length - 1);
+            else
+                mapType.SelectedItem = string.Empty;
         }
 
         private void CheckTilesets()
@@ -114,6 +120,8 @@ namespace WebClashServer.Editors
                     File.Copy(ofd.FileName, startLocation + ofd.SafeFileName, true);
 
                     ImportTilesets();
+
+                    SetMapType("Protected");
 
                     LoadMapsList();
 
@@ -225,6 +233,34 @@ namespace WebClashServer.Editors
                 MessageBox.Show(e.Message, "WebClash Server - Error");
             }
         }
+
+        private void mapType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetMapType(mapType.SelectedItem.ToString());
+        }
+
+        private void mapTypeHelp_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Map types determine the behaviour of the map.\nPossible map types are as follows:\n\nProtected -> Regenerate all stats\nNeutral -> No regeneration\nHostile -> No regeneration, NPCs attack players", "WebClash Server - Map Types");
+        }
+
+        private void SetMapType(string mapTypeString)
+        {
+            if (mapTypeString == null ||
+                mapTypeString == string.Empty)
+                return;
+
+            string map = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".json";
+
+            JObject mjo = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(map));
+
+            if (mjo.Property("mapType") != null)
+                mjo.Remove("mapType");
+
+            mjo.Add("mapType", mapTypeString.ToLower());
+
+            File.WriteAllText(map, JsonConvert.SerializeObject(mjo, Formatting.Indented));
+        }
     }
 
     public class Map
@@ -242,6 +278,8 @@ namespace WebClashServer.Editors
                 height = temp.height;
 
                 tilesets = temp.tilesets;
+
+                mapType = temp.mapType;
             }
             catch (Exception e)
             {
@@ -253,6 +291,8 @@ namespace WebClashServer.Editors
                    height = 0;
 
         public Tileset[] tilesets = new Tileset[0];
+
+        public string mapType = string.Empty;
     }
 
     public class Tileset

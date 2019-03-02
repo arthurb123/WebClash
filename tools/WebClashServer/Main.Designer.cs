@@ -110,11 +110,11 @@
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.itemsToolStripMenuItem,
+            this.mapsToolStripMenuItem,
             this.charactersToolStripMenuItem,
             this.NPCsToolStripMenuItem,
             this.actionsToolStripMenuItem,
-            this.mapsToolStripMenuItem});
+            this.itemsToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
