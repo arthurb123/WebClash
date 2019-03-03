@@ -81,6 +81,8 @@
             this.delete = new System.Windows.Forms.LinkLabel();
             this.consumablePanel = new System.Windows.Forms.Panel();
             this.equipmentPanel = new System.Windows.Forms.Panel();
+            this.minLevel = new System.Windows.Forms.NumericUpDown();
+            this.label21 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.value)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.icon)).BeginInit();
@@ -100,6 +102,7 @@
             this.groupBox3.SuspendLayout();
             this.consumablePanel.SuspendLayout();
             this.equipmentPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minLevel)).BeginInit();
             this.SuspendLayout();
             // 
             // itemList
@@ -113,6 +116,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.minLevel);
+            this.groupBox1.Controls.Add(this.label21);
             this.groupBox1.Controls.Add(this.type);
             this.groupBox1.Controls.Add(this.label15);
             this.groupBox1.Controls.Add(this.value);
@@ -145,7 +150,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(9, 72);
+            this.label15.Location = new System.Drawing.Point(8, 71);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(31, 13);
             this.label15.TabIndex = 16;
@@ -160,7 +165,7 @@
             0,
             0});
             this.value.Name = "value";
-            this.value.Size = new System.Drawing.Size(135, 20);
+            this.value.Size = new System.Drawing.Size(117, 20);
             this.value.TabIndex = 15;
             this.value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.value.ValueChanged += new System.EventHandler(this.value_ValueChanged);
@@ -177,7 +182,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(238, 20);
+            this.label4.Location = new System.Drawing.Point(244, 16);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(28, 13);
             this.label4.TabIndex = 11;
@@ -240,7 +245,7 @@
             this.icon.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.icon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.icon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.icon.Location = new System.Drawing.Point(220, 39);
+            this.icon.Location = new System.Drawing.Point(226, 35);
             this.icon.Name = "icon";
             this.icon.Size = new System.Drawing.Size(64, 64);
             this.icon.TabIndex = 4;
@@ -704,6 +709,29 @@
             this.equipmentPanel.TabIndex = 23;
             this.equipmentPanel.Visible = false;
             // 
+            // minLevel
+            // 
+            this.minLevel.Location = new System.Drawing.Point(226, 121);
+            this.minLevel.Maximum = new decimal(new int[] {
+            -1981284353,
+            -1966660860,
+            0,
+            0});
+            this.minLevel.Name = "minLevel";
+            this.minLevel.Size = new System.Drawing.Size(78, 20);
+            this.minLevel.TabIndex = 19;
+            this.minLevel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.minLevel.ValueChanged += new System.EventHandler(this.minLevel_ValueChanged);
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(172, 123);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(44, 13);
+            this.label21.TabIndex = 18;
+            this.label21.Text = "Min. Lvl";
+            // 
             // Items
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -748,6 +776,7 @@
             this.groupBox3.ResumeLayout(false);
             this.consumablePanel.ResumeLayout(false);
             this.equipmentPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.minLevel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -807,5 +836,7 @@
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Panel consumablePanel;
         private System.Windows.Forms.Panel equipmentPanel;
+        private System.Windows.Forms.NumericUpDown minLevel;
+        private System.Windows.Forms.Label label21;
     }
 }

@@ -1,5 +1,15 @@
 exports.handleSocket = function(socket)
 {
+    //Check if direct or external connection
+    
+    if (socket.handshake.xdomain) {
+        //Check if external connections/clients are allowed
+        
+        if (!properties.allowExternalClients) {
+            return;
+        }
+    }
+    
     //If the connected socket is not playing,
     //send to the landing page (login)
     

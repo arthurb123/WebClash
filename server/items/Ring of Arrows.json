@@ -3,6 +3,7 @@
   "type": "equipment",
   "rarity": "exotic",
   "value": 80,
+  "minLevel": 3,
   "description": "I like to keep my distance.",
   "heal": 0,
   "mana": 0,

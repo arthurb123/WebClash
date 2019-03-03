@@ -1,0 +1,46 @@
+{
+  "name": "Angel",
+  "movement": "free",
+  "range": 6,
+  "type": "hostile",
+  "character": "angel",
+  "stats": {
+    "level": 8,
+    "exp": 20,
+    "power": 0,
+    "toughness": 1,
+    "agility": 0,
+    "wisdom": 2,
+    "intelligence": 4,
+    "vitality": 0
+  },
+  "health": {
+    "cur": 65,
+    "max": 65
+  },
+  "actions": [
+    {
+      "action": "Heal",
+      "range": 0,
+      "extraCooldown": 125
+    },
+    {
+      "action": "Combust",
+      "range": 2,
+      "extraCooldown": 21
+    },
+    {
+      "action": "Arrow Rain",
+      "range": 6,
+      "extraCooldown": 312
+    }
+  ],
+  "items": [
+    {
+      "item": "Healing Slab",
+      "dropChance": 1
+    }
+  ],
+  "dialog": [],
+  "dialogElements": []
+}

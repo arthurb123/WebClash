@@ -3,6 +3,7 @@
   "type": "consumable",
   "rarity": "uncommon",
   "value": 5,
+  "minLevel": 0,
   "description": "I can't read.",
   "heal": 0,
   "mana": 0,

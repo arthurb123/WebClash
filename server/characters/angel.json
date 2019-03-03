@@ -1,0 +1,19 @@
+{
+  "src": "res/characters/80.png",
+  "width": 48,
+  "height": 48,
+  "animation": {
+    "direction": "horizontal",
+    "speed": 9
+  },
+  "collider": {
+    "x": 10,
+    "y": 32,
+    "width": 26,
+    "height": 12
+  },
+  "movement": {
+    "acceleration": 0.125,
+    "max": 1.65
+  }
+}

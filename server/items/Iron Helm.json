@@ -3,6 +3,7 @@
   "type": "equipment",
   "rarity": "uncommon",
   "value": 18,
+  "minLevel": 2,
   "description": "A sturdy helm.",
   "heal": 0,
   "mana": 0,

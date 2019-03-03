@@ -1,5 +1,6 @@
 {
     "port": 5315,
+    "allowExternalClients": true,
     
     "serverName": "WebClash Server",
     "clientName": "WebClash Client",

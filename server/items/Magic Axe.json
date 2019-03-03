@@ -3,6 +3,7 @@
   "type": "equipment",
   "rarity": "rare",
   "value": 32,
+  "minLevel": 2,
   "description": "This is one hot tool.",
   "heal": 0,
   "mana": 0,

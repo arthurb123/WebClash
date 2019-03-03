@@ -129,6 +129,12 @@ exports.usePlayerItem = function(socket, id, name)
     if (item === undefined)
         return false;
     
+    //Check if minimal item level matches player level
+    
+    if (item.minLevel !== 0 &&
+        game.players[id].level < item.minLevel)
+        return false;
+    
     //Check if piece of equipment
     
     if (item.type === 'equipment')

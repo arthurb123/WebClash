@@ -69,6 +69,7 @@ exports.updateProjectiles = function() {
                         continue;
                     
                     if (this.damagePlayers(
+                        this.projectiles[m][p].map,
                         npcs.onMap[this.projectiles[m][p].map][this.projectiles[m][p].npcOwner].data.stats, 
                         this.projectiles[m][p], 
                         this.collection[this.projectiles[m][p].a_id]
@@ -375,7 +376,7 @@ exports.createPlayerAction = function(slot, id)
     
     //Damage NPCs
     
-    this.damageNPCs(id, game.players[id].attributes, actionData, this.collection[a_id]);
+    this.damageNPCs(id, game.players[id].attributes, actionData, this.collection[a_id], true);
     
     //Check for healing
     
@@ -433,7 +434,7 @@ exports.createNPCAction = function(possibleAction, map, id)
     
     //Damage players
     
-    this.damagePlayers(npcs.onMap[map][id].data.stats, actionData, this.collection[a_id]);
+    this.damagePlayers(map, npcs.onMap[map][id].data.stats, actionData, this.collection[a_id], true);
     
     //Check for healing
     
@@ -454,15 +455,22 @@ exports.createNPCAction = function(possibleAction, map, id)
     npcs.onMap[map][id].combat_cooldown.start(this.collection[a_id].name, this.collection[a_id].cooldown+possibleAction.extraCooldown);
 };
 
-exports.damageNPCs = function(owner, stats, actionData, action)
+exports.damageNPCs = function(owner, stats, actionData, action, onlyStatic)
 {
     if (npcs.onMap[actionData.map] == undefined ||
         npcs.onMap[actionData.map].length == 0)
         return false;
     
+    if (onlyStatic == undefined)
+        onlyStatic = false;
+    
     let result = false;
     
     for (let e = 0; e < actionData.elements.length; e++) {
+        if (actionData.elements[e].type === 'projectile' &&
+            onlyStatic)
+            continue;
+        
         for (let n = 0; n < npcs.onMap[actionData.map].length; n++)
         {   
             if (npcs.onMap[actionData.map][n].data.type !== 'hostile' ||
@@ -533,11 +541,18 @@ exports.healNPCs = function(actionData, action)
         }
 };
 
-exports.damagePlayers = function(stats, actionData, action)
+exports.damagePlayers = function(map, stats, actionData, action, onlyStatic)
 {
     let done = false;
     
-    for (let e = 0; e < actionData.elements.length; e++)
+    if (onlyStatic == undefined)
+        onlyStatic = false;
+    
+    for (let e = 0; e < actionData.elements.length; e++) {
+        if (actionData.elements[e].type === 'projectile' &&
+            onlyStatic)
+            continue;
+        
         for (let p = 0; p < game.players.length; p++)
         {
             if (tiled.getMapIndex(game.players[p].map) != actionData.map)
@@ -558,11 +573,13 @@ exports.damagePlayers = function(stats, actionData, action)
             };
             
             if (tiled.checkRectangularCollision(actionRect, playerRect)) {
-                game.damagePlayer(p, this.calculateDamage(stats, action.scaling));
+                if (game.damagePlayer(p, this.calculateDamage(stats, action.scaling)))
+                    npcs.removeNPCTargets(map, p);
                 
                 done = true;
             }
         }
+    }
     
     return done;
 }

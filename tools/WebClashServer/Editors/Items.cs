@@ -103,7 +103,9 @@ namespace WebClashServer
 
             rarity.SelectedItem = FirstCharToUpper(current.rarity);
             type.SelectedItem = FirstCharToUpper(current.type);
+
             value.Value = current.value;
+            minLevel.Value = current.minLevel;
 
             description.Text = current.description;
 
@@ -263,6 +265,11 @@ namespace WebClashServer
         private void value_ValueChanged(object sender, EventArgs e)
         {
             current.value = (int)value.Value;
+        }
+        
+        private void minLevel_ValueChanged(object sender, EventArgs e)
+        {
+            current.minLevel = (int)minLevel.Value;
         }
 
         private void description_TextChanged(object sender, EventArgs e)
@@ -444,6 +451,7 @@ namespace WebClashServer
                 description = temp.description;
 
                 value = temp.value;
+                minLevel = temp.minLevel;
 
                 //Consumable settings
 
@@ -474,6 +482,7 @@ namespace WebClashServer
         public string rarity = "common";
 
         public int value = 0;
+        public int minLevel = 0;
 
         public string description = "";
 

@@ -196,6 +196,8 @@ const game = {
             level != oldLevel) {
             player.requestExpTarget();
             
+            ui.inventory.reload();
+            
             ui.chat.addMessage('You are now level ' + level + '!');
         }
     },
@@ -305,7 +307,7 @@ const game = {
         
         this.npcs[id]._type = type;
         
-        if (type == 'friendly') 
+        if (type === 'friendly') 
         {
             //Check if mobile
             

@@ -33,6 +33,10 @@ exports.startLoop = function()
         //Update world items
         
         items.updateMaps();
+        
+        //Update players
+
+        game.updatePlayers();
     }, 1000);
 };
 
@@ -138,6 +142,24 @@ exports.removePlayer = function(socket)
             
             break;
         }
+};
+
+exports.updatePlayers = function()
+{
+    //Cycle through all players
+    
+    for (let p = 0; p < this.players.length; p++) {
+        //Regenerate stats if on a protected map
+        
+        switch (tiled.getMapType(this.players[p].map)) {
+            case 'protected': //Protected -> Regenerate players stats (health, mana, etc.)
+                this.regeneratePlayer(p);
+                break;
+            case 'hostile': //Hostile -> NPCs will attack players within a range
+                //...
+                break;
+        };
+    }
 };
 
 exports.saveAllPlayers = function(callback)
@@ -251,12 +273,16 @@ exports.damagePlayer = function(id, damage)
         
         server.syncPlayerPartially(id, 'position');
         
-        return;
+        return true;
     }
     
     //Sync health
 
     server.syncPlayerPartially(id, 'health');
+    
+    //Return false
+    
+    return false;
 };
 
 exports.healPlayer = function(id, heal)
@@ -273,6 +299,25 @@ exports.healPlayer = function(id, heal)
     //Sync health
 
     server.syncPlayerPartially(id, 'health');
+};
+
+exports.regeneratePlayer = function(id)
+{
+    //Regenerate health if possible
+    
+    if (this.players[id].health.cur < this.players[id].health.max) {
+        this.players[id].health.cur++;
+        
+        server.syncPlayerPartially(id, 'health');
+    };
+    
+    //Regenerate mana if possible
+    
+    if (this.players[id].mana.cur < this.players[id].health.max) {
+        server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
+    };
+    
+    //...
 };
 
 exports.deltaManaPlayer = function(id, delta)

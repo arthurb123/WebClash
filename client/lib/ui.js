@@ -499,11 +499,10 @@ const ui = {
             if (this.slots === undefined)
                 return;
             
-            for (let i = 0; i < this.slots.length; i++) 
+            for (let i = 0; i < this.slots.length; i++) {
                 document.getElementById(this.slots[i]).innerHTML = '';
-            
-            for (let i = 0; i < player.inventory.length; i++) {
-                if (player.inventory[i] === undefined)
+                
+                if (player.inventory[i] == undefined)
                     continue;
                 
                 this.reloadItem(i);
@@ -513,11 +512,17 @@ const ui = {
             if (document.getElementById(this.slots[slot]) == undefined)
                 return;
             
+            document.getElementById(this.slots[slot]).style.backgroundColor = '';
+            
             if (player.inventory[slot] !== undefined) {
                 document.getElementById(this.slots[slot]).innerHTML = 
                     '<img src="' + player.inventory[slot].source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>';
                 
                 document.getElementById(this.slots[slot]).style.border = '1px solid ' + this.getItemColor(player.inventory[slot].rarity);
+                
+                if (player.inventory[slot].minLevel !== 0 &&
+                    player.inventory[slot].minLevel > game.players[game.player]._level)
+                    document.getElementById(this.slots[slot]).style.backgroundColor = '#ff6666';
             }
             else {
                 document.getElementById(this.slots[slot]).innerHTML = '';
@@ -583,15 +588,19 @@ const ui = {
             let color = this.getItemColor(item.rarity);
             let note = '';
 
-            if (item.type === 'consumable') 
-                note = '(Click to use)';
-            
-            if (item.type === 'equipment') {
-                if (player.equipment[slot] === undefined)
-                    note = '(Click to equip)';
-                else
-                    note = '(Click to unequip)';
-            }            
+            if (item.minLevel == undefined || 
+                item.minLevel === 0 || 
+                game.players[game.player]._level >= item.minLevel) {
+                if (item.type === 'consumable') 
+                    note = '(Click to use)';
+
+                if (item.type === 'equipment') {
+                    if (player.equipment[slot] === undefined)
+                        note = '(Click to equip)';
+                    else
+                        note = '(Click to unequip)';
+                }  
+            }
             
             //Action
             
@@ -656,11 +665,11 @@ const ui = {
             displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 16px; height: auto; text-align: center;';
             displayBox.innerHTML =
                     '<font class="header" style="font-size: 15px; color: ' + color + ';">' + item.name + '</font><br>' + 
-                    '<font class="info" style="font-size: 10px;">' + type + '</font><br>' +
+                    '<font class="info" style="font-size: 10px;">' + (item.minLevel > 0 ? ' lvl ' + item.minLevel + ' ' : '') + type + '</font><br>' +
                     action +
                     '<font class="info" style="position: relative; top: 6px;">' + item.description + '</font><br>' +
                     stats +
-                    '<font class="info" style="position: relative; top: 10px; font-size: 11px; margin-top: 5px;">' + note + '</font><br>' +
+                    (note !== '' ? '<font class="info" style="position: relative; top: 10px; font-size: 11px; margin-top: 5px;">' + note + '</font><br>' : '') +
                     '<font class="info" style="position: relative; top: 10px; font-size: 11px; color: yellow;">' + item.value + ' Gold</font><br>';
 
             //Append

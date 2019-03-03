@@ -45,10 +45,9 @@ exports.loadMap = function(name)
 
 exports.mapWithName = function(name)
 {   
-    this.maps.forEach(function(map) {
-        if (map.name == name)
-            return map;
-    });
+    for (let i = 0; i < this.maps.length; i++)
+        if (this.maps[i].name === name) 
+            return this.maps[i];
 };
 
 exports.getMapIndex = function(name)
@@ -58,6 +57,17 @@ exports.getMapIndex = function(name)
             return i;
     
     return -1;
+};
+
+exports.getMapType = function(name)
+{
+    for (let i = 0; i < this.maps.length; i++)
+        if (this.maps[i].name === name) { 
+            if (this.maps[i].mapType == undefined)
+                this.maps[i].mapType = 'protected';
+            
+            return this.maps[i].mapType;
+        }
 };
 
 exports.getMapTileRectangles = function(map, id) 

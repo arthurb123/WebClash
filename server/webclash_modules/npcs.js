@@ -151,6 +151,7 @@ exports.loadNPC = function(name)
         let location = 'npcs';
         
         let npc = JSON.parse(fs.readFileSync(location + '/' + name + '.json', 'utf-8'));
+        
         npc.character = game.characters[npc.character];
         
         return npc;
@@ -328,8 +329,11 @@ exports.updateNPCCombat = function(map, id)
     
     //Check if target exists
     
-    if (this.onMap[map][id].target == -1)
+    if (this.onMap[map][id].target == -1) {
+        //Regenerate if necessary
+        
         return;
+    }
     
     //Check if target is still on the same map
     
@@ -538,7 +542,7 @@ exports.damageNPC = function(owner, map, id, delta)
     
     //Make sure we update the target
     
-    this.setNPCTarget(owner, map, id);
+    this.setNPCTarget(map, id, owner);
 
     //Sync health
     
@@ -550,7 +554,7 @@ exports.damageNPC = function(owner, map, id, delta)
         this.killNPC(map, id);
 };
 
-exports.setNPCTarget = function(owner, map, id)
+exports.setNPCTarget = function(map, id, owner)
 {
     //Check if valid
     
@@ -561,7 +565,8 @@ exports.setNPCTarget = function(owner, map, id)
     
     //Make sure the owner is not the current target
     
-    if (this.onMap[map][id].target == owner)
+    if (owner != undefined &&
+        this.onMap[map][id].target == owner)
         return;
     
     //Get target with highest priority (damage)
@@ -569,12 +574,17 @@ exports.setNPCTarget = function(owner, map, id)
     let newTarget = -1,
         highestDamage = 0;
     
-    for (let i = 0; i < this.onMap[map][id].targets.length; i++)
+    for (let i = 0; i < this.onMap[map][id].targets.length; i++) 
+    {
+        if (this.onMap[map][id].targets[i] == undefined)
+            continue; 
+    
         if (this.onMap[map][id].targets[i] > highestDamage)
         {
             newTarget = i;
             highestDamage = this.onMap[map][id].targets[i];
         }
+    }
     
     //Check if target has changed
     
@@ -588,6 +598,28 @@ exports.setNPCTarget = function(owner, map, id)
     //Set new target
     
     this.onMap[map][id].target = newTarget;
+};
+
+exports.removeNPCTargets = function(map, target)
+{
+    //Cycle through all NPCs on map
+    
+    for (let i = 0; i < this.onMap[map].length; i++) {
+        //If not a hostile NPC, continue
+        
+        if (this.onMap[map][i].type === 'friendly')
+            continue;
+        
+        if (this.onMap[map][i].targets[target] != undefined) {
+            //Set damage done to zero
+            
+            this.onMap[map][i].targets[target] = 0;
+            
+            //Refresh targets
+    
+            this.setNPCTarget(map, i);
+        }
+    }
 };
 
 exports.killNPC = function(map, id)
