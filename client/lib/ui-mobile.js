@@ -668,7 +668,7 @@ const ui = {
                     action +
                     '<font class="info" style="position: relative; top: 4px;">' + item.description + '</font><br>' +
                     stats +
-                    (note !== '' ? '<font class="info" style="position: relative; top: 10px; font-size: 11px; margin-top: 5px;">' + note + '</font><br>' : '') +
+                    (note !== '' ? '<font class="info" style="font-size: 11px; margin-top: 5px;">' + note + '</font><br>' : '') +
                     '<font class="info" style="font-size: 10px; color: yellow;">' + item.value + ' Gold</font><br>';
             
             displayBox._slot = slot;
