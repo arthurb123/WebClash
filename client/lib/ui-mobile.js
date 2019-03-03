@@ -493,9 +493,6 @@ const ui = {
             for (let i = 0; i < this.slots.length; i++) {
                 document.getElementById(this.slots[i]).innerHTML = '';
                 
-                if (player.inventory[i] == undefined)
-                    continue;
-                
                 this.reloadItem(i);
             }
         },
