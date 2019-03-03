@@ -966,7 +966,7 @@ const ui = {
             this.buffer.push({
                 uitext: uitext.Show(),
                 movement: {
-                    x: 0,
+                    x: (Math.random()-Math.random())*.35,
                     y: -.35,
                     dy: .05
                 },

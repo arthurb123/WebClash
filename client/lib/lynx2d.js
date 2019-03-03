@@ -21,6 +21,10 @@ function Lynx2D() {
             this.RUNNING = true;
             if (FPS != undefined) this.SETTINGS.FPS = FPS;
             
+            window.onfocus = function() {
+                lx.GAME.LOG.DATA.P_TIMESTAMP = lx.GAME.TIMESTAMP();
+            };
+            
             this.REQUEST_FRAME();
             
             console.log(this.LOG.TIMEFORMAT() + 'Started game loop at ' + this.SETTINGS.FPS + ' FPS!');
@@ -75,14 +79,17 @@ function Lynx2D() {
             if (lx.GAME.RUNNING) {
                 lx.GAME.LOG.DATA.TIMESTAMP = lx.GAME.TIMESTAMP();
                 
-                lx.GAME.LOG.DATA.U_DT = lx.GAME.LOG.DATA.U_DT + Math.min(1, (lx.GAME.LOG.DATA.TIMESTAMP - lx.GAME.LOG.DATA.P_TIMESTAMP) / 1000);
-                lx.GAME.LOG.DATA.R_DT = lx.GAME.LOG.DATA.R_DT + Math.min(1, (lx.GAME.LOG.DATA.TIMESTAMP - lx.GAME.LOG.DATA.P_TIMESTAMP) / 1000);
+                lx.GAME.LOG.DATA.U_DT += Math.min(1, (lx.GAME.LOG.DATA.TIMESTAMP - lx.GAME.LOG.DATA.P_TIMESTAMP) / 1000);
+                lx.GAME.LOG.DATA.R_DT += Math.min(1, (lx.GAME.LOG.DATA.TIMESTAMP - lx.GAME.LOG.DATA.P_TIMESTAMP) / 1000);
+                
                 while (lx.GAME.LOG.DATA.U_DT > 1/60) {
-                    lx.GAME.LOG.DATA.U_DT = lx.GAME.LOG.DATA.U_DT - 1/60;
+                    lx.GAME.LOG.DATA.U_DT -= 1/60;
                     lx.GAME.UPDATE();
                 }
-                while (lx.GAME.LOG.DATA.R_DT > 1/lx.GAME.SETTINGS.FPS) {
-                    lx.GAME.LOG.DATA.R_DT = lx.GAME.LOG.DATA.R_DT - 1/lx.GAME.SETTINGS.FPS;
+                
+                let RDT = 1/(lx.GAME.SETTINGS.DYNAMIC_FPS ? lx.GAME.SETTINGS.DFPS : lx.GAME.SETTINGS.FPS);
+                while (lx.GAME.LOG.DATA.R_DT > RDT) {
+                    lx.GAME.LOG.DATA.R_DT -= RDT;
                     lx.GAME.RENDER();
                 }
 
@@ -178,7 +185,7 @@ function Lynx2D() {
             
             //Audio
             this.AUDIO.UPDATE();
-            ``
+
             this.LOG.UPDATE();
             
             this.LOG.DATA.UPDATES++;

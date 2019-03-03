@@ -2,22 +2,22 @@
  "map": "1",
  "char_name": "player",
  "pos": {
-  "X": 232,
-  "Y": -102
+  "X": -114,
+  "Y": -29
  },
  "moving": false,
- "direction": 2,
+ "direction": 0,
  "health": {
-  "cur": 91,
+  "cur": 110,
   "max": 110
  },
  "mana": {
   "cur": 100,
   "max": 100
  },
- "level": 5,
+ "level": 6,
  "stats": {
-  "exp": 28,
+  "exp": 12,
   "attributes": {
    "power": 1,
    "toughness": 1,
@@ -37,12 +37,12 @@
   null,
   {
    "name": "Heal",
-   "uses": 2,
+   "uses": 1,
    "max": 3
   },
   {
    "name": "Heal",
-   "uses": 3,
+   "uses": 2,
    "max": 3
   },
   {
@@ -57,21 +57,26 @@
   }
  ],
  "inventory": [
-  "Iron Helm",
+  null,
   "Magic Axe",
   "Iron Helm",
   "Healing Slab",
-  "Healing Slab",
   "Iron Helm",
+  null,
   "Sword",
   "Magic Axe",
   "Healing Slab",
+  null,
+  null,
   "Healing Slab",
-  "Iron Helm",
+  null,
+  null,
+  "Magic Axe",
   "Healing Slab",
+  null,
+  null,
   "Iron Helm",
-  "Iron Helm",
-  "Magic Axe"
+  null
  ],
  "equipment": {
   "main": "Ring of Arrows",
