@@ -261,7 +261,7 @@ const game = {
                 if (this._type === 'friendly') 
                     this._nameplate.Color('black');
                 else if (this._type === 'hostile')
-                    this._nameplate.Color('red');
+                    this._nameplate.Color('#FF4242');
                 
                 if (this._stats !== undefined)
                     this._nameplate.Text('lvl ' + this._stats.level + ' - ' + this.name);
@@ -270,7 +270,7 @@ const game = {
                 {    
                     if (this._healthbar === undefined) {
                         this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W, 8).Follows(go);
-                        this._healthbar = new lx.UITexture('red', 0, -36, this._health.cur/this._health.max*this.SIZE.W, 8).Follows(go);
+                        this._healthbar = new lx.UITexture('#FF4242', 0, -36, this._health.cur/this._health.max*this.SIZE.W, 8).Follows(go);
                     } else {
                         this._healthbar.SIZE.W = this._health.cur/this._health.max*this.SIZE.W;
                     

@@ -438,7 +438,8 @@ exports.createNPCAction = function(possibleAction, map, id)
     
     //Check for healing
     
-    this.healNPCs(actionData, this.collection[a_id]);
+    if (this.collection[a_id].heal > 0)
+        this.healNPCs(actionData, this.collection[a_id]);
     
     //Add projectiles
     

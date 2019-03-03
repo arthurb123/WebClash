@@ -998,10 +998,11 @@ const ui = {
                 Math.random()*target.Size().W,
                 Math.random()*target.Size().H,
                 14,
-                'red'
+                '#FF4242'
             );
             
             t.Follows(target);
+            t.SHADOW = true;
             
             this.add(t, 30);
         },
@@ -1016,6 +1017,7 @@ const ui = {
             );
             
             t.Follows(target);
+            t.SHADOW = true;
             
             this.add(t, 30);
         },
@@ -1026,10 +1028,11 @@ const ui = {
                 Math.random()*target.Size().W,
                 Math.random()*target.Size().H,
                 14,
-                'green'
+                '#8cff66'
             );
             
             t.Follows(target);
+            t.SHADOW = true;
             
             this.add(t, 30);
         }

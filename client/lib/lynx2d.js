@@ -1892,8 +1892,8 @@ function Lynx2D() {
             lx.CONTEXT.GRAPHICS.textAlign = this.ALIGN;
             
             if (this.SHADOW) {
-                lx.CONTEXT.GRAPHICS.shadowColor = 'rgba(0,0,0,0.25)';
-                lx.CONTEXT.GRAPHICS.shadowOffsetY = 1.125;
+                lx.CONTEXT.GRAPHICS.shadowColor = 'rgba(0,0,0,0.85)';
+                lx.CONTEXT.GRAPHICS.shadowOffsetY = 1.45;
             }
             
             if (this.TARGET != undefined) {

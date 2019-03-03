@@ -3,9 +3,14 @@ exports.handleSocket = function(socket)
     //Check if direct or external connection
     
     if (socket.handshake.xdomain) {
+        
         //Check if external connections/clients are allowed
         
         if (!properties.allowExternalClients) {
+            //If not allowed, disconnect socket
+            
+            socket.disconnect();
+            
             return;
         }
     }
