@@ -102,7 +102,7 @@ exports.addPlayerItem = function(socket, id, name)
     
     //Sync player item
     
-    server.syncInventoryItem(slot, id, socket, false);
+    server.syncInventoryItem(slot, id, socket);
     
     return true;
 };
@@ -161,15 +161,12 @@ exports.usePlayerItem = function(socket, id, name)
     {
         //Consume item
         
-        if (item.heal > 0)
-            game.healPlayer(id, item.heal);
-        
-        if (item.mana > 0)
-            game.deltaManaPlayer(id, item.mana);
+        game.healPlayer(id, item.heal);
+        game.deltaManaPlayer(id, item.mana);
         
         //Gold
         
-        //...
+        game.deltaGoldPlayer(id, item.gold);
         
         //Add action
         
@@ -179,6 +176,20 @@ exports.usePlayerItem = function(socket, id, name)
         //Remove player item
         
         this.removePlayerItem(id, name);
+    }
+    
+    //Check if dialog
+    
+    if (item.type === 'dialog')
+    {
+        //Start dialog
+        
+        server.syncItemDialog(id, item.name, item.dialog);
+        
+        //Consume item if necessary
+        
+        if (item.consumableDialog)
+            this.removePlayerItem(id, name);
     }
     
     return true;
@@ -192,7 +203,7 @@ exports.removePlayerItem = function(id, name)
         if (game.players[id].inventory[i] === name) {
             game.players[id].inventory[i] = undefined;
             
-            server.syncInventoryItem(i, id, game.players[id].socket, false);
+            server.syncInventoryItem(i, id, game.players[id].socket);
             
             break;
         }

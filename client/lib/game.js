@@ -302,12 +302,13 @@ const game = {
         
         this.npcs[id] = go.Show(3);
     },
-    setNPCType: function(id, type) {
+    setNPCType: function(id, type, hasDialog) {
         //Set NPC type
         
         this.npcs[id]._type = type;
         
-        if (type === 'friendly') 
+        if (type === 'friendly' &&
+            hasDialog) 
         {
             //Check if mobile
             

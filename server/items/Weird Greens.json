@@ -1,0 +1,134 @@
+{
+  "source": "res/items/4.png",
+  "type": "dialog",
+  "rarity": "rare",
+  "value": 12,
+  "minLevel": 3,
+  "description": "Why did I pick this up.",
+  "heal": 0,
+  "mana": 0,
+  "gold": 0,
+  "consumableAction": "",
+  "consumableActionUses": 1,
+  "equippable": "none",
+  "equippableSource": "",
+  "equippableAction": "",
+  "stats": {
+    "power": 0,
+    "toughness": 0,
+    "vitality": 0,
+    "intelligence": 0,
+    "wisdom": 0,
+    "agility": 0
+  },
+  "dialog": [
+    {
+      "text": "What do I do with this stuff?",
+      "portrait": null,
+      "entry": true,
+      "isEvent": false,
+      "options": [
+        {
+          "text": "I'm hungry",
+          "next": 1
+        },
+        {
+          "text": "Nothing",
+          "next": -1
+        }
+      ],
+      "eventType": "",
+      "repeatable": false,
+      "giveItemEvent": null,
+      "loadMapEvent": null,
+      "affectPlayerEvent": null
+    },
+    {
+      "text": "",
+      "portrait": "",
+      "entry": false,
+      "isEvent": true,
+      "options": [
+        {
+          "text": "",
+          "next": 2
+        },
+        {
+          "text": "",
+          "next": 3
+        }
+      ],
+      "eventType": "AffectPlayer",
+      "repeatable": false,
+      "giveItemEvent": null,
+      "loadMapEvent": null,
+      "affectPlayerEvent": {
+        "healthDifference": -85,
+        "manaDifference": -85,
+        "goldDifference": 0
+      }
+    },
+    {
+      "text": "That was really bad..",
+      "portrait": null,
+      "entry": false,
+      "isEvent": false,
+      "options": [
+        {
+          "text": "I don't feel so good.",
+          "next": -1
+        }
+      ],
+      "eventType": "",
+      "repeatable": false,
+      "giveItemEvent": null,
+      "loadMapEvent": null,
+      "affectPlayerEvent": null
+    },
+    {
+      "text": "I'm not gonna eat that again!",
+      "portrait": null,
+      "entry": false,
+      "isEvent": false,
+      "options": [
+        {
+          "text": "What was I thinking??",
+          "next": -1
+        }
+      ],
+      "eventType": "",
+      "repeatable": false,
+      "giveItemEvent": null,
+      "loadMapEvent": null,
+      "affectPlayerEvent": null
+    },
+    null
+  ],
+  "dialogElements": [
+    {
+      "p": "20, 131",
+      "id": 0,
+      "isEvent": false,
+      "size": "100, 80"
+    },
+    {
+      "p": "207, 108",
+      "id": 1,
+      "isEvent": true,
+      "size": "80, 20"
+    },
+    {
+      "p": "366, 22",
+      "id": 2,
+      "isEvent": false,
+      "size": "100, 80"
+    },
+    {
+      "p": "367, 152",
+      "id": 3,
+      "isEvent": false,
+      "size": "100, 80"
+    }
+  ],
+  "consumableDialog": true
+}

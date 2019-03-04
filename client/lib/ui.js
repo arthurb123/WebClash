@@ -149,6 +149,8 @@ const ui = {
             
             if (this.cur[id].portrait != undefined)
                 contentEl.innerHTML += '<img src="' + this.cur[id].portrait + '" class="portrait"/><br>';
+            else
+                contentEl.innerHTML += '<br>';
             
             contentEl.innerHTML += this.cur[id].text;
             optionsEl.innerHTML = '';

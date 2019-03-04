@@ -31,6 +31,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Items));
             this.itemList = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.minLevel = new System.Windows.Forms.NumericUpDown();
+            this.label21 = new System.Windows.Forms.Label();
             this.type = new System.Windows.Forms.ComboBox();
             this.label15 = new System.Windows.Forms.Label();
             this.value = new System.Windows.Forms.NumericUpDown();
@@ -81,9 +83,13 @@
             this.delete = new System.Windows.Forms.LinkLabel();
             this.consumablePanel = new System.Windows.Forms.Panel();
             this.equipmentPanel = new System.Windows.Forms.Panel();
-            this.minLevel = new System.Windows.Forms.NumericUpDown();
-            this.label21 = new System.Windows.Forms.Label();
+            this.dialogPanel = new System.Windows.Forms.Panel();
+            this.dialogSettings = new System.Windows.Forms.GroupBox();
+            this.dialogConsumable = new System.Windows.Forms.CheckBox();
+            this.dialogButton = new System.Windows.Forms.Button();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minLevel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.value)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.icon)).BeginInit();
             this.equipmentSettings.SuspendLayout();
@@ -102,7 +108,8 @@
             this.groupBox3.SuspendLayout();
             this.consumablePanel.SuspendLayout();
             this.equipmentPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.minLevel)).BeginInit();
+            this.dialogPanel.SuspendLayout();
+            this.dialogSettings.SuspendLayout();
             this.SuspendLayout();
             // 
             // itemList
@@ -136,6 +143,29 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "General Settings";
+            // 
+            // minLevel
+            // 
+            this.minLevel.Location = new System.Drawing.Point(226, 121);
+            this.minLevel.Maximum = new decimal(new int[] {
+            -1981284353,
+            -1966660860,
+            0,
+            0});
+            this.minLevel.Name = "minLevel";
+            this.minLevel.Size = new System.Drawing.Size(78, 20);
+            this.minLevel.TabIndex = 19;
+            this.minLevel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.minLevel.ValueChanged += new System.EventHandler(this.minLevel_ValueChanged);
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(172, 123);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(44, 13);
+            this.label21.TabIndex = 18;
+            this.label21.Text = "Min. Lvl";
             // 
             // type
             // 
@@ -709,34 +739,66 @@
             this.equipmentPanel.TabIndex = 23;
             this.equipmentPanel.Visible = false;
             // 
-            // minLevel
+            // dialogPanel
             // 
-            this.minLevel.Location = new System.Drawing.Point(226, 121);
-            this.minLevel.Maximum = new decimal(new int[] {
-            -1981284353,
-            -1966660860,
-            0,
-            0});
-            this.minLevel.Name = "minLevel";
-            this.minLevel.Size = new System.Drawing.Size(78, 20);
-            this.minLevel.TabIndex = 19;
-            this.minLevel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.minLevel.ValueChanged += new System.EventHandler(this.minLevel_ValueChanged);
+            this.dialogPanel.AutoSize = true;
+            this.dialogPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.dialogPanel.Controls.Add(this.dialogSettings);
+            this.dialogPanel.Location = new System.Drawing.Point(126, 228);
+            this.dialogPanel.Name = "dialogPanel";
+            this.dialogPanel.Size = new System.Drawing.Size(319, 98);
+            this.dialogPanel.TabIndex = 23;
+            this.dialogPanel.Visible = false;
             // 
-            // label21
+            // dialogSettings
             // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(172, 123);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(44, 13);
-            this.label21.TabIndex = 18;
-            this.label21.Text = "Min. Lvl";
+            this.dialogSettings.Controls.Add(this.dialogConsumable);
+            this.dialogSettings.Controls.Add(this.dialogButton);
+            this.dialogSettings.Controls.Add(this.panel2);
+            this.dialogSettings.Location = new System.Drawing.Point(0, 0);
+            this.dialogSettings.Name = "dialogSettings";
+            this.dialogSettings.Size = new System.Drawing.Size(316, 95);
+            this.dialogSettings.TabIndex = 21;
+            this.dialogSettings.TabStop = false;
+            this.dialogSettings.Text = "Dialog Settings";
+            // 
+            // dialogConsumable
+            // 
+            this.dialogConsumable.AutoSize = true;
+            this.dialogConsumable.Location = new System.Drawing.Point(13, 66);
+            this.dialogConsumable.Name = "dialogConsumable";
+            this.dialogConsumable.Size = new System.Drawing.Size(84, 17);
+            this.dialogConsumable.TabIndex = 25;
+            this.dialogConsumable.Text = "Consumable";
+            this.dialogConsumable.UseVisualStyleBackColor = true;
+            this.dialogConsumable.CheckedChanged += new System.EventHandler(this.dialogConsumable_CheckedChanged);
+            // 
+            // dialogButton
+            // 
+            this.dialogButton.Location = new System.Drawing.Point(13, 24);
+            this.dialogButton.Name = "dialogButton";
+            this.dialogButton.Size = new System.Drawing.Size(291, 23);
+            this.dialogButton.TabIndex = 24;
+            this.dialogButton.Text = "Edit Dialog";
+            this.dialogButton.UseVisualStyleBackColor = true;
+            this.dialogButton.Click += new System.EventHandler(this.dialogButton_Click);
+            // 
+            // panel2
+            // 
+            this.panel2.AutoSize = true;
+            this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.panel2.Location = new System.Drawing.Point(45, 26);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(0, 0);
+            this.panel2.TabIndex = 23;
+            this.panel2.Visible = false;
             // 
             // Items
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(451, 403);
+            this.Controls.Add(this.dialogPanel);
             this.Controls.Add(this.equipmentPanel);
             this.Controls.Add(this.consumablePanel);
             this.Controls.Add(this.delete);
@@ -755,6 +817,7 @@
             this.Load += new System.EventHandler(this.Items_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minLevel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.value)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.icon)).EndInit();
             this.equipmentSettings.ResumeLayout(false);
@@ -776,7 +839,9 @@
             this.groupBox3.ResumeLayout(false);
             this.consumablePanel.ResumeLayout(false);
             this.equipmentPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.minLevel)).EndInit();
+            this.dialogPanel.ResumeLayout(false);
+            this.dialogSettings.ResumeLayout(false);
+            this.dialogSettings.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -838,5 +903,10 @@
         private System.Windows.Forms.Panel equipmentPanel;
         private System.Windows.Forms.NumericUpDown minLevel;
         private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Panel dialogPanel;
+        private System.Windows.Forms.GroupBox dialogSettings;
+        private System.Windows.Forms.CheckBox dialogConsumable;
+        private System.Windows.Forms.Button dialogButton;
+        private System.Windows.Forms.Panel panel2;
     }
 }

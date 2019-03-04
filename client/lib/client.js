@@ -189,7 +189,7 @@ const client = {
              if (data.pos !== undefined)
                  game.npcs[data.id].POS = data.pos;
              if (data.type !== undefined)
-                 game.setNPCType(data.id, data.type);
+                 game.setNPCType(data.id, data.type, data.hasDialog);
              if (data.moving !== undefined) 
                  game.npcs[data.id]._moving = data.moving;
              if (data.direction !== undefined) 
@@ -311,7 +311,34 @@ const client = {
              game.createWorldItem(data);
         });
         socket.on('GAME_CHAT_UPDATE', function (data) {
+            //Check if the recieved data is valid
+
+            if (data === undefined)
+                return;
+
+            //Check if in-game
+
+            if (!client.inGame)
+                return;
+
+            //Add chat message
+
             ui.chat.addMessage(data);
+        });
+        socket.on('GAME_START_ITEM_DIALOG', function(data) {
+            //Check if the recieved data is valid
+
+            if (data === undefined)
+                return;
+            
+            //Check if in-game
+            
+            if (!client.inGame)
+                return;
+
+            //Start dialog
+            
+            ui.dialog.startDialog(data.name, data.name, data.dialog);
         });
     }
 }

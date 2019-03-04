@@ -4,7 +4,7 @@ const fs = require('fs');
 
 //Respawn time in seconds
 
-exports.respawnTime = 10;
+exports.respawnTime = 15;
 
 //Properties
 

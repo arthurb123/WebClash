@@ -630,23 +630,43 @@ exports.handleSocket = function(socket)
         if (map == -1)
             return;
         
-        //Get dialog event data
+        //Setup variables
+        
+        let dialogEvent,
+            name;
+        
+        //Check if NPC or item dialog
+
+        if (isNaN(data.npc)) 
+        { 
+            //Item
             
-        const dialogEvent = npcs.onMap[map][data.npc].data.dialog[data.id];
+            dialogEvent = items.getItem(data.npc).dialog[data.id];
+
+            eventName = 
+                map.toString() +                    //Map to make sure the event can occur on other maps
+                data.npc.replace(' ', '') +         //Item name for uniqueness (it is called 'npc' but it is the item name)
+                dialogEvent.eventType +             //Event type for uniqueness
+                data.id;                            //Dialog ID for uniqueness
+        }
+        else 
+        { 
+            //NPC
+            
+            dialogEvent = npcs.onMap[map][data.npc].data.dialog[data.id];
+            
+            eventName = 
+                map.toString() +                    //Map to make sure the event can occur on other maps
+                npcs.onMap[map][data.npc].name +    //NPC name for uniqueness
+                dialogEvent.eventType +             //Event type for uniqueness
+                data.id;                            //Dialog ID for uniqueness
+        }
 
         //Check if valid
 
         if (dialogEvent == undefined ||
             !dialogEvent.isEvent)
             return;
-
-        //Get unique global variable name for this event
-
-        let eventName = 
-            map.toString() +                    //Map to make sure the event can occur on other maps
-            npcs.onMap[map][data.npc].name +    //NPC name for uniqueness
-            dialogEvent.eventType +             //Event type for uniqueness
-            data.id;                            //Dialog ID for uniqueness
 
         //Check if the event has already occured
 
@@ -932,6 +952,7 @@ exports.syncNPCPartially = function(map, id, type, socket, broadcast)
             break;
         case 'type':
             data.type = npcs.onMap[map][id].data.type;
+            data.hasDialog = !(npcs.onMap[map][id].data.dialog != undefined && npcs.onMap[map][id].data.dialog.length == 0);
             break;
         case 'stats':
             data.stats = npcs.onMap[map][id].data.stats;
@@ -1108,6 +1129,18 @@ exports.syncWorldItem = function(map, data, socket, broadcast)
         else
             socket.broadcast.to(map).emit('GAME_WORLD_ITEM_UPDATE', data);
     }
+};
+
+//Sync item dialog to client, which immediately opens up the dialog on the clientside
+
+exports.syncItemDialog = function(id, itemName, dialog) 
+{
+    let data = {
+        dialog: dialog,
+        name: itemName
+    };
+    
+    game.players[id].socket.emit('GAME_START_ITEM_DIALOG', data);
 };
 
 //Get socket with name function

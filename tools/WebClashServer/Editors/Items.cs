@@ -5,6 +5,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using WebClashServer.Classes;
+using WebClashServer.Editors;
 
 namespace WebClashServer
 {
@@ -146,6 +148,10 @@ namespace WebClashServer
                 agility.Value = current.stats.agility;
             }
 
+            //Dialog settings
+
+            dialogConsumable.Checked = current.consumableDialog;
+
             AttemptSetIcon();
         }
 
@@ -249,11 +255,19 @@ namespace WebClashServer
             {
                 consumablePanel.Visible = true;
                 equipmentPanel.Visible = false;
+                dialogPanel.Visible = false;
             }
             else if (type.SelectedItem.ToString() == ItemType.Equipment.ToString())
             {
                 consumablePanel.Visible = false;
                 equipmentPanel.Visible = true;
+                dialogPanel.Visible = false;
+            }
+            else if (type.SelectedItem.ToString() == ItemType.Dialog.ToString())
+            {
+                consumablePanel.Visible = false;
+                equipmentPanel.Visible = false;
+                dialogPanel.Visible = true;
             }
         }
 
@@ -425,6 +439,27 @@ namespace WebClashServer
             current.stats.vitality = (int)vitality.Value;
         }
 
+        //Dialog settings
+
+        private void dialogButton_Click(object sender, EventArgs e)
+        {
+            Dialogue dialogue = new Dialogue(current.dialog.ToList(), current.dialogElements.ToList());
+
+            dialogue.Text = "Edit dialog for '" + name.Text + "'";
+
+            dialogue.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                current.dialog = dialogue.dialogSystem.items.ToArray();
+                current.dialogElements = dialogue.elements.ToArray();
+            };
+
+            dialogue.ShowDialog();
+        }
+
+        private void dialogConsumable_CheckedChanged(object sender, EventArgs e)
+        {
+            current.consumableDialog = dialogConsumable.Checked;
+        }
+
         public int GetAmount()
         {
             return itemList.Items.Count;
@@ -470,6 +505,13 @@ namespace WebClashServer
 
                 if (temp.stats != null)
                     stats = temp.stats;
+
+                //Dialog settings
+
+                dialog = temp.dialog;
+                dialogElements = temp.dialogElements;
+
+                consumableDialog = temp.consumableDialog;
             }
             catch (Exception e)
             {
@@ -502,6 +544,13 @@ namespace WebClashServer
         public string equippableAction = string.Empty;
 
         public Stats stats = new Stats();
+
+        //Dialog settings
+
+        public DialogueItem[] dialog = new DialogueItem[0];
+        public CanvasElement[] dialogElements = new CanvasElement[0];
+
+        public bool consumableDialog = false;
     }
 
     public class Stats
@@ -517,7 +566,8 @@ namespace WebClashServer
     public enum ItemType
     {
         Consumable = 0,
-        Equipment
+        Equipment,
+        Dialog
     }
 
     public enum Rarity
