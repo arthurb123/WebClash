@@ -571,16 +571,19 @@ const ui = {
             if (player.inventory[slot] === undefined && player.equipment[slot] === undefined)
                 return;
             
-            //Highlight slot
-            
-            document.getElementById(this.slots[slot]).style.backgroundColor = 'rgba(215, 215, 215, .85)';
-            
             //Item
             
             let item = player.inventory[slot];
             
             if (item === undefined) 
                 item = player.equipment[slot];
+                  
+            //Highlight slot
+            
+            if (item.minLevel > game.players[game.player]._level)
+                document.getElementById(this.slots[slot]).style.backgroundColor = '#ffb3b3';
+            else
+                document.getElementById(this.slots[slot]).style.backgroundColor = 'rgba(215, 215, 215, .85)';
             
             //Color
             
@@ -674,6 +677,7 @@ const ui = {
                     '<font class="info" style="font-size: 10px; color: yellow;">' + item.value + ' Gold</font><br>';
             
             displayBox._slot = slot;
+            displayBox._minLevel = item.minLevel;
             
             //Append
             
@@ -685,7 +689,10 @@ const ui = {
             if (el == null)
                 return;
             
-            document.getElementById(this.slots[el._slot]).style.backgroundColor = 'rgba(175, 175, 175, .85)';
+            if (el._minLevel > game.players[game.player]._level)
+                document.getElementById(this.slots[el._slot]).style.backgroundColor = '#ff6666';
+            else
+                document.getElementById(this.slots[el._slot]).style.backgroundColor = 'rgba(175, 175, 175, .85)';
             
             el.remove();
         },
