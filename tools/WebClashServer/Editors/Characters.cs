@@ -272,18 +272,12 @@ namespace WebClashServer.Editors
 
         private void acceleration_ValueChanged(object sender, EventArgs e)
         {
-            if (acceleration.Text == "0.00")
-                return;
-
-            current.movement.acceleration = float.Parse(acceleration.Text, System.Globalization.NumberStyles.Any);
+            current.movement.acceleration = float.Parse(acceleration.Value.ToString("0.00"));
         }
 
         private void maxVelocity_ValueChanged(object sender, EventArgs e)
         {
-            if (maxVelocity.Text == "0.00")
-                return;
-
-            current.movement.max = float.Parse(maxVelocity.Text, System.Globalization.NumberStyles.Any);
+            current.movement.max = float.Parse(maxVelocity.Value.ToString("0.00"));
         }
 
         private void direction_SelectedIndexChanged(object sender, EventArgs e)
@@ -362,6 +356,6 @@ namespace WebClashServer.Editors
     {
         public float acceleration = .25f;
 
-        public float max = 2.0f;
+        public float max = 1.50f;
     }
 }

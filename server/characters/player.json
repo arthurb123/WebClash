@@ -13,7 +13,7 @@
     "height": 12
   },
   "movement": {
-    "acceleration": 0.4,
-    "max": 1.6
+    "acceleration": 0.35,
+    "max": 1.35
   }
 }

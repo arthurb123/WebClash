@@ -496,32 +496,32 @@ namespace WebClashServer.Editors
 
         private void power_ValueChanged(object sender, EventArgs e)
         {
-            current.scaling.power = float.Parse(power.Text, System.Globalization.NumberStyles.Any);
+            current.scaling.power = float.Parse(power.Value.ToString("0.00"));
         }
 
         private void agility_ValueChanged(object sender, EventArgs e)
         {
-            current.scaling.agility = float.Parse(agility.Text, System.Globalization.NumberStyles.Any);
+            current.scaling.agility = float.Parse(agility.Value.ToString("0.00"));
         }
 
         private void toughness_ValueChanged(object sender, EventArgs e)
         {
-            current.scaling.toughness = float.Parse(toughness.Text, System.Globalization.NumberStyles.Any);
+            current.scaling.toughness = float.Parse(toughness.Value.ToString("0.00"));
         }
 
         private void intelligence_ValueChanged(object sender, EventArgs e)
         {
-            current.scaling.intelligence = float.Parse(intelligence.Text, System.Globalization.NumberStyles.Any);
+            current.scaling.intelligence = float.Parse(intelligence.Value.ToString("0.00"));
         }
 
         private void wisdom_ValueChanged(object sender, EventArgs e)
         {
-            current.scaling.wisdom = float.Parse(wisdom.Text, System.Globalization.NumberStyles.Any);
+            current.scaling.wisdom = float.Parse(wisdom.Value.ToString("0.00"));
         }
 
         private void vitality_ValueChanged(object sender, EventArgs e)
         {
-            current.scaling.vitality = float.Parse(vitality.Text, System.Globalization.NumberStyles.Any);
+            current.scaling.vitality = float.Parse(vitality.Value.ToString("0.00"));
         }
 
         private void heal_ValueChanged(object sender, EventArgs e)
