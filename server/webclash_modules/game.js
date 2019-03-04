@@ -313,7 +313,9 @@ exports.regeneratePlayer = function(id)
     
     //Regenerate mana if possible
     
-    if (this.players[id].mana.cur < this.players[id].health.max) {
+    if (this.players[id].mana.cur < this.players[id].mana.max) {
+        this.players[id].mana.cur++;
+        
         server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
     };
     
