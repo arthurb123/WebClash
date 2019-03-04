@@ -599,7 +599,8 @@ const ui = {
             if (item.minLevel == undefined || 
                 item.minLevel === 0 || 
                 game.players[game.player]._level >= item.minLevel) {
-                if (item.type === 'consumable') 
+                if (item.type === 'consumable' ||
+                    item.type === 'dialog') 
                     note = '(Click to use)';
 
                 if (item.type === 'equipment') {
