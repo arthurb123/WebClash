@@ -387,7 +387,7 @@ exports.handleSocket = function(socket)
         io.to(tiled.getMapIndex(game.players[id].map)).emit('GAME_CHAT_UPDATE', msg);
     });
     
-    socket.on('CLIENT_USE_ITEM', function(data) {
+    socket.on('CLIENT_USE_ITEM', function(data, callback) {
         //Check if valid player
         
         if (socket.playing === undefined || !socket.playing)
@@ -409,7 +409,12 @@ exports.handleSocket = function(socket)
         
         //Use item
         
-        items.usePlayerItem(socket, id, data)
+        let result = items.usePlayerItem(socket, id, data);
+        
+        //Callback
+        
+        if (callback != undefined)
+            callback(result);
     });
     
     socket.on('CLIENT_DROP_ITEM', function(data) {

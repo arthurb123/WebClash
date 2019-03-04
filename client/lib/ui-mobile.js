@@ -532,15 +532,17 @@ const ui = {
                 !this.showingContext) {
                 //Send to server
                 
-                socket.emit('CLIENT_USE_ITEM', player.inventory[slot].name);
-                
-                //Remove box
-                
-                ui.inventory.removeBox();
-                
-                //Remove context menu
-                
-                ui.inventory.removeContext();
+                socket.emit('CLIENT_USE_ITEM', player.inventory[slot].name, function(valid) {
+                    if (valid) {                
+                        //Remove box
+
+                        ui.inventory.removeBox();
+
+                        //Remove context menu
+
+                        ui.inventory.removeContext();
+                    }
+                });
             }
         },
         dropItem: function(slot) {
