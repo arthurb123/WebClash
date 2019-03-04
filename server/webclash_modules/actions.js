@@ -259,12 +259,11 @@ exports.addPlayerAction = function(name, id, uses)
             }
             
             done = true;
+            
+            server.syncActionSlot(a, id, game.players[id].socket);
                 
             break;
         }
-    
-    if (done)
-        server.syncPlayerPartially(id, 'actions', game.players[id].socket, false);
     
     return done;
 };
@@ -349,11 +348,7 @@ exports.createPlayerAction = function(slot, id)
         game.players[id].actions[slot].uses--;
 
         if (game.players[id].actions[slot].uses <= 0)
-        {
             game.players[id].actions[slot] = undefined;
-
-            server.syncPlayerPartially(id, 'actions', game.players[id].socket, false);
-        }
     }
     
     //Generate action data

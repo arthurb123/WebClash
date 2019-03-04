@@ -360,8 +360,8 @@ exports.updateNPCCombat = function(map, id)
     
     //Calculate distance to target
     
-    let dx = Math.ceil((game.players[this.onMap[map][id].target].pos.X-this.onMap[map][id].pos.X)/tiled.maps[map].tilewidth),
-        dy = Math.ceil((game.players[this.onMap[map][id].target].pos.Y-this.onMap[map][id].pos.Y)/tiled.maps[map].tileheight);
+    let dx = Math.round((game.players[this.onMap[map][id].target].pos.X-this.onMap[map][id].pos.X)/tiled.maps[map].tilewidth),
+        dy = Math.round((game.players[this.onMap[map][id].target].pos.Y-this.onMap[map][id].pos.Y)/tiled.maps[map].tileheight);
     
     //Check which ability is in range
     

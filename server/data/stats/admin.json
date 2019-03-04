@@ -2,11 +2,11 @@
  "map": "1",
  "char_name": "player",
  "pos": {
-  "X": -114,
-  "Y": -29
+  "X": -182,
+  "Y": 121
  },
  "moving": false,
- "direction": 0,
+ "direction": 1,
  "health": {
   "cur": 110,
   "max": 110
@@ -15,9 +15,9 @@
   "cur": 100,
   "max": 100
  },
- "level": 6,
+ "level": 3,
  "stats": {
-  "exp": 12,
+  "exp": 20,
   "attributes": {
    "power": 1,
    "toughness": 1,
@@ -37,45 +37,16 @@
   null,
   {
    "name": "Heal",
-   "uses": 1,
-   "max": 3
-  },
-  {
-   "name": "Heal",
-   "uses": 2,
-   "max": 3
-  },
-  {
-   "name": "Heal",
-   "uses": 3,
-   "max": 3
-  },
-  {
-   "name": "Heal",
    "uses": 3,
    "max": 3
   }
  ],
  "inventory": [
-  null,
+  "Iron Helm",
+  "Iron Helm",
   "Magic Axe",
-  "Iron Helm",
-  "Healing Slab",
-  "Iron Helm",
-  null,
   "Sword",
   "Magic Axe",
-  "Healing Slab",
-  null,
-  null,
-  "Healing Slab",
-  null,
-  null,
-  "Magic Axe",
-  "Healing Slab",
-  null,
-  null,
-  "Iron Helm",
   null
  ],
  "equipment": {

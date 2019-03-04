@@ -453,7 +453,7 @@ exports.handleSocket = function(socket)
         
         //Sync inventory item
         
-        server.syncInventoryItem(data, id, socket, false);
+        server.syncInventoryItem(data, id, socket);
     });
     
     socket.on('CLIENT_UNEQUIP_ITEM', function(data) {
@@ -1024,9 +1024,30 @@ exports.removeAction = function(id, map, socket, broadcast)
     }
 };
 
-//Sync single inventory item function, if socket is undefined it will be globally emitted
+//Sync single action slot (for specific player) function
 
-exports.syncInventoryItem = function(slot, id, socket, broadcast)
+exports.syncActionSlot = function(slot, id, socket)
+{
+    let data = {
+        slot: slot
+    };
+    
+    if (game.players[id].actions[slot] != undefined)
+    {
+        data.action = actions.createPlayerSlotAction(game.players[id].actions[slot]);
+
+        if (data.action === undefined)
+            return;
+    }
+    else
+        data.remove = true;
+    
+    socket.emit('GAME_ACTION_SLOT', data);
+};
+
+//Sync single inventory item (for specific player) function
+
+exports.syncInventoryItem = function(slot, id, socket)
 {
     let data = {
         slot: slot
@@ -1042,14 +1063,7 @@ exports.syncInventoryItem = function(slot, id, socket, broadcast)
     else
         data.remove = true;
     
-    if (socket === undefined) 
-        io.to(data.map).emit('GAME_INVENTORY_UPDATE', data);
-    else {
-        if (broadcast === undefined || !broadcast)
-            socket.emit('GAME_INVENTORY_UPDATE', data);
-        else
-            socket.broadcast.to(data.map).emit('GAME_INVENTORY_UPDATE', data);
-    }
+    socket.emit('GAME_INVENTORY_UPDATE', data);
 }
 
 //Sync single equipment item function, if socket is undefined it will be globally emitted

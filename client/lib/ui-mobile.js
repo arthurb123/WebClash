@@ -293,19 +293,22 @@ const ui = {
             
             document.getElementById('dialog_box').style.visibility = 'visible';
             
-            this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
-                if (data.state == 0)
-                    return;
-                
-                ui.dialog.hideDialog();
-                
-                lx.StopMouse(0);
-            });
+            if (this.mouse == undefined)
+                this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
+                    if (data.state == 0)
+                        return;
+
+                    lx.StopMouse(0);
+
+                    ui.dialog.hideDialog();
+                });
         },
         hideDialog: function() {
             document.getElementById('dialog_box').style.visibility = 'hidden';
             
-            lx.GAME.CLEAR_EVENT('mousebutton', this.mouse);
+            lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
+            
+            this.mouse = undefined;
         }
     },
     actionbar:
@@ -344,24 +347,23 @@ const ui = {
                 document.getElementById(this.slots[i]).innerHTML = '';
             }
             
-            for (let a = 0; a < player.actions.length; a++) {
-                if (player.actions[a] == undefined)
-                    continue;
-                
-                let uses = '', usesContent = '∞';
-                if (player.actions[a].uses != undefined)
-                    usesContent = player.actions[a].uses + '/' + player.actions[a].max;
-                
-                uses = '<font class="info" style="position: absolute; top: 100%; margin-top: -15px; margin-left: -6px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%; text-align: right;">' + usesContent + '</font>';
-                
-                let size = 24;
-                
-                if (a < 2)
-                    size = 32;
-                
-                document.getElementById(this.slots[a]).innerHTML = 
-                    '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: ' + size + 'px; height: ' + size + 'px;"/>' + uses;
-            }
+            for (let a = 0; a < player.actions.length; a++) 
+                this.reloadAction(a);
+        },
+        reloadAction: function(a) {
+            let uses = '', usesContent = '∞';
+            if (player.actions[a].uses != undefined)
+                usesContent = player.actions[a].uses + '/' + player.actions[a].max;
+
+            uses = '<font class="info" style="position: absolute; top: 100%; margin-top: -15px; margin-left: -6px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%; text-align: right;">' + usesContent + '</font>';
+
+            let size = 24;
+
+            if (a < 2)
+                size = 32;
+
+            document.getElementById(this.slots[a]).innerHTML = 
+                '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: ' + size + 'px; height: ' + size + 'px;"/>' + uses;
         },
         setCooldown: function(slot) {
             if (this.slots === undefined)

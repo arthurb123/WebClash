@@ -262,7 +262,7 @@ function Lynx2D() {
             for (var i = 0; i < this.EVENTS.length; i++) {
                 if (this.EVENTS[i] != undefined && this.EVENTS[i].TYPE == TYPE && this.EVENTS[i].EVENT == EVENT) {
                     this.EVENTS[i].CALLBACK[this.EVENTS[i].CALLBACK.length] = CALLBACK;
-                    return;   
+                    return this.EVENTS[i].CALLBACK.length-1;   
                 }
             }
                 
@@ -273,7 +273,7 @@ function Lynx2D() {
                         EVENT: EVENT,
                         CALLBACK: [CALLBACK]
                     };
-                    return i;
+                    return 0;
                 }
             }
         },
@@ -288,10 +288,10 @@ function Lynx2D() {
                 }
             }
         },
-        CLEAR_EVENT: function(TYPE, EVENT) {
+        CLEAR_EVENT: function(TYPE, EVENT, CB_ID) {
             for (var i = 0; i < this.EVENTS.length; i++) {
                 if (this.EVENTS[i].TYPE == TYPE && this.EVENTS[i].EVENT == EVENT) {
-                    this.EVENTS[i] = undefined;
+                    this.EVENTS[i].CALLBACK[CB_ID] = undefined;
                     return;   
                 }
             }

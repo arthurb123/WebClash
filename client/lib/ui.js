@@ -1,5 +1,6 @@
 const ui = {
-    initialize: function() {
+    initialize: function() 
+    {
         this.actionbar.create();
         this.inventory.create();
         this.equipment.create();
@@ -163,19 +164,22 @@ const ui = {
             
             document.getElementById('dialog_box').style.visibility = 'visible';
             
-            this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
-                if (data.state == 0)
-                    return;
-                
-                ui.dialog.hideDialog();
-                
-                lx.StopMouse(0);
-            });
+            if (this.mouse == undefined)
+                this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
+                    if (data.state == 0)
+                        return;
+
+                    lx.StopMouse(0);
+
+                    ui.dialog.hideDialog();
+                });
         },
         hideDialog: function() {
             document.getElementById('dialog_box').style.visibility = 'hidden';
             
-            lx.GAME.CLEAR_EVENT('mousebutton', this.mouse);
+            lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
+            
+            this.mouse = undefined;
         }
     },
     actionbar: 
@@ -211,32 +215,34 @@ const ui = {
                 document.getElementById(this.slots[i]).innerHTML = '';
             }
             
-            for (let a = 0; a < 7; a++) {
-                let indicator = '<font class="info" style="position: absolute; top: -1px; left: 2px; font-size: 9px; z-index: 1;">';
+            for (let a = 0; a < 7; a++) 
+                this.reloadAction(a);
+        },
+        reloadAction: function(a) {
+            let indicator = '<font class="info" style="position: absolute; top: -1px; left: 2px; font-size: 9px; z-index: 1;">';
                 
-                if (a > 1)
-                    indicator += (a-1).toString();
-                else 
-                    indicator += (a === 0 ? 'LMB' : 'RMB');
-                
-                indicator += '</font>';
-                
-                if (player.actions[a] == undefined) {
-                    document.getElementById(this.slots[a]).innerHTML = indicator;
-                    
-                    continue;
-                }
-                
-                let uses = '', usesContent = '∞';
-                
-                if (player.actions[a].uses != undefined)
-                    usesContent = player.actions[a].uses + '/' + player.actions[a].max;
-                
-                uses = '<font class="info" style="position: absolute; top: 100%; margin-top: -15px; margin-left: -6px; font-size: 10px; width: 100%; text-align: right; color: #333333; z-index: 2">' + usesContent + '</font>';
-                
-                document.getElementById(this.slots[a]).innerHTML = 
-                    indicator + '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;" onmouseover="ui.actionbar.displayBox(' + a + ')" onmouseleave="ui.actionbar.removeBox()"/>' + uses;
+            if (a > 1)
+                indicator += (a-1).toString();
+            else 
+                indicator += (a === 0 ? 'LMB' : 'RMB');
+
+            indicator += '</font>';
+
+            if (player.actions[a] == undefined) {
+                document.getElementById(this.slots[a]).innerHTML = indicator;
+
+                return;
             }
+
+            let uses = '', usesContent = '∞';
+
+            if (player.actions[a].uses != undefined)
+                usesContent = player.actions[a].uses + '/' + player.actions[a].max;
+
+            uses = '<font class="info" style="position: absolute; top: 100%; margin-top: -15px; margin-left: -6px; font-size: 10px; width: 100%; text-align: right; color: #333333; z-index: 2">' + usesContent + '</font>';
+
+            document.getElementById(this.slots[a]).innerHTML = 
+                indicator + '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;" onmouseover="ui.actionbar.displayBox(' + a + ')" onmouseleave="ui.actionbar.removeBox()"/>' + uses;
         },
         setCooldown: function(slot) {
             if (this.slots === undefined)

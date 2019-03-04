@@ -114,6 +114,11 @@ const player = {
         
         ui.actionbar.reload();
     },
+    removeAction: function(slot) {
+        this.actions[slot] = undefined;
+        
+        ui.actionbar.reloadAction(slot);
+    },
     setEquipment: function(equipment) {
         if (equipment.remove === undefined || !equipment.remove) {
             this.equipment[equipment.equippable] = equipment;  
@@ -165,20 +170,27 @@ const player = {
         //Send action request
             
         socket.emit('CLIENT_PLAYER_ACTION', slot, function(data) {
-            if (data && player.actions[slot] != undefined) {                
+            if (data && player.actions[slot] != undefined) { 
+                //Action name
+                
+                let name = player.actions[slot].name;
+                
                 //Decrease usage
                 
                 if (player.actions[slot].uses !== undefined) {
                     player.actions[slot].uses--;
                     
-                    ui.actionbar.reload();
+                    if (player.actions[slot].uses <= 0)
+                        player.removeAction(slot);
+                    else
+                        ui.actionbar.reloadAction(slot);
                 }
                 
                 //Set cooldown
                 
                 for (let a = 0; a < player.actions.length; a++)
                     if (player.actions[a] != undefined && 
-                        player.actions[a].name === player.actions[slot].name)
+                        player.actions[a].name === name)
                         ui.actionbar.setCooldown(a);
             }
         });

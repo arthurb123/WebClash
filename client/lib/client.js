@@ -232,6 +232,28 @@ const client = {
 
              game.createAction(data);
         });
+        socket.on('GAME_ACTION_SLOT', function(data) {
+            //Check if the recieved data is valid
+            
+             if (data === undefined)
+                 return;
+            
+             //Check if in-game
+            
+             if (!client.inGame)
+                 return;
+            
+             //Handle data
+            
+             if (data.remove)
+                player.actions[data.slot] = undefined;
+             else
+                player.actions[data.slot] = data.action;
+            
+             //Refresh UI (slot)
+            
+             ui.actionbar.reloadAction(data.slot);
+        });
         socket.on('GAME_INVENTORY_UPDATE', function(data) {
              //Check if the recieved data is valid
             
