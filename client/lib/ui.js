@@ -1,6 +1,8 @@
 const ui = {
     initialize: function() 
     {
+        cache.progress.create();
+        
         this.actionbar.create();
         this.inventory.create();
         this.equipment.create();

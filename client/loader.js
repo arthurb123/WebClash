@@ -7,6 +7,7 @@ const scripts = [
     'lib/lynx2d.js',
     'lib/tiled.js',
     'lib/game.js',
+    'lib/cache.js',
     'lib/client.js',
     'lib/player.js',
     'lib/view.js',

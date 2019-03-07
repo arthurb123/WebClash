@@ -65,13 +65,21 @@ const tiled = {
         
         //Cache all tilesets
         
-        game.cacheTilesets(map.tilesets, function() {
+        cache.cacheTilesets(map.tilesets, function() {
             //Add OnLayerDraw events based on
             //the map content
 
             let actualLayer = 0;
+            
+            //Start progress
+            
+            cache.progress.start('Building map - 0%');
 
             for (let l = 0; l < map.layers.length; l++) {
+                //Update progress
+                
+                cache.progress.update('Building map - ' + l/(map.layers.length-1)*100 + '%');
+                
                 //Check if visible
 
                 if (!map.layers[l].visible)
@@ -106,17 +114,19 @@ const tiled = {
                         X: Math.floor(game.players[game.player].POS.X+game.players[game.player].SIZE.W/2-offset_width-lx.GetDimensions().width/2),
                         Y: Math.floor(game.players[game.player].POS.Y+game.players[game.player].SIZE.H/2-offset_height-lx.GetDimensions().height/2)
                     };
+                    
+                    let size = lx.GetDimensions();
 
                     gfx.drawImage(
                         cachedLayer,
                         clip.X,
                         clip.Y,
-                        lx.GetDimensions().width,
-                        lx.GetDimensions().height,
+                        size.width,
+                        size.height,
                         0,
                         0,
-                        lx.GetDimensions().width,
-                        lx.GetDimensions().height
+                        size.width,
+                        size.height
                     );
                 });
 
@@ -124,6 +134,10 @@ const tiled = {
 
                 actualLayer++;
             }
+            
+            //Hide progress
+
+            cache.progress.hide();
         });
         
         //Add world boundary colliders

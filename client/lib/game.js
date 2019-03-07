@@ -703,23 +703,6 @@ const game = {
         
         return this.tilesets[src];
     },
-    cacheTilesets: function(tilesets, cb) 
-    {
-        let t = 0;
-        
-        let cacheTileset = function() {
-            game.getTileset(tilesets[t].image, function() {
-                t++;
-
-                if (t < tilesets.length)
-                    cacheTileset();
-                else
-                    cb();
-            });
-        };
-                            
-        cacheTileset();
-    },
     
     createAction: function(data)
     {

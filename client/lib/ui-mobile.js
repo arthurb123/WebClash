@@ -1,5 +1,7 @@
 const ui = {
     initialize: function() {
+        cache.progress.create();
+        
         this.controller.create();
         
         this.actionbar.create();
