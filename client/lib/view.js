@@ -1,6 +1,7 @@
 const view = {
     dom: document.getElementById('overlay'),
-    loadLanding: function() {
+    loadLanding: function() 
+    {
         //Clear innerHTML
         
         view.dom.innerHTML = '';
@@ -9,7 +10,8 @@ const view = {
         
         lx.LoadScene(landingScene);
     },
-    loadGame: function() {
+    loadGame: function() 
+    {
         //Clear innerHTML
         
         view.dom.innerHTML = '';

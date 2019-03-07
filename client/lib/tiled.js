@@ -2,13 +2,6 @@ const tiled = {
     loading: false,
     queue: [],
     current: '',
-    executeAfterLoad: function(cb, parameter) 
-    {
-        this.queue.push({
-            cb: cb,
-            parameter: parameter
-        });
-    },
     convertAndLoadMap: function(map) 
     {
         //Set loading
@@ -73,7 +66,7 @@ const tiled = {
             
             //Start progress
             
-            cache.progress.start('Building map - 0%');
+            cache.progress.update('Building map - 0%');
 
             for (let l = 0; l < map.layers.length; l++) {
                 //Update progress
@@ -143,13 +136,6 @@ const tiled = {
         //Add world boundary colliders
         
         this.createWorldBoundaries(map, offset_width, offset_height);
-        
-        //Execute after load queue
-
-        this.queue.forEach(function(cb) {
-            cb.cb(cb.parameter); 
-        });
-        this.queue = [];
         
         //Set loading to false
         
@@ -341,10 +327,10 @@ const tiled = {
 
                             callbacks.forEach(function(cb) { 
                                 if (cb !== undefined) {
-                                    if (!tiled.loading)
-                                        cb(go);
-                                    else
-                                        tiled.executeAfterLoad(cb, go);
+                                    if (tiled.loading)
+                                        return;
+                                    
+                                    cb(go);
                                 }
                             });
                         };
@@ -450,6 +436,8 @@ const tiled = {
             case "loadMap":
                 return function(go) {
                     if (go === game.players[game.player]) {
+                        cache.progress.start('Loading map...');
+                        
                         tiled.loading = true;
                         
                         socket.emit('CLIENT_REQUEST_MAP', property.value);

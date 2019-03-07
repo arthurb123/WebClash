@@ -194,6 +194,11 @@ exports.handleCommand = function(socket, text)
                 items.addPlayerItem(game.players[p].socket, p, item);
                 
                 return 'success';
+            //Shutdown command
+            case 'shutdown':
+                exitHandler();
+                
+                return 'success';
         }
     }
     catch (err)

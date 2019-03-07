@@ -63,8 +63,7 @@ function startServer() {
 //Exit handler
 
 let hasSaved = false;
-
-function exitHandler() {
+global.exitHandler = function() {
     //Check if exit handler has already been executed
     
     if (hasSaved)

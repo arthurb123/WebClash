@@ -10,11 +10,13 @@ const cache = {
         start: function(text) {
             this.update(text);
             
+            document.getElementById('lynx-canvas').style.visibility = 'hidden';
             document.getElementById('progress_text').style.visibility = 'visible';
             
             this.visible = true;
         },
         hide: function() {
+            document.getElementById('lynx-canvas').style.visibility = 'visible';
             document.getElementById('progress_text').style.visibility = 'hidden';
             
             this.visible = false;
@@ -35,11 +37,8 @@ const cache = {
                     
                     cacheTileset();
                 }
-                else {
-                    cache.progress.hide();
-                    
+                else 
                     cb();
-                }
             });
         };
                             

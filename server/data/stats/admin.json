@@ -3,21 +3,21 @@
  "char_name": "player",
  "pos": {
   "X": 96,
-  "Y": -73
+  "Y": -57
  },
  "moving": false,
- "direction": 3,
+ "direction": 0,
  "health": {
-  "cur": 110,
-  "max": 110
+  "cur": 100,
+  "max": 100
  },
  "mana": {
   "cur": 100,
   "max": 100
  },
- "level": 3,
+ "level": 1,
  "stats": {
-  "exp": 16,
+  "exp": 0,
   "attributes": {
    "power": 1,
    "toughness": 1,
@@ -27,47 +27,11 @@
    "wisdom": 1
   }
  },
- "actions": [
-  {
-   "name": "Arrow Rain"
-  },
-  {
-   "name": "Combust"
-  },
-  {
-   "name": "Heal",
-   "uses": 1,
-   "max": 3
-  },
-  {
-   "name": "Heal",
-   "uses": 3,
-   "max": 3
-  },
-  {
-   "name": "Heal",
-   "uses": 3,
-   "max": 3
-  }
- ],
+ "actions": [],
  "inventory": [
-  "Iron Helm",
-  "Iron Helm",
-  "Iron Helm",
-  "Iron Helm",
-  "Sword",
-  null,
-  "Iron Helm",
-  null
+  "Sword"
  ],
- "equipment": {
-  "main": "Ring of Arrows",
-  "head": "Iron Helm",
-  "offhand": "Magic Axe"
- },
+ "equipment": {},
  "gold": 0,
- "gvars": {
-  "0EricGiveItem4": true,
-  "1WeirdGreensAffectPlayer1": true
- }
+ "gvars": {}
 }

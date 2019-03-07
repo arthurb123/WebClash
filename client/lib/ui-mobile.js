@@ -1,5 +1,6 @@
 const ui = {
-    initialize: function() {
+    initialize: function() 
+    {
         cache.progress.create();
         
         this.controller.create();

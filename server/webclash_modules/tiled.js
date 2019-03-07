@@ -1,4 +1,4 @@
-//Tiled import module for WebClash
+//Tiled module for WebClash
 
 const fs = require('fs');
 

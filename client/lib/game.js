@@ -110,35 +110,7 @@ const game = {
             if (count > 10)
                 count = 10;
             
-            for (let i = 0; i < count; i++) {
-                let size = 4+Math.round(Math.random()*4);
-                
-                let blood = new lx.GameObject(
-                    new lx.Sprite('res/particles/blood.png'),
-                    this.players[id].POS.X+Math.round(Math.random()*this.players[id].SIZE.W),
-                    this.players[id].POS.Y+this.players[id].SIZE.H-4-Math.round(Math.random()*6),
-                    size,
-                    size
-                );
-                
-                blood._timer = {
-                    cur: 0,
-                    standard: 60
-                };
-                
-                blood.Loops(function() {
-                    if (this._timer.cur >= this._timer.standard)
-                    {
-                        this._timer.cur = 0;
-                        
-                        blood.Hide();
-                    } 
-                    else
-                        this._timer.cur++;
-                });
-                
-                blood.Show(1);
-            }
+            this.createBlood(this.players[id], count);
         }
         else {
             this.players[id]._health = health;
@@ -302,7 +274,8 @@ const game = {
         
         this.npcs[id] = go.Show(3);
     },
-    setNPCType: function(id, type, hasDialog) {
+    setNPCType: function(id, type, hasDialog) 
+    {
         //Set NPC type
         
         this.npcs[id]._type = type;
@@ -441,38 +414,7 @@ const game = {
             if (count > 10)
                 count = 10;
             
-            for (let i = 0; i < count; i++) {
-                if(this.npcs[id] == undefined)
-                    return;
-                
-                let size = 4+Math.round(Math.random()*4);
-                
-                let blood = new lx.GameObject(
-                    new lx.Sprite('res/particles/blood.png'),
-                    this.npcs[id].POS.X+Math.round(Math.random()*this.npcs[id].SIZE.W),
-                    this.npcs[id].POS.Y+this.npcs[id].SIZE.H-4-Math.round(Math.random()*6),
-                    size,
-                    size
-                );
-                
-                blood._timer = {
-                    cur: 0,
-                    standard: 60
-                };
-                
-                blood.Loops(function() {
-                    if (this._timer.cur >= this._timer.standard)
-                    {
-                        this._timer.cur = 0;
-                        
-                        blood.Hide();
-                    } 
-                    else
-                        this._timer.cur++;
-                });
-                
-                blood.Show(1);
-            }
+            this.createBlood(this.npcs[id], count);
         }
         else if (this.npcs[id] != undefined)
             this.npcs[id]._health = health;
@@ -817,6 +759,42 @@ const game = {
         
         if (go != undefined)
             go.Hide();
+    },
+    
+    createBlood: function(target, count)
+    {
+        if (target == undefined)
+            return;
+        
+        for (let i = 0; i < count; i++) {
+            let size = 4+Math.round(Math.random()*4);
+
+            let blood = new lx.GameObject(
+                new lx.Sprite('res/particles/blood.png'),
+                target.POS.X+Math.round(Math.random()*target.SIZE.W),
+                target.POS.Y+target.SIZE.H-4-Math.round(Math.random()*6),
+                size,
+                size
+            );
+
+            blood._timer = {
+                cur: 0,
+                standard: 60
+            };
+
+            blood.Loops(function() {
+                if (this._timer.cur >= this._timer.standard)
+                {
+                    this._timer.cur = 0;
+
+                    blood.Hide();
+                } 
+                else
+                    this._timer.cur++;
+            });
+
+            blood.Show(2);
+        }  
     },
     
     initialize: function(isMobile) 
