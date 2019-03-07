@@ -713,9 +713,8 @@ exports.evaluateLootTable = function(map, id)
     
     //Check if target (still) exists
     
-    if (this.onMap[map][id].target == -1 ||
-        game.players[this.onMap[map][id].target] == undefined)
-        this.setNPCTarget(map, id);
+    if (this.onMap[map][id].target == -1)
+        return;
     
     //Loop through loot table
     

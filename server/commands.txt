@@ -8,5 +8,5 @@ Available commands:<br>
 /loadmap <i>map</i><br>
 /sendmap <i>player</i> <i>map</i><br>
 /spawnnpc <i>name</i><br>
-/giveitem <i>name</i>
+/giveitem <i>name</i><br>
 /shutdown

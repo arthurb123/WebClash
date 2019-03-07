@@ -2,13 +2,13 @@
  "map": "2",
  "char_name": "player",
  "pos": {
-  "X": -52,
-  "Y": -82
+  "X": -109,
+  "Y": -46
  },
- "moving": true,
- "direction": 2,
+ "moving": false,
+ "direction": 1,
  "health": {
-  "cur": 98,
+  "cur": 110,
   "max": 110
  },
  "mana": {

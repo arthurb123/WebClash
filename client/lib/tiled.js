@@ -8,6 +8,10 @@ const tiled = {
         
         this.loading = true;
         
+        //Start progress
+        
+        cache.progress.start('Loading map...');
+        
         //Change map name
         
         this.current = map.name;
@@ -64,7 +68,7 @@ const tiled = {
 
             let actualLayer = 0;
             
-            //Start progress
+            //Update progress
             
             cache.progress.update('Building map - 0%');
             

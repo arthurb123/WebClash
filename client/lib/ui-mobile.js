@@ -898,15 +898,15 @@ const ui = {
                 '<div id="status_box" style="position: absolute; top: 100%; left: 100%; margin-top: -19px; margin-left: -' + (ui.controller.size+30) + 'px; transform: translate(-100%, -100%); width: 20%; height: auto;">' +
                     '<div id="status_health_box" class="bar" style="text-align: center; height: 9px; margin-top: 0px;">' +
                         '<div id="status_health" class="bar_content" style="background-color: #E87651; width: 100%;"></div>' +
-                        '<p id="status_health_text" class="info" style="position: relative; top: -13px; font-size: 9px;"></p>' +
+                        '<p id="status_health_text" class="info" style="transform: translate(0, -90%); margin: 0; font-size: 9px;"></p>' +
                     '</div>' + 
                     '<div id="status_mana_box" class="bar" style="text-align: center; height: 9px; margin-top: 2px;">' +
                         '<div id="status_mana" class="bar_content" style="background-color: #2B92ED; width: 100%;"></div>' +
-                        '<p id="status_mana_text" class="info" style="position: relative; top: -13px; font-size: 9px;"></p>' +
+                        '<p id="status_mana_text" class="info" style="transform: translate(0, -90%); margin: 0; font-size: 9px;"></p>' +
                     '</div>' + 
                     '<div id="status_exp_box" class="bar" style="text-align: center; height: 9px; margin-top: 2px;">' +
                         '<div id="status_exp" class="bar_content" style="background-color: #BF4CE6; width: 100%;"></div>' +
-                        '<p id="status_exp_text" class="info" style="position: relative; top: -13px; font-size: 9px;"></p>' +
+                        '<p id="status_exp_text" class="info" style="transform: translate(0, -90%); margin: 0; font-size: 9px;"></p>' +
                     '</div>' + 
                 '</div>';
         },

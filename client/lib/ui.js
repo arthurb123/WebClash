@@ -934,15 +934,15 @@ const ui = {
                 '<div id="status_box" class="box" style="position: absolute; top: 30px; left: 30px; width: 195px; height: 65px;">' +
                     '<div id="status_health_box" class="bar" style="text-align: center;">' +
                         '<div id="status_health" class="bar_content" style="background-color: #E87651; width: 100%;"></div>' +
-                        '<p id="status_health_text" class="info" style="position: relative; top: -18px; font-size: 10px;"></p>' +
+                        '<p id="status_health_text" class="info" style="transform: translate(0, -80%); margin: 0; font-size: 10px;"></p>' +
                     '</div>' + 
                     '<div id="status_mana_box" class="bar" style="text-align: center;">' +
                         '<div id="status_mana" class="bar_content" style="background-color: #2B92ED; width: 100%;"></div>' +
-                        '<p id="status_mana_text" class="info" style="position: relative; top: -18px; font-size: 10px;"></p>' +
+                        '<p id="status_mana_text" class="info" style="transform: translate(0, -80%); margin: 0; font-size: 10px;"></p>' +
                     '</div>' + 
                     '<div id="status_exp_box" class="bar" style="text-align: center; height: 9px;">' +
                         '<div id="status_exp" class="bar_content" style="background-color: #BF4CE6; width: 100%;"></div>' +
-                        '<p id="status_exp_text" class="info" style="position: relative; top: -17px; font-size: 7px;"></p>' +
+                        '<p id="status_exp_text" class="info" style="transform: translate(0, -75%); margin: 0; font-size: 7px;"></p>' +
                     '</div>' + 
                 '</div>';
         },
