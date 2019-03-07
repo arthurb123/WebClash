@@ -2,13 +2,15 @@ const tiled = {
     loading: false,
     queue: [],
     current: '',
-    executeAfterLoad: function(cb, parameter) {
+    executeAfterLoad: function(cb, parameter) 
+    {
         this.queue.push({
             cb: cb,
             parameter: parameter
         });
     },
-    convertAndLoadMap: function(map) {
+    convertAndLoadMap: function(map) 
+    {
         //Set loading
         
         this.loading = true;
@@ -61,117 +63,68 @@ const tiled = {
         let offset_width = -map.width*map.tilewidth/2,
             offset_height = -map.height*map.tileheight/2;
         
-        //Add OnLayerDraw events based on
-        //the map content
+        //Cache all tilesets
         
-        let actualLayer = 0;
-    
-        for (let l = 0; l < map.layers.length; l++) {
-            //Check if visible
-            
-            if (!map.layers[l].visible)
-                continue;
-            
-            //Check if tilelayer
-            
-            if (map.layers[l].type !== 'tilelayer')
-                continue;
-            
-            const data = map.layers[l].data,
-                  width = map.layers[l].width,
-                  height = map.layers[l].height;
-            
-            if (map.layers[l].offsetx !== undefined) 
-                offset_width += map.layers[l].offsetx;
-            if (map.layers[l].offsety !== undefined) 
-                offset_height += map.layers[l].offsety;
+        game.cacheTilesets(map.tilesets, function() {
+            //Add OnLayerDraw events based on
+            //the map content
 
-            lx.OnLayerDraw(actualLayer, function(gfx) {
-                if (game.player === -1 ||
-                    game.players[game.player] == undefined)
-                    return;
-                
-                let y_line = {
-                    start: Math.floor((game.players[game.player].POS.Y-offset_height-lx.GetDimensions().height/2)/map.tileheight),
-                    length: lx.GetDimensions().height/map.tileheight+2
-                },
-                    x_line = {
-                    start: Math.floor((game.players[game.player].POS.X-offset_width-lx.GetDimensions().width/2)/map.tilewidth),
-                    length: lx.GetDimensions().width/map.tilewidth+2
-                };
-         
-                for (let y = y_line.start; y < y_line.start+y_line.length; y++)
-                    for (let x = x_line.start; x < x_line.start+x_line.length; x++) {
-                        //Convert to tile
-                        
-                        let t = y * map.width + x;
-                        
-                        //Skip empty tiles
+            let actualLayer = 0;
+
+            for (let l = 0; l < map.layers.length; l++) {
+                //Check if visible
+
+                if (!map.layers[l].visible)
+                    continue;
+
+                //Check if tilelayer
+
+                if (map.layers[l].type !== 'tilelayer')
+                    continue;
+
+                const data = map.layers[l].data,
+                      width = map.layers[l].width,
+                      height = map.layers[l].height;
+
+                if (map.layers[l].offsetx !== undefined) 
+                    offset_width += map.layers[l].offsetx;
+                if (map.layers[l].offsety !== undefined) 
+                    offset_height += map.layers[l].offsety;
+
+                //Prerender/cache layer for easier drawing
+
+                const cachedLayer = tiled.cacheLayer(map, map.layers[l], offset_width, offset_height);
+
+                //Add drawing loop
+
+                lx.OnLayerDraw(actualLayer, function(gfx) {
+                    if (game.player === -1 ||
+                        game.players[game.player] == undefined)
+                        return;
                     
-                        if (data[t] == 0)
-                            continue;
+                    let clip = {
+                        X: Math.floor(game.players[game.player].POS.X+game.players[game.player].SIZE.W/2-offset_width-lx.GetDimensions().width/2),
+                        Y: Math.floor(game.players[game.player].POS.Y+game.players[game.player].SIZE.H/2-offset_height-lx.GetDimensions().height/2)
+                    };
 
-                        //Get corresponding tile sprite
+                    gfx.drawImage(
+                        cachedLayer,
+                        clip.X,
+                        clip.Y,
+                        lx.GetDimensions().width,
+                        lx.GetDimensions().height,
+                        0,
+                        0,
+                        lx.GetDimensions().width,
+                        lx.GetDimensions().height
+                    );
+                });
 
-                        let sprite,
-                            actual = data[t];
+                //Increment actual layer
 
-                        for (let i = 0; i < map.tilesets.length; i++)
-                            if (data[t] >= map.tilesets[i].firstgid) {
-                                sprite = game.getTileset(map.tilesets[i].image);
-                                
-                                if (i != 0)
-                                    actual = data[t] - map.tilesets[i].firstgid + 1;
-                            }
-                            else
-                                break;
-
-                        //Check if sprite is valid
-
-                        if (sprite === undefined)
-                            continue;
-
-                        //Check if sprite has a tilewidth specified
-
-                        if (sprite._tilewidth == undefined || 
-                            sprite._tilewidth == 0) {
-                            sprite._tilewidth = sprite.Size().W/map.tilewidth;
-                        }
-
-                        //Calculate tile coordinates
-
-                        let tc = {
-                            x: (actual % sprite._tilewidth - 1) * map.tilewidth,
-                            y: (Math.ceil(actual / sprite._tilewidth) -1) * map.tileheight
-                        },
-                            tp = {
-                            x: t % width * map.tilewidth,
-                            y: Math.floor(t / width) * map.tileheight       
-                        };
-
-                        //Tile clip coordinates artefact prevention
-
-                        if (tc.x == -map.tilewidth)
-                            tc.x = sprite.Size().W - map.tilewidth;
-
-                        //Draw tile
-
-                        lx.DrawSprite(
-                            sprite.Clip(tc.x, tc.y, map.tilewidth, map.tileheight),
-
-                            tp.x+offset_width,
-                            tp.y+offset_height, 
-
-                            map.tilewidth,
-                            map.tileheight
-                        );
-                    }
-            });
-            
-            //Increment actual layer
-            
-            actualLayer++;
-        }
+                actualLayer++;
+            }
+        });
         
         //Add world boundary colliders
         
@@ -187,6 +140,85 @@ const tiled = {
         //Set loading to false
         
         this.loading = false;
+    },
+    cacheLayer: function(map, layer, offset_width, offset_height)
+    {
+        //Create canvas according to layer size
+        
+        let c = document.createElement('canvas');
+        c.width = layer.width * map.tilewidth;
+        c.height = layer.height * map.tileheight;
+        
+        let g = c.getContext('2d');
+        
+        //Render all tiles to canvas
+        
+        for (let y = 0; y < layer.height; y++)
+            for (let x = 0; x < layer.width; x++) {
+                //Convert to tile
+
+                let t = y * layer.width + x;
+
+                //Skip empty tiles
+
+                if (layer.data[t] == 0)
+                    continue;
+
+                //Get corresponding tile sprite
+
+                let sprite,
+                    actual = layer.data[t];
+
+                for (let i = 0; i < map.tilesets.length; i++)
+                    if (layer.data[t] >= map.tilesets[i].firstgid) {
+                        sprite = game.getTileset(map.tilesets[i].image);
+
+                        if (i != 0)
+                            actual = layer.data[t] - map.tilesets[i].firstgid + 1;
+                    }
+                    else
+                        break;
+
+                //Check if sprite is valid
+
+                if (sprite === undefined)
+                    continue;
+
+                //Check if sprite has a tilewidth specified
+
+                if (sprite._tilewidth == undefined || 
+                    sprite._tilewidth == 0) {
+                    sprite._tilewidth = sprite.Size().W/map.tilewidth;
+                }
+
+                //Calculate tile coordinates
+
+                let tc = {
+                    x: (actual % sprite._tilewidth - 1) * map.tilewidth,
+                    y: (Math.ceil(actual / sprite._tilewidth) -1) * map.tileheight
+                },
+                    tp = {
+                    x: t % layer.width * map.tilewidth,
+                    y: Math.floor(t / layer.width) * map.tileheight       
+                };
+
+                //Tile clip coordinates artefact prevention
+
+                if (tc.x == -map.tilewidth)
+                    tc.x = sprite.Size().W - map.tilewidth;
+
+                //Draw tile
+                
+                g.drawImage(
+                    sprite.IMG,
+                    tc.x, tc.y, map.tilewidth, map.tileheight,
+                    tp.x, tp.y, map.tilewidth, map.tileheight
+                );
+            }
+        
+        //Return canvas
+        
+        return c;
     },
     checkObjects: function(map)
     {        

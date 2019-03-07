@@ -685,17 +685,40 @@ const game = {
         
         return this.sprites[src]; 
     },
-    getTileset: function(src) 
+    getTileset: function(src, cb) 
     {
         if (this.tilesets[src] === undefined) {
             let s = src.lastIndexOf('/')+1;
             
-            this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s));
+            if (cb == undefined)
+                this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s));
+            else
+                this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s), undefined, undefined, undefined, undefined, cb);
         }
         
         this.tilesets[src].CLIP = undefined;
         
+        if (cb != undefined)
+            cb();
+        
         return this.tilesets[src];
+    },
+    cacheTilesets: function(tilesets, cb) 
+    {
+        let t = 0;
+        
+        let cacheTileset = function() {
+            game.getTileset(tilesets[t].image, function() {
+                t++;
+
+                if (t < tilesets.length)
+                    cacheTileset();
+                else
+                    cb();
+            });
+        };
+                            
+        cacheTileset();
     },
     
     createAction: function(data)
