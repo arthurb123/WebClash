@@ -120,28 +120,33 @@ exports.removePlayer = function(socket)
     if (socket === undefined || socket.name === undefined)
         return;
     
-    //Cycle through all players
+     //Get player index
+        
+    let id = game.getPlayerIndex(socket.name);
     
-    for (let i = 0; i < this.players.length; i++)
-        if (this.players[i].name == socket.name) {
-            //Remove from clients
+    //Get map index
+    
+    let map = tiled.getMapIndex(this.players[id].map);
+    
+    //Remove NPC targets
+    
+    npcs.removeNPCTargets(map, id, true);
+    
+    //Remove from clients
             
-            server.removePlayer(i, socket);
-            
-            //Release owned world items
-            
-            items.releaseWorldItemsFromOwner(tiled.getMapIndex(this.players[i].map), this.players[i].name);
-            
-            //Save player
-            
-            this.savePlayer(socket.name, this.players[i]);
-            
-            //Remove player entry
-            
-            this.players.splice(i, 1);
-            
-            break;
-        }
+    server.removePlayer(id, socket);
+
+    //Release owned world items
+
+    items.releaseWorldItemsFromOwner(map, this.players[id].name);
+
+    //Save player
+
+    this.savePlayer(socket.name, this.players[id]);
+
+    //Remove player entry
+
+    this.players.splice(id, 1);
 };
 
 exports.updatePlayers = function()

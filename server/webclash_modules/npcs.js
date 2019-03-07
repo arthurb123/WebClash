@@ -565,8 +565,7 @@ exports.setNPCTarget = function(map, id, owner)
     
     //Make sure the owner is not the current target
     
-    if (owner != undefined &&
-        this.onMap[map][id].target == owner)
+    if (this.onMap[map][id].target == owner)
         return;
     
     //Get target with highest priority (damage)
@@ -600,7 +599,7 @@ exports.setNPCTarget = function(map, id, owner)
     this.onMap[map][id].target = newTarget;
 };
 
-exports.removeNPCTargets = function(map, target)
+exports.removeNPCTargets = function(map, target, splice)
 {
     //Cycle through all NPCs on map
     
@@ -613,7 +612,10 @@ exports.removeNPCTargets = function(map, target)
         if (this.onMap[map][i].targets[target] != undefined) {
             //Set damage done to zero
             
-            this.onMap[map][i].targets[target] = 0;
+            if (splice)
+                this.onMap[map][i].targets.splice(target, 1);
+            else
+                this.onMap[map][i].targets[target] = 0;
             
             //Refresh targets
     
@@ -711,8 +713,9 @@ exports.evaluateLootTable = function(map, id)
     
     //Check if target (still) exists
     
-    if (this.onMap[map][id].target == -1)
-        return;
+    if (this.onMap[map][id].target == -1 ||
+        game.players[this.onMap[map][id].target] == undefined)
+        this.setNPCTarget(map, id);
     
     //Loop through loot table
     

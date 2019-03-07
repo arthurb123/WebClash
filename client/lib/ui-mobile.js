@@ -353,7 +353,8 @@ const ui = {
             }
             
             for (let a = 0; a < player.actions.length; a++) 
-                this.reloadAction(a);
+                if (player.actions[a] != undefined)
+                    this.reloadAction(a);
         },
         reloadAction: function(a) {
             let uses = '', usesContent = '∞';

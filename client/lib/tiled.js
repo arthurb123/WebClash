@@ -67,7 +67,7 @@ const tiled = {
             //Start progress
             
             cache.progress.update('Building map - 0%');
-
+            
             for (let l = 0; l < map.layers.length; l++) {
                 //Update progress
                 
@@ -103,23 +103,51 @@ const tiled = {
                         game.players[game.player] == undefined)
                         return;
                     
+                    //Calculate clip position
+                    
                     let clip = {
                         X: Math.floor(game.players[game.player].POS.X+game.players[game.player].SIZE.W/2-offset_width-lx.GetDimensions().width/2),
                         Y: Math.floor(game.players[game.player].POS.Y+game.players[game.player].SIZE.H/2-offset_height-lx.GetDimensions().height/2)
                     };
                     
-                    let size = lx.GetDimensions();
+                    //Declare size and pos 
+                    
+                    let size = lx.GetDimensions(),
+                        pos = { X: 0, Y: 0 };
+                    
+                    //Adjust clip to avoid an out-of-bounds clip
+                    //Some browsers tend to handle an out-of-bounds clip poorly.
+                    
+                    //Avoid negative X and Y clip
+                    
+                    if (clip.X < 0) {
+                        pos.X -= clip.X;
+                        size.width += clip.X/2;
+                        
+                        clip.X = 0;
+                    }
+                    if (clip.Y < 0) {
+                        pos.Y -= clip.Y;
+                        size.height += clip.Y/2;
+                        
+                        clip.Y = 0;
+                    }
+                    
+                    //Avoid out-of-bounds size
+                    
+                    if (pos.X == 0 && clip.X+size.width > cachedLayer.width)
+                        size.width = cachedLayer.width - clip.X;
+                    if (pos.Y == 0 && clip.Y+size.height > cachedLayer.height)
+                        size.height = cachedLayer.height - clip.Y;
 
+                    //Draw cached layer
+                    
                     gfx.drawImage(
                         cachedLayer,
-                        clip.X,
-                        clip.Y,
-                        size.width,
-                        size.height,
-                        0,
-                        0,
-                        size.width,
-                        size.height
+                        clip.X, clip.Y,
+                        size.width, size.height,
+                        pos.X, pos.Y,
+                        size.width, size.height
                     );
                 });
 
