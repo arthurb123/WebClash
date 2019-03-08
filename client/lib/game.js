@@ -6,36 +6,36 @@ const game = {
     tilesets: [],
     sprites: [],
     isMobile: false,
-    
-    getPlayerIndex: function(name) 
+
+    getPlayerIndex: function(name)
     {
         //Grab the player index by checking for the player name
-        
+
         for (let i = 0; i < this.players.length; i++)
             if (this.players[i].name == name) return i;
-        
+
         return -1;
     },
-    instantiatePlayer: function(name) 
+    instantiatePlayer: function(name)
     {
         //Instantiate Lynx2D GameObject for player
-        
+
         player.instantiate(name);
-        
+
         this.player = this.players.length-1;
     },
-    instantiateOther: function(name) 
+    instantiateOther: function(name)
     {
         //Instantiate Lynx2D GameObject for other player
-        
+
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
             .Loops(function() {
                 animation.animateMoving(go);
-                
+
                 if (go._nameplate.Position().X == 0 &&
                     go._nameplate.Position().Y == 0)
                     go._nameplate.Position(go.Size().W/2, -Math.floor(go.Size().H/5));
-                
+
                 if (go._level !== undefined)
                     go._nameplate.Text('lvl ' + go._level + ' - ' + go.name);
             })
@@ -44,92 +44,92 @@ const game = {
                 {
                     if (go._equipment[i] === undefined)
                         continue;
-                    
+
                     go._equipment[i].CLIP = go.SPRITE.CLIP;
-                    
+
                     lx.DrawSprite(go._equipment[i], go.Position().X, go.Position().Y, go.Size().W, go.Size().H)
                 }
             });
-        
+
         go.name = name;
         go._moving = false;
         go._direction = 0;
         go._equipment = {};
-        
+
         go._nameplate = new lx.UIText(name, 0, 0, 14)
             .Alignment('center')
             .Follows(go)
             .Show();
-        
+
         go._nameplate.SHADOW = true;
-        
-        this.players.push(go.Show(3));  
+
+        this.players.push(go.Show(3));
     },
-    setPlayerHealth: function(id, health) 
+    setPlayerHealth: function(id, health)
     {
         if (this.players[id]._health !== undefined) {
             let delta = -(this.players[id]._health.cur-health.cur);
-            
+
             this.players[id]._health.cur = health.cur;
-        
+
             //If player set UI health
-                
+
             if (this.player == id)
                 ui.status.setHealth(health.cur, health.max);
-            
+
             //Check if max health has changed
-            
+
             if (health.max !== this.players[id]._health.max) {
                 this.players[id]._health.max = health.max;
-                
+
                 return;
             }
-            
+
             if (delta == 0) {
                 //Miss floaty
-                
+
                 ui.floaties.missFloaty(this.players[id], delta);
-                
+
                 return;
             }
             else if (delta > 0) {
                 //Heal floaty
-                
+
                 ui.floaties.healFloaty(this.players[id], delta);
-                
+
                 //Show heal color overlay
-            
+
                 this.players[id].SPRITE.ShowColorOverlay(5, 'rgba(128, 239, 59, 0.46)');
-                
+
                 return;
             }
-            
+
             //Damage floaty
-            
+
             ui.floaties.damageFloaty(this.players[id], delta);
-            
+
             //Show damage color overlay
-            
+
             this.players[id].SPRITE.ShowColorOverlay(5, 'rgba(228, 63, 63, 0.46)');
-            
+
             //Blood particles
-            
+
             let count = -delta;
             if (count > 10)
                 count = 10;
-            
+
             this.createBlood(this.players[id], count);
         }
         else {
             this.players[id]._health = health;
-                 
+
             //If player set UI health
-                
+
             if (this.player == id)
                 ui.status.setHealth(health.cur, health.max);
         }
     },
-    setPlayerMana: function(id, mana) 
+    setPlayerMana: function(id, mana)
     {
         this.players[id]._mana = mana;
 
@@ -141,7 +141,7 @@ const game = {
     setPlayerEquipment: function(id, equipment)
     {
         let result = [];
-        
+
         if (equipment['torso'] !== undefined)
             result.push(new lx.Sprite(equipment['torso']));
         if (equipment['hands'] !== undefined)
@@ -156,110 +156,110 @@ const game = {
             result.push(new lx.Sprite(equipment['offhand']));
         if (equipment['main'] !== undefined)
             result.push(new lx.Sprite(equipment['main']));
-        
+
         this.players[id]._equipment = result;
     },
-    setPlayerStats: function(id, stats) 
+    setPlayerStats: function(id, stats)
     {
         this.players[id]._stats = stats;
-        
+
         if (id == game.player)
             ui.status.setExperience(this.players[id]._stats.exp, this.players[id]._expTarget);
     },
     setPlayerLevel: function(id, level)
     {
         let oldLevel = game.players[id]._level;
-        game.players[id]._level = level; 
-        
+        game.players[id]._level = level;
+
         if (id == game.player &&
             oldLevel != undefined &&
             level != oldLevel) {
             player.requestExpTarget();
-            
+
             ui.inventory.reload();
-            
+
             ui.chat.addMessage('You are now level ' + level + '!');
         }
     },
-    removePlayer: function(id) 
+    removePlayer: function(id)
     {
         //Check if valid
-        
+
         if (id === undefined || this.players[id] == undefined)
             return;
-        
+
         //Hide target GameObject
-        
+
         this.players[id]._nameplate.Hide();
         this.players[id].Hide();
-        
+
         //Get player name
-        
+
         let name = game.players[game.player].name;
-        
+
         //Remove target
-        
+
         this.players.splice(id, 1);
-        
+
         //Reset player ID
-        
+
         this.player = this.getPlayerIndex(name);
     },
-    resetPlayers: function() 
+    resetPlayers: function()
     {
         //Cycle through all online players and
         //remove all, except for the player itself
-        
+
         for (let i = this.players.length-1; i >= 0; i--)
-            if (i !== this.player) 
+            if (i !== this.player)
                 this.removePlayer(i);
     },
-    resetPlayer: function() 
+    resetPlayer: function()
     {
         //Check if the player exists
-        
+
         if (this.player == -1)
             return;
-        
+
         //Reset movement
-        
+
         this.players[this.player].Movement(0, 0);
     },
-    
-    instantiateNPC: function(id, name) 
+
+    instantiateNPC: function(id, name)
     {
         //Instantiate Lynx2D GameObject for NPC
-        
+
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
             .Loops(function() {
                 animation.animateMoving(this);
-                
+
                 if (this._nameplate.Position().X == 0 &&
                     this._nameplate.Position().Y == 0)
                     this._nameplate.Position(this.Size().W/2, -Math.floor(this.Size().H/5));
-                
-                if (this._type === 'friendly') 
+
+                if (this._type === 'friendly')
                     this._nameplate.Color('black');
                 else if (this._type === 'hostile')
                     this._nameplate.Color('#FF4242');
-                
+
                 if (this._stats !== undefined)
                     this._nameplate.Text('lvl ' + this._stats.level + ' - ' + this.name);
-                
+
                 if (this._health !== undefined)
-                {    
+                {
                     if (this._healthbar === undefined) {
                         this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W, 8).Follows(go);
                         this._healthbar = new lx.UITexture('#FF4242', 0, -36, this._health.cur/this._health.max*this.SIZE.W, 8).Follows(go);
                     } else {
                         this._healthbar.SIZE.W = this._health.cur/this._health.max*this.SIZE.W;
-                    
+
                         if (this._health.cur == this._health.max)
                         {
                             this._healthbarBack.Hide();
                             this._healthbar.Hide();
-                        } 
-                        else 
+                        }
+                        else
                         {
                             this._healthbarBack.Show();
                             this._healthbar.Show();
@@ -267,34 +267,34 @@ const game = {
                     }
                 }
             });
-        
+
         go.name = name;
-        
+
         go._moving = false;
         go._direction = 0;
-        
+
         go._nameplate = new lx.UIText(name, 0, 0, 14)
             .Alignment('center')
             .Follows(go)
             .Show();
-        
+
         go._nameplate.SHADOW = true;
-        
+
         this.npcs[id] = go.Show(3);
     },
-    setNPCType: function(id, type, hasDialog) 
+    setNPCType: function(id, type, hasDialog)
     {
         //Set NPC type
-        
+
         this.npcs[id]._type = type;
-        
+
         if (type === 'friendly' &&
-            hasDialog) 
+            hasDialog)
         {
             //Check if mobile
-            
+
             if (!this.isMobile) {
-                
+
                 //Add a mouse hover draw event to draw
                 //the dialog option when in range
 
@@ -328,10 +328,10 @@ const game = {
                     );
                 });
             } else {
-                
+
                 //Add NPC specific draws that checks if the dialog
                 //button should be displayed
-                
+
                 this.npcs[id].Draws(function(data) {
                     //Get position difference
 
@@ -361,20 +361,20 @@ const game = {
                     );
                 });
             }
-            
+
             //Give NPC the possibility to engage in dialog
             //through a click event
-            
+
             this.npcs[id].OnMouse(0, function(data) {
                 if (data.state == 0)
                      return;
-                
+
                 //Stop mouse
-                
+
                 lx.StopMouse(0);
-                
+
                 //Request dialog
-                
+
                 socket.emit('CLIENT_REQUEST_DIALOG', id, function(data) {
                     //Check if data is valid
 
@@ -386,151 +386,158 @@ const game = {
 
                     ui.dialog.startDialog(id, game.npcs[id].name, data);
                 });
-            }); 
-            
+            });
+
         }
     },
-    setNPCHealth: function(id, health) 
+    setNPCHealth: function(id, health)
     {
         if (this.npcs[id] != undefined &&
             this.npcs[id]._health !== undefined)
         {
             let delta = -(this.npcs[id]._health.cur-health.cur);
-            
+
             this.npcs[id]._health = health;
-            
-            if (delta > 0) {
-                //Heal floaty
-                
-                ui.floaties.healFloaty(this.npcs[id], delta);
-                
-                //Show heal color overlay
-            
-                this.npcs[id].SPRITE.ShowColorOverlay(5, 'rgba(128, 239, 59, 0.46)');
-                
+
+            if (delta == 0) {
+                //Miss floaty
+
+                ui.floaties.missFloaty(this.npcs[id], delta);
+
                 return;
             }
-            
+            if (delta > 0) {
+                //Heal floaty
+
+                ui.floaties.healFloaty(this.npcs[id], delta);
+
+                //Show heal color overlay
+
+                this.npcs[id].SPRITE.ShowColorOverlay(5, 'rgba(128, 239, 59, 0.46)');
+
+                return;
+            }
+
             //Damage floaty
-            
+
             ui.floaties.damageFloaty(this.npcs[id], delta);
-            
+
             //Show damage color overlay
-            
+
             this.npcs[id].SPRITE.ShowColorOverlay(5, 'rgba(228, 63, 63, 0.46)');
-            
+
             //Check if valid
-            
+
             if(this.npcs[id] == undefined)
                 return;
-            
+
             //Blood particles
-            
+
             let count = -delta;
             if (count > 10)
                 count = 10;
-            
+
             this.createBlood(this.npcs[id], count);
         }
         else if (this.npcs[id] != undefined)
             this.npcs[id]._health = health;
     },
-    removeNPC: function(id) 
+    removeNPC: function(id)
     {
         if (this.npcs[id] === undefined)
             return;
-        
+
         this.npcs[id].Hide();
-        this.npcs[id]._nameplate.Hide();   
-        
+        this.npcs[id]._nameplate.Hide();
+
         if (this.npcs[id]._healthbar !== undefined)
         {
             this.npcs[id]._healthbarBack.Hide();
             this.npcs[id]._healthbar.Hide();
         }
-        
+
         this.npcs[id] = undefined;
     },
-    resetNPCs: function() 
+    resetNPCs: function()
     {
         //Cycle through all NPCs and hide them
-        
+
         for (let i = 0; i < this.npcs.length; i++)
             this.removeNPC(i);
-        
+
         //Reset NPCs array
-        
+
         this.npcs = [];
     },
-    resetColliders: function() 
+    resetColliders: function()
     {
-        if (this.players === undefined || 
+        if (this.players === undefined ||
             this.player === undefined ||
             this.players[this.player] === undefined)
             return;
-        
+
         if (this.players[this.player].COLLIDER !== undefined)
         {
             //Save player's collider
-        
+
             const c = this.players[this.player].COLLIDER.Disable();
-            
+
             //Reset colliders
-            
+
             lx.GAME.COLLIDERS = [];
-        
+
             //Apply collider to player
 
             this.players[this.player].COLLIDER = c.Enable();
         }
     },
-    createWorldItem: function(data) 
+    createWorldItem: function(data)
     {
         //Check if valid
-        
+
         if (data == undefined)
             return;
-        
+
         //Check if world item should be removed
-        
+
         if (data.remove)
         {
             //Remove world item
-            
+
             this.removeWorldItem(data.id);
-            
+
             //Remove from loot box
-            
+
             ui.loot.remove(data.id);
 
             return;
         }
-        
+
         //Create item name
-        
+
         let name = data.name + ' (' + data.value + 'g)';
-        
+
         //Check if world item already exists
-        
+
         if (this.items[data.id] != undefined)
-        {                  
+        {
             //Update nameplate
 
             if (data.owner == -1)
                 this.items[data.id]._nameplate.Text(name);
-            
+
             //Set new owner
-            
+
             this.items[data.id]._owner = data.owner;
 
             return;
         }
-        
+
         //Create item sprite
-        
+
         let sprite = new lx.Sprite(data.source, undefined, undefined, undefined, undefined, function() {
             //Create lynx gameobject
-        
+
             let worldItem = new lx.GameObject(
                 sprite,
                 data.pos.X-sprite.Size().W/2,
@@ -606,62 +613,62 @@ const game = {
             game.items[data.id].Show(2);
         });
     },
-    resetWorldItems: function() 
+    resetWorldItems: function()
     {
         //Cycle through all items and hide
-        
+
         for (let i = 0; i < this.items.length; i++)
             this.removeWorldItem(i);
-        
+
         //Reset to empty array
-        
+
         this.items = [];
     },
-    removeWorldItem: function(id) 
+    removeWorldItem: function(id)
     {
         //If item exists remove it
-        
+
         if (this.items[id] != undefined) {
             this.items[id]._nameplate.Hide();
             this.items[id].Hide();
-            
+
             this.items[id] = undefined;
         }
     },
-    loadMap: function(map) 
+    loadMap: function(map)
     {
         tiled.convertAndLoadMap(map);
-        
+
         //...
     },
     getSprite: function(src)
     {
         if (this.sprites[src] === undefined)
             this.sprites[src] = new lx.Sprite(src);
-        
+
         this.sprites[src].CLIP = undefined;
-        
-        return this.sprites[src]; 
+
+        return this.sprites[src];
     },
-    getTileset: function(src, cb) 
+    getTileset: function(src, cb)
     {
         if (this.tilesets[src] === undefined) {
             let s = src.lastIndexOf('/')+1;
-            
+
             if (cb == undefined)
                 this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s));
             else
                 this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s), undefined, undefined, undefined, undefined, cb);
         }
-        
+
         this.tilesets[src].CLIP = undefined;
-        
+
         if (cb != undefined)
             cb();
-        
+
         return this.tilesets[src];
     },
-    
+
     createAction: function(data)
     {
         for (let i = 0; i < data.elements.length; i++)
@@ -678,17 +685,17 @@ const game = {
                          if (data.elements[i].direction === 'horizontal')
                              for (let x = 0; x < sprite.Size().W/data.elements[i].w; x++)
                                  sprites.push(new lx.Sprite(data.elements[i].src,
-                                     x*data.elements[i].w, 
-                                     0, 
-                                     data.elements[i].w, 
+                                     x*data.elements[i].w,
+                                     0,
+                                     data.elements[i].w,
                                      data.elements[i].h
                                  ));
                          if (data.elements[i].direction === 'vertical')
                              for (let y = 0; y < sprite.Size().H/data.elements[i].h; y++)
                                  sprites.push(new lx.Sprite(data.elements[i].src,
-                                     0, 
-                                     y*data.elements[i].h, 
-                                     data.elements[i].w, 
+                                     0,
+                                     y*data.elements[i].h,
+                                     data.elements[i].w,
                                      data.elements[i].h
                                  ));
 
@@ -702,14 +709,14 @@ const game = {
                                     this.Hide();
                              })
                              .Show(
-                             4, 
+                             4,
                              data.pos.X+data.elements[i].x,
                              data.pos.Y+data.elements[i].y,
                              data.elements[i].w,
                              data.elements[i].h,
                              0
                          );
-                     
+
                      action._map = tiled.current;
                  });
              }
@@ -717,7 +724,7 @@ const game = {
                  let sprite = new lx.Sprite(data.elements[i].src, undefined, undefined, undefined, undefined,
                      function() {
                         let angle = 0;
-                     
+
                         if (data.elements[i].projectileSpeed.y != 0 &&
                             data.elements[i].projectileSpeed.x != 0)
                                 angle = -Math.atan2(data.elements[i].projectileSpeed.x, data.elements[i].projectileSpeed.y);
@@ -726,7 +733,7 @@ const game = {
                             if (data.elements[i].projectileSpeed.x == 0 &&
                                 data.elements[i].projectileSpeed.y < 0)
                                 angle = Math.PI;
-                            
+
                             else if (data.elements[i].projectileSpeed.y == 0) {
                                 if (data.elements[i].projectileSpeed.x < 0)
                                     angle = Math.PI/2;
@@ -734,9 +741,9 @@ const game = {
                                     angle = -Math.PI/2;
                             }
                         }
-                     
+
                         let projectile = new lx.GameObject(
-                            sprite, 
+                            sprite,
                             data.pos.X+data.elements[i].x,
                             data.pos.Y+data.elements[i].y,
                             data.elements[i].w,
@@ -746,13 +753,13 @@ const game = {
                         .Rotation(angle)
                         .MovementDecelerates(false)
                         .Movement(
-                            data.elements[i].projectileSpeed.x, 
+                            data.elements[i].projectileSpeed.x,
                             data.elements[i].projectileSpeed.y
                         )
                         .Loops(function() {
                             this._distance.x += Math.abs(this.MOVEMENT.VX);
                             this._distance.y += Math.abs(this.MOVEMENT.VY);
-                            
+
                             if (this._distance.x > data.elements[i].projectileDistance ||
                                 this._distance.y > data.elements[i].projectileDistance ||
                                 tiled.current !== this._map ||
@@ -760,8 +767,8 @@ const game = {
                                 this.Hide();
                         })
                         .Show(4);
-                     
-                        projectile._distance = { 
+
+                        projectile._distance = {
                             x: 0,
                             y: 0
                         };
@@ -772,16 +779,16 @@ const game = {
     },
     removeAction: function(id) {
         let go = lx.FindGameObjectWithIdentifier(id);
-        
+
         if (go != undefined)
             go.Hide();
     },
-    
+
     createBlood: function(target, count)
     {
         if (target == undefined)
             return;
-        
+
         for (let i = 0; i < count; i++) {
             let size = 4+Math.round(Math.random()*4);
 
@@ -804,33 +811,33 @@ const game = {
                     this._timer.cur = 0;
 
                     blood.Hide();
-                } 
+                }
                 else
                     this._timer.cur++;
             });
 
             blood.Show(2);
-        }  
+        }
     },
-    
-    initialize: function(isMobile) 
+
+    initialize: function(isMobile)
     {
         //Check if Lynx2D is already running
-        
+
         if (lx.GAME.RUNNING)
             window.location.reload(true);
-        
+
         //Initialize and start Lynx2D
-        
+
         lx
             .Initialize(document.title)
             .Smoothing(false)
             .Start(60);
-        
+
         //Check if is mobile
-        
+
         this.isMobile = isMobile;
-        
+
         if (isMobile)
             ui.fullscreen.append();
     }
