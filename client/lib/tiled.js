@@ -163,15 +163,15 @@ const tiled = {
             //Hide progress
 
             cache.progress.hide();
+        
+            //Add world boundary colliders
+
+            tiled.createWorldBoundaries(map, offset_width, offset_height);
+
+            //Set loading to false
+
+            tiled.loading = false;
         });
-        
-        //Add world boundary colliders
-        
-        this.createWorldBoundaries(map, offset_width, offset_height);
-        
-        //Set loading to false
-        
-        this.loading = false;
     },
     cacheLayer: function(map, layer, offset_width, offset_height)
     {
@@ -445,8 +445,6 @@ const tiled = {
                                     if (cb !== undefined) {
                                         if (!tiled.loading)
                                             cb(go);
-                                        else
-                                            tiled.executeAfterLoad(cb, go);
                                     }
                                 });
                             }

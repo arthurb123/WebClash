@@ -305,6 +305,10 @@ exports.handleSocket = function(socket)
         if (!result.near)
             return;
         
+        //Send map to player
+        
+        game.loadMap(socket, data);
+        
         //Check if positioning properties exist
         
         let properties,
@@ -333,10 +337,6 @@ exports.handleSocket = function(socket)
             if (done)
                 server.syncPlayerPartially(id, 'position');
         }
-        
-        //Send map to player
-        
-        game.loadMap(socket, data);
     });
     
     socket.on('CLIENT_NEW_CHAT', function(data) {

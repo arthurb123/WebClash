@@ -941,6 +941,9 @@ function Lynx2D() {
         
         this.IMG.src = source;
         this.ROTATION = 0;
+        this.SHOW_COLOR_OVERLAY = false;
+        
+        this.CLIPPED_COLOR_OVERLAYS = {};
         
         if (c_x != undefined && c_y != undefined && c_w != undefined && c_h != undefined) this.CLIP = {
             X: c_x,
@@ -971,7 +974,84 @@ function Lynx2D() {
             }
             
             return this;
-        }
+        };
+        
+        this.ColorOverlay = function(color) {
+            if (color == undefined) return this.COLOR_OVERLAY;
+            else {
+                let SAVE_ID;
+                
+                if (this.CLIP != undefined) {
+                    let ID = 'C'+color+'X'+this.CLIP.X+'Y'+this.CLIP.Y;
+                    
+                    if (this.CLIPPED_COLOR_OVERLAYS[ID] != undefined) {
+                        this.COLOR_OVERLAY = this.CLIPPED_COLOR_OVERLAYS[ID];
+                        
+                        return this;
+                    } 
+                    else
+                        SAVE_ID = ID;
+                }
+                
+                let SIZE = this.Size();
+                
+                let COLOR_OVERLAY = document.createElement('canvas');
+                COLOR_OVERLAY.width = SIZE.W;
+                COLOR_OVERLAY.height = SIZE.H;
+                
+                let g = COLOR_OVERLAY.getContext('2d');
+                g.fillStyle = color;
+                g.fillRect(0, 0, SIZE.W, SIZE.H);
+                g.globalCompositeOperation = 'destination-atop';
+                
+                if (this.CLIP == undefined) {
+                    if (this.ROTATION == 0) g.drawImage(this.IMG, 0, 0, SIZE.W, SIZE.H);
+                    else {
+                        g.save();
+                        g.translate(SIZE.W/2, SIZE.H/2);
+                        g.rotate(this.ROTATION);
+                        g.drawImage(this.IMG, -SIZE.W/2, -SIZE.H/2, SIZE.W, SIZE.H);
+                        g.restore();
+                    }
+                }
+                else {
+                    if (this.ROTATION == 0) g.drawImage(this.IMG, this.CLIP.X, this.CLIP.Y, this.CLIP.W, this.CLIP.H, 0, 0, SIZE.W, SIZE.H);
+                    else {
+                        g.save();
+                        g.translate(SIZE.W/2, SIZE.H/2);
+                        g.rotate(this.ROTATION);
+                        g.drawImage(this.IMG, this.CLIP.X, this.CLIP.Y, this.CLIP.W, this.CLIP.H, -SIZE.W/2, -SIZE.H/2, SIZE.W, SIZE.H);
+                        g.restore();
+                    }
+                }
+                
+                if (SAVE_ID != undefined) 
+                    this.CLIPPED_COLOR_OVERLAYS[SAVE_ID] = COLOR_OVERLAY;
+                
+                this.COLOR_OVERLAY = COLOR_OVERLAY;
+            }
+            
+            return this;
+        };
+        
+        this.ShowColorOverlay = function(duration, color) {
+            if (this.COLOR_OVERLAY == undefined && color == undefined)
+                return this;
+            
+            this.ColorOverlay(color);
+            
+            this.SHOW_COLOR_OVERLAY = true;
+            
+            this.COLOR_OVERLAY_DURATION = duration;
+            
+            return this;
+        };
+        
+        this.HideColorOverlay = function() {
+            this.SHOW_COLOR_OVERLAY = false;
+            
+            return this;
+        };
         
         this.Clip = function(clip_x, clip_y, clip_w, clip_h) {
             if (clip_x == undefined || clip_y == undefined || clip_w == undefined || clip_h == undefined) return this.CLIP;
@@ -996,25 +1076,37 @@ function Lynx2D() {
             if (SIZE == undefined) 
                 SIZE = this.Size();
             
-            if (this.CLIP == undefined) {
-                if (this.ROTATION == 0) lx.CONTEXT.GRAPHICS.drawImage(this.IMG, POS.X, POS.Y, SIZE.W, SIZE.H);
+            let IMG = this.IMG;
+            if (this.SHOW_COLOR_OVERLAY)
+                IMG = this.COLOR_OVERLAY;
+            
+            if (this.CLIP == undefined || this.SHOW_COLOR_OVERLAY) {
+                if (this.ROTATION == 0) lx.CONTEXT.GRAPHICS.drawImage(IMG, POS.X, POS.Y, SIZE.W, SIZE.H);
                 else {
                     lx.CONTEXT.GRAPHICS.save();
                     lx.CONTEXT.GRAPHICS.translate(POS.X + SIZE.W/2, POS.Y + SIZE.H/2);
                     lx.CONTEXT.GRAPHICS.rotate(this.ROTATION);
-                    lx.CONTEXT.GRAPHICS.drawImage(this.IMG, -SIZE.W/2, -SIZE.H/2, SIZE.W, SIZE.H);
+                    lx.CONTEXT.GRAPHICS.drawImage(IMG, -SIZE.W/2, -SIZE.H/2, SIZE.W, SIZE.H);
                     lx.CONTEXT.GRAPHICS.restore();
                 }
             }
             else {
-                if (this.ROTATION == 0) lx.CONTEXT.GRAPHICS.drawImage(this.IMG, this.CLIP.X, this.CLIP.Y, this.CLIP.W, this.CLIP.H, POS.X, POS.Y, SIZE.W, SIZE.H);
+                if (this.ROTATION == 0) lx.CONTEXT.GRAPHICS.drawImage(IMG, this.CLIP.X, this.CLIP.Y, this.CLIP.W, this.CLIP.H, POS.X, POS.Y, SIZE.W, SIZE.H);
                 else {
                     lx.CONTEXT.GRAPHICS.save();
                     lx.CONTEXT.GRAPHICS.translate(POS.X + SIZE.W/2, POS.Y + SIZE.H/2);
                     lx.CONTEXT.GRAPHICS.rotate(this.ROTATION);
-                    lx.CONTEXT.GRAPHICS.drawImage(this.IMG, this.CLIP.X, this.CLIP.Y, this.CLIP.W, this.CLIP.H, -SIZE.W/2, -SIZE.H/2, SIZE.W, SIZE.H);
+                    lx.CONTEXT.GRAPHICS.drawImage(IMG, this.CLIP.X, this.CLIP.Y, this.CLIP.W, this.CLIP.H, -SIZE.W/2, -SIZE.H/2, SIZE.W, SIZE.H);
                     lx.CONTEXT.GRAPHICS.restore();
                 }
+            }
+            
+            if (this.COLOR_OVERLAY_DURATION != undefined)
+            {
+                this.COLOR_OVERLAY_DURATION--;
+                
+                if (this.COLOR_OVERLAY_DURATION <= 0)
+                    this.HideColorOverlay();
             }
         }
     };

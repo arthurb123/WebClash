@@ -208,9 +208,6 @@ const player = {
             player.equipment[equippable]._sprite !== undefined)
             return player.equipment[equippable]._sprite;
     },
-    requestMap: function() {
-        
-    },
     update: function() {
         player.propertyInteraction.cooldown.update();
         

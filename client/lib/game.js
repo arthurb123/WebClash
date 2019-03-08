@@ -97,12 +97,20 @@ const game = {
                 
                 ui.floaties.healFloaty(this.players[id], delta);
                 
+                //Show heal color overlay
+            
+                this.players[id].SPRITE.ShowColorOverlay(5, 'rgba(128, 239, 59, 0.46)');
+                
                 return;
             }
             
             //Damage floaty
             
             ui.floaties.damageFloaty(this.players[id], delta);
+            
+            //Show damage color overlay
+            
+            this.players[id].SPRITE.ShowColorOverlay(5, 'rgba(228, 63, 63, 0.46)');
             
             //Blood particles
             
@@ -396,12 +404,20 @@ const game = {
                 
                 ui.floaties.healFloaty(this.npcs[id], delta);
                 
+                //Show heal color overlay
+            
+                this.npcs[id].SPRITE.ShowColorOverlay(5, 'rgba(128, 239, 59, 0.46)');
+                
                 return;
             }
             
             //Damage floaty
             
             ui.floaties.damageFloaty(this.npcs[id], delta);
+            
+            //Show damage color overlay
+            
+            this.npcs[id].SPRITE.ShowColorOverlay(5, 'rgba(228, 63, 63, 0.46)');
             
             //Check if valid
             
