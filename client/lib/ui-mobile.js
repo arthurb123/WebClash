@@ -161,15 +161,13 @@ const ui = {
     {
         cache: [],
         create: function() {
-            if (this.dom !== undefined) {
+            if (this.dom !== undefined)
                 if (this.dom.box.parentNode !== undefined &&
                     this.dom.box.parentNode !== null) {
-
                     this.dom.box.parentNode.removeChild(this.dom.box);
 
                     this.dom = undefined;
-                }
-            }
+                };
 
             view.dom.innerHTML +=
                 '<div id="chat_box" style="position: absolute; top: 15px; left: 15px; width: 180px; height: 155px; pointer-events: auto; ">' +
@@ -298,7 +296,7 @@ const ui = {
 
             document.getElementById('dialog_box').style.visibility = 'visible';
 
-            if (this.mouse == undefined)
+            if (this.mouse == undefined && !isNaN(this.npc))
                 this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
                     if (data.state == 0)
                         return;

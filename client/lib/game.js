@@ -236,7 +236,7 @@ const game = {
 
                 if (this._nameplate.Position().X == 0 &&
                     this._nameplate.Position().Y == 0)
-                    this._nameplate.Position(this.Size().W/2, -Math.floor(this.Size().H/5));
+                  this._nameplate.Position(this.Size().W/2, -12);
 
                 if (this._type === 'friendly')
                     this._nameplate.Color('black');

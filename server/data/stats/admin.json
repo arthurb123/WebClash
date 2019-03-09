@@ -8,16 +8,16 @@
  "moving": false,
  "direction": 0,
  "health": {
-  "cur": 100,
-  "max": 100
+  "cur": 110,
+  "max": 110
  },
  "mana": {
   "cur": 100,
   "max": 100
  },
- "level": 1,
+ "level": 3,
  "stats": {
-  "exp": 0,
+  "exp": 8,
   "attributes": {
    "power": 1,
    "toughness": 1,
@@ -27,11 +27,29 @@
    "wisdom": 1
   }
  },
- "actions": [],
- "inventory": [
-  "Sword"
+ "actions": [
+  {
+   "name": "Slash"
+  },
+  null,
+  {
+   "name": "Heal",
+   "uses": 3,
+   "max": 3
+  }
  ],
- "equipment": {},
+ "inventory": [
+  null,
+  null,
+  "Iron Helm",
+  null
+ ],
+ "equipment": {
+  "main": "Sword",
+  "head": "Iron Helm"
+ },
  "gold": 0,
- "gvars": {}
+ "gvars": {
+  "1WeirdGreensAffectPlayer1": true
+ }
 }
