@@ -4,9 +4,9 @@ body {
     background-color: #3a3a3a;
     font-family: "Verdana";
     color: whitesmoke;
-    
+
     -webkit-user-select: none;
-     -khtml-user-select: none; 
+     -khtml-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
@@ -45,6 +45,26 @@ input[type=password],input[type=text] {
 
 input[type=password],input[type=text]:hover {
     background-color: rgba(125, 125, 125, 0.825);
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    margin: 3px;
+    background: rgba(255, 255, 255, 0.65);
+    outline: none;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: whitesmoke;
+  cursor: pointer;
 }
 
 button:hover {
@@ -96,6 +116,7 @@ canvas {
     color: whitesmoke;
     padding: 0px;
 }
+
 
 /* Content */
 

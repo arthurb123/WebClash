@@ -1,22 +1,39 @@
 const audio = {
+    //Main Audio
+
+    setMainVolume: function(volume) {
+        //Set BGM and sound volume
+
+        this.actualMainVolume = volume;
+
+        this.setBGMVolume(this.actualBGMVolume*volume, false);
+        this.setSoundVolume(this.actualSoundVolume*volume, false);
+    },
+
+    //BGM
+
     playBGM: function(src) {
         if (this.currentBGM != undefined)
             this.currentBGM.Stop();
 
+        if (src == undefined || src === '')
+          return;
+
         this.currentBGM = cache.getAudio(src, 0);
 
-        //TEMPORARY
-        lx.ChannelVolume(0, 0.45);
-        //TEMPORARY
-
-        this.currentBGM.Play();
+        this.currentBGM.Play(0, true);
     },
-    setBGMVolume: function(volume) {
+    setBGMVolume: function(volume, sets) {
         lx.ChannelVolume(0, volume);
+
+        if (sets == undefined || sets)
+            this.actualBGMVolume = volume;
 
         if (this.currentBGM != undefined)
             this.playBGM(this.currentBGM.SRC);
     },
+
+    //Sounds
 
     playSound: function(src) {
         let sound = cache.getAudio(src, 1);
@@ -28,6 +45,12 @@ const audio = {
 
         sound.Position(pos.X, pos.Y);
         sound.PlaySpatial();
+    },
+    setSoundVolume: function(volume, sets) {
+        lx.ChannelVolume(1, volume);
+
+        if (sets == undefined || sets)
+            this.actualSoundVolume = volume;
     },
 
     getHitSoundFromTarget: function(target) {

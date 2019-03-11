@@ -70,6 +70,21 @@ const client = {
         socket.on('REQUEST_LANDING', view.loadLanding);
         socket.on('REQUEST_GAME', view.loadGame);
 
+        socket.on('GAME_USER_SETTINGS', function (data) {
+            //Check if the recieved data is valid
+
+            if (data === undefined)
+                return;
+
+            //Check if in-game
+
+            if (!client.inGame)
+                return;
+
+            //Handle settings
+
+            ui.settings.loadFromSettings(data);
+        });
         socket.on('GAME_PLAYER_UPDATE', function (data) {
              //Check if the recieved data is valid
 

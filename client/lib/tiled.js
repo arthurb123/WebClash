@@ -8,6 +8,10 @@ const tiled = {
 
         this.loading = true;
 
+        //Temporarily remove the Lynx2D controller target
+
+        lx.CONTEXT.CONTROLLER.TARGET = undefined;
+
         //Start progress
 
         cache.progress.start('Loading map...');
@@ -160,18 +164,21 @@ const tiled = {
                 actualLayer++;
             }
 
-            //Hide progress
+            //Reset the Lynx2D controller target
 
-            cache.progress.hide();
+            lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
 
             //Add world boundary colliders
 
             tiled.createWorldBoundaries(map, offset_width, offset_height);
 
-            //Start BGM if possible
+            //Start BGM
 
-            if (map.bgmSource !== '')
-                audio.playBGM(map.bgmSource);
+            audio.playBGM(map.bgmSource);
+
+            //Hide progress
+
+            cache.progress.hide();
 
             //Set loading to false
 
