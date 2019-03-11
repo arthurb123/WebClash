@@ -9,39 +9,98 @@ const cache = {
         },
         start: function(text) {
             this.update(text);
-            
+
             document.getElementById('lynx-canvas').style.visibility = 'hidden';
             document.getElementById('progress_text').style.visibility = 'visible';
-            
+
             this.visible = true;
         },
         hide: function() {
             document.getElementById('lynx-canvas').style.visibility = 'visible';
             document.getElementById('progress_text').style.visibility = 'hidden';
-            
+
             this.visible = false;
         }
     },
-    cacheTilesets: function(tilesets, cb) 
+
+    tilesets: {},
+    cacheTilesets: function(tilesets, cb)
     {
         let t = 0;
-        
+
         this.progress.start('Loading map - 0%');
-        
+
         let cacheTileset = function() {
-            game.getTileset(tilesets[t].image, function() {
+            cache.getTileset(tilesets[t].image, function() {
                 t++;
-                
+
                 if (t < tilesets.length) {
                     cache.progress.update('Loading map - ' + (t/(tilesets.length-1))*100 + '%');
-                    
+
                     cacheTileset();
                 }
-                else 
+                else
                     cb();
             });
         };
-                            
+
         cacheTileset();
+    },
+    getTileset: function(src, cb)
+    {
+        let canCallback = true;
+
+        if (this.tilesets[src] === undefined) {
+            let s = src.lastIndexOf('/')+1;
+
+            if (cb == undefined)
+                this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s));
+            else {
+                canCallback = false;
+
+                this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s), undefined, undefined, undefined, undefined, cb);
+            }
+        }
+
+        this.tilesets[src].CLIP = undefined;
+
+        if (cb != undefined && canCallback)
+            cb();
+
+        return this.tilesets[src];
+    },
+
+    sprites: {},
+    getSprite: function(src, cb)
+    {
+        let canCallback = true;
+
+        if (this.sprites[src] === undefined) {
+            if (cb == undefined)
+                this.sprites[src] = new lx.Sprite(src);
+            else {
+                canCallback = false;
+
+                this.sprites[src] = new lx.Sprite(src, undefined, undefined, undefined, undefined, cb);
+            }
+        }
+
+        this.sprites[src].CLIP = undefined;
+
+        if (cb != undefined && canCallback)
+            cb();
+
+        return this.sprites[src];
+    },
+
+    audio: {},
+    getAudio: function(src, channel)
+    {
+        let canCallback = true;
+
+        if (this.audio[src] === undefined)
+            this.audio[src] = new lx.Sound(src, channel);
+
+        return this.audio[src];
     },
 };

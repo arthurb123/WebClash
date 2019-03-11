@@ -13,7 +13,20 @@
     "height": 12
   },
   "movement": {
-    "acceleration": 0.025,
+    "acceleration": 0.03,
     "max": 0.8
+  },
+  "sounds": {
+    "hitSounds": [
+      {
+        "src": "res/sounds/hit/ghoul0.mp3"
+      },
+      {
+        "src": "res/sounds/hit/ghoul1.mp3"
+      },
+      {
+        "src": "res/sounds/hit/ghoul2.mp3"
+      }
+    ]
   }
 }

@@ -286,6 +286,17 @@ namespace WebClashServer.Editors
 
             canvas.Invalidate();
         }
+
+        private void onHitSounds_Click(object sender, EventArgs e)
+        {
+            SoundSelection soundSelection = new SoundSelection("Set hit sounds for '" + name.Text + "'", current.sounds.hitSounds);
+
+            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                current.sounds.hitSounds = soundSelection.GetSelection();
+            };
+
+            soundSelection.ShowDialog();
+        }
     }
 
     public class Character
@@ -309,6 +320,8 @@ namespace WebClashServer.Editors
                 animation = temp.animation;
                 collider = temp.collider;
                 movement = temp.movement;
+
+                sounds = temp.sounds;
             }
             catch (Exception e)
             {
@@ -334,6 +347,10 @@ namespace WebClashServer.Editors
         //Movement
 
         public Movement movement = new Movement();
+
+        //Audio
+
+        public CharacterSounds sounds = new CharacterSounds();
     }
 
     public class Animation
@@ -357,5 +374,10 @@ namespace WebClashServer.Editors
         public float acceleration = .25f;
 
         public float max = 1.50f;
+    }
+
+    public class CharacterSounds
+    {
+        public PossibleSound[] hitSounds = new PossibleSound[0];
     }
 }

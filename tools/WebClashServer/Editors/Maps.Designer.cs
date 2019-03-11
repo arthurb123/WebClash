@@ -44,6 +44,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.help = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.bgmSource = new System.Windows.Forms.TextBox();
+            this.bgmSourceHelp = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -81,6 +84,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.bgmSourceHelp);
+            this.groupBox1.Controls.Add(this.bgmSource);
+            this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.mapTypeHelp);
             this.groupBox1.Controls.Add(this.mapType);
             this.groupBox1.Controls.Add(this.fixTilesets);
@@ -92,9 +98,9 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(169, 12);
+            this.groupBox1.Location = new System.Drawing.Point(168, 5);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(237, 137);
+            this.groupBox1.Size = new System.Drawing.Size(237, 144);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Map Information";
@@ -117,9 +123,9 @@
             "Protected",
             "Neutral",
             "Hostile"});
-            this.mapType.Location = new System.Drawing.Point(112, 20);
+            this.mapType.Location = new System.Drawing.Point(75, 20);
             this.mapType.Name = "mapType";
-            this.mapType.Size = new System.Drawing.Size(97, 23);
+            this.mapType.Size = new System.Drawing.Size(134, 23);
             this.mapType.TabIndex = 11;
             this.mapType.SelectedIndexChanged += new System.EventHandler(this.mapType_SelectedIndexChanged);
             // 
@@ -128,7 +134,7 @@
             this.fixTilesets.ActiveLinkColor = System.Drawing.Color.Blue;
             this.fixTilesets.AutoSize = true;
             this.fixTilesets.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.fixTilesets.Location = new System.Drawing.Point(208, 113);
+            this.fixTilesets.Location = new System.Drawing.Point(208, 121);
             this.fixTilesets.Name = "fixTilesets";
             this.fixTilesets.Size = new System.Drawing.Size(23, 15);
             this.fixTilesets.TabIndex = 10;
@@ -140,7 +146,7 @@
             // 
             // mapTilesets
             // 
-            this.mapTilesets.Location = new System.Drawing.Point(72, 90);
+            this.mapTilesets.Location = new System.Drawing.Point(72, 98);
             this.mapTilesets.Name = "mapTilesets";
             this.mapTilesets.Size = new System.Drawing.Size(159, 15);
             this.mapTilesets.TabIndex = 9;
@@ -149,7 +155,7 @@
             // 
             // mapSize
             // 
-            this.mapSize.Location = new System.Drawing.Point(72, 66);
+            this.mapSize.Location = new System.Drawing.Point(72, 74);
             this.mapSize.Name = "mapSize";
             this.mapSize.Size = new System.Drawing.Size(159, 15);
             this.mapSize.TabIndex = 7;
@@ -160,7 +166,7 @@
             // 
             this.mapTilesetStatus.AutoSize = true;
             this.mapTilesetStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mapTilesetStatus.Location = new System.Drawing.Point(11, 113);
+            this.mapTilesetStatus.Location = new System.Drawing.Point(11, 121);
             this.mapTilesetStatus.Name = "mapTilesetStatus";
             this.mapTilesetStatus.Size = new System.Drawing.Size(155, 15);
             this.mapTilesetStatus.TabIndex = 5;
@@ -169,7 +175,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 90);
+            this.label5.Location = new System.Drawing.Point(12, 98);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(49, 15);
             this.label5.TabIndex = 4;
@@ -178,7 +184,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 66);
+            this.label3.Location = new System.Drawing.Point(11, 75);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(31, 15);
             this.label3.TabIndex = 2;
@@ -210,6 +216,33 @@
             this.help.Text = "Help";
             this.help.UseVisualStyleBackColor = true;
             this.help.Click += new System.EventHandler(this.help_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(11, 52);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(35, 15);
+            this.label4.TabIndex = 13;
+            this.label4.Text = "BGM";
+            // 
+            // bgmSource
+            // 
+            this.bgmSource.Location = new System.Drawing.Point(75, 49);
+            this.bgmSource.Name = "bgmSource";
+            this.bgmSource.Size = new System.Drawing.Size(134, 21);
+            this.bgmSource.TabIndex = 14;
+            this.bgmSource.TextChanged += new System.EventHandler(this.bgmSource_TextChanged);
+            // 
+            // bgmSourceHelp
+            // 
+            this.bgmSourceHelp.Location = new System.Drawing.Point(210, 47);
+            this.bgmSourceHelp.Name = "bgmSourceHelp";
+            this.bgmSourceHelp.Size = new System.Drawing.Size(21, 25);
+            this.bgmSourceHelp.TabIndex = 15;
+            this.bgmSourceHelp.Text = "?";
+            this.bgmSourceHelp.UseVisualStyleBackColor = true;
+            this.bgmSourceHelp.Click += new System.EventHandler(this.bgmSourceHelp_Click);
             // 
             // Maps
             // 
@@ -252,5 +285,8 @@
         private System.Windows.Forms.LinkLabel fixTilesets;
         private System.Windows.Forms.ComboBox mapType;
         private System.Windows.Forms.Button mapTypeHelp;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox bgmSource;
+        private System.Windows.Forms.Button bgmSourceHelp;
     }
 }

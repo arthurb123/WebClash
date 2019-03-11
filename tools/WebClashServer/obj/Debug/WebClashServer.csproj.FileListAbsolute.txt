@@ -22,3 +22,6 @@ C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClas
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.Dialogue.resources
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.DialogueProperties.resources
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.DialogueEventProperties.resources
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.SoundSelection.resources
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\Interop.WMPLib.dll
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.csproj.ResolveComReference.cache

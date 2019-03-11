@@ -66,6 +66,8 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.acceleration = new System.Windows.Forms.NumericUpDown();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.onHitSounds = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).BeginInit();
@@ -80,6 +82,7 @@
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxVelocity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.acceleration)).BeginInit();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -246,7 +249,7 @@
             this.groupBox2.Controls.Add(this.direction);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(15, 127);
+            this.groupBox2.Location = new System.Drawing.Point(15, 123);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(373, 63);
             this.groupBox2.TabIndex = 5;
@@ -311,7 +314,8 @@
             // canvas
             // 
             this.canvas.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.canvas.Location = new System.Drawing.Point(105, 341);
+            this.canvas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.canvas.Location = new System.Drawing.Point(105, 374);
             this.canvas.Name = "canvas";
             this.canvas.Size = new System.Drawing.Size(200, 200);
             this.canvas.TabIndex = 6;
@@ -329,7 +333,7 @@
             this.save.AutoSize = true;
             this.save.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.save.LinkColor = System.Drawing.Color.Blue;
-            this.save.Location = new System.Drawing.Point(360, 528);
+            this.save.Location = new System.Drawing.Point(360, 564);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(32, 13);
             this.save.TabIndex = 7;
@@ -350,7 +354,7 @@
             this.groupBox3.Controls.Add(this.collHeight);
             this.groupBox3.Controls.Add(this.collWidth);
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(15, 196);
+            this.groupBox3.Location = new System.Drawing.Point(15, 187);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(373, 70);
             this.groupBox3.TabIndex = 11;
@@ -496,7 +500,7 @@
             this.groupBox4.Controls.Add(this.label15);
             this.groupBox4.Controls.Add(this.acceleration);
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox4.Location = new System.Drawing.Point(15, 272);
+            this.groupBox4.Location = new System.Drawing.Point(15, 257);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(373, 63);
             this.groupBox4.TabIndex = 18;
@@ -561,11 +565,32 @@
             this.acceleration.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.acceleration.ValueChanged += new System.EventHandler(this.acceleration_ValueChanged);
             // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.onHitSounds);
+            this.groupBox5.Location = new System.Drawing.Point(15, 322);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(373, 46);
+            this.groupBox5.TabIndex = 19;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Sounds";
+            // 
+            // onHitSounds
+            // 
+            this.onHitSounds.Location = new System.Drawing.Point(153, 14);
+            this.onHitSounds.Name = "onHitSounds";
+            this.onHitSounds.Size = new System.Drawing.Size(76, 23);
+            this.onHitSounds.TabIndex = 0;
+            this.onHitSounds.Text = "On Hit";
+            this.onHitSounds.UseVisualStyleBackColor = true;
+            this.onHitSounds.Click += new System.EventHandler(this.onHitSounds_Click);
+            // 
             // Characters
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 551);
+            this.ClientSize = new System.Drawing.Size(404, 586);
+            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.save);
@@ -579,8 +604,8 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(420, 590);
-            this.MinimumSize = new System.Drawing.Size(420, 590);
+            this.MaximumSize = new System.Drawing.Size(420, 625);
+            this.MinimumSize = new System.Drawing.Size(420, 625);
             this.Name = "Characters";
             this.Text = "WebClash Server - Characters";
             this.Load += new System.EventHandler(this.Characters_Load);
@@ -602,6 +627,7 @@
             this.groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxVelocity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.acceleration)).EndInit();
+            this.groupBox5.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -645,5 +671,7 @@
         private System.Windows.Forms.NumericUpDown acceleration;
         private System.Windows.Forms.NumericUpDown maxVelocity;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Button onHitSounds;
     }
 }

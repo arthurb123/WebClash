@@ -85,12 +85,38 @@ const game = {
                 return;
             }
 
-            if (delta == 0) {
+            if (delta < 0) {
+               //Play hit sounds
+
+               let hitSound = audio.getHitSoundFromTarget(this.players[id]);
+
+               if (hitSound != undefined) {
+                   if (this.player == id)
+                      audio.playSound(hitSound);
+                   else
+                      audio.playSoundAtPosition(hitSound, this.players[id].Position());
+                }
+
+               //Damage floaty
+
+               ui.floaties.damageFloaty(this.players[id], delta);
+
+               //Show damage color overlay
+
+               this.players[id].SPRITE.ShowColorOverlay(5, 'rgba(228, 63, 63, 0.46)');
+
+               //Blood particles
+
+               let count = -delta;
+               if (count > 10)
+                   count = 10;
+
+               this.createBlood(this.players[id], count);
+            }
+            else if (delta == 0) {
                 //Miss floaty
 
                 ui.floaties.missFloaty(this.players[id], delta);
-
-                return;
             }
             else if (delta > 0) {
                 //Heal floaty
@@ -100,25 +126,7 @@ const game = {
                 //Show heal color overlay
 
                 this.players[id].SPRITE.ShowColorOverlay(5, 'rgba(128, 239, 59, 0.46)');
-
-                return;
             }
-
-            //Damage floaty
-
-            ui.floaties.damageFloaty(this.players[id], delta);
-
-            //Show damage color overlay
-
-            this.players[id].SPRITE.ShowColorOverlay(5, 'rgba(228, 63, 63, 0.46)');
-
-            //Blood particles
-
-            let count = -delta;
-            if (count > 10)
-                count = 10;
-
-            this.createBlood(this.players[id], count);
         }
         else {
             this.players[id]._health = health;
@@ -319,7 +327,7 @@ const game = {
 
                     //Draw dialog sprite
 
-                    let sprite = game.getSprite('res/ui/dialog.png');
+                    let sprite = cache.getSprite('res/ui/dialog.png');
 
                     lx.DrawSprite(
                         sprite,
@@ -352,7 +360,7 @@ const game = {
 
                     //Draw dialog sprite
 
-                    let sprite = game.getSprite('res/ui/dialog.png');
+                    let sprite = cache.getSprite('res/ui/dialog.png');
 
                     lx.DrawSprite(
                         sprite,
@@ -417,6 +425,13 @@ const game = {
 
                 return;
             }
+
+            //Play hit sounds
+
+            let hitSound = audio.getHitSoundFromTarget(this.npcs[id]);
+
+            if (hitSound != undefined)
+                audio.playSoundAtPosition(hitSound, this.npcs[id].Position());
 
             //Damage floaty
 
@@ -640,33 +655,6 @@ const game = {
         tiled.convertAndLoadMap(map);
 
         //...
-    },
-    getSprite: function(src)
-    {
-        if (this.sprites[src] === undefined)
-            this.sprites[src] = new lx.Sprite(src);
-
-        this.sprites[src].CLIP = undefined;
-
-        return this.sprites[src];
-    },
-    getTileset: function(src, cb)
-    {
-        if (this.tilesets[src] === undefined) {
-            let s = src.lastIndexOf('/')+1;
-
-            if (cb == undefined)
-                this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s));
-            else
-                this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s), undefined, undefined, undefined, undefined, cb);
-        }
-
-        this.tilesets[src].CLIP = undefined;
-
-        if (cb != undefined)
-            cb();
-
-        return this.tilesets[src];
     },
 
     createAction: function(data)

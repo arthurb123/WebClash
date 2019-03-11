@@ -13,6 +13,8 @@ namespace WebClashServer.Editors
     {
         Map current;
 
+        Dictionary<int, string> mapBGMSaveRequests = new Dictionary<int, string>();
+
         public Maps()
         {
             InitializeComponent();
@@ -20,10 +22,17 @@ namespace WebClashServer.Editors
 
         private void Maps_Load(object sender, EventArgs e)
         {
+            FormClosing += Maps_FormClosing;
+
             LoadMapsList();
 
             if (mapList.Items.Count > 0)
                 mapList.SelectedIndex = 0;
+        }
+
+        private void Maps_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveBGMRequests();
         }
 
         private void LoadMapsList()
@@ -66,6 +75,9 @@ namespace WebClashServer.Editors
                 mapType.SelectedItem = current.mapType[0].ToString().ToUpper() + current.mapType.Substring(1, current.mapType.Length - 1);
             else
                 mapType.SelectedItem = string.Empty;
+
+            if (current.bgmSource != null)
+                bgmSource.Text = current.bgmSource;
         }
 
         private void CheckTilesets()
@@ -121,6 +133,8 @@ namespace WebClashServer.Editors
 
                     ImportTilesets();
 
+                    SaveBGMRequests();
+
                     SetMapType("Protected");
 
                     LoadMapsList();
@@ -160,6 +174,8 @@ namespace WebClashServer.Editors
         {
             if (mapList.SelectedItem == null)
                 return;
+            
+            SaveBGMRequests();
 
             LoadMap(mapList.SelectedItem.ToString());
         }
@@ -261,6 +277,58 @@ namespace WebClashServer.Editors
 
             File.WriteAllText(map, JsonConvert.SerializeObject(mjo, Formatting.Indented));
         }
+
+        private void bgmSourceHelp_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("The BGM source determines which music file should be played as the background music in the map. If left empty no BGM will be played.", "WebClash Server - Background Music Source");
+        }
+
+        private void bgmSource_TextChanged(object sender, EventArgs e)
+        {
+            if (mapList.SelectedIndex == -1)
+                return;
+
+            if (mapBGMSaveRequests.ContainsKey(mapList.SelectedIndex))
+                mapBGMSaveRequests.Remove(mapList.SelectedIndex);
+
+            mapBGMSaveRequests.Add(mapList.SelectedIndex, bgmSource.Text);
+
+            current.bgmSource = bgmSource.Text;
+        }
+
+        private void SaveBGMRequests()
+        {
+            //Check if BGMs exist, if so save
+
+            if (mapBGMSaveRequests.Count == 0)
+                return;
+
+            foreach (KeyValuePair<int, string> entry in mapBGMSaveRequests)
+                if (File.Exists(Program.main.location + "/../client/" + entry.Value))
+                    SetMapBGMSource(entry.Key, entry.Value);
+                else
+                    SetMapBGMSource(entry.Key, string.Empty);
+
+            mapBGMSaveRequests = new Dictionary<int, string>();
+        }
+
+        private void SetMapBGMSource(int index, string bgmSourceString)
+        {
+            if (bgmSourceString == null ||
+                bgmSourceString == string.Empty)
+                return;
+
+            string map = Program.main.location + "/maps/" + mapList.Items[index].ToString() + ".json";
+
+            JObject mjo = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(map));
+
+            if (mjo.Property("bgmSource") != null)
+                mjo.Remove("bgmSource");
+
+            mjo.Add("bgmSource", bgmSourceString);
+
+            File.WriteAllText(map, JsonConvert.SerializeObject(mjo, Formatting.Indented));
+        }
     }
 
     public class Map
@@ -280,6 +348,7 @@ namespace WebClashServer.Editors
                 tilesets = temp.tilesets;
 
                 mapType = temp.mapType;
+                bgmSource = temp.bgmSource;
             }
             catch (Exception e)
             {
@@ -293,6 +362,7 @@ namespace WebClashServer.Editors
         public Tileset[] tilesets = new Tileset[0];
 
         public string mapType = string.Empty;
+        public string bgmSource = string.Empty;
     }
 
     public class Tileset

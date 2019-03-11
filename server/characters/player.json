@@ -15,5 +15,18 @@
   "movement": {
     "acceleration": 0.35,
     "max": 1.6
+  },
+  "sounds": {
+    "hitSounds": [
+      {
+        "src": "res/sounds/hit/human0.mp3"
+      },
+      {
+        "src": "res/sounds/hit/human1.mp3"
+      },
+      {
+        "src": "res/sounds/hit/human2.mp3"
+      }
+    ]
   }
 }

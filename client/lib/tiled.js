@@ -2,81 +2,81 @@ const tiled = {
     loading: false,
     queue: [],
     current: '',
-    convertAndLoadMap: function(map) 
+    convertAndLoadMap: function(map)
     {
         //Set loading
-        
+
         this.loading = true;
-        
+
         //Start progress
-        
+
         cache.progress.start('Loading map...');
-        
+
         //Change map name
-        
+
         this.current = map.name;
-        
+
         //Set new tilewidth and tileheight
-        
+
         this.tile = {
             width: map.tilewidth,
             height: map.tileheight
         };
-        
+
         //Remove all (online) players
-        
+
         game.resetPlayers();
-        
+
         //Remove all NPCs
-        
+
         game.resetNPCs();
-        
+
         //Clear all colliders, except player's
-        
+
         game.resetColliders();
-        
+
         //Clear all world items
-        
+
         game.resetWorldItems();
-        
+
         //Make sure certain player stats are reset
-        
+
         game.resetPlayer();
-        
+
         //Reset loot box
-        
+
         ui.loot.reset();
-        
+
         //Clear the OnLayerDraw events
-        
+
         lx.ResetLayerDraw();
-        
+
         //Create colliders
-        
+
         this.checkObjects(map);
-        
+
         //Create offset width and height
-        
+
         let offset_width = -map.width*map.tilewidth/2,
             offset_height = -map.height*map.tileheight/2;
-        
+
         //Cache all tilesets
-        
+
         cache.cacheTilesets(map.tilesets, function() {
             //Add OnLayerDraw events based on
             //the map content
 
             let actualLayer = 0;
-            
+
             //Update progress
-            
+
             cache.progress.update('Building map - 0%');
-            
+
             for (let l = 0; l < map.layers.length; l++) {
                 //Update progress
-                
+
                 cache.progress.update('Building map - ' + l/(map.layers.length-1)*100 + '%');
-                
+
                 //Check if visible
 
                 if (!map.layers[l].visible)
@@ -91,9 +91,9 @@ const tiled = {
                       width = map.layers[l].width,
                       height = map.layers[l].height;
 
-                if (map.layers[l].offsetx !== undefined) 
+                if (map.layers[l].offsetx !== undefined)
                     offset_width += map.layers[l].offsetx;
-                if (map.layers[l].offsety !== undefined) 
+                if (map.layers[l].offsety !== undefined)
                     offset_height += map.layers[l].offsety;
 
                 //Prerender/cache layer for easier drawing
@@ -106,46 +106,46 @@ const tiled = {
                     if (game.player === -1 ||
                         game.players[game.player] == undefined)
                         return;
-                    
+
                     //Calculate clip position
-                    
+
                     let clip = {
                         X: Math.floor(game.players[game.player].POS.X+game.players[game.player].SIZE.W/2-offset_width-lx.GetDimensions().width/2),
                         Y: Math.floor(game.players[game.player].POS.Y+game.players[game.player].SIZE.H/2-offset_height-lx.GetDimensions().height/2)
                     };
-                    
-                    //Declare size and pos 
-                    
+
+                    //Declare size and pos
+
                     let size = lx.GetDimensions(),
                         pos = { X: 0, Y: 0 };
-                    
+
                     //Adjust clip to avoid an out-of-bounds clip
                     //Some browsers tend to handle an out-of-bounds clip poorly.
-                    
+
                     //Avoid negative X and Y clip
-                    
+
                     if (clip.X < 0) {
                         pos.X -= clip.X;
                         size.width += clip.X/2;
-                        
+
                         clip.X = 0;
                     }
                     if (clip.Y < 0) {
                         pos.Y -= clip.Y;
                         size.height += clip.Y/2;
-                        
+
                         clip.Y = 0;
                     }
-                    
+
                     //Avoid out-of-bounds size
-                    
+
                     if (pos.X == 0 && clip.X+size.width > cachedLayer.width)
                         size.width = cachedLayer.width - clip.X;
                     if (pos.Y == 0 && clip.Y+size.height > cachedLayer.height)
                         size.height = cachedLayer.height - clip.Y;
 
                     //Draw cached layer
-                    
+
                     gfx.drawImage(
                         cachedLayer,
                         clip.X, clip.Y,
@@ -159,14 +159,19 @@ const tiled = {
 
                 actualLayer++;
             }
-            
+
             //Hide progress
 
             cache.progress.hide();
-        
+
             //Add world boundary colliders
 
             tiled.createWorldBoundaries(map, offset_width, offset_height);
+
+            //Start BGM if possible
+
+            if (map.bgmSource !== '')
+                audio.playBGM(map.bgmSource);
 
             //Set loading to false
 
@@ -176,15 +181,15 @@ const tiled = {
     cacheLayer: function(map, layer, offset_width, offset_height)
     {
         //Create canvas according to layer size
-        
+
         let c = document.createElement('canvas');
         c.width = layer.width * map.tilewidth;
         c.height = layer.height * map.tileheight;
-        
+
         let g = c.getContext('2d');
-        
+
         //Render all tiles to canvas
-        
+
         for (let y = 0; y < layer.height; y++)
             for (let x = 0; x < layer.width; x++) {
                 //Convert to tile
@@ -203,7 +208,7 @@ const tiled = {
 
                 for (let i = 0; i < map.tilesets.length; i++)
                     if (layer.data[t] >= map.tilesets[i].firstgid) {
-                        sprite = game.getTileset(map.tilesets[i].image);
+                        sprite = cache.getTileset(map.tilesets[i].image);
 
                         if (i != 0)
                             actual = layer.data[t] - map.tilesets[i].firstgid + 1;
@@ -218,7 +223,7 @@ const tiled = {
 
                 //Check if sprite has a tilewidth specified
 
-                if (sprite._tilewidth == undefined || 
+                if (sprite._tilewidth == undefined ||
                     sprite._tilewidth == 0) {
                     sprite._tilewidth = sprite.Size().W/map.tilewidth;
                 }
@@ -231,7 +236,7 @@ const tiled = {
                 },
                     tp = {
                     x: t % layer.width * map.tilewidth,
-                    y: Math.floor(t / layer.width) * map.tileheight       
+                    y: Math.floor(t / layer.width) * map.tileheight
                 };
 
                 //Tile clip coordinates artefact prevention
@@ -240,26 +245,26 @@ const tiled = {
                     tc.x = sprite.Size().W - map.tilewidth;
 
                 //Draw tile
-                
+
                 g.drawImage(
                     sprite.IMG,
                     tc.x, tc.y, map.tilewidth, map.tileheight,
                     tp.x, tp.y, map.tilewidth, map.tileheight
                 );
             }
-        
+
         //Return canvas
-        
+
         return c;
     },
     checkObjects: function(map)
-    {        
+    {
         let offset_width = -map.width*map.tilewidth/2,
               offset_height = -map.height*map.tileheight/2;
 
         for (let l = 0; l < map.layers.length; l++) {
              //Check if layer is visible
-            
+
              if (!map.layers[l].visible)
                  continue;
 
@@ -270,7 +275,7 @@ const tiled = {
              if (map.layers[l].offsety !== undefined) offset_height += map.layers[l].offsety;
 
              //Tile layer
-            
+
              if (map.layers[l].type === 'tilelayer') {
                  const data = map.layers[l].data;
 
@@ -301,7 +306,7 @@ const tiled = {
 
                     let tp = {
                         x: t % width * map.tilewidth + offset_width,
-                        y: Math.floor(t / width) * map.tileheight + offset_height     
+                        y: Math.floor(t / width) * map.tileheight + offset_height
                     };
 
                     //Check collider
@@ -315,7 +320,7 @@ const tiled = {
              }
 
              //Object layer
-            
+
              if (map.layers[l].type === 'objectgroup') {
                  const data = map.layers[l].objects;
 
@@ -330,18 +335,18 @@ const tiled = {
                          continue;
 
                     //Create collider with properties
-                     
+
                     const properties = map.layers[l].objects[o].properties,
                           callbacks = [];
-                     
-                    if (properties != undefined) 
+
+                    if (properties != undefined)
                         for (let p = 0; p < properties.length; p++) {
                             let f = this.handleProperty(properties[p]);
 
                             if (f !== undefined)
                                 callbacks.push(f);
                         }
-                     
+
                     let coll = new lx.Collider(
                         data[o].x+offset_width,
                         data[o].y+offset_height,
@@ -357,16 +362,16 @@ const tiled = {
                             if (go === undefined)
                                 return;
 
-                            callbacks.forEach(function(cb) { 
+                            callbacks.forEach(function(cb) {
                                 if (cb !== undefined) {
                                     if (tiled.loading)
                                         return;
-                                    
+
                                     cb(go);
                                 }
                             });
                         };
-                        
+
                         coll.Solid(false);
                     }
                  }
@@ -380,7 +385,7 @@ const tiled = {
                 if (tileset.tiles[i].objectgroup === undefined ||
                     tileset.tiles[i].objectgroup.objects === undefined)
                     continue;
-                
+
                 const objects = tileset.tiles[i].objectgroup.objects;
 
                 for (let c = 0; c < objects.length; c++)
@@ -401,32 +406,32 @@ const tiled = {
             if (tileset.tiles[i].id+1 == id) {
                 if (tileset.tiles[i].properties === undefined)
                     continue;
-                
+
                 const properties = tileset.tiles[i].properties,
                       callbacks = [];
-                
+
                 let isMapEvent = false;
-                
+
                 for (let p = 0; p < properties.length; p++) {
-                    if (properties[p].name === 'loadMap')  
+                    if (properties[p].name === 'loadMap')
                     {
                         isMapEvent = true;
-                        
+
                         break;
                     }
                 }
-                
+
                 for (let p = 0; p < properties.length; p++) {
                     if (properties[p].name === 'positionX' || properties[p].name === 'positionY')
                         if (isMapEvent)
                             continue;
-                    
+
                     let f = this.handleProperty(properties[p]);
-                    
+
                     if (f !== undefined)
                         callbacks.push(f);
                 }
-                
+
                 if (callbacks.length > 0) {
                     if (tileset.tiles[i].objectgroup === undefined)
                         new lx.Collider(
@@ -441,7 +446,7 @@ const tiled = {
                                 if (go === undefined)
                                     return;
 
-                                callbacks.forEach(function(cb) { 
+                                callbacks.forEach(function(cb) {
                                     if (cb !== undefined) {
                                         if (!tiled.loading)
                                             cb(go);
@@ -460,16 +465,16 @@ const tiled = {
     {
         if (property === undefined)
             return;
-        
+
         switch (property.name)
         {
             case "loadMap":
                 return function(go) {
                     if (go === game.players[game.player]) {
                         cache.progress.start('Loading map...');
-                        
+
                         tiled.loading = true;
-                        
+
                         socket.emit('CLIENT_REQUEST_MAP', property.value);
                     }
                 };
@@ -484,7 +489,7 @@ const tiled = {
     createWorldBoundaries: function(map, offset_width, offset_height) {
         new lx.Collider(offset_width, offset_height-map.tileheight, map.width*map.tilewidth, map.tileheight, true);
         new lx.Collider(offset_width-map.tilewidth, offset_height, map.tilewidth, map.height*map.tileheight, true);
-        
+
         new lx.Collider(offset_width, offset_height+map.height*map.tileheight, map.width*map.tilewidth, map.tileheight, true);
         new lx.Collider(offset_width+map.width*map.tilewidth, offset_height, map.tilewidth, map.height*map.tileheight, true);
     }

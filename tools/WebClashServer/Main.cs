@@ -46,7 +46,7 @@ namespace WebClashServer
 
             if (nodeLocation == "")
             {
-                MessageBox.Show("Could not locate NodeJS, the server could not be started.", "WebClash Server - Error");
+                MessageBox.Show("Could not locate NodeJS, the server could not be started. \nNodeJS can be downloaded from https://www.nodejs.org/", "WebClash Server - Error");
 
                 return;
             }
@@ -179,9 +179,14 @@ namespace WebClashServer
                 result = "C:/Program Files (x86)/nodejs";
 
             if (result == "")
-                using (FolderBrowserDialog dialog = new FolderBrowserDialog())
-                    if (dialog.ShowDialog() == DialogResult.OK)
-                        result = dialog.SelectedPath;
+            {
+                DialogResult manuallySelect = MessageBox.Show("NodeJS could not be found, do you want to manually select the installation folder?", "WebClash Server - Error", MessageBoxButtons.YesNo);
+                
+                if (manuallySelect == DialogResult.Yes)
+                    using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+                        if (dialog.ShowDialog() == DialogResult.OK)
+                            result = dialog.SelectedPath;
+            }
 
             return result;
         }
@@ -296,7 +301,7 @@ namespace WebClashServer
             };
             actions.FormClosed += (object s, FormClosedEventArgs fcea) => {
                 if (amount != actions.GetAmount())
-                    AddOutput("The amount of Actions has changed, changes will be visible after a server restart.");
+                    AddOutput("The amount of actions has changed, changes will be visible after a server restart.");
             };
 
             actions.ShowDialog();
@@ -316,7 +321,7 @@ namespace WebClashServer
             };
             items.FormClosed += (object s, FormClosedEventArgs fcea) => {
                 if (amount != items.GetAmount())
-                    AddOutput("The amount of Items has changed, changes will be visible after a server restart.");
+                    AddOutput("The amount of items has changed, changes will be visible after a server restart.");
             };
 
             items.ShowDialog();

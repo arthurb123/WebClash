@@ -2,19 +2,20 @@
 
 const scripts = [
     'properties.js',
-    
+
     'lib/socket.io.js',
     'lib/lynx2d.js',
     'lib/tiled.js',
     'lib/game.js',
+    'lib/audio.js',
     'lib/cache.js',
     'lib/client.js',
     'lib/player.js',
     'lib/view.js',
     'lib/animation.js',
-    
+
     'misc/prototypes.js',
-    
+
     'scenes/landing.js',
     'scenes/game.js'
 ];
@@ -26,29 +27,29 @@ function addScript(src)
     let s = document.createElement('script');
     s.src = src;
     s.async = false;
-    
+
     document.head.appendChild(s);
 }
 
 function loadAllScripts()
 {
     //Check if mobile
-    
+
     let isMobile = mobileAndTabletCheck();
-    
+
     //Add event listener
-    
+
     window.onload = function() {
         finishLoading(isMobile);
     }
-    
+
     //Load all scripts
-    
+
     for (let i = 0; i < scripts.length; i++)
         addScript(scripts[i]);
-    
+
     //Load UI based on system
-    
+
     if (!isMobile)
         addScript('lib/ui.js');
     else
@@ -58,25 +59,25 @@ function loadAllScripts()
 function finishLoading(isMobile)
 {
     //Initialize game/Lynx2D
-    
+
     game.initialize(isMobile);
-    
+
     //Set status
-    
+
     document.getElementById('status_text').innerHTML = 'Connecting';
-    
+
     //Connect to server
-    
-    client.connect(function() {   
+
+    client.connect(function() {
         //Cleanup
-    
+
         let st = document.getElementById('status_text'),
             ls = document.getElementById('loader');
-        
+
         if (st == undefined ||
             ls == undefined)
             window.location.reload(true);
-        
+
         st.parentNode.removeChild(st);
         ls.parentNode.removeChild(ls);
     });
