@@ -16,8 +16,10 @@ const audio = {
         if (this.currentBGM != undefined)
             this.currentBGM.Stop();
 
-        if (src == undefined || src === '')
-          return;
+        if (src == undefined || src === '') {
+            this.currentBGM = undefined;
+            return;
+        }
 
         this.currentBGM = cache.getAudio(src, 0);
 

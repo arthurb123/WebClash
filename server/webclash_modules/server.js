@@ -656,8 +656,8 @@ exports.handleSocket = function(socket)
             dialogEvent = items.getItem(data.npc).dialog[data.id];
 
             eventName =
-                map.toString() +                    //Map to make sure the event can occur on other maps
-                data.npc.replace(' ', '') +         //Item name for uniqueness (it is called 'npc' but it is the item name)
+                data.npc.replace(' ', '') +         //Item name to make sure the event can occur
+                                                    //with other items (it is called 'npc' but it is the item name)
                 dialogEvent.eventType +             //Event type for uniqueness
                 data.id;                            //Dialog ID for uniqueness
         }
