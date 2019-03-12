@@ -1,23 +1,23 @@
 {
- "map": "old2",
+ "map": "1",
  "char_name": "player",
  "pos": {
-  "X": 26,
-  "Y": 55
+  "X": 0,
+  "Y": 0
  },
- "moving": true,
- "direction": 1,
+ "moving": false,
+ "direction": 2,
  "health": {
-  "cur": 99,
+  "cur": 100,
   "max": 100
  },
  "mana": {
   "cur": 100,
   "max": 100
  },
- "level": 2,
+ "level": 1,
  "stats": {
-  "exp": 4,
+  "exp": 0,
   "attributes": {
    "power": 1,
    "toughness": 1,
@@ -28,17 +28,12 @@
   }
  },
  "actions": [
-  {
-   "name": "Slash"
-  }
+  null
  ],
  "inventory": [
-  "Iron Helm",
-  "Healing Slab"
+  "Sword"
  ],
- "equipment": {
-  "main": "Sword"
- },
+ "equipment": {},
  "gold": 0,
  "gvars": {}
 }

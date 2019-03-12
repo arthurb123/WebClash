@@ -208,6 +208,14 @@ exports.convertActionData = function(actionData, a_id, direction, character)
     actionData.pos.X+=character.width/2-this.collection[a_id].sw/2;
     actionData.pos.Y+=-this.collection[a_id].sh/2-character.height/2;
 
+    //Set action data sounds
+
+    actionData.sounds = this.collection[a_id].sounds;
+    actionData.centerPosition = {
+        X: actionData.pos.X+this.collection[a_id].sw/2,
+        Y: actionData.pos.Y+this.collection[a_id].sh/2
+    };
+
     //Return converted data
 
     return actionData;
@@ -313,6 +321,7 @@ exports.createPlayerSlotAction = function(action)
         max: action.max,
         description: this.collection[id].description,
         cooldown: this.collection[id].cooldown,
+        sounds: this.collection[id].sounds,
         src: this.collection[id].src
     };
 };

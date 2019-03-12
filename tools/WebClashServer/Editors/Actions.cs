@@ -539,6 +539,17 @@ namespace WebClashServer.Editors
             current.description = description.Text;
         }
 
+        private void editSounds_Click(object sender, EventArgs e)
+        {
+            SoundSelection soundSelection = new SoundSelection("Set sounds for action '" + current.name + "'", current.sounds);
+
+            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                current.sounds = soundSelection.GetSelection();
+            };
+
+            soundSelection.ShowDialog();
+        }
+
         private void AttemptSetIcon()
         {
             string location = Program.main.location + "/../client/" + icon.Text;
@@ -625,6 +636,8 @@ namespace WebClashServer.Editors
 
                 elements = temp.elements;
 
+                sounds = temp.sounds;
+
                 scaling = temp.scaling;
 
                 name = temp.name;
@@ -673,6 +686,8 @@ namespace WebClashServer.Editors
         public Scaling scaling = new Scaling();
 
         public Element[] elements = new Element[0];
+
+        public PossibleSound[] sounds = new PossibleSound[0];
 
         public int heal = 0;
 

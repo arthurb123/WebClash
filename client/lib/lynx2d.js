@@ -396,24 +396,29 @@ function Lynx2D() {
                 return this.CHANNELS[CHANNEL];
             },
             ADD: function (SRC, CHANNEL, DELAY, LOOPS) {
-                if (!this.CAN_PLAY || SRC == "") return;
+                try {
+                    if (!this.CAN_PLAY || SRC == "") return;
 
-                if (this.CHANNELS[CHANNEL] == undefined) this.SET_CHANNEL_VOLUME(CHANNEL, 1);
+                    if (this.CHANNELS[CHANNEL] == undefined) this.SET_CHANNEL_VOLUME(CHANNEL, 1);
 
-                for (var i = 0; i <= this.SOUNDS.length; i++) {
-                    if (this.SOUNDS[i] == undefined) {
-                        this.SOUNDS[i] = {
-                            CUR: 0,
-                            SRC: SRC,
-                            CHANNEL: CHANNEL,
-                            SPATIAL: false,
-                            DELAY: DELAY,
-                            PLAYING: false,
-                            LOOPS: LOOPS
-                        };
+                    for (var i = 0; i <= this.SOUNDS.length; i++) {
+                        if (this.SOUNDS[i] == undefined) {
+                            this.SOUNDS[i] = {
+                                CUR: 0,
+                                SRC: SRC,
+                                CHANNEL: CHANNEL,
+                                SPATIAL: false,
+                                DELAY: DELAY,
+                                PLAYING: false,
+                                LOOPS: LOOPS
+                            };
 
-                        return i;
+                            return i;
+                        }
                     }
+                }
+                catch (err) {
+                    console.log('Could not play audio: ' + err);
                 }
             },
             ADD_SPATIAL: function(POS, SRC, CHANNEL, DELAY, LOOPS) {
@@ -440,7 +445,7 @@ function Lynx2D() {
             },
             CALCULATE_SPATIAL: function(POS, CHANNEL) {
                 POS = lx.GAME.TRANSLATE_FROM_FOCUS(POS);
-                var VOL = 1-(Math.abs(POS.X - lx.GetDimensions().width/2)/lx.GetDimensions().width + Math.abs(POS.Y - lx.GetDimensions().height/2)/lx.GetDimensions().height);
+                var VOL = 1-(Math.abs(POS.X - lx.GetDimensions().width/2)/lx.GetDimensions().width*1.5 + Math.abs(POS.Y - lx.GetDimensions().height/2)/lx.GetDimensions().height*1.5);
 
                 if (VOL < 0) VOL = 0;
                 else if (VOL > this.CHANNELS[CHANNEL]) VOL = this.CHANNELS[CHANNEL];
@@ -450,38 +455,44 @@ function Lynx2D() {
             UPDATE: function () {
                 if (!this.CAN_PLAY) return;
 
-                for (var i = 0; i < this.SOUNDS.length; i++) {
-                    if (this.SOUNDS[i] == undefined)
-                        continue;
+                try {
+                    for (var i = 0; i < this.SOUNDS.length; i++) {
+                        if (this.SOUNDS[i] == undefined)
+                            continue;
 
-                    if (this.SOUNDS[i].PLAYING)
-                    {
-                        if (this.SOUNDS[i].SPATIAL)
-                            this.SOUNDS[i].AUDIO.volume = this.CALCULATE_SPATIAL(this.SOUNDS[i].POS, this.SOUNDS[i].CHANNEL);
+                        if (this.SOUNDS[i].PLAYING)
+                        {
+                            if (this.SOUNDS[i].SPATIAL)
+                                this.SOUNDS[i].AUDIO.volume = this.CALCULATE_SPATIAL(this.SOUNDS[i].POS, this.SOUNDS[i].CHANNEL);
 
-                        continue;
-                    }
-
-                    this.SOUNDS[i].CUR++;
-                    if (this.SOUNDS[i].DELAY == undefined || this.SOUNDS[i].CUR >= this.SOUNDS[i].DELAY) {
-                        var temp = new Audio();
-                        temp.type = 'audio/mpeg';
-                        temp.src = this.SOUNDS[i].SRC;
-                        temp.play_id = i;
-                        temp.onended = function() {
-                            if (lx.GAME.AUDIO.SOUNDS[this.play_id].LOOPS)
-                                lx.GAME.AUDIO.SOUNDS[this.play_id].AUDIO.play();
-                            else
-                                lx.GAME.AUDIO.SOUNDS[this.play_id] = undefined;
+                            continue;
                         }
 
-                        if (!this.SOUNDS[i].SPATIAL) temp.volume = this.CHANNELS[this.SOUNDS[i].CHANNEL];
-                        else temp.volume = this.CALCULATE_SPATIAL(this.SOUNDS[i].POS, this.SOUNDS[i].CHANNEL);
+                        this.SOUNDS[i].CUR++;
+                        if (this.SOUNDS[i].DELAY == undefined || this.SOUNDS[i].CUR >= this.SOUNDS[i].DELAY) {
+                            var temp = new Audio();
+                            temp.type = 'audio/mpeg';
+                            temp.src = this.SOUNDS[i].SRC;
+                            temp.play_id = i;
 
-                        this.SOUNDS[i].PLAYING = true;
-                        this.SOUNDS[i].AUDIO = temp;
-                        this.SOUNDS[i].AUDIO.play();
+                            temp.onended = function() {
+                                if (lx.GAME.AUDIO.SOUNDS[this.play_id].LOOPS)
+                                    lx.GAME.AUDIO.SOUNDS[this.play_id].AUDIO.play();
+                                else
+                                    lx.GAME.AUDIO.SOUNDS[this.play_id] = undefined;
+                            }
+
+                            if (!this.SOUNDS[i].SPATIAL) temp.volume = this.CHANNELS[this.SOUNDS[i].CHANNEL];
+                            else temp.volume = this.CALCULATE_SPATIAL(this.SOUNDS[i].POS, this.SOUNDS[i].CHANNEL);
+
+                            this.SOUNDS[i].PLAYING = true;
+                            this.SOUNDS[i].AUDIO = temp;
+                            this.SOUNDS[i].AUDIO.play();
+                        }
                     }
+                }
+                catch (err) {
+                    console.log('Could not update audio: ' + err);
                 }
             },
             REMOVE: function(ID) {
@@ -2276,7 +2287,6 @@ function Lynx2D() {
     this.Sound = function (src, channel) {
         this.SRC = src;
         this.POS = { X: 0, Y: 0 };
-        this.PLAY_ID = [];
 
         if (channel != undefined) this.CHANNEL = channel;
         else this.CHANNEL = 0;

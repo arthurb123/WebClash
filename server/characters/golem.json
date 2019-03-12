@@ -1,0 +1,32 @@
+{
+  "src": "res/characters/98.png",
+  "width": 96,
+  "height": 96,
+  "animation": {
+    "direction": "horizontal",
+    "speed": 10
+  },
+  "collider": {
+    "x": 16,
+    "y": 80,
+    "width": 64,
+    "height": 16
+  },
+  "movement": {
+    "acceleration": 0.05,
+    "max": 1.25
+  },
+  "sounds": {
+    "hitSounds": [
+      {
+        "src": "res/sounds/characters/giant/giant2.wav"
+      },
+      {
+        "src": "res/sounds/characters/giant/giant3.wav"
+      },
+      {
+        "src": "res/sounds/characters/giant/giant4.wav"
+      }
+    ]
+  }
+}

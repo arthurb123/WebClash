@@ -26,6 +26,11 @@
       "projectileDistance": 0
     }
   ],
+  "sounds": [
+    {
+      "src": "res/sounds/actions/magic/magic2.wav"
+    }
+  ],
   "heal": 15,
   "cooldown": 312
 }

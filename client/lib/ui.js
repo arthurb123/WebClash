@@ -544,10 +544,23 @@ const ui = {
         },
         useItem: function(slot) {
             if (player.inventory[slot] !== undefined) {
+                //Grab sounds
+
+                let sounds = player.inventory[slot].sounds;
+
                 //Send to server
 
                 socket.emit('CLIENT_USE_ITEM', player.inventory[slot].name, function(valid) {
                     if (valid) {
+                        //Play item sound if possible
+
+                        if (sounds != undefined) {
+                            let sound = audio.getRandomSound(sounds);
+
+                            if (sound != undefined)
+                               audio.playSound(sound);
+                         }
+
                         //Remove box
 
                         ui.inventory.removeBox();
@@ -561,6 +574,15 @@ const ui = {
         },
         dropItem: function(slot) {
             if (player.inventory[slot] !== undefined) {
+                 //Play item sound if possible
+
+                 if (player.inventory[slot].sounds != undefined) {
+                    let sound = audio.getRandomSound(player.inventory[slot].sounds);
+
+                    if (sound != undefined)
+                       audio.playSound(sound);
+                 }
+
                 //Send to server
 
                 socket.emit('CLIENT_DROP_ITEM', slot);
@@ -976,7 +998,7 @@ const ui = {
         hasChanged: false,
         create: function() {
             view.dom.innerHTML +=
-                '<div id="settings_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; width: 240px; height: auto; text-align: center; padding: 2px;">' +
+                '<div id="settings_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; width: auto; height: auto; text-align: center; padding: 0px;">' +
                     '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Settings</b></p>' +
 
                     '<p class="info" style="font-size: 13px;"><b>Audio</b></p>' +
@@ -988,7 +1010,7 @@ const ui = {
                     '<p class="info" style="font-size: 13px; margin: 0px;" id="settings_audio_soundVolume_text">Sound </p>' +
                     '<input type="range" min="0" max="100" id="settings_audio_soundVolume" onchange="ui.settings.changeAudioValue(event)"/>' +
 
-                    '<p class="link" onclick="ui.settings.hide()" style="font-size: 12px; color: red; padding-top: 6px;">Close</p>' +
+                    '<p class="link" onclick="ui.settings.hide()" style="font-size: 12px; color: red; padding-top: 4px;">Close</p>' +
                 '</div>';
 
             lx.OnKey('escape', function() {

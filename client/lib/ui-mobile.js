@@ -11,6 +11,7 @@ const ui = {
         this.inventory.create();
         this.equipment.create();
         this.status.create();
+        this.settings.create();
         this.chat.create();
 
         lx.Loops(this.floaties.update);
@@ -532,10 +533,23 @@ const ui = {
         useItem: function(slot) {
             if (player.inventory[slot] !== undefined &&
                 !this.showingContext) {
+                //Grab sounds
+
+                let sounds = player.inventory[slot].sounds;
+
                 //Send to server
 
                 socket.emit('CLIENT_USE_ITEM', player.inventory[slot].name, function(valid) {
                     if (valid) {
+                        //Play item sound if possible
+
+                        if (sounds != undefined) {
+                           let sound = audio.getRandomSound(sounds);
+
+                           if (sound != undefined)
+                              audio.playSound(sound);
+                        }
+
                         //Remove box
 
                         ui.inventory.removeBox();
@@ -549,6 +563,15 @@ const ui = {
         },
         dropItem: function(slot) {
             if (player.inventory[slot] !== undefined) {
+                //Play item sound if possible
+
+                if (player.inventory[slot].sounds != undefined) {
+                   let sound = audio.getRandomSound(player.inventory[slot].sounds);
+
+                   if (sound != undefined)
+                      audio.playSound(sound);
+                }
+
                 //Send to server
 
                 socket.emit('CLIENT_DROP_ITEM', slot);
@@ -893,7 +916,7 @@ const ui = {
     {
         create: function() {
             view.dom.innerHTML +=
-                '<div id="status_box" style="position: absolute; top: 100%; left: 100%; margin-top: -19px; margin-left: -' + (ui.controller.size+30) + 'px; transform: translate(-100%, -100%); width: 20%; height: auto;">' +
+                '<div id="status_box" style="position: absolute; top: 100%; left: 100%; margin-top: -34px; margin-left: -' + (ui.controller.size+30) + 'px; transform: translate(-100%, -100%); width: 20%; height: auto;">' +
                     '<div id="status_health_box" class="bar" style="text-align: center; height: 9px; margin-top: 0px;">' +
                         '<div id="status_health" class="bar_content" style="background-color: #E87651; width: 100%;"></div>' +
                         '<p id="status_health_text" class="info" style="transform: translate(0, -90%); margin: 0; font-size: 9px;"></p>' +
@@ -1065,6 +1088,114 @@ const ui = {
             //Set visibility
 
             el.style.visibility = 'hidden';
+        }
+    },
+    settings:
+    {
+        visible: false,
+        hasChanged: false,
+        create: function() {
+            view.dom.innerHTML +=
+                '<div id="settings_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; width: auto; height: auto; text-align: center; padding: 0px;">' +
+                    '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Settings</b></p>' +
+
+                    '<p class="info" style="font-size: 13px;"><b>Audio</b></p>' +
+
+                    '<p class="info" style="font-size: 13px; margin: 0px;" id="settings_audio_mainVolume_text">Main </p>' +
+                    '<input type="range" min="0" max="100" id="settings_audio_mainVolume" onchange="ui.settings.changeAudioValue(event)"/>' +
+                    '<p class="info" style="font-size: 13px; margin: 0px;" id="settings_audio_musicVolume_text">Music </p>' +
+                    '<input type="range" min="0" max="100" id="settings_audio_musicVolume" onchange="ui.settings.changeAudioValue(event)"/>' +
+                    '<p class="info" style="font-size: 13px; margin: 0px;" id="settings_audio_soundVolume_text">Sound </p>' +
+                    '<input type="range" min="0" max="100" id="settings_audio_soundVolume" onchange="ui.settings.changeAudioValue(event)"/>' +
+
+                    '<p class="link" onclick="ui.settings.hide()" style="font-size: 12px; color: red; padding-top: 4px;">Close</p>' +
+                '</div>';
+
+            view.dom.innerHTML +=
+                '<p class="link" onclick="ui.settings.show()" style="pointer-events: auto; position: absolute; top: 100%; left: 100%; margin-top: -19px; margin-left: -' + (ui.controller.size+30) + 'px; transform: translate(-100%, -100%); font-size: 10px; position: absolute;">Settings</p>';
+        },
+        loadFromSettings: function(settings) {
+            //Audio values
+
+            document.getElementById('settings_audio_mainVolume').value = settings.audio.main;
+            document.getElementById('settings_audio_musicVolume').value = settings.audio.music;
+            document.getElementById('settings_audio_soundVolume').value = settings.audio.sound;
+
+            this.changeAudioValue({
+                target: document.getElementById('settings_audio_musicVolume')
+            });
+            this.changeAudioValue({
+                target: document.getElementById('settings_audio_soundVolume')
+            });
+            this.changeAudioValue({
+                target: document.getElementById('settings_audio_mainVolume')
+            });
+        },
+        changeAudioValue: function(data) {
+            let val = data.target.value,
+                text = document.getElementById(data.target.id+'_text');
+
+            text = text.innerHTML.substr(0, text.innerHTML.indexOf(' '));
+
+            this.hasChanged = true;
+
+            switch (text) {
+                case 'Main':
+                    audio.setMainVolume(val/100);
+                    break;
+                case 'Music':
+                    audio.setBGMVolume(val/100);
+                    break;
+                case 'Sound':
+                    audio.setSoundVolume(val/100);
+                    break;
+            }
+
+            document.getElementById(data.target.id+'_text').innerHTML = text + ' (' + val + ')';
+        },
+        show: function() {
+            if (tiled.loading || this.visible) {
+                this.hide();
+
+                return;
+            }
+
+            lx.CONTEXT.CONTROLLER.TARGET = undefined;
+
+            if (this.mouse == undefined)
+                this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
+                    if (data.state == 0)
+                        return;
+
+                    lx.StopMouse(0);
+
+                    ui.settings.hide();
+                });
+
+            document.getElementById('settings_box').style.visibility = 'visible';
+
+            this.hasChanged = false;
+            this.visible = true;
+        },
+        hide: function() {
+            lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
+
+            lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
+
+            this.mouse = undefined;
+
+            document.getElementById('settings_box').style.visibility = 'hidden';
+
+            this.visible = false;
+
+            if (this.hasChanged)
+                socket.emit('CLIENT_USER_SETTINGS', {
+                    audio: {
+                        main: audio.actualMainVolume*100,
+                        music: audio.actualBGMVolume*100,
+                        sound: audio.actualSoundVolume*100
+                    }
+                });
         }
     },
     floaties:

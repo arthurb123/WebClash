@@ -4,6 +4,11 @@
   "rarity": "uncommon",
   "value": 18,
   "minLevel": 2,
+  "sounds": [
+    {
+      "src": "res/sounds/items/armor/chain1.wav"
+    }
+  ],
   "description": "A sturdy helm.",
   "heal": 0,
   "mana": 0,
@@ -20,5 +25,8 @@
     "intelligence": 0,
     "wisdom": 0,
     "agility": 0
-  }
+  },
+  "dialog": [],
+  "dialogElements": [],
+  "consumableDialog": false
 }

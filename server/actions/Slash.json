@@ -26,6 +26,17 @@
       "projectileDistance": 0
     }
   ],
+  "sounds": [
+    {
+      "src": "res/sounds/actions/swing/swing1.wav"
+    },
+    {
+      "src": "res/sounds/actions/swing/swing2.wav"
+    },
+    {
+      "src": "res/sounds/actions/swing/swing3.wav"
+    }
+  ],
   "heal": 0,
-  "cooldown": 15
+  "cooldown": 20
 }

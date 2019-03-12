@@ -659,8 +659,10 @@ const game = {
 
     createAction: function(data)
     {
+        //Create action elements
+
         for (let i = 0; i < data.elements.length; i++)
-         {
+        {
              if (data.elements[i].src.length == 0)
                  continue;
 
@@ -764,6 +766,16 @@ const game = {
                  });
              }
          }
+
+         //Play action sound if possible
+
+         if (data.sounds == undefined)
+            return;
+
+         let sound = audio.getRandomSound(data.sounds);
+
+         if (sound != undefined)
+            audio.playSoundAtPosition(sound, data.centerPosition);
     },
     removeAction: function(id) {
         let go = lx.FindGameObjectWithIdentifier(id);

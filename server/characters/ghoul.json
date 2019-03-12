@@ -19,13 +19,13 @@
   "sounds": {
     "hitSounds": [
       {
-        "src": "res/sounds/hit/ghoul0.mp3"
+        "src": "res/sounds/characters/ghoul/ghoul1.wav"
       },
       {
-        "src": "res/sounds/hit/ghoul1.mp3"
+        "src": "res/sounds/characters/ghoul/ghoul2.wav"
       },
       {
-        "src": "res/sounds/hit/ghoul2.mp3"
+        "src": "res/sounds/characters/ghoul/ghoul3.wav"
       }
     ]
   }

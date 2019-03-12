@@ -26,6 +26,7 @@
       "projectileDistance": 0
     }
   ],
+  "sounds": [],
   "heal": 0,
-  "cooldown": 17
+  "cooldown": 22
 }

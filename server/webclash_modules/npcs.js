@@ -113,12 +113,12 @@ exports.createNPC = function(map, name, x, y, is_event)
     //Setup NPC Movement
 
     npc.pos = {
-        X: x,
-        Y: y
+        X: x-npc.data.character.width/2,
+        Y: y-npc.data.character.height
     };
     npc.start_pos = {
-        X: x,
-        Y: y
+        X: npc.pos.X,
+        Y: npc.pos.Y
     };
 
     npc.movement = {
@@ -512,8 +512,8 @@ exports.checkNPCFacingCollision = function(map, id)
     let rect = {
         x: pos.X,
         y: pos.Y,
-        w: tiled.maps[map].tilewidth,
-        h: tiled.maps[map].tileheight
+        w: this.onMap[map][id].data.character.width,
+        h: this.onMap[map][id].data.character.height
     };
 
     //Check if outside map

@@ -286,6 +286,17 @@ namespace WebClashServer
             current.minLevel = (int)minLevel.Value;
         }
 
+        private void itemSounds_Click(object sender, EventArgs e)
+        {
+            SoundSelection soundSelection = new SoundSelection("Set sounds for item '" + name.Text + "'", current.sounds);
+
+            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                current.sounds = soundSelection.GetSelection();
+            };
+
+            soundSelection.ShowDialog();
+        }
+
         private void description_TextChanged(object sender, EventArgs e)
         {
             if (current == null)
@@ -488,6 +499,8 @@ namespace WebClashServer
                 value = temp.value;
                 minLevel = temp.minLevel;
 
+                sounds = temp.sounds;
+
                 //Consumable settings
 
                 heal = temp.heal;
@@ -525,6 +538,8 @@ namespace WebClashServer
 
         public int value = 0;
         public int minLevel = 0;
+
+        public PossibleSound[] sounds = new PossibleSound[0];
 
         public string description = "";
 

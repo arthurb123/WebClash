@@ -4,6 +4,11 @@
   "rarity": "rare",
   "value": 32,
   "minLevel": 2,
+  "sounds": [
+    {
+      "src": "res/sounds/items/weapons/metal3.wav"
+    }
+  ],
   "description": "This is one hot tool.",
   "heal": 0,
   "mana": 0,
@@ -20,5 +25,8 @@
     "intelligence": 0,
     "wisdom": 0,
     "agility": 0
-  }
+  },
+  "dialog": [],
+  "dialogElements": [],
+  "consumableDialog": false
 }

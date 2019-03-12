@@ -4,6 +4,11 @@
   "rarity": "uncommon",
   "value": 5,
   "minLevel": 0,
+  "sounds": [
+    {
+      "src": "res/sounds/items/misc/wood.wav"
+    }
+  ],
   "description": "I can't read.",
   "heal": 0,
   "mana": 0,
@@ -20,5 +25,8 @@
     "intelligence": 0,
     "wisdom": 0,
     "agility": 0
-  }
+  },
+  "dialog": [],
+  "dialogElements": [],
+  "consumableDialog": false
 }

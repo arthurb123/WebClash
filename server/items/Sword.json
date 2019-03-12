@@ -3,6 +3,12 @@
   "type": "equipment",
   "rarity": "common",
   "value": 8,
+  "minLevel": 0,
+  "sounds": [
+    {
+      "src": "res/sounds/items/weapons/sword1.wav"
+    }
+  ],
   "description": "A simple sword.",
   "heal": 0,
   "mana": 0,
@@ -19,5 +25,8 @@
     "intelligence": 0,
     "wisdom": 0,
     "agility": 0
-  }
+  },
+  "dialog": [],
+  "dialogElements": [],
+  "consumableDialog": false
 }

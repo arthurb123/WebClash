@@ -4,6 +4,11 @@
   "rarity": "exotic",
   "value": 80,
   "minLevel": 3,
+  "sounds": [
+    {
+      "src": "res/sounds/items/weapons/metal2.wav"
+    }
+  ],
   "description": "I like to keep my distance.",
   "heal": 0,
   "mana": 0,
@@ -20,5 +25,8 @@
     "intelligence": 0,
     "wisdom": 0,
     "agility": 4
-  }
+  },
+  "dialog": [],
+  "dialogElements": [],
+  "consumableDialog": false
 }

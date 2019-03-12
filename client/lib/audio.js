@@ -40,10 +40,16 @@ const audio = {
     playSound: function(src) {
         let sound = cache.getAudio(src, 1);
 
+        if (sound.PLAY_ID != undefined)
+            sound.PLAY_ID = undefined;
+
         sound.Play();
     },
     playSoundAtPosition: function(src, pos) {
         let sound = cache.getAudio(src, 1);
+
+        if (sound.PLAY_ID != undefined)
+            sound.PLAY_ID = undefined;
 
         sound.Position(pos.X, pos.Y);
         sound.PlaySpatial();
@@ -55,12 +61,16 @@ const audio = {
             this.actualSoundVolume = volume;
     },
 
-    getHitSoundFromTarget: function(target) {
+    getRandomSound: function(sounds) {
         let result;
 
-        if (target._sounds != undefined && target._sounds.hitSounds)
-            result = target._sounds.hitSounds[Math.round(Math.random()*(target._sounds.hitSounds.length-1))].src;
+        if (sounds != undefined)
+            result = sounds[Math.round(Math.random()*(sounds.length-1))].src;
 
         return result;
+    },
+    getHitSoundFromTarget: function(target) {
+        if (target._sounds != undefined && target._sounds.hitSounds != undefined)
+            return this.getRandomSound(target._sounds.hitSounds);
     }
 };

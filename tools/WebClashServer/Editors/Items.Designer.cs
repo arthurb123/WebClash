@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Items));
             this.itemList = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.itemSounds = new System.Windows.Forms.Button();
             this.minLevel = new System.Windows.Forms.NumericUpDown();
             this.label21 = new System.Windows.Forms.Label();
             this.type = new System.Windows.Forms.ComboBox();
@@ -117,12 +118,13 @@
             this.itemList.FormattingEnabled = true;
             this.itemList.Location = new System.Drawing.Point(2, 2);
             this.itemList.Name = "itemList";
-            this.itemList.Size = new System.Drawing.Size(120, 381);
+            this.itemList.Size = new System.Drawing.Size(120, 407);
             this.itemList.TabIndex = 0;
             this.itemList.SelectedIndexChanged += new System.EventHandler(this.itemList_SelectedIndexChanged);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.itemSounds);
             this.groupBox1.Controls.Add(this.minLevel);
             this.groupBox1.Controls.Add(this.label21);
             this.groupBox1.Controls.Add(this.type);
@@ -139,10 +141,20 @@
             this.groupBox1.Controls.Add(this.icon);
             this.groupBox1.Location = new System.Drawing.Point(126, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(316, 147);
+            this.groupBox1.Size = new System.Drawing.Size(316, 172);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "General Settings";
+            // 
+            // itemSounds
+            // 
+            this.itemSounds.Location = new System.Drawing.Point(12, 145);
+            this.itemSounds.Name = "itemSounds";
+            this.itemSounds.Size = new System.Drawing.Size(292, 21);
+            this.itemSounds.TabIndex = 20;
+            this.itemSounds.Text = "Edit Sound(s)";
+            this.itemSounds.UseVisualStyleBackColor = true;
+            this.itemSounds.Click += new System.EventHandler(this.itemSounds_Click);
             // 
             // minLevel
             // 
@@ -286,7 +298,7 @@
             this.newLink.ActiveLinkColor = System.Drawing.Color.Blue;
             this.newLink.AutoSize = true;
             this.newLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.newLink.Location = new System.Drawing.Point(4, 386);
+            this.newLink.Location = new System.Drawing.Point(4, 413);
             this.newLink.Name = "newLink";
             this.newLink.Size = new System.Drawing.Size(29, 13);
             this.newLink.TabIndex = 2;
@@ -300,7 +312,7 @@
             this.saveLink.ActiveLinkColor = System.Drawing.Color.Blue;
             this.saveLink.AutoSize = true;
             this.saveLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.saveLink.Location = new System.Drawing.Point(47, 386);
+            this.saveLink.Location = new System.Drawing.Point(47, 413);
             this.saveLink.Name = "saveLink";
             this.saveLink.Size = new System.Drawing.Size(32, 13);
             this.saveLink.TabIndex = 3;
@@ -684,7 +696,7 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.description);
-            this.groupBox3.Location = new System.Drawing.Point(126, 153);
+            this.groupBox3.Location = new System.Drawing.Point(126, 177);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(316, 73);
             this.groupBox3.TabIndex = 5;
@@ -708,7 +720,7 @@
             this.delete.AutoSize = true;
             this.delete.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.delete.LinkColor = System.Drawing.Color.Red;
-            this.delete.Location = new System.Drawing.Point(97, 386);
+            this.delete.Location = new System.Drawing.Point(97, 413);
             this.delete.Name = "delete";
             this.delete.Size = new System.Drawing.Size(23, 13);
             this.delete.TabIndex = 6;
@@ -722,7 +734,7 @@
             this.consumablePanel.AutoSize = true;
             this.consumablePanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.consumablePanel.Controls.Add(this.consumableSettings);
-            this.consumablePanel.Location = new System.Drawing.Point(126, 229);
+            this.consumablePanel.Location = new System.Drawing.Point(126, 252);
             this.consumablePanel.Name = "consumablePanel";
             this.consumablePanel.Size = new System.Drawing.Size(319, 134);
             this.consumablePanel.TabIndex = 22;
@@ -733,7 +745,7 @@
             this.equipmentPanel.AutoSize = true;
             this.equipmentPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.equipmentPanel.Controls.Add(this.equipmentSettings);
-            this.equipmentPanel.Location = new System.Drawing.Point(126, 228);
+            this.equipmentPanel.Location = new System.Drawing.Point(126, 251);
             this.equipmentPanel.Name = "equipmentPanel";
             this.equipmentPanel.Size = new System.Drawing.Size(319, 174);
             this.equipmentPanel.TabIndex = 23;
@@ -744,7 +756,7 @@
             this.dialogPanel.AutoSize = true;
             this.dialogPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.dialogPanel.Controls.Add(this.dialogSettings);
-            this.dialogPanel.Location = new System.Drawing.Point(126, 228);
+            this.dialogPanel.Location = new System.Drawing.Point(126, 251);
             this.dialogPanel.Name = "dialogPanel";
             this.dialogPanel.Size = new System.Drawing.Size(319, 98);
             this.dialogPanel.TabIndex = 23;
@@ -797,7 +809,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(451, 403);
+            this.ClientSize = new System.Drawing.Size(451, 431);
             this.Controls.Add(this.dialogPanel);
             this.Controls.Add(this.equipmentPanel);
             this.Controls.Add(this.consumablePanel);
@@ -810,8 +822,8 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(467, 442);
-            this.MinimumSize = new System.Drawing.Size(467, 442);
+            this.MaximumSize = new System.Drawing.Size(467, 470);
+            this.MinimumSize = new System.Drawing.Size(467, 470);
             this.Name = "Items";
             this.Text = "WebClash Server - Items";
             this.Load += new System.EventHandler(this.Items_Load);
@@ -908,5 +920,6 @@
         private System.Windows.Forms.CheckBox dialogConsumable;
         private System.Windows.Forms.Button dialogButton;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button itemSounds;
     }
 }

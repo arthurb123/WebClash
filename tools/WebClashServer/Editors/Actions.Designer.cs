@@ -80,6 +80,7 @@
             this.heal = new System.Windows.Forms.NumericUpDown();
             this.label14 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.editSounds = new System.Windows.Forms.Button();
             this.description = new System.Windows.Forms.RichTextBox();
             this.label16 = new System.Windows.Forms.Label();
             this.iconImage = new System.Windows.Forms.PictureBox();
@@ -708,6 +709,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.editSounds);
             this.groupBox2.Controls.Add(this.description);
             this.groupBox2.Controls.Add(this.label16);
             this.groupBox2.Controls.Add(this.iconImage);
@@ -721,9 +723,19 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General Info";
             // 
+            // editSounds
+            // 
+            this.editSounds.Location = new System.Drawing.Point(6, 275);
+            this.editSounds.Name = "editSounds";
+            this.editSounds.Size = new System.Drawing.Size(115, 23);
+            this.editSounds.TabIndex = 5;
+            this.editSounds.Text = "Edit Sound(s)";
+            this.editSounds.UseVisualStyleBackColor = true;
+            this.editSounds.Click += new System.EventHandler(this.editSounds_Click);
+            // 
             // description
             // 
-            this.description.Location = new System.Drawing.Point(6, 185);
+            this.description.Location = new System.Drawing.Point(6, 157);
             this.description.Name = "description";
             this.description.Size = new System.Drawing.Size(115, 111);
             this.description.TabIndex = 4;
@@ -733,7 +745,7 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(27, 162);
+            this.label16.Location = new System.Drawing.Point(28, 138);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(69, 15);
             this.label16.TabIndex = 3;
@@ -743,7 +755,8 @@
             // 
             this.iconImage.BackColor = System.Drawing.SystemColors.ControlLight;
             this.iconImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.iconImage.Location = new System.Drawing.Point(31, 81);
+            this.iconImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.iconImage.Location = new System.Drawing.Point(30, 68);
             this.iconImage.Name = "iconImage";
             this.iconImage.Size = new System.Drawing.Size(64, 64);
             this.iconImage.TabIndex = 2;
@@ -751,7 +764,7 @@
             // 
             // icon
             // 
-            this.icon.Location = new System.Drawing.Point(6, 45);
+            this.icon.Location = new System.Drawing.Point(6, 39);
             this.icon.Name = "icon";
             this.icon.Size = new System.Drawing.Size(115, 21);
             this.icon.TabIndex = 1;
@@ -760,7 +773,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(47, 24);
+            this.label15.Location = new System.Drawing.Point(45, 20);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(30, 15);
             this.label15.TabIndex = 0;
@@ -913,5 +926,6 @@
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.NumericUpDown projectileDistance;
         private System.Windows.Forms.NumericUpDown projectileSpeed;
+        private System.Windows.Forms.Button editSounds;
     }
 }

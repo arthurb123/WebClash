@@ -1,22 +1,22 @@
 {
-  "name": "Angel",
+  "name": "Golem",
   "movement": "free",
   "range": 6,
   "type": "hostile",
-  "character": "angel",
+  "character": "golem",
   "stats": {
     "level": 8,
     "exp": 20,
     "power": 0,
-    "toughness": 1,
-    "agility": 0,
+    "toughness": 2,
+    "agility": 1,
     "wisdom": 2,
-    "intelligence": 5,
+    "intelligence": 6,
     "vitality": 0
   },
   "health": {
-    "cur": 140,
-    "max": 140
+    "cur": 100,
+    "max": 100
   },
   "actions": [
     {

@@ -4,6 +4,11 @@
   "rarity": "rare",
   "value": 12,
   "minLevel": 3,
+  "sounds": [
+    {
+      "src": "res/sounds/items/misc/beads.wav"
+    }
+  ],
   "description": "Why did I pick this up.",
   "heal": 0,
   "mana": 0,
