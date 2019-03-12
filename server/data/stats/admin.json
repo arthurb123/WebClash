@@ -6,7 +6,7 @@
   "Y": 0
  },
  "moving": false,
- "direction": 2,
+ "direction": 1,
  "health": {
   "cur": 100,
   "max": 100
@@ -28,12 +28,16 @@
   }
  },
  "actions": [
-  null
+  {
+   "name": "Slash"
+  }
  ],
  "inventory": [
-  "Sword"
+  "Magic Axe"
  ],
- "equipment": {},
+ "equipment": {
+  "main": "Sword"
+ },
  "gold": 0,
  "gvars": {}
 }

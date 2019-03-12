@@ -149,6 +149,10 @@ exports.createNPC = function(map, name, x, y, is_event)
         }
     };
 
+    //Orden set actions from high to low range
+
+    npc.data.actions.sort((b,a) => (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0));
+
     //Add NPC to map
 
     this.onMap[map][npc.id] = npc;
@@ -342,6 +346,8 @@ exports.updateNPCCombat = function(map, id)
     if (this.onMap[map][id].target == -1) {
         //Regenerate if necessary
 
+        //...
+
         return;
     }
 
@@ -370,28 +376,32 @@ exports.updateNPCCombat = function(map, id)
 
     //Calculate distance to target
 
-    let dx = Math.round((game.players[this.onMap[map][id].target].pos.X-this.onMap[map][id].pos.X)/tiled.maps[map].tilewidth),
-        dy = Math.round((game.players[this.onMap[map][id].target].pos.Y-this.onMap[map][id].pos.Y)/tiled.maps[map].tileheight);
+    let ppos = {
+        X: game.players[this.onMap[map][id].target].pos.X+game.players[this.onMap[map][id].target].character.width/2,
+        Y: game.players[this.onMap[map][id].target].pos.Y+game.players[this.onMap[map][id].target].character.height/2
+    };
+
+    let npos = {
+        X: this.onMap[map][id].pos.X+this.onMap[map][id].data.character.width/2,
+        Y: this.onMap[map][id].pos.Y+this.onMap[map][id].data.character.height/2
+    };
+
+    let dx = Math.round((ppos.X-npos.X)/tiled.maps[map].tilewidth),
+        dy = Math.round((ppos.Y-npos.Y)/tiled.maps[map].tileheight);
 
     //Check which ability is in range
 
     let nextAction = -1;
 
-    for (let i = 0; i < this.onMap[map][id].data.actions.length; i++)
-        if (this.onMap[map][id].data.actions[i].range == 0 ||
-            Math.abs(dx) <= this.onMap[map][id].data.actions[i].range &&
-            Math.abs(dy) <= this.onMap[map][id].data.actions[i].range)
-            {
-                //Check action cooldown
+    for (let i = 0; i < this.onMap[map][id].data.actions.length; i++) {
+        if (this.onMap[map][id].combat_cooldown.actual[this.onMap[map][id].data.actions[i].action] != undefined &&
+            !this.onMap[map][id].combat_cooldown.actual[this.onMap[map][id].data.actions[i].action].done)
+            continue;
 
-                if (this.onMap[map][id].combat_cooldown.actual[this.onMap[map][id].data.actions[i].action] != undefined &&
-                    !this.onMap[map][id].combat_cooldown.actual[this.onMap[map][id].data.actions[i].action].done)
-                    continue;
+        nextAction = i;
 
-                nextAction = i;
-
-                break;
-            }
+        break;
+    }
 
     //Adjust NPC direction
 
@@ -426,16 +436,13 @@ exports.updateNPCCombat = function(map, id)
     {
         //Invalid attack position, adjust position (start moving)
 
-        //Reset NPC movement
-
-        this.onMap[map][id].movement.distance = 0;
-
+        /*
         //Set direction based on player position
 
-        if (dx < 0)
-            this.onMap[map][id].direction = 1;
+        if (dy < 0)
+            this.onMap[map][id].direction = 0;
         else
-            this.onMap[map][id].direction = 2;
+            this.onMap[map][id].direction = 3;
 
         //Check facing collision
 
@@ -447,42 +454,56 @@ exports.updateNPCCombat = function(map, id)
             //Sync moving
 
             server.syncNPCPartially(map, id, 'moving');
+
+            return;
         }
+        */
     }
 
     //Sync direction
 
     server.syncNPCPartially(map, id, 'direction');
 
-    //Check if next action is valid,
-    //otherwise start moving in direction
+    //If action is valid, check if in range
 
-    if (nextAction == -1)
+    if (nextAction != -1)
     {
-        //Check if already moving
+        //Check if in range
 
-        if (this.onMap[map][id].moving ||
-            this.onMap[map][id].data.movement === 'static')
-            return;
+        if (this.onMap[map][id].data.actions[nextAction].range != 0)
+            if (Math.abs(dx) > this.onMap[map][id].data.actions[nextAction].range ||
+                Math.abs(dy) > this.onMap[map][id].data.actions[nextAction].range) {
+                //Check if already moving
 
-        //Reset NPC movement
+                if (this.onMap[map][id].moving ||
+                    this.onMap[map][id].data.movement === 'static')
+                    return;
 
-        this.onMap[map][id].movement.distance = 0;
+                //Reset NPC movement
 
-        //Check facing collision
+                this.onMap[map][id].movement.distance = 0;
 
-        if (!this.checkNPCFacingCollision(map, id)) {
-            //Start moving
+                //Check facing collision
 
-            this.onMap[map][id].moving = true;
+                if (!this.checkNPCFacingCollision(map, id)) {
+                    //Start moving
 
-            //Sync moving
+                    this.onMap[map][id].moving = true;
 
-            server.syncNPCPartially(map, id, 'moving');
-        }
+                    //Sync moving
 
-        return;
+                    server.syncNPCPartially(map, id, 'moving');
+                }
+
+                return;
+            }
+            else if
+                (Math.abs(dx) < this.onMap[map][id].data.actions[nextAction].range-1 ||
+                 Math.abs(dy) < this.onMap[map][id].data.actions[nextAction].range-1)
+                    return;
     }
+    else
+        return;
 
     //Reset moving if necessary
 

@@ -64,7 +64,7 @@ const audio = {
     getRandomSound: function(sounds) {
         let result;
 
-        if (sounds != undefined)
+        if (sounds != undefined && sounds.length > 0)
             result = sounds[Math.round(Math.random()*(sounds.length-1))].src;
 
         return result;
