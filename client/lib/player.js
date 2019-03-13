@@ -124,7 +124,7 @@ const player = {
             this.equipment[equipment.equippable] = equipment;
 
             if (equipment.equippableSource !== '')
-                this.equipment[equipment.equippable]._sprite = new lx.Sprite(equipment.equippableSource);
+                this.equipment[equipment.equippable]._sprite = cache.getSprite(equipment.equippableSource);
         }
         else
             this.equipment[equipment.equippable] = undefined;

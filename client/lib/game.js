@@ -40,14 +40,28 @@ const game = {
                     go._nameplate.Text('lvl ' + go._level + ' - ' + go.name);
             })
             .Draws(function() {
-                for (let i = 0; i < go._equipment.length; i++)
+                let equipment = [];
+
+                for (let i = 0; i < go._equipment.length-2; i++)
+                    equipment.push(go._equipment[i]);
+
+                if (this._direction == 1 || this._direction == 0) {
+                    equipment.push(go._equipment[go._equipment.length-1]);
+                    equipment.push(go._equipment[go._equipment.length-2]);
+                }
+                else if (this._direction == 2 || this._direction == 3) {
+                    equipment.push(go._equipment[go._equipment.length-2]);
+                    equipment.push(go._equipment[go._equipment.length-1]);
+                }
+
+                for (let i = 0; i < equipment.length; i++)
                 {
-                    if (go._equipment[i] === undefined)
-                        continue;
+                    if (equipment[i] === undefined)
+                        continue
 
-                    go._equipment[i].CLIP = go.SPRITE.CLIP;
+                    equipment[i].CLIP = go.SPRITE.CLIP;
 
-                    lx.DrawSprite(go._equipment[i], go.Position().X, go.Position().Y, go.Size().W, go.Size().H)
+                    lx.DrawSprite(equipment[i], go.Position().X, go.Position().Y, go.Size().W, go.Size().H)
                 }
             });
 
@@ -152,19 +166,39 @@ const game = {
         let result = [];
 
         if (equipment['torso'] !== undefined)
-            result.push(new lx.Sprite(equipment['torso']));
+            result.push(cache.getSprite(equipment['torso']));
+        else
+            result.push(undefined);
+
         if (equipment['hands'] !== undefined)
-            result.push(new lx.Sprite(equipment['hands']));
+            result.push(cache.getSprite(equipment['hands']));
+        else
+            result.push(undefined);
+
         if (equipment['head'] !== undefined)
-            result.push(new lx.Sprite(equipment['head']));
+            result.push(cache.getSprite(equipment['head']));
+        else
+            result.push(undefined);
+
         if (equipment['feet'] !== undefined)
-            result.push(new lx.Sprite(equipment['feet']));
+            result.push(cache.getSprite(equipment['feet']));
+        else
+            result.push(undefined);
+
         if (equipment['legs'] !== undefined)
-            result.push(new lx.Sprite(equipment['legs']));
+            result.push(cache.getSprite(equipment['legs']));
+        else
+            result.push(undefined);
+
         if (equipment['offhand'] !== undefined)
-            result.push(new lx.Sprite(equipment['offhand']));
+            result.push(cache.getSprite(equipment['offhand']));
+        else
+            result.push(undefined);
+
         if (equipment['main'] !== undefined)
-            result.push(new lx.Sprite(equipment['main']));
+            result.push(cache.getSprite(equipment['main']));
+        else
+            result.push(undefined);
 
         this.players[id]._equipment = result;
     },
