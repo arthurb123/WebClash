@@ -54,9 +54,9 @@ function startServer() {
     //Handle socket interaction
 
     io.on('connection', server.handleSocket);
-    
+
     //Start game loop
-    
+
     game.startLoop();
 }
 
@@ -65,29 +65,29 @@ function startServer() {
 let hasSaved = false;
 global.exitHandler = function() {
     //Check if exit handler has already been executed
-    
+
     if (hasSaved)
         return;
-    
+
     //Output
-    
+
     output.give('Shutting down server..');
-    
+
     //Check if there are players that need to be saved
-    
+
     if (game.players.length === 0) {
         hasSaved = true;
-        
+
         process.exit();
-        
+
         return;
     }
 
     //Save all players
-    
+
     game.saveAllPlayers(function() {
         hasSaved = true;
-        
+
         process.exit();
     });
 }

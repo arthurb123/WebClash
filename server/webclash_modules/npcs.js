@@ -386,6 +386,11 @@ exports.updateNPCCombat = function(map, id)
         Y: this.onMap[map][id].pos.Y+this.onMap[map][id].data.character.height/2
     };
 
+    if (this.onMap[map].direction == 0)
+        npos.Y+=this.onMap[map][id].data.character.height;
+    else if (this.onMap[map].direction == 2)
+        npos.X+=this.onMap[map][id].data.character.width;
+
     let dx = Math.round((ppos.X-npos.X)/tiled.maps[map].tilewidth),
         dy = Math.round((ppos.Y-npos.Y)/tiled.maps[map].tileheight);
 
@@ -436,13 +441,12 @@ exports.updateNPCCombat = function(map, id)
     {
         //Invalid attack position, adjust position (start moving)
 
-        /*
         //Set direction based on player position
 
-        if (dy < 0)
-            this.onMap[map][id].direction = 0;
+        if (dx < 0)
+            this.onMap[map][id].direction = 1;
         else
-            this.onMap[map][id].direction = 3;
+            this.onMap[map][id].direction = 2;
 
         //Check facing collision
 
@@ -455,9 +459,31 @@ exports.updateNPCCombat = function(map, id)
 
             server.syncNPCPartially(map, id, 'moving');
 
-            return;
+            //Set next action to -1
+
+            nextAction = -1;
+        } else {
+            //If facing collision failed, try the other axis
+
+            if (dx < 0)
+                this.onMap[map][id].direction = 0;
+            else
+                this.onMap[map][id].direction = 3;
+
+            if (!this.checkNPCFacingCollision(map, id)) {
+                //Start moving
+
+                this.onMap[map][id].moving = true;
+
+                //Sync moving
+
+                server.syncNPCPartially(map, id, 'moving');
+
+                //Set next action to -1
+
+                nextAction = -1;
+            }
         }
-        */
     }
 
     //Sync direction
@@ -498,8 +524,8 @@ exports.updateNPCCombat = function(map, id)
                 return;
             }
             else if
-                (Math.abs(dx) < this.onMap[map][id].data.actions[nextAction].range-1 ||
-                 Math.abs(dy) < this.onMap[map][id].data.actions[nextAction].range-1)
+                (Math.abs(dx) < this.onMap[map][id].data.actions[nextAction].range-Math.round(this.onMap[map][id].data.character.width/tiled.maps[map].tilewidth) ||
+                 Math.abs(dy) < this.onMap[map][id].data.actions[nextAction].range-Math.round(this.onMap[map][id].data.character.height/tiled.maps[map].tileheight))
                     return;
     }
     else
@@ -532,9 +558,9 @@ exports.checkNPCFacingCollision = function(map, id)
 
     let rect = {
         x: pos.X,
-        y: pos.Y,
+        y: pos.Y+this.onMap[map][id].data.character.height/2,
         w: this.onMap[map][id].data.character.width,
-        h: this.onMap[map][id].data.character.height
+        h: this.onMap[map][id].data.character.height/2
     };
 
     //Check if outside map

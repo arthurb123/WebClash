@@ -164,13 +164,13 @@ const tiled = {
                 actualLayer++;
             }
 
-            //Reset the Lynx2D controller target
-
-            lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
-
             //Add world boundary colliders
 
             tiled.createWorldBoundaries(map, offset_width, offset_height);
+
+            //Reset the Lynx2D controller target
+
+            lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
 
             //Start BGM
 
