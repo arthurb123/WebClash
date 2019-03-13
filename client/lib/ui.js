@@ -1037,7 +1037,7 @@ const ui = {
             });
         },
         changeAudioValue: function(data) {
-            let val = data.target.value,
+            let val = Math.round(data.target.value),
                 text = document.getElementById(data.target.id+'_text');
 
             text = text.innerHTML.substr(0, text.innerHTML.indexOf(' '));

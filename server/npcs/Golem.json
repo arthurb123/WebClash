@@ -22,17 +22,12 @@
     {
       "action": "Heal",
       "range": 0,
-      "extraCooldown": 125
+      "extraCooldown": 0
     },
     {
       "action": "Combust",
       "range": 2,
       "extraCooldown": 21
-    },
-    {
-      "action": "Arrow Rain",
-      "range": 6,
-      "extraCooldown": 312
     }
   ],
   "items": [

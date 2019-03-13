@@ -356,6 +356,12 @@ const ui = {
                     this.reloadAction(a);
         },
         reloadAction: function(a) {
+            if (player.actions[a] == undefined) {
+                document.getElementById(this.slots[a]).innerHTML = '';
+
+                return;
+            }
+
             let uses = '', usesContent = '∞';
             if (player.actions[a].uses != undefined)
                 usesContent = player.actions[a].uses + '/' + player.actions[a].max;
@@ -1132,7 +1138,7 @@ const ui = {
             });
         },
         changeAudioValue: function(data) {
-            let val = data.target.value,
+            let val = Math.round(data.target.value),
                 text = document.getElementById(data.target.id+'_text');
 
             text = text.innerHTML.substr(0, text.innerHTML.indexOf(' '));

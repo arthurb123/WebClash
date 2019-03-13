@@ -19,13 +19,18 @@
   "sounds": {
     "hitSounds": [
       {
-        "src": "res/sounds/characters/giant/giant2.wav"
+        "src": "res/sounds/characters/giant/giant1.wav"
       },
       {
         "src": "res/sounds/characters/giant/giant3.wav"
       },
       {
         "src": "res/sounds/characters/giant/giant4.wav"
+      }
+    ],
+    "deathSounds": [
+      {
+        "src": "res/sounds/characters/giant/giant2.wav"
       }
     ]
   }

@@ -68,6 +68,7 @@
             this.acceleration = new System.Windows.Forms.NumericUpDown();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.onHitSounds = new System.Windows.Forms.Button();
+            this.onDeathSounds = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).BeginInit();
@@ -567,6 +568,7 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.onDeathSounds);
             this.groupBox5.Controls.Add(this.onHitSounds);
             this.groupBox5.Location = new System.Drawing.Point(15, 322);
             this.groupBox5.Name = "groupBox5";
@@ -577,13 +579,23 @@
             // 
             // onHitSounds
             // 
-            this.onHitSounds.Location = new System.Drawing.Point(153, 14);
+            this.onHitSounds.Location = new System.Drawing.Point(108, 14);
             this.onHitSounds.Name = "onHitSounds";
             this.onHitSounds.Size = new System.Drawing.Size(76, 23);
             this.onHitSounds.TabIndex = 0;
             this.onHitSounds.Text = "On Hit";
             this.onHitSounds.UseVisualStyleBackColor = true;
             this.onHitSounds.Click += new System.EventHandler(this.onHitSounds_Click);
+            // 
+            // onDeathSounds
+            // 
+            this.onDeathSounds.Location = new System.Drawing.Point(195, 14);
+            this.onDeathSounds.Name = "onDeathSounds";
+            this.onDeathSounds.Size = new System.Drawing.Size(76, 23);
+            this.onDeathSounds.TabIndex = 1;
+            this.onDeathSounds.Text = "On Death";
+            this.onDeathSounds.UseVisualStyleBackColor = true;
+            this.onDeathSounds.Click += new System.EventHandler(this.onDeathSounds_Click);
             // 
             // Characters
             // 
@@ -673,5 +685,6 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button onHitSounds;
+        private System.Windows.Forms.Button onDeathSounds;
     }
 }

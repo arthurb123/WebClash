@@ -19,14 +19,15 @@
   "sounds": {
     "hitSounds": [
       {
-        "src": "res/sounds/characters/human/human1.mp3"
+        "src": "res/sounds/characters/human/human1.wav"
       },
       {
-        "src": "res/sounds/characters/human/human2.mp3"
+        "src": "res/sounds/characters/human/human2.wav"
       },
       {
-        "src": "res/sounds/characters/human/human3.mp3"
+        "src": "res/sounds/characters/human/human3.wav"
       }
-    ]
+    ],
+    "deathSounds": []
   }
 }

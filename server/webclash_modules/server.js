@@ -468,7 +468,7 @@ exports.handleSocket = function(socket)
         server.syncInventoryItem(data, id, socket);
     });
 
-    socket.on('CLIENT_UNEQUIP_ITEM', function(data) {
+    socket.on('CLIENT_UNEQUIP_ITEM', function(data, callback) {
         //Check if valid player
 
         if (socket.playing === undefined || !socket.playing)
@@ -535,6 +535,11 @@ exports.handleSocket = function(socket)
         //Sync to player
 
         server.syncEquipmentItem(data, id, socket, false);
+
+        //Callback if provided
+
+        if (callback != undefined)
+            callback();
     });
 
     socket.on('CLIENT_PICKUP_ITEM', function(data) {

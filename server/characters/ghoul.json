@@ -27,6 +27,17 @@
       {
         "src": "res/sounds/characters/ghoul/ghoul3.wav"
       }
+    ],
+    "deathSounds": [
+      {
+        "src": "res/sounds/characters/ghoul/ghoul5.wav"
+      },
+      {
+        "src": "res/sounds/characters/ghoul/ghoul8.wav"
+      },
+      {
+        "src": "res/sounds/characters/ghoul/ghoul9.wav"
+      }
     ]
   }
 }

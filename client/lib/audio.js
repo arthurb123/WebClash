@@ -23,6 +23,9 @@ const audio = {
 
         this.currentBGM = cache.getAudio(src, 0);
 
+        if (this.actualMainVolume == 0)
+            return;
+
         this.currentBGM.Play(0, true);
     },
     setBGMVolume: function(volume, sets) {
@@ -38,6 +41,9 @@ const audio = {
     //Sounds
 
     playSound: function(src) {
+        if (this.actualMainVolume == 0)
+            return;
+
         let sound = cache.getAudio(src, 1);
 
         if (sound.PLAY_ID != undefined)
@@ -46,6 +52,9 @@ const audio = {
         sound.Play();
     },
     playSoundAtPosition: function(src, pos) {
+        if (this.actualMainVolume == 0)
+            return;
+
         let sound = cache.getAudio(src, 1);
 
         if (sound.PLAY_ID != undefined)
@@ -72,5 +81,9 @@ const audio = {
     getHitSoundFromTarget: function(target) {
         if (target._sounds != undefined && target._sounds.hitSounds != undefined)
             return this.getRandomSound(target._sounds.hitSounds);
+    },
+    getDeathSoundFromTarget: function(target) {
+        if (target._sounds != undefined && target._sounds.deathSounds != undefined)
+            return this.getRandomSound(target._sounds.deathSounds);
     }
 };

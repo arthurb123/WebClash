@@ -201,7 +201,18 @@ const player = {
 
         ui.inventory.removeBox();
 
-        socket.emit('CLIENT_UNEQUIP_ITEM', equippable);
+        let sounds = this.equipment[equippable].sounds;
+
+        socket.emit('CLIENT_UNEQUIP_ITEM', equippable, function() {
+            //Play item sound if possible
+
+            if (sounds != undefined) {
+                let sound = audio.getRandomSound(sounds);
+
+                if (sound != undefined)
+                   audio.playSound(sound);
+            }
+        });
     },
     getEquipmentSprite: function(equippable) {
         if (player.equipment[equippable] !== undefined &&

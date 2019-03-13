@@ -346,7 +346,7 @@ exports.updateNPCCombat = function(map, id)
     if (this.onMap[map][id].target == -1) {
         //Regenerate if necessary
 
-        //...
+        this.regenerateNPC(map, id);
 
         return;
     }
@@ -548,6 +548,33 @@ exports.checkNPCFacingCollision = function(map, id)
         return true;
 
     return false;
+};
+
+exports.regenerateNPC = function(map, id)
+{
+    //Check if valid
+
+    if (this.onMap[map] === undefined ||
+        this.onMap[map][id] === undefined ||
+        this.isTimedOut(map, id))
+        return;
+
+    //Check if the previous second is invalid
+
+    let done = false;
+
+    //Regenerate health if necessary
+
+    if (this.onMap[map][id].data.health.cur < this.onMap[map][id].data.health.max) {
+        this.onMap[map][id].data.health.cur = this.onMap[map][id].data.health.max;
+
+        done = true;
+    }
+
+    //Check if data should be synced
+
+    if (done)
+        server.syncNPCPartially(map, id, 'health');
 };
 
 exports.damageNPC = function(owner, map, id, delta)

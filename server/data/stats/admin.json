@@ -2,11 +2,11 @@
  "map": "1",
  "char_name": "player",
  "pos": {
-  "X": 0,
-  "Y": 0
+  "X": 99,
+  "Y": -67
  },
  "moving": false,
- "direction": 1,
+ "direction": 2,
  "health": {
   "cur": 100,
   "max": 100
@@ -15,9 +15,9 @@
   "cur": 100,
   "max": 100
  },
- "level": 1,
+ "level": 3,
  "stats": {
-  "exp": 0,
+  "exp": 20,
   "attributes": {
    "power": 1,
    "toughness": 1,
@@ -30,13 +30,33 @@
  "actions": [
   {
    "name": "Slash"
+  },
+  {
+   "name": "Combust"
+  },
+  null,
+  null,
+  {
+   "name": "Heal",
+   "uses": 3,
+   "max": 3
+  },
+  {
+   "name": "Heal",
+   "uses": 3,
+   "max": 3
   }
  ],
  "inventory": [
+  "Iron Helm",
+  "Magic Axe",
+  "Iron Helm",
+  "Iron Helm",
   "Magic Axe"
  ],
  "equipment": {
-  "main": "Sword"
+  "main": "Sword",
+  "offhand": "Magic Axe"
  },
  "gold": 0,
  "gvars": {}

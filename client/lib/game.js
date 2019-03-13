@@ -86,16 +86,17 @@ const game = {
             }
 
             if (delta < 0) {
-               //Play hit sounds
+              //Play according sound
 
-               let hitSound = audio.getHitSoundFromTarget(this.players[id]);
+              let sound;
 
-               if (hitSound != undefined) {
-                   if (this.player == id)
-                      audio.playSound(hitSound);
-                   else
-                      audio.playSoundAtPosition(hitSound, this.players[id].Position());
-                }
+              if (health.cur <= 0)
+                  sound = audio.getDeathSoundFromTarget(this.players[id]);
+              else
+                  sound = audio.getHitSoundFromTarget(this.players[id]);
+
+              if (sound != undefined)
+                  audio.playSoundAtPosition(sound, this.players[id].Position());
 
                //Damage floaty
 
@@ -426,12 +427,17 @@ const game = {
                 return;
             }
 
-            //Play hit sounds
+            //Play according sound
 
-            let hitSound = audio.getHitSoundFromTarget(this.npcs[id]);
+            let sound;
 
-            if (hitSound != undefined)
-                audio.playSoundAtPosition(hitSound, this.npcs[id].Position());
+            if (health.cur <= 0)
+                sound = audio.getDeathSoundFromTarget(this.npcs[id]);
+            else
+                sound = audio.getHitSoundFromTarget(this.npcs[id]);
+
+            if (sound != undefined)
+                audio.playSoundAtPosition(sound, this.npcs[id].Position());
 
             //Damage floaty
 

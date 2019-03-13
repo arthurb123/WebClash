@@ -297,6 +297,17 @@ namespace WebClashServer.Editors
 
             soundSelection.ShowDialog();
         }
+
+        private void onDeathSounds_Click(object sender, EventArgs e)
+        {
+            SoundSelection soundSelection = new SoundSelection("Set death sounds for '" + name.Text + "'", current.sounds.deathSounds);
+
+            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                current.sounds.deathSounds = soundSelection.GetSelection();
+            };
+
+            soundSelection.ShowDialog();
+        }
     }
 
     public class Character
@@ -379,5 +390,6 @@ namespace WebClashServer.Editors
     public class CharacterSounds
     {
         public PossibleSound[] hitSounds = new PossibleSound[0];
+        public PossibleSound[] deathSounds = new PossibleSound[0];
     }
 }
