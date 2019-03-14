@@ -278,6 +278,9 @@ namespace WebClashServer.Editors
                 case "AffectPlayer":
                     dialogSystem.items[cee.id].affectPlayerEvent = new AffectPlayerEvent();
                     break;
+                case "SpawnNPC":
+                    dialogSystem.items[cee.id].spawnNPCEvent = new SpawnNPCEvent();
+                    break;
             }
 
             dialogSystem.items[cee.id].options.Add(new DialogueOption(-1));
@@ -305,6 +308,13 @@ namespace WebClashServer.Editors
         private void affectPlayerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             addCanvasEventElement(EventType.AffectPlayer);
+
+            canvas.Invalidate();
+        }
+
+        private void spawnNPCToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addCanvasEventElement(EventType.SpawnNPC);
 
             canvas.Invalidate();
         }
@@ -342,6 +352,7 @@ namespace WebClashServer.Editors
     {
         GiveItem = 0,
         LoadMap,
-        AffectPlayer
+        AffectPlayer,
+        SpawnNPC
     }
 }

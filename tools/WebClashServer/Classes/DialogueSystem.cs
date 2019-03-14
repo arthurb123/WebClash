@@ -67,6 +67,8 @@ namespace WebClashServer.Classes
         public LoadMapEvent loadMapEvent = null;
 
         public AffectPlayerEvent affectPlayerEvent = null;
+
+        public SpawnNPCEvent spawnNPCEvent = null;
     }
 
     public class DialogueOption
@@ -107,5 +109,14 @@ namespace WebClashServer.Classes
         public int healthDifference = 0;
         public int manaDifference = 0;
         public int goldDifference = 0;
+    }
+
+    public class SpawnNPCEvent
+    {
+        public string name = "";
+
+        public int amount = 1;
+
+        public bool hostile = false;
     }
 }

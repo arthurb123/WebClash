@@ -756,6 +756,26 @@ exports.handleSocket = function(socket)
             game.deltaGoldPlayer(id, dialogEvent.affectPlayerEvent.goldDifference);
         }
 
+        //Spawn NPC event
+
+        else if (dialogEvent.eventType === 'SpawnNPC') {
+            //Spawn event NPCs for the specified amount
+
+            let pos = {
+                x: game.players[id].pos.X+game.players[id].character.width/2,
+                y: game.players[id].pos.Y+game.players[id].character.height,
+            };
+
+            for (let i = 0; i < dialogEvent.spawnNPCEvent.amount; i++) {
+                let npc_id = npcs.createNPC(map, dialogEvent.spawnNPCEvent.name, pos.x, pos.y, true);
+                server.syncNPC(map, npc_id);
+
+                if (dialogEvent.spawnNPCEvent.hostile &&
+                    npcs.onMap[map][npc_id].data.type !== 'friendly')
+                    npcs.onMap[map][npc_id].target = id;
+            }
+        }
+
         //Check if event is repeatable,
         //if not set a player global variable
 

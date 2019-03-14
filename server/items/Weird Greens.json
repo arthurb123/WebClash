@@ -38,7 +38,11 @@
           "next": 1
         },
         {
-          "text": "Nothing",
+          "text": "Burn it",
+          "next": 4
+        },
+        {
+          "text": "Nothing\n",
           "next": -1
         }
       ],
@@ -46,7 +50,8 @@
       "repeatable": false,
       "giveItemEvent": null,
       "loadMapEvent": null,
-      "affectPlayerEvent": null
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null
     },
     {
       "text": "",
@@ -71,7 +76,8 @@
         "healthDifference": -85,
         "manaDifference": -85,
         "goldDifference": 0
-      }
+      },
+      "spawnNPCEvent": null
     },
     {
       "text": "That was really bad..",
@@ -88,7 +94,8 @@
       "repeatable": false,
       "giveItemEvent": null,
       "loadMapEvent": null,
-      "affectPlayerEvent": null
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null
     },
     {
       "text": "I'm not gonna eat that again!",
@@ -105,9 +112,35 @@
       "repeatable": false,
       "giveItemEvent": null,
       "loadMapEvent": null,
-      "affectPlayerEvent": null
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null
     },
-    null
+    {
+      "text": "",
+      "portrait": "",
+      "entry": false,
+      "isEvent": true,
+      "options": [
+        {
+          "text": "",
+          "next": -1
+        },
+        {
+          "text": "",
+          "next": -1
+        }
+      ],
+      "eventType": "SpawnNPC",
+      "repeatable": true,
+      "giveItemEvent": null,
+      "loadMapEvent": null,
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": {
+        "name": "Slime",
+        "amount": 1,
+        "hostile": true
+      }
+    }
   ],
   "dialogElements": [
     {
@@ -133,6 +166,12 @@
       "id": 3,
       "isEvent": false,
       "size": "100, 80"
+    },
+    {
+      "p": "211, 266",
+      "id": 4,
+      "isEvent": true,
+      "size": "80, 20"
     }
   ],
   "consumableDialog": true

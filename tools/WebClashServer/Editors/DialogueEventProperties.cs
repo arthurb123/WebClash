@@ -34,6 +34,11 @@ namespace WebClashServer.Editors
 
                     LoadAffectPlayerOptions();
                     break;
+                case "SpawnNPC":
+                    spawnNPCPanel.Visible = true;
+
+                    LoadSpawnNPCOptions();
+                    break;
             }
 
             repeatable.Checked = current.repeatable;
@@ -181,6 +186,59 @@ namespace WebClashServer.Editors
         private void goldDifference_ValueChanged(object sender, EventArgs e)
         {
             current.affectPlayerEvent.goldDifference = (int)goldDifference.Value;
+        }
+
+        //Spawn NPC event
+
+        private void LoadSpawnNPCOptions()
+        {
+            LoadNPCList();
+
+            npcList.SelectedItem = current.spawnNPCEvent.name;
+            npcAmount.Value = current.spawnNPCEvent.amount;
+            npcHostile.Checked = current.spawnNPCEvent.hostile;
+        }
+
+        private void LoadNPCList()
+        {
+            npcList.Items.Clear();
+
+            try
+            {
+                List<string> ext = new List<string>()
+                {
+                    ".json"
+                };
+
+                string[] items = Directory.GetFiles(Program.main.location + "/npcs", "*.*", SearchOption.AllDirectories)
+                    .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
+
+                for (int i = 0; i < items.Length; i++)
+                {
+                    string it = items[i];
+
+                    npcList.Items.Add(it.Substring(it.LastIndexOf('\\') + 1, it.LastIndexOf('.') - it.LastIndexOf('\\') - 1));
+                }
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message, "WebClash Server - Error");
+            }
+        }
+
+        private void npcList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            current.spawnNPCEvent.name = npcList.SelectedItem.ToString();
+        }
+
+        private void npcAmount_ValueChanged(object sender, EventArgs e)
+        {
+            current.spawnNPCEvent.amount = (int)npcAmount.Value;
+        }
+
+        private void npcHostile_CheckedChanged(object sender, EventArgs e)
+        {
+            current.spawnNPCEvent.hostile = npcHostile.Checked;
         }
     }
 }

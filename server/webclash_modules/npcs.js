@@ -84,8 +84,19 @@ exports.createNPCs = function(npc_property, map_id)
 {
     //Cycle through all dimensions
 
-    for (let i = 0; i < npc_property.rectangles.length; i++)
-        this.createNPC(map_id, npc_property.value, npc_property.rectangles[i].x, npc_property.rectangles[i].y, false);
+    for (let i = 0; i < npc_property.rectangles.length; i++) {
+        let pos = {
+            x: npc_property.rectangles[i].x,
+            y: npc_property.rectangles[i].y
+        };
+
+        if (npc_property.rectangles[i].w != undefined)
+            pos.x += npc_property.rectangles[i].w/2;
+        if (npc_property.rectangles[i].h != undefined)
+            pos.y += npc_property.rectangles[i].h/2;
+
+        this.createNPC(map_id, npc_property.value, pos.x, pos.y, false);
+    }
 };
 
 exports.createNPC = function(map, name, x, y, is_event)
@@ -99,7 +110,7 @@ exports.createNPC = function(map, name, x, y, is_event)
     };
 
     if (npc.data === undefined)
-        return;
+        return -1;
 
     //Setup NPC
 
@@ -156,6 +167,8 @@ exports.createNPC = function(map, name, x, y, is_event)
     //Add NPC to map
 
     this.onMap[map][npc.id] = npc;
+
+    return npc.id;
 };
 
 exports.loadNPC = function(name)
@@ -690,6 +703,11 @@ exports.removeNPCTargets = function(map, target, splice)
     //Cycle through all NPCs on map
 
     for (let i = 0; i < this.onMap[map].length; i++) {
+        //Check if valid
+
+        if (this.onMap[map][i] == undefined)
+            continue;
+
         //If not a hostile NPC, continue
 
         if (this.onMap[map][i].type === 'friendly')

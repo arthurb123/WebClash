@@ -1,14 +1,14 @@
 const landingScene = new lx.Scene(function() {
-    //Landing page (Lynx2D) code goes here 
-    
+    //Landing page (Lynx2D) code goes here
+
     //Change the background color
-    
+
     lx.Background('#b4c8e8');
-    
+
     //Draw title logo
-    
+
     let logo_sprite = new lx.Sprite('res/ui/title.png');
-    
+
     lx.OnLayerDraw(0, function() {
         lx.DrawSprite(
             logo_sprite,
@@ -16,11 +16,11 @@ const landingScene = new lx.Scene(function() {
             lx.GetDimensions().height*.175-logo_sprite.Size().H/2
         );
     });
-    
+
     //Draw server name text and
     //add a loop thats keeps updating
     //the text in case of new package
-    
+
     let server_name = new lx.UIText('Connected to: -', lx.GetDimensions().width/2, lx.GetDimensions().height-20, 11, '#3d3d3d')
         .Loops(function() {
             this.Text('Connected to: ' + client.serverName);
@@ -28,11 +28,11 @@ const landingScene = new lx.Scene(function() {
         })
         .Alignment('center')
         .Show();
-    
-    
+
+
     //Set innerHTML
-        
-    view.dom.innerHTML = 
+
+    view.dom.innerHTML =
         '<div id="sceneWindow" class="box" style="text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 180px; height: auto; padding-bottom: 10px;">' +
             '<form>' +
                 '<p class="info" style="font-size: 14px;">Username</p>' +
@@ -64,6 +64,8 @@ const landingScene = new lx.Scene(function() {
             document.getElementById('windowErrorText').innerHTML = 'Enter a valid password';
             return;
         }
+
+        //Handle login package
 
         socket.emit('CLIENT_LOGIN', { name: name, pass: pass.hashCode() }, function(data) {
             switch (data)
@@ -109,6 +111,8 @@ const landingScene = new lx.Scene(function() {
             return;
         }
 
+        //Handle register package
+
         socket.emit('CLIENT_REGISTER', { name: name, pass: pass.hashCode() }, function(data) {
             switch (data)
             {
@@ -127,8 +131,8 @@ const landingScene = new lx.Scene(function() {
 
     b.innerHTML = 'Register';
     sw.appendChild(b);
-    
+
     //Focus username textbox
-    
+
     document.getElementById('windowName').focus();
 });

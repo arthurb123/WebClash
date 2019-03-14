@@ -48,12 +48,18 @@
             this.nextIndex1 = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
             this.affectPlayerPanel = new System.Windows.Forms.Panel();
-            this.healthDifference = new System.Windows.Forms.NumericUpDown();
-            this.label9 = new System.Windows.Forms.Label();
-            this.manaDifference = new System.Windows.Forms.NumericUpDown();
-            this.label10 = new System.Windows.Forms.Label();
             this.goldDifference = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
+            this.manaDifference = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
+            this.healthDifference = new System.Windows.Forms.NumericUpDown();
+            this.label9 = new System.Windows.Forms.Label();
+            this.spawnNPCPanel = new System.Windows.Forms.Panel();
+            this.npcAmount = new System.Windows.Forms.NumericUpDown();
+            this.label12 = new System.Windows.Forms.Label();
+            this.npcList = new System.Windows.Forms.ComboBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.npcHostile = new System.Windows.Forms.CheckBox();
             this.loadMapPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.positionY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.positionX)).BeginInit();
@@ -62,9 +68,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.nextIndex)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nextIndex1)).BeginInit();
             this.affectPlayerPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.healthDifference)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.manaDifference)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.goldDifference)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.manaDifference)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.healthDifference)).BeginInit();
+            this.spawnNPCPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.npcAmount)).BeginInit();
             this.SuspendLayout();
             // 
             // loadMapPanel
@@ -311,33 +319,33 @@
             this.affectPlayerPanel.TabIndex = 7;
             this.affectPlayerPanel.Visible = false;
             // 
-            // healthDifference
+            // goldDifference
             // 
-            this.healthDifference.Location = new System.Drawing.Point(174, 9);
-            this.healthDifference.Maximum = new decimal(new int[] {
+            this.goldDifference.Location = new System.Drawing.Point(174, 61);
+            this.goldDifference.Maximum = new decimal(new int[] {
             1215752191,
             23,
             0,
             0});
-            this.healthDifference.Minimum = new decimal(new int[] {
+            this.goldDifference.Minimum = new decimal(new int[] {
             -727379969,
             232,
             0,
             -2147483648});
-            this.healthDifference.Name = "healthDifference";
-            this.healthDifference.Size = new System.Drawing.Size(102, 20);
-            this.healthDifference.TabIndex = 4;
-            this.healthDifference.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.healthDifference.ValueChanged += new System.EventHandler(this.healthDifference_ValueChanged);
+            this.goldDifference.Name = "goldDifference";
+            this.goldDifference.Size = new System.Drawing.Size(102, 20);
+            this.goldDifference.TabIndex = 8;
+            this.goldDifference.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.goldDifference.ValueChanged += new System.EventHandler(this.goldDifference_ValueChanged);
             // 
-            // label9
+            // label11
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(12, 11);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(72, 13);
-            this.label9.TabIndex = 2;
-            this.label9.Text = "Health (Delta)";
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(12, 63);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(63, 13);
+            this.label11.TabIndex = 7;
+            this.label11.Text = "Gold (Delta)";
             // 
             // manaDifference
             // 
@@ -367,39 +375,116 @@
             this.label10.TabIndex = 5;
             this.label10.Text = "Mana (Delta)";
             // 
-            // goldDifference
+            // healthDifference
             // 
-            this.goldDifference.Location = new System.Drawing.Point(174, 61);
-            this.goldDifference.Maximum = new decimal(new int[] {
+            this.healthDifference.Location = new System.Drawing.Point(174, 9);
+            this.healthDifference.Maximum = new decimal(new int[] {
             1215752191,
             23,
             0,
             0});
-            this.goldDifference.Minimum = new decimal(new int[] {
+            this.healthDifference.Minimum = new decimal(new int[] {
             -727379969,
             232,
             0,
             -2147483648});
-            this.goldDifference.Name = "goldDifference";
-            this.goldDifference.Size = new System.Drawing.Size(102, 20);
-            this.goldDifference.TabIndex = 8;
-            this.goldDifference.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.goldDifference.ValueChanged += new System.EventHandler(this.goldDifference_ValueChanged);
+            this.healthDifference.Name = "healthDifference";
+            this.healthDifference.Size = new System.Drawing.Size(102, 20);
+            this.healthDifference.TabIndex = 4;
+            this.healthDifference.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.healthDifference.ValueChanged += new System.EventHandler(this.healthDifference_ValueChanged);
             // 
-            // label11
+            // label9
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(12, 63);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(63, 13);
-            this.label11.TabIndex = 7;
-            this.label11.Text = "Gold (Delta)";
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(12, 11);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(72, 13);
+            this.label9.TabIndex = 2;
+            this.label9.Text = "Health (Delta)";
+            // 
+            // spawnNPCPanel
+            // 
+            this.spawnNPCPanel.Controls.Add(this.npcHostile);
+            this.spawnNPCPanel.Controls.Add(this.npcAmount);
+            this.spawnNPCPanel.Controls.Add(this.label12);
+            this.spawnNPCPanel.Controls.Add(this.npcList);
+            this.spawnNPCPanel.Controls.Add(this.label13);
+            this.spawnNPCPanel.Location = new System.Drawing.Point(12, 12);
+            this.spawnNPCPanel.Name = "spawnNPCPanel";
+            this.spawnNPCPanel.Size = new System.Drawing.Size(286, 126);
+            this.spawnNPCPanel.TabIndex = 9;
+            this.spawnNPCPanel.Visible = false;
+            // 
+            // npcAmount
+            // 
+            this.npcAmount.Location = new System.Drawing.Point(156, 47);
+            this.npcAmount.Maximum = new decimal(new int[] {
+            1215752191,
+            23,
+            0,
+            0});
+            this.npcAmount.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.npcAmount.Name = "npcAmount";
+            this.npcAmount.Size = new System.Drawing.Size(120, 20);
+            this.npcAmount.TabIndex = 4;
+            this.npcAmount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.npcAmount.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.npcAmount.ValueChanged += new System.EventHandler(this.npcAmount_ValueChanged);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(12, 47);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(43, 13);
+            this.label12.TabIndex = 2;
+            this.label12.Text = "Amount";
+            // 
+            // npcList
+            // 
+            this.npcList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.npcList.FormattingEnabled = true;
+            this.npcList.Location = new System.Drawing.Point(156, 6);
+            this.npcList.Name = "npcList";
+            this.npcList.Size = new System.Drawing.Size(121, 21);
+            this.npcList.TabIndex = 1;
+            this.npcList.SelectedIndexChanged += new System.EventHandler(this.npcList_SelectedIndexChanged);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(12, 9);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(29, 13);
+            this.label13.TabIndex = 0;
+            this.label13.Text = "NPC";
+            // 
+            // npcHostile
+            // 
+            this.npcHostile.AutoSize = true;
+            this.npcHostile.Location = new System.Drawing.Point(15, 84);
+            this.npcHostile.Name = "npcHostile";
+            this.npcHostile.Size = new System.Drawing.Size(134, 17);
+            this.npcHostile.TabIndex = 5;
+            this.npcHostile.Text = "Hostile (Attacks player)";
+            this.npcHostile.UseVisualStyleBackColor = true;
+            this.npcHostile.CheckedChanged += new System.EventHandler(this.npcHostile_CheckedChanged);
             // 
             // DialogueEventProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(312, 215);
+            this.Controls.Add(this.spawnNPCPanel);
             this.Controls.Add(this.affectPlayerPanel);
             this.Controls.Add(this.nextIndex1);
             this.Controls.Add(this.label5);
@@ -428,9 +513,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.nextIndex1)).EndInit();
             this.affectPlayerPanel.ResumeLayout(false);
             this.affectPlayerPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.healthDifference)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.manaDifference)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.goldDifference)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.manaDifference)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.healthDifference)).EndInit();
+            this.spawnNPCPanel.ResumeLayout(false);
+            this.spawnNPCPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.npcAmount)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -463,5 +551,11 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.NumericUpDown goldDifference;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Panel spawnNPCPanel;
+        private System.Windows.Forms.NumericUpDown npcAmount;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.ComboBox npcList;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.CheckBox npcHostile;
     }
 }

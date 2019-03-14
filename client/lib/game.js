@@ -164,42 +164,22 @@ const game = {
     setPlayerEquipment: function(id, equipment)
     {
         let result = [];
-
-        if (equipment['torso'] !== undefined)
-            result.push(cache.getSprite(equipment['torso']));
-        else
-            result.push(undefined);
-
-        if (equipment['hands'] !== undefined)
-            result.push(cache.getSprite(equipment['hands']));
-        else
-            result.push(undefined);
-
-        if (equipment['head'] !== undefined)
-            result.push(cache.getSprite(equipment['head']));
-        else
-            result.push(undefined);
-
-        if (equipment['feet'] !== undefined)
-            result.push(cache.getSprite(equipment['feet']));
-        else
-            result.push(undefined);
-
-        if (equipment['legs'] !== undefined)
-            result.push(cache.getSprite(equipment['legs']));
-        else
-            result.push(undefined);
-
-        if (equipment['offhand'] !== undefined)
-            result.push(cache.getSprite(equipment['offhand']));
-        else
-            result.push(undefined);
-
-        if (equipment['main'] !== undefined)
-            result.push(cache.getSprite(equipment['main']));
-        else
-            result.push(undefined);
-
+        
+        let getEquipment = function(equippable) {
+            if (equipment[equippable] !== undefined)
+                result.push(cache.getSprite(equipment[equippable]));
+            else
+                result.push(undefined);
+        }
+        
+        getEquipment('torso');
+        getEquipment('hands');
+        getEquipment('head');
+        getEquipment('feet');
+        getEquipment('legs');
+        getEquipment('offhand');
+        getEquipment('main');
+        
         this.players[id]._equipment = result;
     },
     setPlayerStats: function(id, stats)

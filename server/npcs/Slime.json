@@ -1,0 +1,31 @@
+{
+  "name": "Slime",
+  "movement": "free",
+  "range": 10,
+  "type": "hostile",
+  "character": "slime",
+  "stats": {
+    "level": 4,
+    "exp": 10,
+    "power": 0,
+    "toughness": 1,
+    "agility": 2,
+    "wisdom": 0,
+    "intelligence": 2,
+    "vitality": 2
+  },
+  "health": {
+    "cur": 50,
+    "max": 50
+  },
+  "actions": [
+    {
+      "action": "Combust",
+      "range": 1,
+      "extraCooldown": 12
+    }
+  ],
+  "items": [],
+  "dialog": [],
+  "dialogElements": []
+}

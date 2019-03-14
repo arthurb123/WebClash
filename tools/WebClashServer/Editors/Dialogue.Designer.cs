@@ -34,8 +34,9 @@
             this.eventsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.giveItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.canvas = new System.Windows.Forms.PictureBox();
             this.affectPlayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.canvas = new System.Windows.Forms.PictureBox();
+            this.spawnNPCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.SuspendLayout();
@@ -63,7 +64,8 @@
             this.eventsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.giveItemToolStripMenuItem,
             this.loadMapToolStripMenuItem,
-            this.affectPlayerToolStripMenuItem});
+            this.affectPlayerToolStripMenuItem,
+            this.spawnNPCToolStripMenuItem});
             this.eventsToolStripMenuItem.Name = "eventsToolStripMenuItem";
             this.eventsToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.eventsToolStripMenuItem.Text = "Events";
@@ -82,6 +84,13 @@
             this.loadMapToolStripMenuItem.Text = "Load Map";
             this.loadMapToolStripMenuItem.Click += new System.EventHandler(this.loadMapToolStripMenuItem_Click);
             // 
+            // affectPlayerToolStripMenuItem
+            // 
+            this.affectPlayerToolStripMenuItem.Name = "affectPlayerToolStripMenuItem";
+            this.affectPlayerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.affectPlayerToolStripMenuItem.Text = "Affect Player";
+            this.affectPlayerToolStripMenuItem.Click += new System.EventHandler(this.affectPlayerToolStripMenuItem_Click);
+            // 
             // canvas
             // 
             this.canvas.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -92,12 +101,12 @@
             this.canvas.TabIndex = 2;
             this.canvas.TabStop = false;
             // 
-            // affectPlayerToolStripMenuItem
+            // spawnNPCToolStripMenuItem
             // 
-            this.affectPlayerToolStripMenuItem.Name = "affectPlayerToolStripMenuItem";
-            this.affectPlayerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.affectPlayerToolStripMenuItem.Text = "Affect Player";
-            this.affectPlayerToolStripMenuItem.Click += new System.EventHandler(this.affectPlayerToolStripMenuItem_Click);
+            this.spawnNPCToolStripMenuItem.Name = "spawnNPCToolStripMenuItem";
+            this.spawnNPCToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.spawnNPCToolStripMenuItem.Text = "Spawn NPC";
+            this.spawnNPCToolStripMenuItem.Click += new System.EventHandler(this.spawnNPCToolStripMenuItem_Click);
             // 
             // Dialogue
             // 
@@ -129,5 +138,6 @@
         private System.Windows.Forms.ToolStripMenuItem giveItemToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadMapToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem affectPlayerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem spawnNPCToolStripMenuItem;
     }
 }

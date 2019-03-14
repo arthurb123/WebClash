@@ -1,0 +1,37 @@
+{
+  "src": "res/characters/92.png",
+  "width": 48,
+  "height": 48,
+  "animation": {
+    "direction": "horizontal",
+    "speed": 8
+  },
+  "collider": {
+    "x": 8,
+    "y": 32,
+    "width": 32,
+    "height": 12
+  },
+  "movement": {
+    "acceleration": 0.15,
+    "max": 1.25
+  },
+  "sounds": {
+    "hitSounds": [
+      {
+        "src": "res/sounds/characters/slime/slime1.wav"
+      },
+      {
+        "src": "res/sounds/characters/slime/slime3.wav"
+      },
+      {
+        "src": "res/sounds/characters/slime/slime4.wav"
+      }
+    ],
+    "deathSounds": [
+      {
+        "src": "res/sounds/characters/slime/slime6.wav"
+      }
+    ]
+  }
+}
