@@ -479,6 +479,7 @@ exports.damageNPCs = function(owner, stats, actionData, action, onlyStatic)
         for (let n = 0; n < npcs.onMap[actionData.map].length; n++)
         {
             if (npcs.onMap[actionData.map][n] == undefined ||
+                npcs.onMap[actionData.map][n] == undefined ||
                 npcs.onMap[actionData.map][n].data.type !== 'hostile' ||
                 npcs.isTimedOut(actionData.map, n))
                 continue;
@@ -517,7 +518,8 @@ exports.healNPCs = function(actionData, action)
     for (let e = 0; e < actionData.elements.length; e++)
         for (let n = 0; n < npcs.onMap[actionData.map].length; n++)
         {
-            if (npcs.onMap[actionData.map][n].data.type !== 'hostile' ||
+            if (npcs.onMap[actionData.map][n] == undefined ||
+                npcs.onMap[actionData.map][n].data.type !== 'hostile' ||
                 npcs.isTimedOut(actionData.map, n))
                 continue;
 
@@ -561,7 +563,8 @@ exports.damagePlayers = function(map, stats, actionData, action, onlyStatic)
 
         for (let p = 0; p < game.players.length; p++)
         {
-            if (tiled.getMapIndex(game.players[p].map) != actionData.map)
+            if (game.players[p] == undefined ||
+                tiled.getMapIndex(game.players[p].map) != actionData.map)
                 continue;
 
             let actionRect = {
@@ -595,7 +598,8 @@ exports.healPlayers = function(actionData, heal)
     for (let e = 0; e < actionData.elements.length; e++)
         for (let p = 0; p < game.players.length; p++)
         {
-            if (tiled.getMapIndex(game.players[p].map) != actionData.map)
+            if (game.players[p] == undefined ||
+                tiled.getMapIndex(game.players[p].map) != actionData.map)
                 continue;
 
             let actionRect = {
