@@ -122,38 +122,48 @@ exports.addPlayer = function(socket)
 
 exports.removePlayer = function(socket)
 {
-    //Check if socket is valid
+    try {
+        //Check if socket is valid
 
-    if (socket === undefined || socket.name === undefined)
-        return;
+        if (socket === undefined || socket.name === undefined)
+            return;
 
-     //Get player index
+         //Get player index
 
-    let id = game.getPlayerIndex(socket.name);
+        let id = game.getPlayerIndex(socket.name);
 
-    //Get map index
+        //Check if valid
 
-    let map = tiled.getMapIndex(this.players[id].map);
+        if (id === -1)
+            return;
 
-    //Remove NPC targets
+        //Get map index
 
-    npcs.removeNPCTargets(map, id, true);
+        let map = tiled.getMapIndex(this.players[id].map);
 
-    //Remove from clients
+        //Remove NPC targets
 
-    server.removePlayer(id, socket);
+        npcs.removeNPCTargets(map, id, true);
 
-    //Release owned world items
+        //Remove from clients
 
-    items.releaseWorldItemsFromOwner(map, this.players[id].name);
+        server.removePlayer(id, socket);
 
-    //Save player
+        //Release owned world items
 
-    this.savePlayer(socket.name, this.players[id]);
+        items.releaseWorldItemsFromOwner(map, this.players[id].name);
 
-    //Remove player entry
+        //Save player
 
-    this.players.splice(id, 1);
+        this.savePlayer(socket.name, this.players[id]);
+
+        //Remove player entry
+
+        this.players.splice(id, 1);
+    }
+    catch (err) {
+        output.give('Could not remove player: ' + err);
+    }
 };
 
 exports.updatePlayers = function()
