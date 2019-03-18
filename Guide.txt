@@ -1,4 +1,4 @@
-		-- General --
+	       -- General --
 
 This version of WebClash is work-in-progress,
 and thus may contain bugs and glitches.
@@ -10,7 +10,7 @@ user: admin
 pass: password
 
 
-		 -- Maps --
+	        -- Maps --
 
 WebClash makes use of maps created in 
 Tiled (www.mapeditor.org), these maps can be
@@ -39,7 +39,7 @@ objects are as follows:
 		   (int value)
 
 
-	        -- Commands --
+	      -- Commands --
 
 WebClash allows chat commands when the said
 player has admin priviliges.
@@ -48,3 +48,11 @@ file, located in the server folder.
 
 To see the list of available commands type
 /help in the chat.
+
+	      -- Art usage --
+
+All provided art is merely being used as 
+example material. 
+
+The art should not be used for commercial 
+purposes as it is owned by Enterbrain.
