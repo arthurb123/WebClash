@@ -1,11 +1,12 @@
 # WebClash<br>
 WebClash uses NodeJS and Lynx2D to allow easy top-down ORPG game creation for the browser.<br>
+Everything in WebClash can be fully customized using the Server tool.
 
 ### (Current) Features<br>
 * Mobile and tablet support<br>
 * Tiled maps support (.json format)<br>
 * Character editor<br>
-* NPC editor<br>
+* NPC (with dialog) editor<br>
 * Item editor<br>
 * Action editor<br>
 * Chat with commands<br>
