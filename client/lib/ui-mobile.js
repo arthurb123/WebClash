@@ -1340,6 +1340,22 @@ const ui = {
                 }
             }
         },
+        experienceFloaty: function(target, delta)
+        {
+            let t = new lx.UIText(
+                delta,
+                Math.random()*target.Size().W,
+                Math.random()*target.Size().H,
+                15,
+                '#BF4CE6'
+            );
+
+            t.Follows(target);
+            t.Alignment('center');
+            t.SHADOW = true;
+
+            this.add(t, 32);
+        },
         damageFloaty: function(target, delta)
         {
             let t = new lx.UIText(

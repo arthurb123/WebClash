@@ -139,9 +139,20 @@ const player = {
     },
     setExperience: function(exp)
     {
+        if (this.exp != undefined) {
+            let delta = 0;
+
+            if (exp > this.exp)
+                delta = exp-this.exp;
+            else
+                delta = this.expTarget-this.exp+exp;
+
+            ui.floaties.experienceFloaty(game.players[game.player], delta);
+        }
+
         this.exp = exp;
 
-        ui.status.setExperience(this.exp, player.expTarget);
+        ui.status.setExperience(this.exp, this.expTarget);
     },
     setAttributes: function(attributes)
     {

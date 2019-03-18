@@ -855,6 +855,14 @@ exports.evaluateLootTable = function(map, id)
 
 exports.distributeExperience = function(map, id)
 {
+    //Check if the NPC only had one target
+
+    if (this.onMap[map][id].targets.length === 1) {
+        game.addPlayerExperience(this.onMap[map][id].target, this.onMap[map][id].data.stats.exp);
+
+        return;
+    }
+
     //Cycle through all targets/participants
 
     for (let p = 0; p < this.onMap[map][id].targets.length; p++) {

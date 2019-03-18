@@ -404,8 +404,8 @@ exports.addPlayerExperience = function(id, exp)
     {
         //Level up and reset xp
 
+        this.players[id].stats.exp = this.players[id].stats.exp-exptable[this.players[id].level-1];
         this.players[id].level++;
-        this.players[id].stats.exp = 0;
 
         //Give one player point to spend
 
