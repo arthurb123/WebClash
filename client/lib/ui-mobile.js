@@ -936,6 +936,7 @@ const ui = {
                         '<div id="status_exp" class="bar_content" style="background-color: #BF4CE6; width: 100%;"></div>' +
                         '<p id="status_exp_text" class="info" style="transform: translate(0, -90%); margin: 0; font-size: 9px;"></p>' +
                     '</div>' +
+                    '<p class="link" onclick="ui.profile.show()" id="profile_link" style="pointer-events: auto; font-size: 10px; position: absolute;">Show Profile</p>' +
                 '</div>';
         },
         setHealth: function(value, max) {
@@ -1220,7 +1221,7 @@ const ui = {
         visible: false,
         create: function() {
             let html =
-                '<div id="profile_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 180px; height: auto; text-align: center; padding: 4px;">' +
+                '<div id="profile_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; height: auto; text-align: center; padding: 4px 12px 4px 12px;">' +
                     '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Profile</b></p>' +
                     '<p class="info" id="profile_level" style="font-size: 14px;"></p>' +
                     '<p class="info" id="profile_points" style="font-size: 12px; padding-bottom: 6px;"></p>';
@@ -1229,9 +1230,6 @@ const ui = {
                 html += '<p id="profile_stat_' + this.attributes[a].toLowerCase() + '" class="info"></p>';
 
             view.dom.innerHTML += html + '<p class="link" onclick="ui.profile.hide()" style="font-size: 12px; color: red; padding-top: 4px;">Close</p></div>';
-
-            view.dom.innerHTML +=
-                '<p class="link" onclick="ui.profile.show()" id="profile_link" style="pointer-events: auto; position: absolute; top: 100%; left: 100%; margin-top: -19px; margin-left: -' + (ui.controller.size+30+document.getElementById('status_box').offsetWidth) + 'px; transform: translate(0%, -100%); font-size: 10px; position: absolute;">Show Profile</p>';
         },
         reloadLevel: function(level) {
             document.getElementById('profile_level').innerHTML = 'Level ' + level;

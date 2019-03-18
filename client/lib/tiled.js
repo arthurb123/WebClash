@@ -114,8 +114,8 @@ const tiled = {
                     //Calculate clip position
 
                     let clip = {
-                        X: Math.floor(game.players[game.player].POS.X+game.players[game.player].SIZE.W/2-offset_width-lx.GetDimensions().width/2),
-                        Y: Math.floor(game.players[game.player].POS.Y+game.players[game.player].SIZE.H/2-offset_height-lx.GetDimensions().height/2)
+                        X: Math.round(game.players[game.player].POS.X+game.players[game.player].SIZE.W/2-offset_width-lx.GetDimensions().width/2),
+                        Y: Math.round(game.players[game.player].POS.Y+game.players[game.player].SIZE.H/2-offset_height-lx.GetDimensions().height/2)
                     };
 
                     //Declare size and pos
@@ -130,13 +130,13 @@ const tiled = {
 
                     if (clip.X < 0) {
                         pos.X -= clip.X;
-                        size.width += clip.X/2;
+                        size.width += clip.X;
 
                         clip.X = 0;
                     }
                     if (clip.Y < 0) {
                         pos.Y -= clip.Y;
-                        size.height += clip.Y/2;
+                        size.height += clip.Y;
 
                         clip.Y = 0;
                     }

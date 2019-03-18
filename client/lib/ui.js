@@ -1121,7 +1121,7 @@ const ui = {
         visible: false,
         create: function() {
             let html =
-                '<div id="profile_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 180px; height: auto; text-align: center; padding: 4px;">' +
+                '<div id="profile_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; height: auto; text-align: center; padding: 4px 12px 4px 12px;">' +
                     '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Profile</b></p>' +
                     '<p class="info" id="profile_level" style="font-size: 14px;"></p>' +
                     '<p class="info" id="profile_points" style="font-size: 12px; padding-bottom: 6px;"></p>';

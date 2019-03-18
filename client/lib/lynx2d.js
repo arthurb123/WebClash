@@ -679,6 +679,10 @@ function Lynx2D() {
             lx.CONTEXT.CONTROLLER.MOUSE.BUTTONS[EVENT.button] = false;
         });
 
+        const options = {
+            passive: true
+        };
+
         this.CONTEXT.CANVAS.addEventListener('touchstart', function(EVENT) {
             lx.GAME.AUDIO.CAN_PLAY = true;
 
@@ -687,14 +691,14 @@ function Lynx2D() {
             if (lx.CONTEXT.CONTROLLER.MOUSE.STOPPED_BUTTONS[0]) return;
             lx.CONTEXT.CONTROLLER.MOUSE.BUTTONS[0] = true;
             lx.GAME.HANDLE_MOUSE_CLICK(0);
-        });
+        }, options);
         this.CONTEXT.CANVAS.addEventListener('touchend', function(EVENT) {
             if (!lx.CONTEXT.CONTROLLER.MOUSE.STOPPED_BUTTONS[0])
                 lx.GAME.INVALIDATE_EVENT('mousebutton', 0);
 
             lx.CONTEXT.CONTROLLER.MOUSE.STOPPED_BUTTONS[0] = false;
             lx.CONTEXT.CONTROLLER.MOUSE.BUTTONS[0] = false;
-        });
+        }, options);
 
         document.addEventListener('mousemove', function(EVENT) {
             lx.CONTEXT.CONTROLLER.MOUSE.POS = { X: EVENT.pageX, Y: EVENT.pageY };

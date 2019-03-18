@@ -275,7 +275,7 @@ namespace WebClashServer.Editors
 
             mjo.Add("mapType", mapTypeString.ToLower());
 
-            File.WriteAllText(map, JsonConvert.SerializeObject(mjo, Formatting.Indented));
+            File.WriteAllText(map, JsonConvert.SerializeObject(mjo));
         }
 
         private void bgmSourceHelp_Click(object sender, EventArgs e)

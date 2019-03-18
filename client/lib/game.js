@@ -195,6 +195,8 @@ const game = {
             level != oldLevel) {
             player.requestExpTarget();
 
+            ui.inventory.reload();
+
             ui.chat.addMessage('You are now level ' + level + '!');
         }
     },
