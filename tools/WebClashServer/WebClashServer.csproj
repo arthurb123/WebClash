@@ -79,6 +79,12 @@
     <Compile Include="Editors\DialogueProperties.Designer.cs">
       <DependentUpon>DialogueProperties.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\ResetData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\ResetData.Designer.cs">
+      <DependentUpon>ResetData.cs</DependentUpon>
+    </Compile>
     <Compile Include="Editors\SoundSelection.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -140,6 +146,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\DialogueProperties.resx">
       <DependentUpon>DialogueProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\ResetData.resx">
+      <DependentUpon>ResetData.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\SoundSelection.resx">
       <DependentUpon>SoundSelection.cs</DependentUpon>

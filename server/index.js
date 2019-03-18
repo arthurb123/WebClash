@@ -36,11 +36,32 @@ game.loadAllCharacters(function() {
     actions.loadAllActions(function() {
         items.loadAllItems(function() {
             tiled.loadAllMaps(function() {
-                startServer();
+                //First check if the properties are valid
+
+                checkProperties(function() {
+                    //Start server
+
+                    startServer();
+                });
             });
         });
     });
 });
+
+//Check properties function
+
+function checkProperties(cb) {
+    //Check if starting map is present
+
+    if (tiled.getMapIndex(properties.startingMap) === -1)
+    {
+        output.give('Starting map could not be found!');
+
+        return;
+    }
+
+    cb();
+}
 
 //Start server function
 
@@ -96,6 +117,3 @@ global.exitHandler = function() {
 
 process.on('exit', exitHandler);
 process.on('SIGINT', exitHandler);
-process.on('SIGTERM', exitHandler);
-process.on('SIGUSR1', exitHandler);
-process.on('SIGUSR2', exitHandler);

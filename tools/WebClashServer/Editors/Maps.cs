@@ -150,14 +150,21 @@ namespace WebClashServer.Editors
 
         private void delete_Click(object sender, EventArgs e)
         {
+            DialogResult dr = MessageBox.Show("Are you sure you want to delete map '" + mapList.SelectedItem.ToString() + "'?", "WebClash - Delete Map", MessageBoxButtons.YesNo);
+
+            if (dr != DialogResult.Yes)
+                return;
+
             string path = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".json";
 
+            /*
             if (mapList.Items.Count == 1)
             {
                 MessageBox.Show("This map cannot be removed as there must always be one map present.", "WebClash Server - Error");
 
                 return;
             }
+            */
 
             if (File.Exists(path))
                 File.Delete(path);

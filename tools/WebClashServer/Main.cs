@@ -326,5 +326,15 @@ namespace WebClashServer
 
             items.ShowDialog();
         }
+
+        //Tools
+
+        private void resetDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!CheckServerLocation())
+                return;
+
+            new ResetData(location).Show();
+        }
     }
 }

@@ -8,7 +8,7 @@ exports.maps_colliders = [];
 
 exports.loadAllMaps = function(cb) 
 {
-    fs.readdir('maps', (err, files) => {
+    fs.readdir('maps', (err, files) => {        
         let count = 0;
         
         files.forEach(file => {
