@@ -92,7 +92,9 @@ exports.addPlayer = function(socket)
 
                 //Sync partial stats
 
-                server.syncPlayerPartially(id, 'stats', socket, false);
+                server.syncPlayerPartially(id, 'exp', socket, false);
+                server.syncPlayerPartially(id, 'points', socket, false);
+                server.syncPlayerPartially(id, 'attributes', socket, false);
                 server.syncPlayerPartially(id, 'health', socket, false);
                 server.syncPlayerPartially(id, 'mana', socket, false);
                 server.syncPlayerPartially(id, 'actions', socket, false);
@@ -228,6 +230,7 @@ exports.savePlayer = function(name, data, cb)
             level: 1,
             stats: {
                 exp: 0,
+                points: 0,
                 attributes: {
                     power: 1,
                     toughness: 1,
@@ -404,6 +407,10 @@ exports.addPlayerExperience = function(id, exp)
         this.players[id].level++;
         this.players[id].stats.exp = 0;
 
+        //Give one player point to spend
+
+        this.players[id].stats.points++;
+
         //Restore health and other stats
 
         this.players[id].health.cur = this.players[id].health.max;
@@ -417,11 +424,42 @@ exports.addPlayerExperience = function(id, exp)
 
         server.syncPlayerPartially(id, 'health', this.players[id].socket, false);
         server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
+
+        server.syncPlayerPartially(id, 'points', this.players[id].socket, false);
     }
 
     //Sync to player
 
-    server.syncPlayerPartially(id, 'stats', this.players[id].socket, false);
+    server.syncPlayerPartially(id, 'exp', this.players[id].socket, false);
+};
+
+exports.incrementPlayerAttribute = function(id, attribute)
+{
+    //Check if player is eligible for an attribute increment
+
+    if (this.players[id].stats.points <= 0)
+        return;
+
+    //Check if stat is valid
+
+    if (this.players[id].stats.attributes[attribute] == undefined)
+        return;
+
+    //Increment attribute
+
+    this.players[id].stats.attributes[attribute]++;
+
+    //Decrement amount of points
+
+    this.players[id].stats.points--;
+
+    //Calculate new stats and sync
+
+    this.calculatePlayerStats(id, true);
+
+    //Sync new amount of points
+
+    server.syncPlayerPartially(id, 'points', this.players[id].socket, false);
 };
 
 exports.calculatePlayerStats = function(id, sync)
@@ -498,7 +536,7 @@ exports.calculatePlayerStats = function(id, sync)
     //Sync to player if sync is true
 
     if (result !== this.players[id].stats.attributes && sync)
-        server.syncPlayerPartially(id, 'stats', this.players[id].socket, false);
+        server.syncPlayerPartially(id, 'attributes', this.players[id].socket, false);
 };
 
 exports.getPlayerIndex = function(name)

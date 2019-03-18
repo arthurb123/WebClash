@@ -134,8 +134,12 @@ const client = {
                  game.players[id]._direction = data.direction;
              if (data.level !== undefined)
                  game.setPlayerLevel(id, data.level);
-             if (data.stats !== undefined)
-                 game.setPlayerStats(id, data.stats);
+             if (data.exp !== undefined)
+                 player.setExperience(data.exp);
+             if (data.points !== undefined)
+                 player.setPoints(data.points);
+             if (data.attributes !== undefined)
+                 player.setAttributes(data.attributes);
              if (data.health !== undefined)
                  game.setPlayerHealth(id, data.health);
              if (data.mana !== undefined)

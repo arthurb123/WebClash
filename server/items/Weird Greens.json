@@ -136,7 +136,7 @@
       "loadMapEvent": null,
       "affectPlayerEvent": null,
       "spawnNPCEvent": {
-        "name": "Golem",
+        "name": "Slime",
         "amount": 1,
         "hostile": true
       }

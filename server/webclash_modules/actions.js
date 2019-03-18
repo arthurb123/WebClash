@@ -321,6 +321,7 @@ exports.createPlayerSlotAction = function(action)
         max: action.max,
         description: this.collection[id].description,
         cooldown: this.collection[id].cooldown,
+        scaling: this.collection[id].scaling,
         sounds: this.collection[id].sounds,
         src: this.collection[id].src
     };

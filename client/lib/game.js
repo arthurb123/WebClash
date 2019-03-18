@@ -164,14 +164,14 @@ const game = {
     setPlayerEquipment: function(id, equipment)
     {
         let result = [];
-        
+
         let getEquipment = function(equippable) {
             if (equipment[equippable] !== undefined)
                 result.push(cache.getSprite(equipment[equippable]));
             else
                 result.push(undefined);
         }
-        
+
         getEquipment('torso');
         getEquipment('hands');
         getEquipment('head');
@@ -179,27 +179,21 @@ const game = {
         getEquipment('legs');
         getEquipment('offhand');
         getEquipment('main');
-        
-        this.players[id]._equipment = result;
-    },
-    setPlayerStats: function(id, stats)
-    {
-        this.players[id]._stats = stats;
 
-        if (id == game.player)
-            ui.status.setExperience(this.players[id]._stats.exp, this.players[id]._expTarget);
+        this.players[id]._equipment = result;
     },
     setPlayerLevel: function(id, level)
     {
         let oldLevel = game.players[id]._level;
         game.players[id]._level = level;
 
+        if (id == game.player)
+            ui.profile.reloadLevel(level);
+
         if (id == game.player &&
             oldLevel != undefined &&
             level != oldLevel) {
             player.requestExpTarget();
-
-            ui.inventory.reload();
 
             ui.chat.addMessage('You are now level ' + level + '!');
         }
@@ -504,6 +498,7 @@ const game = {
 
         this.npcs = [];
     },
+
     resetColliders: function()
     {
         if (this.players === undefined ||
@@ -797,11 +792,21 @@ const game = {
          if (sound != undefined)
             audio.playSoundAtPosition(sound, data.centerPosition);
     },
-    removeAction: function(id) {
+    removeAction: function(id)
+    {
         let go = lx.FindGameObjectWithIdentifier(id);
 
         if (go != undefined)
             go.Hide();
+    },
+    calculateDamagePerSecond: function(data)
+    {
+        let total = 0;
+
+        for (let key in player.attributes)
+            total += Math.round(data.scaling[key] * player.attributes[key] * 10);
+
+        return total;
     },
 
     createBlood: function(target, count)

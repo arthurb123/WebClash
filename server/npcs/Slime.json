@@ -8,11 +8,11 @@
     "level": 4,
     "exp": 10,
     "power": 0,
-    "toughness": 1,
-    "agility": 2,
+    "toughness": 0,
+    "agility": 0,
     "wisdom": 0,
-    "intelligence": 2,
-    "vitality": 2
+    "intelligence": 3,
+    "vitality": 0
   },
   "health": {
     "cur": 50,
@@ -20,9 +20,9 @@
   },
   "actions": [
     {
-      "action": "Combust",
+      "action": "Hydrate",
       "range": 1,
-      "extraCooldown": 12
+      "extraCooldown": 0
     }
   ],
   "items": [],

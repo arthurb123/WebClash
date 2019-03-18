@@ -184,6 +184,12 @@ exports.handleCommand = function(socket, text)
                 server.syncPlayerPartially(p, 'health');
 
                 return 'success';
+            case 'levelup':
+                let amount = exptable[game.players[p].level-1]-game.players[p].stats.exp;
+
+                game.addPlayerExperience(p, amount);
+
+                return 'success';
             //Give item command
             case 'giveitem':
                 let item = '';

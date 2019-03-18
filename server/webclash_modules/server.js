@@ -824,6 +824,26 @@ exports.handleSocket = function(socket)
             callback(npcs.onMap[map][data].data.dialog);
     });
 
+    socket.on('CLIENT_INCREMENT_ATTRIBUTE', function(data) {
+        //Check if valid player
+
+        if (socket.playing === undefined || !socket.playing)
+            return;
+
+        //Get player id
+
+        let id = game.getPlayerIndex(socket.name);
+
+        //Check if valid
+
+        if (id == -1)
+            return;
+
+        //Increment attribute
+
+        game.incrementPlayerAttribute(id, data);
+    });
+
     socket.on('CLIENT_REQUEST_EXP', function(callback) {
          //Check if valid player
 
@@ -903,12 +923,14 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
         case 'level':
             data.level = game.players[id].level;
             break;
-        case 'stats':
-            data.stats = {
-                exp: game.players[id].stats.exp,
-                attributes: game.players[id].attributes
-            };
-
+        case 'exp':
+            data.exp = game.players[id].stats.exp;
+            break;
+        case 'points':
+            data.points = game.players[id].stats.points;
+            break;
+        case 'attributes':
+            data.attributes = game.players[id].attributes;
             break;
         case 'gold':
             data.gold = game.players[id].gold;

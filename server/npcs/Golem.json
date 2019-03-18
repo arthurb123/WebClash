@@ -5,7 +5,7 @@
   "type": "hostile",
   "character": "golem",
   "stats": {
-    "level": 8,
+    "level": 10,
     "exp": 20,
     "power": 0,
     "toughness": 2,
@@ -28,6 +28,11 @@
       "action": "Combust",
       "range": 2,
       "extraCooldown": 21
+    },
+    {
+      "action": "Hydrate",
+      "range": 2,
+      "extraCooldown": 18
     }
   ],
   "items": [

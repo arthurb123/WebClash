@@ -700,6 +700,11 @@ exports.setNPCTarget = function(map, id, owner)
 
 exports.removeNPCTargets = function(map, target, splice)
 {
+    //Check if NPCs exist on map
+
+    if (this.onMap[map] == undefined)
+        return;
+
     //Cycle through all NPCs on map
 
     for (let i = 0; i < this.onMap[map].length; i++) {

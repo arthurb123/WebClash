@@ -12,6 +12,7 @@ const ui = {
         this.equipment.create();
         this.status.create();
         this.settings.create();
+        this.profile.create();
         this.chat.create();
 
         lx.Loops(this.floaties.update);
@@ -1166,6 +1167,8 @@ const ui = {
                 return;
             }
 
+            ui.profile.hide();
+
             lx.CONTEXT.CONTROLLER.TARGET = undefined;
 
             if (this.mouse == undefined)
@@ -1202,6 +1205,103 @@ const ui = {
                         sound: audio.actualSoundVolume*100
                     }
                 });
+        }
+    },
+    profile:
+    {
+        attributes: [
+            'Power',
+            'Agility',
+            'Intelligence',
+            'Toughness',
+            'Vitality',
+            'Wisdom'
+        ],
+        visible: false,
+        create: function() {
+            let html =
+                '<div id="profile_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 180px; height: auto; text-align: center; padding: 4px;">' +
+                    '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Profile</b></p>' +
+                    '<p class="info" id="profile_level" style="font-size: 14px;"></p>' +
+                    '<p class="info" id="profile_points" style="font-size: 12px; padding-bottom: 6px;"></p>';
+
+            for (let a = 0; a < this.attributes.length; a++)
+                html += '<p id="profile_stat_' + this.attributes[a].toLowerCase() + '" class="info"></p>';
+
+            view.dom.innerHTML += html + '<p class="link" onclick="ui.profile.hide()" style="font-size: 12px; color: red; padding-top: 4px;">Close</p></div>';
+
+            view.dom.innerHTML +=
+                '<p class="link" onclick="ui.profile.show()" id="profile_link" style="pointer-events: auto; position: absolute; top: 100%; left: 100%; margin-top: -19px; margin-left: -' + (ui.controller.size+30+document.getElementById('status_box').offsetWidth) + 'px; transform: translate(0%, -100%); font-size: 10px; position: absolute;">Show Profile</p>';
+        },
+        reloadLevel: function(level) {
+            document.getElementById('profile_level').innerHTML = 'Level ' + level;
+        },
+        reloadPoints: function() {
+            document.getElementById('profile_points').innerHTML = '(Available points: ' + player.points + ')';
+
+            if (player.attributes != undefined)
+                this.reloadAttributes();
+        },
+        reloadAttributes: function() {
+            let showButtons = false;
+
+            if (player.points > 0)
+                showButtons = true;
+
+            for (let a = 0; a < this.attributes.length; a++)
+                this.reloadAttribute(this.attributes[a], showButtons);
+        },
+        reloadAttribute: function(attribute, show_button) {
+            let el = document.getElementById('profile_stat_' + attribute.toLowerCase());
+
+            el.innerHTML = attribute + ': ' + player.attributes[attribute.toLowerCase()];
+
+            if (show_button)
+                el.innerHTML += ' <button onclick="ui.profile.incrementAttribute(\'' + attribute.toLowerCase() + '\');" style="width: 18px; height: 18px; padding: 0px;">+</button>';
+        },
+        incrementAttribute: function(attribute) {
+            if (player.points == 0)
+                return;
+
+            socket.emit('CLIENT_INCREMENT_ATTRIBUTE', attribute);
+        },
+        show: function() {
+            if (this.visible) {
+                this.hide();
+
+                return;
+            }
+
+            ui.settings.hide();
+
+            lx.CONTEXT.CONTROLLER.TARGET = undefined;
+
+            if (this.mouse == undefined)
+                this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
+                    if (data.state == 0)
+                        return;
+
+                    lx.StopMouse(0);
+
+                    ui.profile.hide();
+                });
+
+            document.getElementById('profile_link').innerHTML = 'Close Profile';
+            document.getElementById('profile_box').style.visibility = 'visible';
+
+            this.visible = true;
+        },
+        hide: function() {
+            lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
+
+            lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
+
+            this.mouse = undefined;
+
+            document.getElementById('profile_link').innerHTML = 'Show Profile';
+            document.getElementById('profile_box').style.visibility = 'hidden';
+
+            this.visible = false;
         }
     },
     floaties:

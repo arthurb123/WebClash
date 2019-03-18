@@ -1,0 +1,36 @@
+{
+  "sw": 320,
+  "sh": 320,
+  "name": "Hydrate",
+  "src": "res/icons/4.png",
+  "description": "Feels like summer.",
+  "scaling": {
+    "power": 0.0,
+    "agility": 0.0,
+    "intelligence": 0.285,
+    "wisdom": 0.0,
+    "toughness": 0.0,
+    "vitality": 0.0
+  },
+  "elements": [
+    {
+      "x": 136,
+      "y": 192,
+      "w": 47,
+      "h": 48,
+      "type": "static",
+      "src": "res/actions/13.png",
+      "speed": 2,
+      "direction": "horizontal",
+      "projectileSpeed": 1,
+      "projectileDistance": 0
+    }
+  ],
+  "sounds": [
+    {
+      "src": "res/sounds/actions/magic/water1.wav"
+    }
+  ],
+  "heal": 0,
+  "cooldown": 28
+}

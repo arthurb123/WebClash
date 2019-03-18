@@ -2,7 +2,8 @@ const player = {
     actions: [],
     inventory: [],
     equipment: {},
-    forceFrame: {
+    forceFrame:
+    {
         start: function(dir) {
             game.players[game.player]._direction = dir;
 
@@ -17,7 +18,8 @@ const player = {
         cur: 0,
         standard: 12
     },
-    propertyInteraction: {
+    propertyInteraction:
+    {
         cooldown: {
             update: function() {
                 if (!this.on)
@@ -44,7 +46,8 @@ const player = {
             this.cooldown.on = true;
         }
     },
-    instantiate: function(name) {
+    instantiate: function(name)
+    {
         let go = new lx.GameObject(undefined, 0, 0, 0, 0);
 
         go.Loops(player.update)
@@ -91,7 +94,8 @@ const player = {
 
         player.requestExpTarget();
     },
-    setCollider: function(collider) {
+    setCollider: function(collider)
+    {
         game.players[game.player].ApplyCollider(
             new lx.Collider(
                 collider.x,
@@ -102,24 +106,28 @@ const player = {
             )
         );
     },
-    setMovement: function(movement) {
+    setMovement: function(movement)
+    {
         game.players[game.player].SetTopDownController(
             movement.acceleration,
             movement.acceleration,
             movement.max
         );
     },
-    setActions: function(actions) {
+    setActions: function(actions)
+    {
         this.actions = actions;
 
         ui.actionbar.reload();
     },
-    removeAction: function(slot) {
+    removeAction: function(slot)
+    {
         this.actions[slot] = undefined;
 
         ui.actionbar.reloadAction(slot);
     },
-    setEquipment: function(equipment) {
+    setEquipment: function(equipment)
+    {
         if (equipment.remove === undefined || !equipment.remove) {
             this.equipment[equipment.equippable] = equipment;
 
@@ -129,15 +137,35 @@ const player = {
         else
             this.equipment[equipment.equippable] = undefined;
     },
-    requestExpTarget: function() {
-        socket.emit('CLIENT_REQUEST_EXP', function(data) {
-            game.players[game.player]._expTarget = data;
+    setExperience: function(exp)
+    {
+        this.exp = exp;
 
-            if (game.players[game.player]._stats != undefined)
-                ui.status.setExperience(game.players[game.player]._stats.exp, game.players[game.player]._expTarget);
+        ui.status.setExperience(this.exp, player.expTarget);
+    },
+    setAttributes: function(attributes)
+    {
+        this.attributes = attributes;
+
+        ui.profile.reloadAttributes();
+    },
+    setPoints: function(points)
+    {
+        this.points = points;
+
+        ui.profile.reloadPoints();
+    },
+    requestExpTarget: function()
+    {
+        socket.emit('CLIENT_REQUEST_EXP', function(data) {
+            player.expTarget = data;
+
+            if (player.exp != undefined)
+                ui.status.setExperience(player.exp, player.expTarget);
         });
     },
-    faceMouse: function() {
+    faceMouse: function()
+    {
         let dx = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-lx.GetDimensions().width/2,
             dy = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-lx.GetDimensions().height/2;
 
@@ -150,7 +178,8 @@ const player = {
 
         this.sync('direction');
     },
-    performAction: function(slot) {
+    performAction: function(slot)
+    {
         //Check if valid
 
         if (player.actions[slot] == undefined)
@@ -195,7 +224,8 @@ const player = {
             }
         });
     },
-    unequip: function(equippable) {
+    unequip: function(equippable)
+    {
         if (this.equipment[equippable] === undefined)
             return;
 
@@ -214,12 +244,15 @@ const player = {
             }
         });
     },
-    getEquipmentSprite: function(equippable) {
+    getEquipmentSprite: function(equippable)
+    {
         if (player.equipment[equippable] !== undefined &&
             player.equipment[equippable]._sprite !== undefined)
             return player.equipment[equippable]._sprite;
     },
-    update: function() {
+
+    update: function()
+    {
         player.propertyInteraction.cooldown.update();
 
         this.POS.X = Math.round(this.POS.X);
@@ -266,7 +299,8 @@ const player = {
 
         animation.animateMoving(this);
     },
-    draws: function() {
+    draws: function()
+    {
         let equipment = [];
 
         equipment.push(player.getEquipmentSprite('torso'));

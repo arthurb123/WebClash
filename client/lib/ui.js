@@ -10,6 +10,7 @@ const ui = {
         this.loot.create();
         this.dialog.create();
         this.settings.create();
+        this.profile.create();
         this.chat.create();
 
         lx.Loops(this.floaties.update);
@@ -342,11 +343,12 @@ const ui = {
 
             displayBox.id = 'displayBox';
             displayBox.classList.add('box');
-            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 12px; height: auto; text-align: center;';
+            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 6px; height: auto; text-align: center;';
             displayBox.innerHTML =
                     '<font class="header" style="font-size: 15px;">' + player.actions[slot].name + '</font><br>' +
                     '<font class="info" style="position: relative; top: 6px;">' + player.actions[slot].description + '</font><br>' +
-                    '<font class="info" style="position: relative; top: 8px; font-size: 10px;">CD: ' + (player.actions[slot].cooldown/60).toFixed(1) + 's</font>';
+                    '<font class="info" style="position: relative; top: 8px; font-size: 10px;">DPS: ' + game.calculateDamagePerSecond(player.actions[slot]) + '</font><br>' +
+                    '<font class="info" style="position: relative; top: 2px; font-size: 10px;">CD: ' + (player.actions[slot].cooldown/60).toFixed(1) + 's</font>';
 
             //Append
 
@@ -952,7 +954,7 @@ const ui = {
     {
        create: function() {
             view.dom.innerHTML +=
-                '<div id="status_box" class="box" style="position: absolute; top: 30px; left: 30px; width: 195px; height: 65px;">' +
+                '<div id="status_box" class="box" style="position: absolute; top: 30px; left: 30px; width: 195px; height: auto; text-align: center; padding-bottom: 0px;">' +
                     '<div id="status_health_box" class="bar" style="text-align: center;">' +
                         '<div id="status_health" class="bar_content" style="background-color: #E87651; width: 100%;"></div>' +
                         '<p id="status_health_text" class="info" style="transform: translate(0, -80%); margin: 0; font-size: 10px;"></p>' +
@@ -965,6 +967,7 @@ const ui = {
                         '<div id="status_exp" class="bar_content" style="background-color: #BF4CE6; width: 100%;"></div>' +
                         '<p id="status_exp_text" class="info" style="transform: translate(0, -75%); margin: 0; font-size: 7px;"></p>' +
                     '</div>' +
+                    '<p class="info link" id="status_profile_link" style="margin-top: 4px; font-size: 11px;" onclick="ui.profile.show();">Show Profile</p>' +
                 '</div>';
         },
         setHealth: function(value, max) {
@@ -998,7 +1001,7 @@ const ui = {
         hasChanged: false,
         create: function() {
             view.dom.innerHTML +=
-                '<div id="settings_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; width: auto; height: auto; text-align: center; padding: 0px;">' +
+                '<div id="settings_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; height: auto; text-align: center; padding: 0px;">' +
                     '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Settings</b></p>' +
 
                     '<p class="info" style="font-size: 13px;"><b>Audio</b></p>' +
@@ -1065,6 +1068,8 @@ const ui = {
                 return;
             }
 
+            ui.profile.hide();
+
             lx.CONTEXT.CONTROLLER.TARGET = undefined;
 
             if (this.mouse == undefined)
@@ -1101,6 +1106,100 @@ const ui = {
                         sound: audio.actualSoundVolume*100
                     }
                 });
+        }
+    },
+    profile:
+    {
+        attributes: [
+            'Power',
+            'Agility',
+            'Intelligence',
+            'Toughness',
+            'Vitality',
+            'Wisdom'
+        ],
+        visible: false,
+        create: function() {
+            let html =
+                '<div id="profile_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 180px; height: auto; text-align: center; padding: 4px;">' +
+                    '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Profile</b></p>' +
+                    '<p class="info" id="profile_level" style="font-size: 14px;"></p>' +
+                    '<p class="info" id="profile_points" style="font-size: 12px; padding-bottom: 6px;"></p>';
+
+            for (let a = 0; a < this.attributes.length; a++)
+                html += '<p id="profile_stat_' + this.attributes[a].toLowerCase() + '" class="info"></p>';
+
+            view.dom.innerHTML += html + '<p class="link" onclick="ui.profile.hide()" style="font-size: 12px; color: red; padding-top: 4px;">Close</p></div>';
+        },
+        reloadLevel: function(level) {
+            document.getElementById('profile_level').innerHTML = 'Level ' + level;
+        },
+        reloadPoints: function() {
+            document.getElementById('profile_points').innerHTML = '(Available points: ' + player.points + ')';
+
+            if (player.attributes != undefined)
+                this.reloadAttributes();
+        },
+        reloadAttributes: function() {
+            let showButtons = false;
+
+            if (player.points > 0)
+                showButtons = true;
+
+            for (let a = 0; a < this.attributes.length; a++)
+                this.reloadAttribute(this.attributes[a], showButtons);
+        },
+        reloadAttribute: function(attribute, show_button) {
+            let el = document.getElementById('profile_stat_' + attribute.toLowerCase());
+
+            el.innerHTML = attribute + ': ' + player.attributes[attribute.toLowerCase()];
+
+            if (show_button)
+                el.innerHTML += ' <button onclick="ui.profile.incrementAttribute(\'' + attribute.toLowerCase() + '\');" style="width: 18px; height: 18px; padding: 0px;">+</button>';
+        },
+        incrementAttribute: function(attribute) {
+            if (player.points == 0)
+                return;
+
+            socket.emit('CLIENT_INCREMENT_ATTRIBUTE', attribute);
+        },
+        show: function() {
+            if (this.visible) {
+                this.hide();
+
+                return;
+            }
+
+            ui.settings.hide();
+
+            lx.CONTEXT.CONTROLLER.TARGET = undefined;
+
+            if (this.mouse == undefined)
+                this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
+                    if (data.state == 0)
+                        return;
+
+                    lx.StopMouse(0);
+
+                    ui.profile.hide();
+                });
+
+            document.getElementById('status_profile_link').innerHTML = 'Close Profile';
+            document.getElementById('profile_box').style.visibility = 'visible';
+
+            this.visible = true;
+        },
+        hide: function() {
+            lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
+
+            lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
+
+            this.mouse = undefined;
+
+            document.getElementById('status_profile_link').innerHTML = 'Show Profile';
+            document.getElementById('profile_box').style.visibility = 'hidden';
+
+            this.visible = false;
         }
     },
     floaties:
