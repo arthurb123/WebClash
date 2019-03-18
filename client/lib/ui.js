@@ -641,20 +641,25 @@ const ui = {
             //Action
 
             let action = '',
-                actionName = '';
+                actionName = '',
+                actionDps = '';
 
             if (item.type === 'consumable' &&
-                item.consumableAction.length > 0)
-                actionName = item.consumableAction;
+                item.consumableAction.length > 0) {
+                actionName = '<b>' + item.consumableAction + '</b>';
+                actionDps = '<br>' + item.consumableActionUses + ' Uses';
+            }
             if (item.type === 'equipment' &&
-                item.equippableAction.length > 0)
-                actionName = item.equippableAction;
+                item.equippableAction.length > 0) {
+                actionName = '<b>' + item.equippableAction + '</b>';
+                actionDps = '<br>DPS: ' + game.calculateDamagePerSecond(item);
+            }
 
             if (actionName !== '')
-                action = '<div class="inner-box" style="width: auto; height: auto; white-space: nowrap; position: relative; top: 4px; margin-bottom: 5px;">' +
-                            '<img class="thumb" src="' + item.actionIcon + '" style="display: inline-block; margin: 0px; margin-left: 6px; position: relative; top: 2px;"/>' +
-                            '<p class="info" style="font-size: 11px; display: inline-block; margin: 0px; margin-right: 2px; position: relative; top: -3px;">' + actionName + '</p>' +
-                         '</div>'
+                action = '<div class="inner-box" style="width: auto; height: auto; position: relative; top: 4px; margin-bottom: 5px; padding: 2px;">' +
+                            '<img class="thumb" src="' + item.actionIcon + '" style="display: inline-block; margin-left: -4px;"/>' +
+                            '<p class="info" style="text-align: left; font-size: 11px; display: inline-block; margin: 0px; margin-left: 4px; margin-top: -1px;">' + actionName + actionDps + '</p>' +
+                         '</div>';
 
             //Stats
 
@@ -698,7 +703,7 @@ const ui = {
 
             displayBox.id = 'displayBox';
             displayBox.classList.add('box');
-            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 16px; height: auto; text-align: center;';
+            displayBox.style = 'position: absolute; top: 0px; left: 0px; min-width: 120px; max-width: 160px; width: auto; padding: 10px; padding-bottom: 16px; height: auto; text-align: center;';
             displayBox.innerHTML =
                     '<font class="header" style="font-size: 15px; color: ' + color + ';">' + item.name + '</font><br>' +
                     '<font class="info" style="font-size: 10px;">' + (item.minLevel > 0 ? ' lvl ' + item.minLevel + ' ' : '') + type + '</font><br>' +

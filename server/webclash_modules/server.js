@@ -1167,7 +1167,7 @@ exports.syncInventoryItem = function(slot, id, socket)
 
     if (game.players[id].inventory[slot] !== undefined)
     {
-        data.item = items.getItem(game.players[id].inventory[slot]);
+        data.item = items.getConvertedItem(game.players[id].inventory[slot]);
 
         if (data.item === undefined)
             return;
