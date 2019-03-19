@@ -40,10 +40,11 @@
             this.NPCsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.itemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.permissions = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.permissions = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.questsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -117,7 +118,8 @@
             this.charactersToolStripMenuItem,
             this.NPCsToolStripMenuItem,
             this.actionsToolStripMenuItem,
-            this.itemsToolStripMenuItem});
+            this.itemsToolStripMenuItem,
+            this.questsToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -157,6 +159,21 @@
             this.itemsToolStripMenuItem.Text = "Items";
             this.itemsToolStripMenuItem.Click += new System.EventHandler(this.itemsToolStripMenuItem_Click);
             // 
+            // toolsToolStripMenuItem
+            // 
+            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.resetDataToolStripMenuItem});
+            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.toolsToolStripMenuItem.Text = "Tools";
+            // 
+            // resetDataToolStripMenuItem
+            // 
+            this.resetDataToolStripMenuItem.Name = "resetDataToolStripMenuItem";
+            this.resetDataToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.resetDataToolStripMenuItem.Text = "Reset Data";
+            this.resetDataToolStripMenuItem.Click += new System.EventHandler(this.resetDataToolStripMenuItem_Click);
+            // 
             // permissions
             // 
             this.permissions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -185,20 +202,12 @@
             this.panel1.Size = new System.Drawing.Size(404, 25);
             this.panel1.TabIndex = 6;
             // 
-            // toolsToolStripMenuItem
+            // questsToolStripMenuItem
             // 
-            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.resetDataToolStripMenuItem});
-            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
-            this.toolsToolStripMenuItem.Text = "Tools";
-            // 
-            // resetDataToolStripMenuItem
-            // 
-            this.resetDataToolStripMenuItem.Name = "resetDataToolStripMenuItem";
-            this.resetDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.resetDataToolStripMenuItem.Text = "Reset Data";
-            this.resetDataToolStripMenuItem.Click += new System.EventHandler(this.resetDataToolStripMenuItem_Click);
+            this.questsToolStripMenuItem.Name = "questsToolStripMenuItem";
+            this.questsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.questsToolStripMenuItem.Text = "Quests";
+            this.questsToolStripMenuItem.Click += new System.EventHandler(this.questsToolStripMenuItem_Click);
             // 
             // Main
             // 
@@ -240,6 +249,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetDataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem questsToolStripMenuItem;
     }
 }
 

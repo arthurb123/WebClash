@@ -801,12 +801,15 @@ const game = {
         if (go != undefined)
             go.Hide();
     },
-    calculateDamagePerSecond: function(data)
+    calculateDamagePerSecond: function(scaling, extra_attributes)
     {
         let total = 0;
 
         for (let key in player.attributes)
-            total += Math.round(data.scaling[key] * player.attributes[key] * 10);
+            if (extra_attributes == undefined)
+                total += Math.round(scaling[key] * player.attributes[key] * 10);
+            else
+                total += Math.round(scaling[key] * (player.attributes[key]+extra_attributes[key]) * 10);
 
         return total;
     },

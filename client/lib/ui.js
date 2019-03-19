@@ -201,7 +201,7 @@ const ui = {
             {
                 this.slots[i] = 'actionbar_slot' + i;
 
-                r += '<div class="slot" id="' + this.slots[i] + '"></div>';
+                r += '<div class="slot" id="' + this.slots[i] + '" onmouseover="ui.actionbar.displayBox(' + i + ')" onmouseleave="ui.actionbar.removeBox()"></div>';
             }
 
             r += '</div>';
@@ -246,7 +246,7 @@ const ui = {
             uses = '<font class="info" style="position: absolute; top: 100%; margin-top: -15px; margin-left: -6px; font-size: 10px; width: 100%; text-align: right; color: #333333; z-index: 2">' + usesContent + '</font>';
 
             document.getElementById(this.slots[a]).innerHTML =
-                indicator + '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;" onmouseover="ui.actionbar.displayBox(' + a + ')" onmouseleave="ui.actionbar.removeBox()"/>' + uses;
+                indicator + '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' + uses;
         },
         setCooldown: function(slot) {
             if (this.slots === undefined)
@@ -337,6 +337,12 @@ const ui = {
             if (el != undefined)
                 return;
 
+            //Get DPS
+
+            let dps = game.calculateDamagePerSecond(player.actions[slot].scaling);
+            if (dps === 0)
+                dps = '-';
+
             //Create displaybox
 
             let displayBox = document.createElement('div');
@@ -347,7 +353,7 @@ const ui = {
             displayBox.innerHTML =
                     '<font class="header" style="font-size: 15px;">' + player.actions[slot].name + '</font><br>' +
                     '<font class="info" style="position: relative; top: 6px;">' + player.actions[slot].description + '</font><br>' +
-                    '<font class="info" style="position: relative; top: 8px; font-size: 10px;">DPS: ' + game.calculateDamagePerSecond(player.actions[slot]) + '</font><br>' +
+                    '<font class="info" style="position: relative; top: 8px; font-size: 10px;">DPS: ' + dps + '</font><br>' +
                     '<font class="info" style="position: relative; top: 2px; font-size: 10px;">CD: ' + (player.actions[slot].cooldown/60).toFixed(1) + 's</font>';
 
             //Append
@@ -652,7 +658,11 @@ const ui = {
             if (item.type === 'equipment' &&
                 item.equippableAction.length > 0) {
                 actionName = '<b>' + item.equippableAction + '</b>';
-                actionDps = '<br>DPS: ' + game.calculateDamagePerSecond(item);
+
+                if (isEquipment)
+                    actionDps = '<br>DPS: ' + game.calculateDamagePerSecond(item.scaling);
+                else
+                    actionDps = '<br>DPS: ' + game.calculateDamagePerSecond(item.scaling, item.stats);
             }
 
             if (actionName !== '')

@@ -326,6 +326,26 @@ namespace WebClashServer
 
             items.ShowDialog();
         }
+        
+        private void questsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!CheckServerLocation())
+                return;
+
+            int amount = 0;
+
+            Quests quests = new Quests();
+            quests.VisibleChanged += (object s, EventArgs ea) =>
+            {
+                amount = quests.GetAmount();
+            };
+            quests.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                if (amount != quests.GetAmount())
+                    AddOutput("The amount of quests has changed, changes will be visible after a server restart.");
+            };
+
+            quests.ShowDialog();
+        }
 
         //Tools
 

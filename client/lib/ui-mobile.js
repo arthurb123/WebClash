@@ -655,7 +655,11 @@ const ui = {
             if (item.type === 'equipment' &&
                 item.equippableAction.length > 0) {
                 actionName = '<b>' + item.equippableAction + '</b>';
-                actionDps = '<br>DPS: ' + game.calculateDamagePerSecond(item);
+
+                if (isEquipment)
+                    actionDps = '<br>DPS: ' + game.calculateDamagePerSecond(item.scaling);
+                else
+                    actionDps = '<br>DPS: ' + game.calculateDamagePerSecond(item.scaling, item.stats);
             }
 
             if (actionName !== '')

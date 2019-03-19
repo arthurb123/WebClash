@@ -1185,10 +1185,7 @@ exports.syncEquipmentItem = function(equippable, id, socket, broadcast)
     let data;
 
     if (game.players[id].equipment[equippable] !== undefined) {
-        data = items.getItem(game.players[id].equipment[equippable]);
-
-        if (broadcast && data.equippableSource !== '')
-            data = data.equippableSource;
+        data = items.getConvertedItem(game.players[id].equipment[equippable]);
 
         if (data === undefined)
             return;

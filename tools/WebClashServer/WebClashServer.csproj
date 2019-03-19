@@ -79,6 +79,18 @@
     <Compile Include="Editors\DialogueProperties.Designer.cs">
       <DependentUpon>DialogueProperties.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\QuestObjectiveProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\QuestObjectiveProperties.Designer.cs">
+      <DependentUpon>QuestObjectiveProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editors\Quests.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\Quests.Designer.cs">
+      <DependentUpon>Quests.cs</DependentUpon>
+    </Compile>
     <Compile Include="Editors\ResetData.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,6 +158,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\DialogueProperties.resx">
       <DependentUpon>DialogueProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\QuestObjectiveProperties.resx">
+      <DependentUpon>QuestObjectiveProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\Quests.resx">
+      <DependentUpon>Quests.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\ResetData.resx">
       <DependentUpon>ResetData.cs</DependentUpon>

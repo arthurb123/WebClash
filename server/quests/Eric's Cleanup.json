@@ -1,0 +1,17 @@
+{
+  "minLevel": 1,
+  "description": "Eric needs you to take care of some Ghouls, are you up for it?",
+  "objectives": [
+    {
+      "type": "kill",
+      "killObjective": {
+        "npc": "Ghoul",
+        "amount": 5
+      }
+    }
+  ],
+  "rewards": {
+    "gold": 20,
+    "experience": 20
+  }
+}

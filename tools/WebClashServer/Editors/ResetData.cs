@@ -34,6 +34,7 @@ namespace WebClashServer.Editors
             ResetDirectory("items");
             ResetDirectory("maps");
             ResetDirectory("npcs");
+            ResetDirectory("quests");
 
             ResetDirectory("data/accounts");
             ResetDirectory("data/stats");

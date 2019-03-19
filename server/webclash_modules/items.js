@@ -18,6 +18,9 @@ exports.getConvertedItem = function(name)
 {
     let item = this.getItem(name);
 
+    if (item == undefined)
+        return;
+
     //Grab the basic item info
 
     let result = {
@@ -50,6 +53,7 @@ exports.getConvertedItem = function(name)
 
             result.equippable = item.equippable;
             result.equippableAction = item.equippableAction;
+            result.equippableSource = item.equippableSource;
 
             result.stats = item.stats;
             result.scaling = item.scaling;
