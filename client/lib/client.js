@@ -148,6 +148,8 @@ const client = {
                  game.setPlayerEquipment(id, data.equipment);
              if (data.actions !== undefined)
                  player.setActions(data.actions);
+             if (data.quests !== undefined)
+                 player.setQuests(data.quests);
              if (data.gold !== undefined) {
                  game.players[id]._gold = data.gold;
 

@@ -69,6 +69,8 @@ namespace WebClashServer.Classes
         public AffectPlayerEvent affectPlayerEvent = null;
 
         public SpawnNPCEvent spawnNPCEvent = null;
+
+        public ShowQuestEvent showQuestEvent = null;
     }
 
     public class DialogueOption
@@ -118,5 +120,10 @@ namespace WebClashServer.Classes
         public int amount = 1;
 
         public bool hostile = false;
+    }
+
+    public class ShowQuestEvent
+    {
+        public string name = "";
     }
 }

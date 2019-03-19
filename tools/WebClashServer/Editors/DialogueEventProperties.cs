@@ -39,6 +39,11 @@ namespace WebClashServer.Editors
 
                     LoadSpawnNPCOptions();
                     break;
+                case "ShowQuest":
+                    showQuestPanel.Visible = true;
+
+                    loadShowQuestOptions();
+                    break;
             }
 
             repeatable.Checked = current.repeatable;
@@ -239,6 +244,47 @@ namespace WebClashServer.Editors
         private void npcHostile_CheckedChanged(object sender, EventArgs e)
         {
             current.spawnNPCEvent.hostile = npcHostile.Checked;
+        }
+
+        //Show quest event
+
+        private void loadShowQuestOptions()
+        {
+            LoadQuestList();
+
+            questList.SelectedItem = current.showQuestEvent.name;
+        }
+
+        private void LoadQuestList()
+        {
+            questList.Items.Clear();
+
+            try
+            {
+                List<string> ext = new List<string>()
+                {
+                    ".json"
+                };
+
+                string[] quests = Directory.GetFiles(Program.main.location + "/quests", "*.*", SearchOption.AllDirectories)
+                    .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
+
+                for (int i = 0; i < quests.Length; i++)
+                {
+                    string it = quests[i];
+
+                    questList.Items.Add(it.Substring(it.LastIndexOf('\\') + 1, it.LastIndexOf('.') - it.LastIndexOf('\\') - 1));
+                }
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message, "WebClash Server - Error");
+            }
+        }
+
+        private void questList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            current.showQuestEvent.name = questList.SelectedItem.ToString();
         }
     }
 }

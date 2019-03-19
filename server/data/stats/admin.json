@@ -2,23 +2,24 @@
  "map": "1",
  "char_name": "player",
  "pos": {
-  "X": 37,
-  "Y": -57
+  "X": 0,
+  "Y": 0
  },
  "moving": false,
- "direction": 1,
+ "direction": 0,
  "health": {
-  "cur": 110,
-  "max": 110
+  "cur": 100,
+  "max": 100
  },
  "mana": {
   "cur": 100,
   "max": 100
  },
- "level": 3,
+ "gold": 0,
+ "level": 1,
  "stats": {
-  "exp": 22,
-  "points": 2,
+  "exp": 0,
+  "points": 0,
   "attributes": {
    "power": 1,
    "toughness": 1,
@@ -28,44 +29,11 @@
    "wisdom": 1
   }
  },
- "actions": [
-  {
-   "name": "Slash"
-  },
-  {
-   "name": "Combust"
-  },
-  {
-   "name": "Heal",
-   "uses": 2,
-   "max": 3
-  },
-  {
-   "name": "Heal",
-   "uses": 3,
-   "max": 3
-  },
-  {
-   "name": "Heal",
-   "uses": 3,
-   "max": 3
-  }
- ],
+ "actions": [],
  "inventory": [
-  "Iron Helm",
-  "Magic Axe",
-  "Iron Helm",
-  "Iron Helm",
-  "Iron Helm",
-  null,
-  null,
-  null
+  "Sword"
  ],
- "equipment": {
-  "main": "Sword",
-  "offhand": "Magic Axe",
-  "head": "Iron Helm"
- },
- "gold": 0,
+ "equipment": {},
+ "quests": {},
  "gvars": {}
 }

@@ -23,19 +23,21 @@
           "next": 2
         },
         {
-          "text": "Sup bro.",
-          "next": 1
+          "text": "Can I do something?",
+          "next": 3
         },
         {
-          "text": "TELEPORT ME!!!",
-          "next": 3
+          "text": "Sup bro.",
+          "next": 1
         }
       ],
       "eventType": "",
       "repeatable": false,
       "giveItemEvent": null,
       "loadMapEvent": null,
-      "affectPlayerEvent": null
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "showQuestEvent": null
     },
     {
       "text": "Wow this got boring quickly.\nCan you move on now?",
@@ -60,7 +62,9 @@
       "repeatable": false,
       "giveItemEvent": null,
       "loadMapEvent": null,
-      "affectPlayerEvent": null
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "showQuestEvent": null
     },
     {
       "text": "You are currently in an example world of WebClash.\nWebClash is an ORPG suite for the browser!\n\nWhy don't you take a look around?",
@@ -81,7 +85,9 @@
       "repeatable": false,
       "giveItemEvent": null,
       "loadMapEvent": null,
-      "affectPlayerEvent": null
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "showQuestEvent": null
     },
     {
       "text": "",
@@ -95,18 +101,18 @@
         },
         {
           "text": "",
-          "next": -1
+          "next": 9
         }
       ],
-      "eventType": "LoadMap",
-      "repeatable": true,
+      "eventType": "ShowQuest",
+      "repeatable": false,
       "giveItemEvent": null,
-      "loadMapEvent": {
-        "map": "2",
-        "positionX": 5,
-        "positionY": 5
-      },
-      "affectPlayerEvent": null
+      "loadMapEvent": null,
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "showQuestEvent": {
+        "name": "Eric's Cleanup"
+      }
     },
     {
       "text": "",
@@ -130,7 +136,9 @@
         "amount": 1
       },
       "loadMapEvent": null,
-      "affectPlayerEvent": null
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "showQuestEvent": null
     },
     {
       "text": "I already gave you something?!",
@@ -147,7 +155,9 @@
       "repeatable": false,
       "giveItemEvent": null,
       "loadMapEvent": null,
-      "affectPlayerEvent": null
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "showQuestEvent": null
     },
     {
       "text": "Ugh, here you go.\nNow leave!",
@@ -164,7 +174,9 @@
       "repeatable": false,
       "giveItemEvent": null,
       "loadMapEvent": null,
-      "affectPlayerEvent": null
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "showQuestEvent": null
     },
     {
       "text": "",
@@ -189,7 +201,9 @@
         "healthDifference": -5,
         "manaDifference": 0,
         "goldDifference": 0
-      }
+      },
+      "spawnNPCEvent": null,
+      "showQuestEvent": null
     },
     {
       "text": "I will slap you again if you don't leave right now!",
@@ -206,7 +220,53 @@
       "repeatable": false,
       "giveItemEvent": null,
       "loadMapEvent": null,
-      "affectPlayerEvent": null
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "showQuestEvent": null
+    },
+    {
+      "text": "",
+      "portrait": "",
+      "entry": false,
+      "isEvent": true,
+      "options": [
+        {
+          "text": "",
+          "next": -1
+        },
+        {
+          "text": "",
+          "next": 10
+        }
+      ],
+      "eventType": "ShowQuest",
+      "repeatable": false,
+      "giveItemEvent": null,
+      "loadMapEvent": null,
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "showQuestEvent": {
+        "name": "Big Bastard"
+      }
+    },
+    {
+      "text": "Thanks m8, you are a legend.",
+      "portrait": "res/portraits/1.png",
+      "entry": false,
+      "isEvent": false,
+      "options": [
+        {
+          "text": "No probs",
+          "next": -1
+        }
+      ],
+      "eventType": "",
+      "repeatable": false,
+      "giveItemEvent": null,
+      "loadMapEvent": null,
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "showQuestEvent": null
     }
   ],
   "dialogElements": [
@@ -217,50 +277,62 @@
       "size": "100, 80"
     },
     {
-      "p": "405, 130",
+      "p": "356, 130",
       "id": 1,
       "isEvent": false,
       "size": "100, 80"
     },
     {
-      "p": "227, 199",
+      "p": "189, 237",
       "id": 2,
       "isEvent": false,
       "size": "100, 80"
     },
     {
-      "p": "235, 87",
+      "p": "216, 89",
       "id": 3,
       "isEvent": true,
-      "size": "80, 20"
+      "size": "85, 25"
     },
     {
-      "p": "581, 100",
+      "p": "579, 253",
       "id": 4,
       "isEvent": true,
       "size": "80, 20"
     },
     {
-      "p": "761, 135",
+      "p": "765, 276",
       "id": 5,
       "isEvent": false,
       "size": "100, 80"
     },
     {
-      "p": "760, 35",
+      "p": "768, 162",
       "id": 6,
       "isEvent": false,
       "size": "100, 80"
     },
     {
-      "p": "580, 235",
+      "p": "520, 341",
       "id": 7,
       "isEvent": true,
       "size": "80, 20"
     },
     {
-      "p": "754, 245",
+      "p": "712, 398",
       "id": 8,
+      "isEvent": false,
+      "size": "100, 80"
+    },
+    {
+      "p": "365, 32",
+      "id": 9,
+      "isEvent": true,
+      "size": "95, 20"
+    },
+    {
+      "p": "567, 74",
+      "id": 10,
       "isEvent": false,
       "size": "100, 80"
     }

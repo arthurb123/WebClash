@@ -15,6 +15,7 @@ global.game = require('./webclash_modules/game');
 global.items = require('./webclash_modules/items');
 global.npcs = require('./webclash_modules/npcs');
 global.actions = require('./webclash_modules/actions');
+global.quests = require('./webclash_modules/quests');
 global.tiled = require('./webclash_modules/tiled');
 global.output = require('./webclash_modules/output');
 global.input = require('./webclash_modules/input');
@@ -35,13 +36,15 @@ app.use(express.static(path.resolve(__dirname +  "/../client/")));
 game.loadAllCharacters(function() {
     actions.loadAllActions(function() {
         items.loadAllItems(function() {
-            tiled.loadAllMaps(function() {
-                //First check if the properties are valid
+            quests.loadAllQuests(function() {
+                tiled.loadAllMaps(function() {
+                    //First check if the properties are valid
 
-                checkProperties(function() {
-                    //Start server
+                    checkProperties(function() {
+                        //Start server
 
-                    startServer();
+                        startServer();
+                    });
                 });
             });
         });

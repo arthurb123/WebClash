@@ -2,6 +2,7 @@ const player = {
     actions: [],
     inventory: [],
     equipment: {},
+    quests: {},
     forceFrame:
     {
         start: function(dir) {
@@ -165,6 +166,22 @@ const player = {
         this.points = points;
 
         ui.profile.reloadPoints();
+    },
+    setQuests: function(quests)
+    {
+        //Check if quests have been completed
+
+        for (let q in this.quests)
+            if (quests[q] == undefined)
+                ui.chat.addMessage('"' + q + '" has been completed!');
+
+        //Set quests
+
+        this.quests = quests;
+
+        //Reload UI
+
+        //ui.quests.reload();
     },
     requestExpTarget: function()
     {

@@ -624,173 +624,260 @@ exports.handleSocket = function(socket)
     });
 
     socket.on('CLIENT_DIALOG_EVENT', function(data, callback) {
-         //Check if valid player
+        try {
+            //Check if valid player
 
-        if (socket.playing === undefined || !socket.playing)
-            return;
-
-        //Get player id
-
-        let id = game.getPlayerIndex(socket.name);
-
-        //Check if valid
-
-        if (id == -1)
-            return;
-
-        //Get map index
-
-        let map = tiled.getMapIndex(game.players[id].map);
-
-        //Check if valid
-
-        if (map == -1)
-            return;
-
-        //Setup variables
-
-        let dialogEvent,
-            name;
-
-        //Check if NPC or item dialog
-
-        if (isNaN(data.npc))
-        {
-            //Item
-
-            dialogEvent = items.getItem(data.npc).dialog[data.id];
-
-            eventName =
-                data.npc.replace(' ', '') +         //Item name to make sure the event can occur
-                                                    //with other items (it is called 'npc' but it is the item name)
-                dialogEvent.eventType +             //Event type for uniqueness
-                data.id;                            //Dialog ID for uniqueness
-        }
-        else
-        {
-            //NPC
-
-            dialogEvent = npcs.onMap[map][data.npc].data.dialog[data.id];
-
-            eventName =
-                map.toString() +                    //Map to make sure the event can occur on other maps
-                npcs.onMap[map][data.npc].name +    //NPC name for uniqueness
-                dialogEvent.eventType +             //Event type for uniqueness
-                data.id;                            //Dialog ID for uniqueness
-        }
-
-        //Check if valid
-
-        if (dialogEvent == undefined ||
-            !dialogEvent.isEvent)
-            return;
-
-        //Check if the event has already occured
-
-        if (game.getPlayerGlobalVariable(id, eventName) &&
-            !dialogEvent.repeatable) {
-            //Callback false (occurred)
-
-            if (callback != undefined)
-                callback(false);
-
-            return;
-        }
-
-        //Handle events
-
-        //Load map event
-
-        if (dialogEvent.eventType === 'LoadMap') {
-            //Get map index
-
-            let new_map = tiled.getMapIndex(dialogEvent.loadMapEvent.map);
-
-            //Check if map is valid
-
-            if (new_map === -1)
+            if (socket.playing === undefined || !socket.playing)
                 return;
 
-            //Load map
+            //Get player id
 
-            game.loadMap(socket, dialogEvent.loadMapEvent.map);
+            let id = game.getPlayerIndex(socket.name);
 
-            //Set position
+            //Check if valid
 
-            game.setPlayerTilePosition(
-                socket,
-                id,
-                new_map,
-                dialogEvent.loadMapEvent.positionX,
-                dialogEvent.loadMapEvent.positionY
-            );
+            if (id == -1)
+                return;
+
+            //Get map index
+
+            let map = tiled.getMapIndex(game.players[id].map);
+
+            //Check if valid
+
+            if (map == -1)
+                return;
+
+            //Setup variables
+
+            let dialogEvent,
+                name,
+                quest;
+
+            //Check if NPC or item dialog
+
+            if (isNaN(data.npc))
+            {
+                //Item
+
+                dialogEvent = items.getItem(data.npc).dialog[data.id];
+
+                eventName =
+                    data.npc.replace(' ', '') +         //Item name to make sure the event can occur
+                                                        //with other items (it is called 'npc' but it is the item name)
+                    dialogEvent.eventType +             //Event type for uniqueness
+                    data.id;                            //Dialog ID for uniqueness
+            }
+            else
+            {
+                //NPC
+
+                dialogEvent = npcs.onMap[map][data.npc].data.dialog[data.id];
+
+                eventName =
+                    map.toString() +                    //Map to make sure the event can occur on other maps
+                    npcs.onMap[map][data.npc].name +    //NPC name for uniqueness
+                    dialogEvent.eventType +             //Event type for uniqueness
+                    data.id;                            //Dialog ID for uniqueness
+            }
+
+            //Check if valid
+
+            if (dialogEvent == undefined ||
+                !dialogEvent.isEvent)
+                return;
+
+            //Check if the event has already occured
+
+            if (game.getPlayerGlobalVariable(id, eventName) &&
+                !dialogEvent.repeatable) {
+                //Callback false (occurred)
+
+                if (callback != undefined)
+                    callback({ result: false });
+
+                return;
+            }
+
+            //Handle events
+
+            //Load map event
+
+            if (dialogEvent.eventType === 'LoadMap') {
+                //Get map index
+
+                let new_map = tiled.getMapIndex(dialogEvent.loadMapEvent.map);
+
+                //Check if map is valid
+
+                if (new_map === -1)
+                    return;
+
+                //Load map
+
+                game.loadMap(socket, dialogEvent.loadMapEvent.map);
+
+                //Set position
+
+                game.setPlayerTilePosition(
+                    socket,
+                    id,
+                    new_map,
+                    dialogEvent.loadMapEvent.positionX,
+                    dialogEvent.loadMapEvent.positionY
+                );
+            }
+
+            //Give item event
+
+            else if (dialogEvent.eventType === 'GiveItem') {
+                //Add item(s)
+
+                for (let a = 0; a < dialogEvent.giveItemEvent.amount; a++)
+                    items.addPlayerItem(socket, id, dialogEvent.giveItemEvent.item);
+            }
+
+            //Affect player event
+
+            else if (dialogEvent.eventType === 'AffectPlayer') {
+                //Add differences
+
+                //Health
+
+                if (dialogEvent.affectPlayerEvent.healthDifference > 0)
+                    game.healPlayer(id, dialogEvent.affectPlayerEvent.healthDifference);
+                else if (dialogEvent.affectPlayerEvent.healthDifference < 0)
+                    game.damagePlayer(id, dialogEvent.affectPlayerEvent.healthDifference);
+
+                //Mana
+
+                game.deltaManaPlayer(id, dialogEvent.affectPlayerEvent.manaDifference);
+
+                //Gold
+
+                game.deltaGoldPlayer(id, dialogEvent.affectPlayerEvent.goldDifference);
+            }
+
+            //Spawn NPC event
+
+            else if (dialogEvent.eventType === 'SpawnNPC') {
+                //Spawn event NPCs for the specified amount
+
+                let pos = {
+                    x: game.players[id].pos.X+game.players[id].character.width/2,
+                    y: game.players[id].pos.Y+game.players[id].character.height,
+                };
+
+                for (let i = 0; i < dialogEvent.spawnNPCEvent.amount; i++) {
+                    let npc_id = npcs.createNPC(map, dialogEvent.spawnNPCEvent.name, pos.x, pos.y, true);
+                    server.syncNPC(map, npc_id);
+
+                    if (dialogEvent.spawnNPCEvent.hostile &&
+                        npcs.onMap[map][npc_id].data.type !== 'friendly')
+                        npcs.onMap[map][npc_id].target = id;
+                }
+            }
+
+            //Show quest event
+
+            else if (dialogEvent.eventType === 'ShowQuest') {
+                //Send quest information to player,
+                //if the quest has not been completed yet
+                //or the quest can be repeated
+
+                if (!quests.hasCompleted(id, dialogEvent.showQuestEvent.name) || dialogEvent.repeatable)
+                    quest = quests.getQuestDialog(dialogEvent.showQuestEvent.name);
+                else if (callback != undefined) {
+                    callback({ result: false });
+
+                    return;
+                }
+            }
+
+            //Check if event is repeatable,
+            //if not set a player global variable
+
+            if (!dialogEvent.repeatable && dialogEvent.eventType !== 'ShowQuest') {
+                game.setPlayerGlobalVariable(
+                    id,
+                    eventName,
+                    true
+                );
+            }
+
+            //Callback true (success)
+
+            if (callback != undefined)
+                callback({ result: true, quest: quest });
         }
-
-        //Give item event
-
-        else if (dialogEvent.eventType === 'GiveItem') {
-            //Add item(s)
-
-            for (let a = 0; a < dialogEvent.giveItemEvent.amount; a++)
-                items.addPlayerItem(socket, id, dialogEvent.giveItemEvent.item);
+        catch (err) {
+            output.give('Could not handle dialog event: ' + err);
         }
+    });
 
-        //Affect player event
+    socket.on('CLIENT_ACCEPT_QUEST', function(data) {
+        try {
+            //Check if valid player
 
-        else if (dialogEvent.eventType === 'AffectPlayer') {
-            //Add differences
+            if (socket.playing === undefined || !socket.playing)
+               return;
 
-            //Health
+            //Get player id
 
-            if (dialogEvent.affectPlayerEvent.healthDifference > 0)
-                game.healPlayer(id, dialogEvent.affectPlayerEvent.healthDifference);
-            else if (dialogEvent.affectPlayerEvent.healthDifference < 0)
-                game.damagePlayer(id, dialogEvent.affectPlayerEvent.healthDifference);
+            let id = game.getPlayerIndex(socket.name);
 
-            //Mana
+            //Check if valid
 
-            game.deltaManaPlayer(id, dialogEvent.affectPlayerEvent.manaDifference);
+            if (id == -1)
+               return;
 
-            //Gold
+            //Get map index
 
-            game.deltaGoldPlayer(id, dialogEvent.affectPlayerEvent.goldDifference);
-        }
+            let map = tiled.getMapIndex(game.players[id].map);
 
-        //Spawn NPC event
+            //Check if valid
 
-        else if (dialogEvent.eventType === 'SpawnNPC') {
-            //Spawn event NPCs for the specified amount
+            if (map == -1)
+               return;
 
-            let pos = {
-                x: game.players[id].pos.X+game.players[id].character.width/2,
-                y: game.players[id].pos.Y+game.players[id].character.height,
-            };
+            let dialogEvent;
 
-            for (let i = 0; i < dialogEvent.spawnNPCEvent.amount; i++) {
-                let npc_id = npcs.createNPC(map, dialogEvent.spawnNPCEvent.name, pos.x, pos.y, true);
-                server.syncNPC(map, npc_id);
+            //Check if NPC or item dialog
 
-                if (dialogEvent.spawnNPCEvent.hostile &&
-                    npcs.onMap[map][npc_id].data.type !== 'friendly')
-                    npcs.onMap[map][npc_id].target = id;
+            if (isNaN(data.npc))
+            {
+               //Item
+
+               dialogEvent = items.getItem(data.npc).dialog[data.id];
+            }
+            else
+            {
+               //NPC
+
+               dialogEvent = npcs.onMap[map][data.npc].data.dialog[data.id];
+            }
+
+            //Check if valid
+
+            if (dialogEvent == undefined)
+                return;
+
+            //Check if dialog is a quest event
+
+            if (dialogEvent.isEvent && dialogEvent.eventType === 'ShowQuest') {
+                //Check if player already has quest
+
+                if (game.players[id].quests[dialogEvent.showQuestEvent.name] != undefined)
+                    return;
+
+                //Accept quest with name
+
+                quests.acceptQuest(id, dialogEvent.showQuestEvent.name);
             }
         }
-
-        //Check if event is repeatable,
-        //if not set a player global variable
-
-        if (!dialogEvent.repeatable) {
-            game.setPlayerGlobalVariable(
-                id,
-                eventName,
-                true
-            );
+        catch (err) {
+            output.give('Could not accept quest: ' + err);
         }
-
-        //Callback true (success)
-
-        if (callback != undefined)
-            callback(true);
     });
 
     socket.on('CLIENT_REQUEST_DIALOG', function(data, callback) {
@@ -940,6 +1027,9 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
             break;
         case 'mana':
             data.mana = game.players[id].mana;
+            break;
+        case 'quests':
+            data.quests = game.players[id].quests;
             break;
         case 'actions':
             data.actions = [];

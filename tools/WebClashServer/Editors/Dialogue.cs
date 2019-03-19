@@ -60,7 +60,7 @@ namespace WebClashServer.Editors
                 {
                     dialogSystem.items[elements[el].id] = null;
 
-                    elements.RemoveAt(el);
+                    elements[el] = null;
 
                     canvas.Invalidate();
                 }
@@ -144,6 +144,9 @@ namespace WebClashServer.Editors
             for (int i = elements.Count-1; i >= 0; i--)
             {
                 CanvasElement ca = elements[i];
+
+                if (ca == null)
+                    continue;
 
                 if (new Rectangle(
                         ca.p,
@@ -249,10 +252,22 @@ namespace WebClashServer.Editors
 
         private void newItemToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            elements.Add(new CanvasElement(
-                new Point(20, canvas.Height/2-40),
+            bool done = false;
+            CanvasElement ca = new CanvasElement(
+                new Point(20, canvas.Height / 2 - 40),
                 dialogSystem.addDialogueItem(false)
-            ));
+            );
+
+            for (int i = 0; i < elements.Count; i++)
+                if (elements[i] == null)
+                {
+                    elements[i] = ca;
+                    done = true;
+                    break;
+                }
+
+            if (!done)
+                elements.Add(ca);
 
             canvas.Invalidate();
         }
@@ -281,12 +296,26 @@ namespace WebClashServer.Editors
                 case "SpawnNPC":
                     dialogSystem.items[cee.id].spawnNPCEvent = new SpawnNPCEvent();
                     break;
+                case "ShowQuest":
+                    dialogSystem.items[cee.id].showQuestEvent = new ShowQuestEvent();
+                    break;
             }
 
             dialogSystem.items[cee.id].options.Add(new DialogueOption(-1));
             dialogSystem.items[cee.id].options.Add(new DialogueOption(-1));
 
-            elements.Add(cee);
+            bool done = false;
+
+            for (int i = 0; i < elements.Count; i++)
+                if (elements[i] == null)
+                {
+                    elements[i] = cee;
+                    done = true;
+                    break;
+                }
+
+            if (!done)
+                elements.Add(cee);
 
             canvas.Invalidate();
         }
@@ -318,6 +347,13 @@ namespace WebClashServer.Editors
 
             canvas.Invalidate();
         }
+
+        private void showQuestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addCanvasEventElement(EventType.ShowQuest);
+
+            canvas.Invalidate();
+        }
     }
 
     public class CanvasElement
@@ -344,7 +380,7 @@ namespace WebClashServer.Editors
         {
             isEvent = true;
 
-            size = new Size(80, 20);
+            size = new Size(95, 20);
         }
     }
 
@@ -353,6 +389,7 @@ namespace WebClashServer.Editors
         GiveItem = 0,
         LoadMap,
         AffectPlayer,
-        SpawnNPC
+        SpawnNPC,
+        ShowQuest
     }
 }

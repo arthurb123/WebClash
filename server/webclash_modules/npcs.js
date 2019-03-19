@@ -858,7 +858,13 @@ exports.distributeExperience = function(map, id)
     //Check if the NPC only had one target
 
     if (this.onMap[map][id].targets.length === 1) {
+        //If so add the total experience
+
         game.addPlayerExperience(this.onMap[map][id].target, this.onMap[map][id].data.stats.exp);
+
+        //Evaluate for kill quest objectives
+
+        quests.evaluateQuestObjective(this.onMap[map][id].target, 'kill', this.onMap[map][id].name);
 
         return;
     }
@@ -869,11 +875,18 @@ exports.distributeExperience = function(map, id)
         if (this.onMap[map][id].targets[p] == undefined)
             continue;
 
+        //Give players a share of the total experience,
+        //this is calculated based on the amount of damage done.
+
         let xp = Math.round(this.onMap[map][id].targets[p]/this.onMap[map][id].data.health.max*this.onMap[map][id].data.stats.exp);
 
         if (xp == null || xp < 0)
             xp = 0;
 
         game.addPlayerExperience(p, xp);
+
+        //Evaluate for kill quest objectives
+
+        quests.evaluateQuestObjective(p, 'kill', this.onMap[map][id].name);
     }
 };

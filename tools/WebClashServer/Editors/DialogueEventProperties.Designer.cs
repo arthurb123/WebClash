@@ -55,11 +55,14 @@
             this.healthDifference = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
             this.spawnNPCPanel = new System.Windows.Forms.Panel();
+            this.npcHostile = new System.Windows.Forms.CheckBox();
             this.npcAmount = new System.Windows.Forms.NumericUpDown();
             this.label12 = new System.Windows.Forms.Label();
             this.npcList = new System.Windows.Forms.ComboBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.npcHostile = new System.Windows.Forms.CheckBox();
+            this.showQuestPanel = new System.Windows.Forms.Panel();
+            this.questList = new System.Windows.Forms.ComboBox();
+            this.label15 = new System.Windows.Forms.Label();
             this.loadMapPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.positionY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.positionX)).BeginInit();
@@ -73,6 +76,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.healthDifference)).BeginInit();
             this.spawnNPCPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.npcAmount)).BeginInit();
+            this.showQuestPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // loadMapPanel
@@ -416,6 +420,17 @@
             this.spawnNPCPanel.TabIndex = 9;
             this.spawnNPCPanel.Visible = false;
             // 
+            // npcHostile
+            // 
+            this.npcHostile.AutoSize = true;
+            this.npcHostile.Location = new System.Drawing.Point(15, 84);
+            this.npcHostile.Name = "npcHostile";
+            this.npcHostile.Size = new System.Drawing.Size(134, 17);
+            this.npcHostile.TabIndex = 5;
+            this.npcHostile.Text = "Hostile (Attacks player)";
+            this.npcHostile.UseVisualStyleBackColor = true;
+            this.npcHostile.CheckedChanged += new System.EventHandler(this.npcHostile_CheckedChanged);
+            // 
             // npcAmount
             // 
             this.npcAmount.Location = new System.Drawing.Point(156, 47);
@@ -468,22 +483,41 @@
             this.label13.TabIndex = 0;
             this.label13.Text = "NPC";
             // 
-            // npcHostile
+            // showQuestPanel
             // 
-            this.npcHostile.AutoSize = true;
-            this.npcHostile.Location = new System.Drawing.Point(15, 84);
-            this.npcHostile.Name = "npcHostile";
-            this.npcHostile.Size = new System.Drawing.Size(134, 17);
-            this.npcHostile.TabIndex = 5;
-            this.npcHostile.Text = "Hostile (Attacks player)";
-            this.npcHostile.UseVisualStyleBackColor = true;
-            this.npcHostile.CheckedChanged += new System.EventHandler(this.npcHostile_CheckedChanged);
+            this.showQuestPanel.Controls.Add(this.questList);
+            this.showQuestPanel.Controls.Add(this.label15);
+            this.showQuestPanel.Location = new System.Drawing.Point(12, 12);
+            this.showQuestPanel.Name = "showQuestPanel";
+            this.showQuestPanel.Size = new System.Drawing.Size(286, 126);
+            this.showQuestPanel.TabIndex = 10;
+            this.showQuestPanel.Visible = false;
+            // 
+            // questList
+            // 
+            this.questList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.questList.FormattingEnabled = true;
+            this.questList.Location = new System.Drawing.Point(119, 6);
+            this.questList.Name = "questList";
+            this.questList.Size = new System.Drawing.Size(158, 21);
+            this.questList.TabIndex = 1;
+            this.questList.SelectedIndexChanged += new System.EventHandler(this.questList_SelectedIndexChanged);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(12, 9);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(35, 13);
+            this.label15.TabIndex = 0;
+            this.label15.Text = "Quest";
             // 
             // DialogueEventProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(312, 215);
+            this.Controls.Add(this.showQuestPanel);
             this.Controls.Add(this.spawnNPCPanel);
             this.Controls.Add(this.affectPlayerPanel);
             this.Controls.Add(this.nextIndex1);
@@ -519,6 +553,8 @@
             this.spawnNPCPanel.ResumeLayout(false);
             this.spawnNPCPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.npcAmount)).EndInit();
+            this.showQuestPanel.ResumeLayout(false);
+            this.showQuestPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -557,5 +593,8 @@
         private System.Windows.Forms.ComboBox npcList;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.CheckBox npcHostile;
+        private System.Windows.Forms.Panel showQuestPanel;
+        private System.Windows.Forms.ComboBox questList;
+        private System.Windows.Forms.Label label15;
     }
 }

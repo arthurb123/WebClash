@@ -98,14 +98,17 @@ exports.addPlayer = function(socket)
                 server.syncPlayerPartially(id, 'health', socket, false);
                 server.syncPlayerPartially(id, 'mana', socket, false);
                 server.syncPlayerPartially(id, 'actions', socket, false);
+                server.syncPlayerPartially(id, 'quests', socket, false);
                 server.syncPlayerPartially(id, 'gold', socket, false);
 
                 //Sync inventory
+
                 for (let i = 0; i < game.players[id].inventory.length; i++)
                     if (game.players[id].inventory[i] != undefined)
                         server.syncInventoryItem(i, id, socket, false);
 
                 //Sync equipment
+
                 for (let equipment in game.players[id].equipment) {
                     if (equipment != undefined)
                         server.syncEquipmentItem(equipment, id, socket, false);
@@ -218,6 +221,7 @@ exports.savePlayer = function(name, data, cb)
     let player = data;
 
     //Check if a new player data must be created
+
     if (player === undefined)
         player = {
             char_name: 'player',
@@ -243,11 +247,13 @@ exports.savePlayer = function(name, data, cb)
             gvars: {},
             actions: [],
             equipment: {},
+            quests: {},
             inventory: properties.playerStartingItems,
             gold: 0
         };
 
     //Save player data
+
     storage.save('stats', name, {
         map: player.map,
         char_name: player.char_name,
@@ -256,12 +262,13 @@ exports.savePlayer = function(name, data, cb)
         direction: player.direction,
         health: player.health,
         mana: player.mana,
+        gold: player.gold,
         level: player.level,
         stats: player.stats,
         actions: player.actions,
         inventory: player.inventory,
         equipment: player.equipment,
-        gold: player.gold,
+        quests: player.quests,
         gvars: player.gvars
     }, cb);
 };

@@ -125,7 +125,7 @@ const ui = {
 
             this.setDialog(start);
         },
-        setDialog: function(id)
+        setDialog: function(id, name_override)
         {
             if (this.cur[id].isEvent)
             {
@@ -133,12 +133,32 @@ const ui = {
                     npc: this.npc,
                     id: id
                 }, function(data) {
-                    let next = (data ? 0 : 1);
+                    if (data.quest == undefined) {
+                        let next = (data.result ? 0 : 1);
 
-                    if (ui.dialog.cur[id].options[next].next == -1)
-                        ui.dialog.hideDialog();
-                    else
-                        ui.dialog.setDialog(ui.dialog.cur[id].options[next].next);
+                        if (ui.dialog.cur[id].options[next].next == -1)
+                            ui.dialog.hideDialog();
+                        else
+                            ui.dialog.setDialog(ui.dialog.cur[id].options[next].next);
+                    } else {
+                        if (player.quests[data.quest.name] == undefined)
+                            data.quest.options = [
+                                { text: 'Accept', next: 'accept', actual_next: ui.dialog.cur[id].options[0].next },
+                                { text: 'Decline', next: -1 }
+                            ];
+                        else
+                            data.quest.options = [
+                                { text: 'Exit', next: -1 }
+                            ];
+
+                        ui.dialog.cur[id] = data.quest;
+
+                        let minLevel = '';
+                        if (data.quest.minLevel > 0)
+                            minLevel = ' (Lv. ' + data.quest.minLevel + ')';
+
+                        ui.dialog.setDialog(id, data.quest.name + minLevel);
+                    }
                 });
 
                 return;
@@ -147,7 +167,7 @@ const ui = {
             let contentEl = document.getElementById('dialog_box_content'),
                 optionsEl = document.getElementById('dialog_box_options');
 
-            contentEl.innerHTML = '<b>' + this.name + '</b><br>';
+            contentEl.innerHTML = '<b>' + (name_override == undefined ? this.name : name_override) + '</b><br>';
 
             if (this.cur[id].portrait != undefined)
                 contentEl.innerHTML += '<img src="' + this.cur[id].portrait + '" class="portrait"/><br>';
@@ -158,10 +178,26 @@ const ui = {
             optionsEl.innerHTML = '';
 
             this.cur[id].options.forEach(function(option) {
-                let cb = 'ui.dialog.hideDialog()';
+                let cb = '';
 
-                if (option.next != -1)
-                    cb = 'ui.dialog.setDialog(' + option.next + ')';
+                if (!isNaN(option.next)) {
+                    //Normal dialog option
+
+                    cb = 'ui.dialog.hideDialog()';
+
+                    if (option.next != -1)
+                        cb = 'ui.dialog.setDialog(' + option.next + ')';
+                } else {
+                    //Quest/unique dialog option
+
+                    if (option.next == 'accept')
+                        cb = 'socket.emit(\'CLIENT_ACCEPT_QUEST\', { npc: ' + ui.dialog.npc + ', id: ' + id + ' });';
+
+                    if (option.actual_next == -1)
+                        cb += 'ui.dialog.hideDialog()';
+                    else
+                        cb += 'ui.dialog.setDialog(' + option.actual_next + ');';
+                }
 
                 optionsEl.innerHTML += '<button class="link_button" style="margin-left: 0px;" onclick="' + cb + '">[ ' + option.text + ' ]</button>';
             });

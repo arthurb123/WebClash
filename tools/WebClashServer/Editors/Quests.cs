@@ -296,7 +296,9 @@ namespace WebClashServer
     public class QuestObjectiveKill
     {
         public string npc = "";
+
         public int amount = 1;
+        public int cur = 0;
     }
 
     public enum QuestObjectiveType

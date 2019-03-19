@@ -1,12 +1,13 @@
 {
   "minLevel": 1,
-  "description": "Eric needs you to take care of some Ghouls, are you up for it?",
+  "description": "Eric needs you to take care of some Ghouls.",
   "objectives": [
     {
       "type": "kill",
       "killObjective": {
         "npc": "Ghoul",
-        "amount": 5
+        "amount": 5,
+        "cur": 0
       }
     }
   ],
