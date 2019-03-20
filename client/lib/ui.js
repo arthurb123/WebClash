@@ -12,6 +12,7 @@ const ui = {
         this.settings.create();
         this.profile.create();
         this.quests.create();
+        this.journal.create();
         this.chat.create();
 
         lx.Loops(this.floaties.update);
@@ -876,7 +877,7 @@ const ui = {
                 '<div id="loot_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 25%; transform: translate(-50%, -50%); width: auto; max-width: 150px; height: auto; text-align: center;">' +
                     '<p class="info" style="font-size: 14px; margin: 3px;">Loot</p>' +
                     '<div id="loot_box_content" style="text-align: left;"></div>' +
-                    '<p class="link" onclick="ui.loot.hide()" style="font-size: 12px; color: red;">Close</p>'
+                    '<p class="link" onclick="ui.loot.hide()" style="font-size: 12px; color: #ff3333;">Close</p>'
                 '</div>';
         },
         reset: function() {
@@ -1019,7 +1020,10 @@ const ui = {
                         '<div id="status_exp" class="bar_content" style="background-color: #BF4CE6; width: 100%;"></div>' +
                         '<p id="status_exp_text" class="info" style="transform: translate(0, -75%); margin: 0; font-size: 7px;"></p>' +
                     '</div>' +
-                    '<p class="info link" id="status_profile_link" style="margin-top: 4px; font-size: 11px;" onclick="ui.profile.show();">Show Profile</p>' +
+                    '<div style="padding: 4px;">' +
+                        '<a class="info link" id="status_profile_link" style="font-size: 11px; margin-right: 6px;" onclick="ui.profile.show();">Show Profile</a>' +
+                        '<a class="info link" id="status_journal_link" style="font-size: 11px; margin-left: 6px;" onclick="ui.journal.show();">Show Journal</a>' +
+                    '</div>' +
                 '</div>';
         },
         setHealth: function(value, max) {
@@ -1065,7 +1069,7 @@ const ui = {
                     '<p class="info" style="font-size: 13px; margin: 0px;" id="settings_audio_soundVolume_text">Sound </p>' +
                     '<input type="range" min="0" max="100" id="settings_audio_soundVolume" onchange="ui.settings.changeAudioValue(event)"/>' +
 
-                    '<p class="link" onclick="ui.settings.hide()" style="font-size: 12px; color: red; padding-top: 4px;">Close</p>' +
+                    '<p class="link" onclick="ui.settings.hide()" style="font-size: 12px; color: #ff3333; padding-top: 4px;">Close</p>' +
                 '</div>';
 
             lx.OnKey('escape', function() {
@@ -1121,6 +1125,7 @@ const ui = {
             }
 
             ui.profile.hide();
+            ui.journal.hide();
 
             lx.CONTEXT.CONTROLLER.TARGET = undefined;
 
@@ -1181,7 +1186,7 @@ const ui = {
             for (let a = 0; a < this.attributes.length; a++)
                 html += '<p id="profile_stat_' + this.attributes[a].toLowerCase() + '" class="info"></p>';
 
-            view.dom.innerHTML += html + '<p class="link" onclick="ui.profile.hide()" style="font-size: 12px; color: red; padding-top: 4px;">Close</p></div>';
+            view.dom.innerHTML += html + '<p class="link" onclick="ui.profile.hide()" style="font-size: 12px; color: #ff3333; padding-top: 4px;">Close</p></div>';
         },
         reloadLevel: function(level) {
             document.getElementById('profile_level').innerHTML = 'Level ' + level;
@@ -1223,6 +1228,7 @@ const ui = {
             }
 
             ui.settings.hide();
+            ui.journal.hide();
 
             lx.CONTEXT.CONTROLLER.TARGET = undefined;
 
@@ -1254,21 +1260,95 @@ const ui = {
             this.visible = false;
         }
     },
+    journal:
+    {
+        create: function() {
+            view.dom.innerHTML +=
+                '<div id="journal_box" class="box" style="text-align: center; visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; height: auto; max-height: 260px; overflow-y: auto;">' +
+                '</div>';
+        },
+        reload: function() {
+            let done = false;
+
+            document.getElementById('journal_box').innerHTML = '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Journal</b></p>';
+
+            for (let quest in player.quests) {
+                document.getElementById('journal_box').appendChild(ui.quests.generateQuestDom(quest, player.quests[quest], true));
+
+                done = true;
+            }
+
+            if (!done)
+                document.getElementById('journal_box').innerHTML = '<p class="info">No quests available.</p>';
+        },
+        show: function() {
+            if (this.visible) {
+                this.hide();
+
+                return;
+            }
+
+            this.reload();
+
+            ui.profile.hide();
+            ui.settings.hide();
+
+            lx.CONTEXT.CONTROLLER.TARGET = undefined;
+
+            if (this.mouse == undefined)
+                this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
+                    if (data.state == 0)
+                        return;
+
+                    lx.StopMouse(0);
+
+                    ui.journal.hide();
+                });
+
+            document.getElementById('status_journal_link').innerHTML = 'Close Journal';
+            document.getElementById('journal_box').style.visibility = 'visible';
+
+            this.visible = true;
+        },
+        hide: function() {
+            lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
+
+            lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
+
+            this.mouse = undefined;
+
+            document.getElementById('status_journal_link').innerHTML = 'Show Journal';
+            document.getElementById('journal_box').style.visibility = 'hidden';
+
+            this.visible = false;
+        },
+        track: function(name) {
+            player.quests[name].pinned = !player.quests[name].pinned;
+
+            ui.quests.reload();
+            this.reload();
+        },
+        abandon: function(name) {
+            socket.emit('CLIENT_ABANDON_QUEST', name);
+
+            this.reload();
+        }
+    },
     quests:
     {
+        max_pinned: 3,
         create: function() {
             view.dom.innerHTML +=
                 '<div id="quests_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 30px; transform: translate(0, -100%); width: auto; height: auto; text-align: center; padding: 4px 4px 4px 4px;">' +
                 '</div>';
         },
-        reload: function() {
-            let result = '';
+        generateQuestDom: function(name, quest, full) {
+            let result = document.createElement('div'),
+                progress = '',
+                objectives = quest.objectives;
 
-            for (let quest in player.quests) {
-                let progress = '',
-                    objective = player.quests[quest];
-
-                //Add progress based on data type
+            for (let i = 0; i <= quest.id; i++) {
+                let objective = objectives[i];
 
                 switch (objective.type) {
                     case 'kill':
@@ -1277,19 +1357,81 @@ const ui = {
                         break;
                 }
 
-                result +=
-                    '<div id="quests_content" class="content" style="width: auto; height: auto; padding: 2px 6px 2px 6px;">' +
-                        '<p class="info">' + quest + '</p>' +
-                        '<p class="info" style="font-size: 11px;">' + progress + '</p>' +
-                    '</div>';
+                if (i != quest.id)
+                    progress = '<del>' + progress + '</del>';
             }
 
-            if (result === '')
+            let padding = '2px 6px 2px 6px;';
+
+            if (full)
+                padding = '2px 14px 2px 14px;';
+
+            result.id = 'quests_content';
+            result.classList.add('content');
+            result.style = 'width: auto; height: auto; padding: ' + padding;
+
+            result.innerHTML +=
+                    '<p class="info"><b>' + name + '</b></p>' +
+                    '<p class="info" style="font-size: 11px;">' + progress + '</p>';
+
+            if (full) {
+                result.innerHTML +=
+                    '<hr style="padding: 0px; border: 0; width: 90%; border-bottom: 1px solid whitesmoke; margin: 2px;"/>';
+
+                //Tracking option
+
+                let tracking_option_name = 'Track';
+
+                if (quest.pinned)
+                    tracking_option_name = 'Untrack';
+
+                let tracking_option = document.createElement('a');
+                tracking_option.style = 'font-size: 11px; color: #4dff4d; padding: 2px;';
+                tracking_option.classList.add('link');
+
+                tracking_option.innerHTML = tracking_option_name;
+
+                tracking_option.addEventListener('click', function() {
+                    ui.journal.track(name);
+                });
+
+                if (this.pinned < this.max_pinned || quest.pinned)
+                    result.appendChild(tracking_option);
+
+                //Abandon option
+
+                let abandon_option = document.createElement('a');
+                abandon_option.style = 'font-size: 11px; color: #ff3333; padding: 2px;';
+                abandon_option.classList.add('link');
+                abandon_option.innerHTML = 'Abandon';
+
+                abandon_option.addEventListener('click', function() {
+                    ui.journal.abandon(name);
+                });
+
+                result.appendChild(abandon_option);
+            }
+
+            return result;
+        },
+        reload: function() {
+            document.getElementById('quests_box').innerHTML = '';
+
+            this.pinned = 0;
+
+            for (let quest in player.quests) {
+                if (!player.quests[quest].pinned)
+                    continue;
+
+                this.pinned++;
+
+                document.getElementById('quests_box').appendChild(this.generateQuestDom(quest, player.quests[quest], false));
+            }
+
+            if (this.pinned === 0)
                 document.getElementById('quests_box').style.visibility = 'hidden';
             else
                 document.getElementById('quests_box').style.visibility = 'visible';
-
-            document.getElementById('quests_box').innerHTML = result;
         }
     },
     floaties:

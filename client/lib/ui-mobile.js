@@ -13,6 +13,7 @@ const ui = {
         this.status.create();
         this.settings.create();
         this.profile.create();
+        this.journal.create();
         this.chat.create();
 
         lx.Loops(this.floaties.update);
@@ -981,7 +982,11 @@ const ui = {
                         '<div id="status_exp" class="bar_content" style="background-color: #BF4CE6; width: 100%;"></div>' +
                         '<p id="status_exp_text" class="info" style="transform: translate(0, -90%); margin: 0; font-size: 9px;"></p>' +
                     '</div>' +
-                    '<p class="link" onclick="ui.profile.show()" id="profile_link" style="pointer-events: auto; font-size: 10px; position: absolute;">Show Profile</p>' +
+                    '<div style="transform: translate(-50%, 0); position: absolute; left: 50%; pointer-events: auto;">' +
+                        '<a class="link" onclick="ui.profile.show()" style="font-size: 10px; margin: 0px 7px 0px 7px;">Profile</a>' +
+                        '<a class="link" onclick="ui.journal.show()" style="font-size: 10px; margin: 0px 7px 0px 7px;">Journal</a>' +
+                        '<a class="link" onclick="ui.settings.show()" style="font-size: 10px; margin: 0px 7px 0px 7px;">Settings</a>' +
+                    '</div>' +
                 '</div>';
         },
         setHealth: function(value, max) {
@@ -1163,9 +1168,6 @@ const ui = {
 
                     '<p class="link" onclick="ui.settings.hide()" style="font-size: 12px; color: red; padding-top: 4px;">Close</p>' +
                 '</div>';
-
-            view.dom.innerHTML +=
-                '<p class="link" onclick="ui.settings.show()" style="pointer-events: auto; position: absolute; top: 100%; left: 100%; margin-top: -19px; margin-left: -' + (ui.controller.size+30) + 'px; transform: translate(-100%, -100%); font-size: 10px; position: absolute;">Settings</p>';
         },
         loadFromSettings: function(settings) {
             //Audio values
@@ -1214,6 +1216,7 @@ const ui = {
             }
 
             ui.profile.hide();
+            ui.journal.hide();
 
             lx.CONTEXT.CONTROLLER.TARGET = undefined;
 
@@ -1316,6 +1319,7 @@ const ui = {
             }
 
             ui.settings.hide();
+            ui.journal.hide();
 
             lx.CONTEXT.CONTROLLER.TARGET = undefined;
 
@@ -1329,7 +1333,6 @@ const ui = {
                     ui.profile.hide();
                 });
 
-            document.getElementById('profile_link').innerHTML = 'Close Profile';
             document.getElementById('profile_box').style.visibility = 'visible';
 
             this.visible = true;
@@ -1341,10 +1344,133 @@ const ui = {
 
             this.mouse = undefined;
 
-            document.getElementById('profile_link').innerHTML = 'Show Profile';
             document.getElementById('profile_box').style.visibility = 'hidden';
 
             this.visible = false;
+        }
+    },
+    journal:
+    {
+        create: function() {
+            view.dom.innerHTML +=
+                '<div id="journal_box" class="box" style="text-align: center; visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; height: auto; max-height: 240px; overflow-y: auto;">' +
+                '</div>';
+        },
+        reload: function() {
+            let done = false;
+
+            document.getElementById('journal_box').innerHTML = '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Journal</b></p>';
+
+            for (let quest in player.quests) {
+                document.getElementById('journal_box').appendChild(ui.quests.generateQuestDom(quest, player.quests[quest], true));
+
+                done = true;
+            }
+
+            if (!done)
+                document.getElementById('journal_box').innerHTML = '<p class="info">No quests available.</p>';
+        },
+        show: function() {
+            if (this.visible) {
+                this.hide();
+
+                return;
+            }
+
+            this.reload();
+
+            ui.profile.hide();
+            ui.settings.hide();
+
+            lx.CONTEXT.CONTROLLER.TARGET = undefined;
+
+            if (this.mouse == undefined)
+                this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
+                    if (data.state == 0)
+                        return;
+
+                    lx.StopMouse(0);
+
+                    ui.journal.hide();
+                });
+
+            document.getElementById('journal_box').style.visibility = 'visible';
+
+            this.visible = true;
+        },
+        hide: function() {
+            lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
+
+            lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
+
+            this.mouse = undefined;
+
+            document.getElementById('journal_box').style.visibility = 'hidden';
+
+            this.visible = false;
+        },
+        abandon: function(name) {
+            socket.emit('CLIENT_ABANDON_QUEST', name);
+
+            this.reload();
+        }
+    },
+    quests:
+    {
+        generateQuestDom: function(name, quest, full) {
+            let result = document.createElement('div'),
+                progress = '',
+                objectives = quest.objectives;
+
+            for (let i = 0; i <= quest.id; i++) {
+                let objective = objectives[i];
+
+                switch (objective.type) {
+                    case 'kill':
+                        objective = objective.killObjective;
+                        progress = objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's');
+                        break;
+                }
+
+                if (i != quest.id)
+                    progress = '<del>' + progress + '</del>';
+            }
+
+            let padding = '2px 6px 2px 6px;';
+
+            if (full)
+                padding = '2px 14px 2px 14px;';
+
+            result.id = 'quests_content';
+            result.classList.add('content');
+            result.style = 'width: auto; height: auto; padding: ' + padding;
+
+            result.innerHTML +=
+                    '<p class="info"><b>' + name + '</b></p>' +
+                    '<p class="info" style="font-size: 11px;">' + progress + '</p>';
+
+            if (full) {
+                result.innerHTML +=
+                    '<hr style="padding: 0px; border: 0; width: 90%; border-bottom: 1px solid whitesmoke; margin: 2px;"/>';
+
+                //Abandon option
+
+                let abandon_option = document.createElement('a');
+                abandon_option.style = 'font-size: 11px; color: #ff3333; padding: 2px;';
+                abandon_option.classList.add('link');
+                abandon_option.innerHTML = 'Abandon';
+
+                abandon_option.addEventListener('click', function() {
+                    ui.journal.abandon(name);
+                });
+
+                result.appendChild(abandon_option);
+            }
+
+            return result;
+        },
+        reload: function() {
+            //...
         }
     },
     floaties:

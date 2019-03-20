@@ -101,8 +101,13 @@ exports.acceptQuest = function(id, name)
 
     //Accept quest and stuff
 
-    game.players[id].quests[name] = this.getQuest(name).objectives[0];
-    game.players[id].quests[name].id = 0;
+    let quest = this.getQuest(name);
+
+    game.players[id].quests[name] = {
+        objectives: JSON.parse(JSON.stringify(quest.objectives)),
+        id: 0,
+        pinned: true
+    };
 
     //Sync to player
 
@@ -123,7 +128,7 @@ exports.evaluateQuestObjective = function(id, type, target)
     //Check if player has a quest with the matching objective
 
     for (let quest in game.players[id].quests) {
-        let objective = game.players[id].quests[quest];
+        let objective = game.players[id].quests[quest].objectives[game.players[id].quests[quest].id];
 
         //Check if type matches
 
@@ -168,10 +173,8 @@ exports.advanceQuest = function(id, name)
 
     if (objectives[o_id] == undefined)
         this.finishQuest(id, name);
-    else {
-        game.players[id].quests[name] = objectives[o_id];
+    else
         game.players[id].quests[name].id = o_id;
-    }
 };
 
 exports.finishQuest = function(id, name)
