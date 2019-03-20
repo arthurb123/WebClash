@@ -80,7 +80,7 @@ exports.getQuestDialog = function(name)
 
         //Kill objective
         if (quest.objectives[o].type == 'kill')
-            quest.text += 'Kill ' + quest.objectives[o].killObjective.amount + ' ' + quest.objectives[o].killObjective.npc + '(s).';
+            quest.text += 'Kill ' + quest.objectives[o].killObjective.amount + ' ' + quest.objectives[o].killObjective.npc + (quest.objectives[o].killObjective.amount === 1 ? '' : 's') + '.';
     }
 
     quest.text += '</i><br><br>Rewards: ' + quest.rewards.experience + ' Exp, ' + quest.rewards.gold + ' Gold';
@@ -102,6 +102,7 @@ exports.acceptQuest = function(id, name)
     //Accept quest and stuff
 
     game.players[id].quests[name] = this.getQuest(name).objectives[0];
+    game.players[id].quests[name].id = 0;
 
     //Sync to player
 
@@ -139,7 +140,7 @@ exports.evaluateQuestObjective = function(id, type, target)
                   sync = true;
 
                   if (objective.killObjective.cur >= objective.killObjective.amount)
-                      this.finishQuest(id, quest);
+                      this.advanceQuest(id, quest);
             }
 
             //...
@@ -150,6 +151,27 @@ exports.evaluateQuestObjective = function(id, type, target)
 
     if (sync)
         server.syncPlayerPartially(id, 'quests', game.players[id].socket, false);
+};
+
+exports.advanceQuest = function(id, name)
+{
+    //Check if player has quest
+
+    if (game.players[id].quests[name] == undefined)
+        return;
+
+    //Go to next objective if available,
+    //otherwise finish quest
+
+    let objectives = this.getQuest(name).objectives,
+        o_id = game.players[id].quests[name].id+1;
+
+    if (objectives[o_id] == undefined)
+        this.finishQuest(id, name);
+    else {
+        game.players[id].quests[name] = objectives[o_id];
+        game.players[id].quests[name].id = o_id;
+    }
 };
 
 exports.finishQuest = function(id, name)

@@ -11,6 +11,7 @@ const ui = {
         this.dialog.create();
         this.settings.create();
         this.profile.create();
+        this.quests.create();
         this.chat.create();
 
         lx.Loops(this.floaties.update);
@@ -1251,6 +1252,44 @@ const ui = {
             document.getElementById('profile_box').style.visibility = 'hidden';
 
             this.visible = false;
+        }
+    },
+    quests:
+    {
+        create: function() {
+            view.dom.innerHTML +=
+                '<div id="quests_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 30px; transform: translate(0, -100%); width: auto; height: auto; text-align: center; padding: 4px 4px 4px 4px;">' +
+                '</div>';
+        },
+        reload: function() {
+            let result = '';
+
+            for (let quest in player.quests) {
+                let progress = '',
+                    objective = player.quests[quest];
+
+                //Add progress based on data type
+
+                switch (objective.type) {
+                    case 'kill':
+                        objective = objective.killObjective;
+                        progress = objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's');
+                        break;
+                }
+
+                result +=
+                    '<div id="quests_content" class="content" style="width: auto; height: auto; padding: 2px 6px 2px 6px;">' +
+                        '<p class="info">' + quest + '</p>' +
+                        '<p class="info" style="font-size: 11px;">' + progress + '</p>' +
+                    '</div>';
+            }
+
+            if (result === '')
+                document.getElementById('quests_box').style.visibility = 'hidden';
+            else
+                document.getElementById('quests_box').style.visibility = 'visible';
+
+            document.getElementById('quests_box').innerHTML = result;
         }
     },
     floaties:

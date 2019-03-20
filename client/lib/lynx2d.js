@@ -1,4 +1,4 @@
-﻿//Created by Arthur Baars 2018
+﻿//Created by Arthur Baars
 
 function Lynx2D() {
     //1 - Main variables
@@ -26,8 +26,6 @@ function Lynx2D() {
             };
 
             this.REQUEST_FRAME();
-
-            console.log(this.LOG.TIMEFORMAT() + 'Started game loop at ' + this.SETTINGS.FPS + ' FPS!');
         },
         LOG: {
             DATE: 0,

@@ -181,7 +181,7 @@ const player = {
 
         //Reload UI
 
-        //ui.quests.reload();
+        ui.quests.reload();
     },
     requestExpTarget: function()
     {
