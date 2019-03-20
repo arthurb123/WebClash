@@ -7,6 +7,7 @@ Everything in WebClash can be fully customized using the Server tool.
 * Tiled maps support (.json format)<br>
 * Character editor<br>
 * NPC (with dialog) editor<br>
+* Quest editor<br>
 * Item editor<br>
 * Action editor<br>
 * Chat with commands<br>
