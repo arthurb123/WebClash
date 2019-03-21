@@ -1435,6 +1435,10 @@ const ui = {
                         objective = objective.killObjective;
                         progress = objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's');
                         break;
+                    case 'gather':
+                        objective = objective.gatherObjective;
+                        progress = objective.cur + '/' + objective.amount + ' ' + objective.item + (objective.amount === 1 ? '' : 's');
+                        break;
                 }
 
                 if (i != quest.id)
