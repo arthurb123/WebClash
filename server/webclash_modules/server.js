@@ -251,7 +251,7 @@ exports.handleSocket = function(socket)
         }
         catch (err)
         {
-            output.give('Error while handling player data: ' + err);
+            output.giveError('Could not handle player data: ', err);
         }
     });
 
@@ -279,7 +279,7 @@ exports.handleSocket = function(socket)
          }
          catch (err)
          {
-             output.give('Could not add player action: ' + err);
+             output.giveError('Could not add player action: ', err);
          }
     });
 
@@ -811,7 +811,7 @@ exports.handleSocket = function(socket)
                 callback({ result: true, quest: quest });
         }
         catch (err) {
-            output.give('Could not handle dialog event: ' + err);
+            output.giveError('Could not handle dialog event: ', err);
         }
     });
 
@@ -877,7 +877,7 @@ exports.handleSocket = function(socket)
             }
         }
         catch (err) {
-            output.give('Could not accept quest: ' + err);
+            output.giveError('Could not accept quest: ', err);
         }
     });
 
@@ -912,7 +912,7 @@ exports.handleSocket = function(socket)
                 callback();
         }
         catch (err) {
-            output.give('Could not abandon quest: ' + err);
+            output.giveError('Could not abandon quest: ', err);
         }
     });
 

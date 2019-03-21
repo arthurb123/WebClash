@@ -27,7 +27,7 @@ exports.load = function(dir, name, cb)
         }
         catch (err)
         {
-            output.give('Could not load JSON: '+ err);
+            output.giveError('Could not load JSON: ', err);
         }
     });
 };
@@ -46,7 +46,7 @@ exports.exists = function(dir, name, cb)
     }
     catch (err)
     {
-        output.give('Could not check if JSON exists: ' + err);
+        output.giveError('Could not check if JSON exists: ', err);
     }
 };
 
@@ -63,7 +63,7 @@ exports.save = function(dir, name, data, cb)
     }
     catch (err)
     {
-        output.give('Could not save JSON: ' + err);
+        output.giveError('Could not save JSON: ', err);
     }
 };
 
@@ -85,6 +85,6 @@ exports.saveAttributes = function(dir, name, attributes, cb)
     }
     catch (err)
     {
-        output.give('Could not save JSON: ' + err);
+        output.giveError('Could not save JSON: ', err);
     }
 };

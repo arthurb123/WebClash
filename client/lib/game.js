@@ -685,6 +685,8 @@ const game = {
 
              if (data.elements[i].type == undefined ||
                  data.elements[i].type === 'static') {
+                 //Static action
+
                  let sprite = new lx.Sprite(data.elements[i].src, undefined, undefined, undefined, undefined,
                      function() {
                          let sprites = [];
@@ -728,7 +730,9 @@ const game = {
                  });
              }
              else if (data.elements[i].type === 'projectile') {
-                 let sprite = new lx.Sprite(data.elements[i].src, undefined, undefined, undefined, undefined,
+                 //Projectile action
+
+                 let sprite = new lx.Sprite(data.elements[i].src, 0, 0, data.elements[i].w, data.elements[i].h,
                      function() {
                         let angle = 0;
 

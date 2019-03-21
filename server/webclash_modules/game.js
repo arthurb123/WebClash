@@ -121,7 +121,7 @@ exports.addPlayer = function(socket)
         });
     }
     catch (err) {
-        output.give('Could not add player: ' + err);
+        output.giveError('Could not add player: ', err);
     }
 };
 
@@ -167,7 +167,7 @@ exports.removePlayer = function(socket)
         this.players.splice(id, 1);
     }
     catch (err) {
-        output.give('Could not remove player: ' + err);
+        output.giveError('Could not remove player: ', err);
     }
 };
 
@@ -705,7 +705,7 @@ exports.loadCharacter = function(location)
     }
     catch (err)
     {
-        output.give(err);
+        output.giveError('Could not load character: ', err);
     }
 };
 

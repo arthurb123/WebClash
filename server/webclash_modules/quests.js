@@ -38,7 +38,7 @@ exports.loadQuest = function(location)
     }
     catch (err)
     {
-        output.give(err);
+        output.giveError('Could not load quest: ', err);
     }
 };
 

@@ -130,7 +130,7 @@ exports.loadItem = function(location)
     }
     catch (err)
     {
-        output.give(err);
+        output.giveError('Could not load item: ', err);
     }
 };
 

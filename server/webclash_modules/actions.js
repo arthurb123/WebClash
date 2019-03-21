@@ -65,7 +65,8 @@ exports.updateProjectiles = function() {
                 //NPC projectile handling
 
                 if (this.projectiles[m][p].npcOwner != undefined) {
-                    if (npcs.isTimedOut(this.projectiles[m][p].map, this.projectiles[m][p].npcOwner))
+                    if (npcs.onMap[this.projectiles[m][p].map][this.projectiles[m][p].npcOwner] == undefined ||
+                        npcs.isTimedOut(this.projectiles[m][p].map, this.projectiles[m][p].npcOwner))
                         continue;
 
                     if (this.damagePlayers(
@@ -111,7 +112,7 @@ exports.loadAction = function(location)
     }
     catch (err)
     {
-        output.give(err);
+        output.giveError('Could not load action: ', err);
     }
 };
 

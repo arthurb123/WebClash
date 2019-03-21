@@ -1112,12 +1112,8 @@ const ui = {
                 if (this.items[i] === undefined)
                     count++;
 
-            if (count == this.items.length)
-            {
-                this.items = [];
-
-                this.hide();
-            }
+            if (count === this.items.length)
+                this.reset();
         },
         show: function() {
             //Show the loot box if it is available

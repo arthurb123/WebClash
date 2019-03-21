@@ -874,7 +874,7 @@ const ui = {
         items: [],
         create: function() {
             view.dom.innerHTML +=
-                '<div id="loot_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 25%; transform: translate(-50%, -50%); width: auto; max-width: 150px; height: auto; text-align: center;">' +
+                '<div id="loot_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 25%; transform: translate(-50%, -50%); width: auto; max-width: 150px; height: auto; max-height: 195px; text-align: center; overflow-y: auto;">' +
                     '<p class="info" style="font-size: 14px; margin: 3px;">Loot</p>' +
                     '<div id="loot_box_content" style="text-align: left;"></div>' +
                     '<p class="link" onclick="ui.loot.hide()" style="font-size: 12px; color: #ff3333;">Close</p>'
@@ -948,13 +948,13 @@ const ui = {
                 slot_el === undefined)
                 return;
 
+            //Remove player item
+
+            this.items[id] = undefined;
+
             //Remove slot element
 
             el.removeChild(slot_el);
-
-            //Remove possible loot item
-
-            this.items[id] = undefined;
 
             //Check if loot box should be hidden
 
@@ -963,12 +963,8 @@ const ui = {
                 if (this.items[i] === undefined)
                     count++;
 
-            if (count == this.items.length)
-            {
-                this.items = [];
-
-                this.hide();
-            }
+            if (count === this.items.length)
+                this.reset();
         },
         show: function() {
             //Show the loot box if it is available
@@ -1362,7 +1358,7 @@ const ui = {
                         break;
                     case 'gather':
                         objective = objective.gatherObjective;
-                        progress = objective.cur + '/' + objective.amount + ' ' + objective.item + (objective.amount === 1 ? '' : 's');
+                        progress = objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's');
                         break;
                 }
 

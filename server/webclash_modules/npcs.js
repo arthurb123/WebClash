@@ -185,7 +185,7 @@ exports.loadNPC = function(name)
     }
     catch(err)
     {
-        output.give(err);
+        output.giveError('Could not load NPC: ', err);
     }
 };
 
@@ -216,7 +216,7 @@ exports.updateNPC = function(map, id)
     }
     catch (err)
     {
-        output.give('Could not update NPC: ' + err);
+        output.giveError('Could not update NPC: ', err);
     }
 };
 

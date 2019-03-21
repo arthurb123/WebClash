@@ -214,7 +214,7 @@ exports.handleCommand = function(socket, text)
     }
     catch (err)
     {
-        output.give('Exception while handling command: ' + err);
+        output.giveError('Could not handle command: ', err);
     }
 
     //Return invalid in case of no found command
