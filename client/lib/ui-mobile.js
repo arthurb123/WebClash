@@ -646,10 +646,14 @@ const ui = {
 
             //Item
 
-            let item = player.inventory[slot];
+            let item = player.inventory[slot],
+                isEquipment = false;
 
-            if (item === undefined)
+            if (item === undefined) {
                 item = player.equipment[slot];
+
+                isEquipment = true;
+            }
 
             //Highlight slot
 
