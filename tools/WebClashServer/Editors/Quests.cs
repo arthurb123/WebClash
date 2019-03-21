@@ -86,6 +86,8 @@ namespace WebClashServer
 
                 if (current.objectives[i].type == "kill")
                     name += "Kill " + current.objectives[i].killObjective.amount + " " + current.objectives[i].killObjective.npc + "(s)";
+                else if (current.objectives[i].type == "gather")
+                    name += "Gather " + current.objectives[i].gatherObjective.amount + " " + current.objectives[i].gatherObjective.item + "(s)";
 
                 objectiveList.Items.Add(name);
             }
@@ -109,7 +111,11 @@ namespace WebClashServer
                         break;
                     case "kill":
                         //Clear everything except QuestObjectiveKill
-                        //...
+                        current.objectives[objectiveList.SelectedIndex].gatherObjective = null;
+                        break;
+                    case "gather":
+                        //Clear everything except QuestObjectiveGather
+                        current.objectives[objectiveList.SelectedIndex].killObjective = null;
                         break;
 
                     //...
@@ -291,6 +297,8 @@ namespace WebClashServer
         public string type = "";
 
         public QuestObjectiveKill killObjective = null;
+
+        public QuestObjectiveGather gatherObjective = null;
     }
 
     public class QuestObjectiveKill
@@ -301,8 +309,17 @@ namespace WebClashServer
         public int cur = 0;
     }
 
+    public class QuestObjectiveGather
+    {
+        public string item = "";
+
+        public int amount = 1;
+        public int cur = 0;
+    }
+
     public enum QuestObjectiveType
     {
-        Kill = 0
+        Kill = 0,
+        Gather,
     }
 }

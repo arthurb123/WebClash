@@ -24,6 +24,8 @@ namespace WebClashServer.Editors
 
             LoadNPCSelection();
 
+            LoadItemSelection();
+
             LoadObjectiveProperties();
         }
 
@@ -49,6 +51,17 @@ namespace WebClashServer.Editors
 
                 killNpcSelection.SelectedItem = current.killObjective.npc;
                 killNpcAmount.Value = current.killObjective.amount;
+            }
+
+            if (current.type == "gather")
+            {
+                if (current.gatherObjective == null)
+                    current.gatherObjective = new QuestObjectiveGather();
+
+                gatherObjectivePanel.Visible = true;
+
+                itemList.SelectedItem = current.gatherObjective.item;
+                gatherAmount.Value = current.gatherObjective.amount;
             }
 
             objectiveType.SelectedItem = char.ToUpper(current.type[0]) + current.type.Substring(1, current.type.Length - 1);
@@ -105,6 +118,53 @@ namespace WebClashServer.Editors
 
             current.killObjective.amount = (int)killNpcAmount.Value;
         }
+
+        //Gather Quest Objective
+
+        private void LoadItemSelection()
+        {
+            itemList.Items.Clear();
+
+            try
+            {
+                List<string> ext = new List<string>()
+                {
+                    ".json"
+                };
+
+                string[] items = Directory.GetFiles(Program.main.location + "/items", "*.*", SearchOption.AllDirectories)
+                    .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
+
+                for (int i = 0; i < items.Length; i++)
+                {
+                    string it = items[i];
+
+                    itemList.Items.Add(it.Substring(it.LastIndexOf('\\') + 1, it.LastIndexOf('.') - it.LastIndexOf('\\') - 1));
+                }
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message, "WebClash Server - Error");
+            }
+        }
+
+        private void itemList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.gatherObjective.item = itemList.SelectedItem.ToString();
+        }
+
+        private void gatherAmount_ValueChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.gatherObjective.amount = (int)gatherAmount.Value;
+        }
+
+        //Get result method
 
         public QuestObjective GetResult()
         {

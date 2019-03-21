@@ -79,8 +79,12 @@ exports.getQuestDialog = function(name)
         quest.text += '<br>● ';
 
         //Kill objective
-        if (quest.objectives[o].type == 'kill')
+        if (quest.objectives[o].type === 'kill')
             quest.text += 'Kill ' + quest.objectives[o].killObjective.amount + ' ' + quest.objectives[o].killObjective.npc + (quest.objectives[o].killObjective.amount === 1 ? '' : 's') + '.';
+
+        //Gather objective
+        if (quest.objectives[o].type === 'gather')
+            quest.text += 'Gather ' + quest.objectives[o].gatherObjective.amount + ' ' + quest.objectives[o].gatherObjective.item + (quest.objectives[o].gatherObjective.amount === 1 ? '' : 's') + '.';
     }
 
     quest.text += '</i><br><br>Rewards: ' + quest.rewards.experience + ' Exp, ' + quest.rewards.gold + ' Gold';
@@ -97,11 +101,23 @@ exports.acceptQuest = function(id, name)
     //Check if player is valid
 
     if (game.players[id] == undefined)
-        return;
+        return false;
 
-    //Accept quest and stuff
+    //Check if player already has quest
+
+    if (game.players[id].quests[name] != undefined)
+        return false;
+
+    //Get quest
 
     let quest = this.getQuest(name);
+
+    //Check if player matches quest criteria
+
+    if (quest.minLevel > game.players[id].level)
+        return false;
+
+    //Accept quest and stuff
 
     game.players[id].quests[name] = {
         objectives: JSON.parse(JSON.stringify(quest.objectives)),
@@ -109,9 +125,20 @@ exports.acceptQuest = function(id, name)
         pinned: true
     };
 
+    //Check if conditions can be met
+
+    //Gather conditions
+
+    if (game.players[id].quests[name].objectives[0].type === 'gather')
+        this.evaluateQuestObjective(id, 'gather', game.players[id].quests[name].objectives[0].gatherObjective.item);
+
     //Sync to player
 
     server.syncPlayerPartially(id, 'quests', game.players[id].socket, false);
+
+    //Return true
+
+    return true;
 };
 
 exports.evaluateQuestObjective = function(id, type, target)
@@ -140,15 +167,25 @@ exports.evaluateQuestObjective = function(id, type, target)
 
             if (objective.killObjective != undefined &&
                 objective.killObjective.npc === target) {
-                  objective.killObjective.cur++;
+                objective.killObjective.cur++;
 
-                  sync = true;
+                sync = true;
 
-                  if (objective.killObjective.cur >= objective.killObjective.amount)
-                      this.advanceQuest(id, quest);
+                if (objective.killObjective.cur >= objective.killObjective.amount)
+                  this.advanceQuest(id, quest);
             }
 
-            //...
+            //Gather objective
+
+            if (objective.gatherObjective != undefined &&
+                objective.gatherObjective.item === target) {
+                objective.gatherObjective.cur = items.getPlayerItemAmount(id, objective.gatherObjective.item);
+
+                sync = true;
+
+                if (objective.gatherObjective.cur >= objective.gatherObjective.amount)
+                  this.advanceQuest(id, quest);
+            }
         }
     }
 

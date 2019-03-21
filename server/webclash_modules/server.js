@@ -815,7 +815,7 @@ exports.handleSocket = function(socket)
         }
     });
 
-    socket.on('CLIENT_ACCEPT_QUEST', function(data) {
+    socket.on('CLIENT_ACCEPT_QUEST', function(data, callback) {
         try {
             //Check if valid player
 
@@ -865,18 +865,54 @@ exports.handleSocket = function(socket)
             //Check if dialog is a quest event
 
             if (dialogEvent.isEvent && dialogEvent.eventType === 'ShowQuest') {
-                //Check if player already has quest
-
-                if (game.players[id].quests[dialogEvent.showQuestEvent.name] != undefined)
-                    return;
-
                 //Accept quest with name
 
-                quests.acceptQuest(id, dialogEvent.showQuestEvent.name);
+                if (!quests.acceptQuest(id, dialogEvent.showQuestEvent.name))
+                    return;
+
+                //Callback if possible
+
+                if (callback != undefined)
+                    callback(dialogEvent.showQuestEvent.name);
             }
         }
         catch (err) {
             output.give('Could not accept quest: ' + err);
+        }
+    });
+
+    socket.on('CLIENT_ABANDON_QUEST', function(data, callback) {
+        try {
+            //Check if valid player
+
+            if (socket.playing === undefined || !socket.playing)
+               return;
+
+            //Get player id
+
+            let id = game.getPlayerIndex(socket.name);
+
+            //Check if valid
+
+            if (id == -1)
+               return;
+
+            //Check if quest name/data is valid
+
+            if (data == undefined || !isNaN(data))
+                return;
+
+            //Remove quest from player quests
+
+            delete game.players[id].quests[data];
+
+            //Callback if possible
+
+            if (callback != undefined)
+                callback();
+        }
+        catch (err) {
+            output.give('Could not abandon quest: ' + err);
         }
     });
 

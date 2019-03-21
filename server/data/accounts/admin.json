@@ -3,8 +3,8 @@
  "settings": {
   "audio": {
    "main": 100,
-   "music": 75,
-   "sound": 50
+   "sound": 50,
+   "music": 75
   }
  }
 }

@@ -173,7 +173,7 @@ const player = {
 
         for (let q in this.quests)
             if (quests[q] == undefined)
-                ui.chat.addMessage('"' + q + '" has been completed!');
+                ui.chat.addMessage('Completed "' + q + '"!');
 
         //Set quests
 
@@ -182,6 +182,14 @@ const player = {
         //Reload UI
 
         ui.quests.reload();
+    },
+    acceptQuest: function(target, id)
+    {
+        //Send request
+
+        socket.emit('CLIENT_ACCEPT_QUEST', { npc: target, id: id }, function(name) {
+            ui.chat.addMessage('Accepted "' + name + '".');
+        });
     },
     requestExpTarget: function()
     {

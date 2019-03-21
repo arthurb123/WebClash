@@ -1,11 +1,21 @@
 {
   "minLevel": 3,
-  "description": "Terminate one golem on sight and I will reward you hefty! If you return alive that is.",
+  "description": "Terminate one golem on sight and loot the weird greens. \nI will reward you hefty, If you return alive that is.",
   "objectives": [
     {
       "type": "kill",
       "killObjective": {
         "npc": "Golem",
+        "amount": 1,
+        "cur": 0
+      },
+      "gatherObjective": null
+    },
+    {
+      "type": "gather",
+      "killObjective": null,
+      "gatherObjective": {
+        "item": "Weird Greens",
         "amount": 1,
         "cur": 0
       }

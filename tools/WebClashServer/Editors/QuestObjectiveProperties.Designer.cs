@@ -33,13 +33,20 @@
             this.objectiveType = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.killObjectivePanel = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.killNpcSelection = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.killNpcAmount = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.killNpcSelection = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.gatherObjectivePanel = new System.Windows.Forms.Panel();
+            this.gatherAmount = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
+            this.itemList = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.killObjectivePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.killNpcAmount)).BeginInit();
+            this.gatherObjectivePanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gatherAmount)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -63,6 +70,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.gatherObjectivePanel);
             this.groupBox1.Controls.Add(this.killObjectivePanel);
             this.groupBox1.Location = new System.Drawing.Point(12, 39);
             this.groupBox1.Name = "groupBox1";
@@ -82,34 +90,6 @@
             this.killObjectivePanel.Size = new System.Drawing.Size(253, 136);
             this.killObjectivePanel.TabIndex = 0;
             this.killObjectivePanel.Visible = false;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 19);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(29, 13);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "NPC";
-            // 
-            // killNpcSelection
-            // 
-            this.killNpcSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.killNpcSelection.FormattingEnabled = true;
-            this.killNpcSelection.Location = new System.Drawing.Point(113, 16);
-            this.killNpcSelection.Name = "killNpcSelection";
-            this.killNpcSelection.Size = new System.Drawing.Size(121, 21);
-            this.killNpcSelection.TabIndex = 1;
-            this.killNpcSelection.SelectedIndexChanged += new System.EventHandler(this.killNpcSelection_SelectedIndexChanged);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(18, 56);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(43, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Amount";
             // 
             // killNpcAmount
             // 
@@ -135,6 +115,98 @@
             0});
             this.killNpcAmount.ValueChanged += new System.EventHandler(this.killNpcAmount_ValueChanged);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(18, 56);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(43, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Amount";
+            // 
+            // killNpcSelection
+            // 
+            this.killNpcSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.killNpcSelection.FormattingEnabled = true;
+            this.killNpcSelection.Location = new System.Drawing.Point(113, 16);
+            this.killNpcSelection.Name = "killNpcSelection";
+            this.killNpcSelection.Size = new System.Drawing.Size(121, 21);
+            this.killNpcSelection.TabIndex = 1;
+            this.killNpcSelection.SelectedIndexChanged += new System.EventHandler(this.killNpcSelection_SelectedIndexChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(18, 19);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(29, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "NPC";
+            // 
+            // gatherObjectivePanel
+            // 
+            this.gatherObjectivePanel.Controls.Add(this.gatherAmount);
+            this.gatherObjectivePanel.Controls.Add(this.label4);
+            this.gatherObjectivePanel.Controls.Add(this.itemList);
+            this.gatherObjectivePanel.Controls.Add(this.label5);
+            this.gatherObjectivePanel.Location = new System.Drawing.Point(6, 19);
+            this.gatherObjectivePanel.Name = "gatherObjectivePanel";
+            this.gatherObjectivePanel.Size = new System.Drawing.Size(253, 136);
+            this.gatherObjectivePanel.TabIndex = 4;
+            this.gatherObjectivePanel.Visible = false;
+            // 
+            // gatherAmount
+            // 
+            this.gatherAmount.Location = new System.Drawing.Point(114, 54);
+            this.gatherAmount.Maximum = new decimal(new int[] {
+            1215752191,
+            23,
+            0,
+            0});
+            this.gatherAmount.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.gatherAmount.Name = "gatherAmount";
+            this.gatherAmount.Size = new System.Drawing.Size(120, 20);
+            this.gatherAmount.TabIndex = 3;
+            this.gatherAmount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.gatherAmount.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.gatherAmount.ValueChanged += new System.EventHandler(this.gatherAmount_ValueChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(18, 56);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(43, 13);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "Amount";
+            // 
+            // itemList
+            // 
+            this.itemList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.itemList.FormattingEnabled = true;
+            this.itemList.Location = new System.Drawing.Point(113, 16);
+            this.itemList.Name = "itemList";
+            this.itemList.Size = new System.Drawing.Size(121, 21);
+            this.itemList.TabIndex = 1;
+            this.itemList.SelectedIndexChanged += new System.EventHandler(this.itemList_SelectedIndexChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(18, 19);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(27, 13);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "Item";
+            // 
             // QuestObjectiveProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -154,6 +226,9 @@
             this.killObjectivePanel.ResumeLayout(false);
             this.killObjectivePanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.killNpcAmount)).EndInit();
+            this.gatherObjectivePanel.ResumeLayout(false);
+            this.gatherObjectivePanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gatherAmount)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -169,5 +244,10 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown killNpcAmount;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Panel gatherObjectivePanel;
+        private System.Windows.Forms.NumericUpDown gatherAmount;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox itemList;
+        private System.Windows.Forms.Label label5;
     }
 }

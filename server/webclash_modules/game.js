@@ -418,19 +418,24 @@ exports.addPlayerExperience = function(id, exp)
 
         this.players[id].stats.points++;
 
-        //Restore health and other stats
+        //Restore health and other stats if possible
 
-        this.players[id].health.cur = this.players[id].health.max;
-        this.players[id].mana.cur = this.players[id].mana.max;
+        if (this.players[id].health.cur < this.players[id].health.max) {
+            this.players[id].health.cur = this.players[id].health.max;
 
-        //Sync to map
+            server.syncPlayerPartially(id, 'health', this.players[id].socket, false);
+        }
+        if (this.players[id].mana.cur < this.players[id].mana.max) {
+            this.players[id].mana.cur = this.players[id].mana.max;
+
+            server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
+        }
+
+        //Sync to map (and player)
 
         server.syncPlayerPartially(id, 'level');
 
         //Sync to player
-
-        server.syncPlayerPartially(id, 'health', this.players[id].socket, false);
-        server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
 
         server.syncPlayerPartially(id, 'points', this.players[id].socket, false);
     }

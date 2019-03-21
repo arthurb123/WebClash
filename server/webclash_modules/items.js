@@ -156,6 +156,10 @@ exports.addPlayerItem = function(socket, id, name)
 
     game.players[id].inventory[slot] = name;
 
+    //Evaluate item for gather objectives
+
+    quests.evaluateQuestObjective(id, 'gather', name);
+
     //Sync player item
 
     server.syncInventoryItem(slot, id, socket);
@@ -172,6 +176,17 @@ exports.hasPlayerItem = function(id, name)
             return true;
 
     return false;
+};
+
+exports.getPlayerItemAmount = function(id, name)
+{
+    let result = 0;
+
+    for (let i = 0; i < game.players[id].inventory.length; i++)
+        if (game.players[id].inventory[i] === name)
+            result++;
+
+    return result;
 };
 
 exports.usePlayerItem = function(socket, id, name)
@@ -257,9 +272,17 @@ exports.removePlayerItem = function(id, name)
 
     for (let i = 0; i < game.players[id].inventory.length; i++)
         if (game.players[id].inventory[i] === name) {
+            //Remove element
+
             game.players[id].inventory[i] = undefined;
 
-            server.syncInventoryItem(i, id, game.players[id].socket);
+            //Evaluate item for gather objectives
+
+            quests.evaluateQuestObjective(id, 'gather', name);
+
+            //Sync to player
+
+            server.syncInventoryItem(i, id, game.players[id].socket, false);
 
             break;
         }

@@ -193,7 +193,7 @@ const ui = {
                     //Quest/unique dialog option
 
                     if (option.next == 'accept')
-                        cb = 'socket.emit(\'CLIENT_ACCEPT_QUEST\', { npc: ' + ui.dialog.npc + ', id: ' + id + ' });';
+                        cb = 'player.acceptQuest(' + ui.dialog.npc + ', ' + id + ');';
 
                     if (option.actual_next == -1)
                         cb += 'ui.dialog.hideDialog()';
@@ -1279,7 +1279,7 @@ const ui = {
             }
 
             if (!done)
-                document.getElementById('journal_box').innerHTML = '<p class="info">No quests available.</p>';
+                document.getElementById('journal_box').innerHTML += '<p class="info">No quests available.</p>';
         },
         show: function() {
             if (this.visible) {
@@ -1329,9 +1329,14 @@ const ui = {
             this.reload();
         },
         abandon: function(name) {
-            socket.emit('CLIENT_ABANDON_QUEST', name);
+            socket.emit('CLIENT_ABANDON_QUEST', name, function() {
+                delete player.quests[name];
 
-            this.reload();
+                ui.chat.addMessage('Abandoned "' + name + '".');
+
+                ui.journal.reload();
+                ui.quests.reload();
+            });
         }
     },
     quests:
@@ -1354,6 +1359,10 @@ const ui = {
                     case 'kill':
                         objective = objective.killObjective;
                         progress = objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's');
+                        break;
+                    case 'gather':
+                        objective = objective.gatherObjective;
+                        progress = objective.cur + '/' + objective.amount + ' ' + objective.item + (objective.amount === 1 ? '' : 's');
                         break;
                 }
 
