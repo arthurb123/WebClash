@@ -35,11 +35,12 @@ namespace WebClashServer.Editors
             ResetDirectory("maps");
             ResetDirectory("npcs");
             ResetDirectory("quests");
+            ResetDirectory("characters");
 
             ResetDirectory("data/accounts");
             ResetDirectory("data/stats");
 
-            ResetDirectoryExcept("characters", "player.json");
+            //ResetDirectoryExcept("characters", "player.json");
 
             MessageBox.Show("All server data has been deleted/resetted.", "WebClash - Reset Complete");
 

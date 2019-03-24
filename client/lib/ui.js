@@ -1340,7 +1340,7 @@ const ui = {
         max_pinned: 3,
         create: function() {
             view.dom.innerHTML +=
-                '<div id="quests_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 30px; transform: translate(0, -100%); width: auto; height: auto; text-align: center; padding: 4px 4px 4px 4px;">' +
+                '<div id="quests_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 30px; margin-top: -50px; transform: translate(0, -50%); width: auto; height: auto; text-align: center; padding: 4px 4px 4px 4px;">' +
                 '</div>';
         },
         generateQuestDom: function(name, quest, full) {
@@ -1349,21 +1349,24 @@ const ui = {
                 objectives = quest.objectives;
 
             for (let i = 0; i <= quest.id; i++) {
-                let objective = objectives[i];
+                let objective = objectives[i],
+                    objective_result = '';
 
                 switch (objective.type) {
                     case 'kill':
                         objective = objective.killObjective;
-                        progress = objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's');
+                        objective_result = objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's');
                         break;
                     case 'gather':
                         objective = objective.gatherObjective;
-                        progress = objective.cur + '/' + objective.amount + ' ' + objective.item + (objective.amount === 1 ? '' : 's');
+                        objective_result = objective.cur + '/' + objective.amount + ' ' + objective.item + (objective.amount === 1 ? '' : 's');
                         break;
                 }
 
                 if (i != quest.id)
-                    progress = '<del>' + progress + '</del>';
+                    objective_result = '<del>' + objective_result + '</del><br>';
+
+                progress += objective_result;
             }
 
             let padding = '2px 6px 2px 6px;';
@@ -1425,8 +1428,10 @@ const ui = {
             this.pinned = 0;
 
             for (let quest in player.quests) {
-                if (!player.quests[quest].pinned)
+                if (!player.quests[quest].pinned || this.pinned >= this.max_pinned) {
+                    player.quests[quest].pinned = false;
                     continue;
+                }
 
                 this.pinned++;
 

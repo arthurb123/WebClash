@@ -1428,21 +1428,24 @@ const ui = {
                 objectives = quest.objectives;
 
             for (let i = 0; i <= quest.id; i++) {
-                let objective = objectives[i];
+                let objective = objectives[i],
+                    objective_result = '';
 
                 switch (objective.type) {
                     case 'kill':
                         objective = objective.killObjective;
-                        progress = objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's');
+                        objective_result = objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's');
                         break;
                     case 'gather':
                         objective = objective.gatherObjective;
-                        progress = objective.cur + '/' + objective.amount + ' ' + objective.item + (objective.amount === 1 ? '' : 's');
+                        objective_result = objective.cur + '/' + objective.amount + ' ' + objective.item + (objective.amount === 1 ? '' : 's');
                         break;
                 }
 
                 if (i != quest.id)
-                    progress = '<del>' + progress + '</del>';
+                    objective_result = '<del>' + objective_result + '</del><br>';
+
+                progress += objective_result;
             }
 
             let padding = '2px 6px 2px 6px;';

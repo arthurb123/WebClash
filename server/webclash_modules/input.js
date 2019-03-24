@@ -160,8 +160,7 @@ exports.handleCommand = function(socket, text)
                 if (arguments.length < 1)
                     return 'wrong';
 
-                let count = 1,
-                    map = tiled.getMapIndex(game.players[p].map);
+                let count = 1;
 
                 if (arguments.length == 2)
                     count = parseInt(arguments[1]);
@@ -172,8 +171,8 @@ exports.handleCommand = function(socket, text)
                 };
 
                 for (let i = 0; i < count; i++) {
-                    let npc_id = npcs.createNPC(map, arguments[0], pos.x, pos.y, true);
-                    server.syncNPC(map, npc_id);
+                    let npc_id = npcs.createNPC(game.players[p].map_id, arguments[0], pos.x, pos.y, true);
+                    server.syncNPC(game.players[p].map_id, npc_id);
                 }
 
                 return 'success';

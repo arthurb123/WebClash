@@ -372,7 +372,7 @@ exports.createPlayerAction = function(slot, id)
                 game.players[id].character.height,
                 game.players[id].direction
             ),
-            map: tiled.getMapIndex(game.players[id].map),
+            map: game.players[id].map_id,
             elements: JSON.parse(JSON.stringify(this.collection[a_id].elements))
         },
         a_id,
@@ -566,7 +566,7 @@ exports.damagePlayers = function(map, stats, actionData, action, onlyStatic)
         for (let p = 0; p < game.players.length; p++)
         {
             if (game.players[p] == undefined ||
-                tiled.getMapIndex(game.players[p].map) != actionData.map)
+                game.players[p].map_id != actionData.map)
                 continue;
 
             let actionRect = {
@@ -601,7 +601,7 @@ exports.healPlayers = function(actionData, heal)
         for (let p = 0; p < game.players.length; p++)
         {
             if (game.players[p] == undefined ||
-                tiled.getMapIndex(game.players[p].map) != actionData.map)
+                game.players[p].map_id != actionData.map)
                 continue;
 
             let actionRect = {

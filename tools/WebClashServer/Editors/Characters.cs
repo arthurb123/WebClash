@@ -222,12 +222,14 @@ namespace WebClashServer.Editors
                 return;
             }
 
+            /*
             if (name.Text == "player")
             {
                 MessageBox.Show("The player character cannot be removed, this is a standard character.", "WebClash Server - Error");
 
                 return;
             }
+            */
 
             File.Delete(Program.main.location + "/characters/" + name.Text + ".json");
 

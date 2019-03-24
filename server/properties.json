@@ -8,6 +8,7 @@
     
     "maxPlayers": 0,
     
+    "playerCharacter": "player",
     "playerStartingItems": [
         "Sword"
     ],

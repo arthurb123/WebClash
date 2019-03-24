@@ -391,7 +391,7 @@ exports.handleSocket = function(socket)
 
         //Send chat message to all other players
 
-        io.to(tiled.getMapIndex(game.players[id].map)).emit('GAME_CHAT_UPDATE', msg);
+        io.to(game.players[id].map_id).emit('GAME_CHAT_UPDATE', msg);
     });
 
     socket.on('CLIENT_USE_ITEM', function(data, callback) {
@@ -444,15 +444,11 @@ exports.handleSocket = function(socket)
         if (game.players[id].inventory[data] == null)
             return;
 
-        //Get map index
-
-        let map = tiled.getMapIndex(game.players[id].map);
-
         //Create world item
 
         items.createWorldItem(
             -1,
-            map,
+            game.players[id].map_id,
             game.players[id].pos.X+game.players[id].character.width/2,
             game.players[id].pos.Y+game.players[id].character.height,
             game.players[id].inventory[data]
@@ -559,7 +555,7 @@ exports.handleSocket = function(socket)
 
         //Pick up world item
 
-        if (!items.pickupWorldItem(tiled.getMapIndex(game.players[id].map), id, data))
+        if (!items.pickupWorldItem(game.players[id].map_id, id, data))
         {
             //Failure, notify user
         }
@@ -579,10 +575,6 @@ exports.handleSocket = function(socket)
 
         if (id == -1)
             return;
-
-        //Get map id
-
-        let map = tiled.getMapIndex(game.players[id].map);
 
         //Get all properties that the player collided with
 
@@ -604,7 +596,7 @@ exports.handleSocket = function(socket)
                     game.setPlayerTilePosition(
                         socket,
                         id,
-                        map,
+                        game.players[id].map_id,
                         properties[p].value
                     );
 
@@ -614,7 +606,7 @@ exports.handleSocket = function(socket)
                     game.setPlayerTilePosition(
                         socket,
                         id,
-                        map,
+                        game.players[id].map_id,
                         undefined,
                         properties[p].value
                     );
@@ -641,12 +633,7 @@ exports.handleSocket = function(socket)
 
             //Get map index
 
-            let map = tiled.getMapIndex(game.players[id].map);
-
-            //Check if valid
-
-            if (map == -1)
-                return;
+            let map = game.players[id].map_id;
 
             //Setup variables
 
@@ -831,15 +818,6 @@ exports.handleSocket = function(socket)
             if (id == -1)
                return;
 
-            //Get map index
-
-            let map = tiled.getMapIndex(game.players[id].map);
-
-            //Check if valid
-
-            if (map == -1)
-               return;
-
             let dialogEvent;
 
             //Check if NPC or item dialog
@@ -854,7 +832,7 @@ exports.handleSocket = function(socket)
             {
                //NPC
 
-               dialogEvent = npcs.onMap[map][data.npc].data.dialog[data.id];
+               dialogEvent = npcs.onMap[game.players[id].map_id][data.npc].data.dialog[data.id];
             }
 
             //Check if valid
@@ -933,12 +911,7 @@ exports.handleSocket = function(socket)
 
         //Get map index
 
-        let map = tiled.getMapIndex(game.players[id].map);
-
-        //Check if valid
-
-        if (map == -1)
-            return;
+        let map = game.players[id].map_id;
 
         //If in dialog range callback the dialog
 
@@ -1092,10 +1065,8 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
             break;
     }
 
-    let map_id = tiled.getMapIndex(game.players[id].map);
-
     if (socket === undefined)
-        io.to(map_id).emit('GAME_PLAYER_UPDATE', data);
+        io.to(game.players[id].map_id).emit('GAME_PLAYER_UPDATE', data);
     else {
         if (broadcast === undefined || !broadcast) {
             if (socket.name == data.name)
@@ -1104,7 +1075,7 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
             socket.emit('GAME_PLAYER_UPDATE', data);
         }
         else
-            socket.broadcast.to(map_id).emit('GAME_PLAYER_UPDATE', data);
+            socket.broadcast.to(game.players[id].map_id).emit('GAME_PLAYER_UPDATE', data);
     }
 };
 
@@ -1129,13 +1100,9 @@ exports.removePlayer = function(id, socket)
     if (socket === undefined || socket.name === undefined)
         return;
 
-    //Grab map ID
-
-    let map_id = tiled.getMapIndex(game.players[id].map);
-
     //Broadcast player removal
 
-    socket.broadcast.to(map_id).emit('GAME_PLAYER_UPDATE', { name: socket.name, remove: true });
+    socket.broadcast.to(game.players[id].map_id).emit('GAME_PLAYER_UPDATE', { name: socket.name, remove: true });
 }
 
 //Sync NPC partially function, if socket is undefined it will be globally emitted

@@ -69,6 +69,8 @@ exports.addPlayer = function(socket)
                 player.character = game.characters[player.char_name];
                 player.socket = socket;
 
+                player.map_id = tiled.getMapIndex(player.map);
+
                 //Add player
 
                 let id = game.players.length;
@@ -142,13 +144,9 @@ exports.removePlayer = function(socket)
         if (id === -1)
             return;
 
-        //Get map index
-
-        let map = tiled.getMapIndex(this.players[id].map);
-
         //Remove NPC targets
 
-        npcs.removeNPCTargets(map, id, true);
+        npcs.removeNPCTargets(this.players[id].map_id, id, true);
 
         //Remove from clients
 
@@ -156,7 +154,7 @@ exports.removePlayer = function(socket)
 
         //Release owned world items
 
-        items.releaseWorldItemsFromOwner(map, this.players[id].name);
+        items.releaseWorldItemsFromOwner(this.players[id].map_id, this.players[id].name);
 
         //Save player
 
@@ -224,7 +222,7 @@ exports.savePlayer = function(name, data, cb)
 
     if (player === undefined)
         player = {
-            char_name: 'player',
+            char_name: properties.playerCharacter,
             map: properties.startingMap,
             pos: { X: 0, Y: 0 },
             moving: false,
@@ -647,11 +645,12 @@ exports.loadMap = function(socket, map)
 
     //Leave old room, if it is available
 
-    socket.leave(tiled.getMapIndex(game.players[id].map));
+    socket.leave(game.players[id].map_id);
 
     //Set new map
 
     this.players[id].map = map;
+    this.players[id].map_id = map_id;
 
     //Join map specific room
 

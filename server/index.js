@@ -54,6 +54,15 @@ game.loadAllCharacters(function() {
 //Check properties function
 
 function checkProperties(cb) {
+    //Check if player character is present
+
+    if (game.characters[properties.playerCharacter] == undefined)
+    {
+        output.give('Player character could not be found!');
+
+        return;
+    }
+
     //Check if starting map is present
 
     if (tiled.getMapIndex(properties.startingMap) === -1)
