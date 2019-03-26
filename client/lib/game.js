@@ -32,8 +32,7 @@ const game = {
             .Loops(function() {
                 animation.animateMoving(go);
 
-                if (go._nameplate.Position().X == 0 &&
-                    go._nameplate.Position().Y == 0)
+                if (go._nameplate.Position().X !== go.Size().W/2)
                     go._nameplate.Position(go.Size().W/2, -Math.floor(go.Size().H/5));
 
                 if (go._level !== undefined)
@@ -505,7 +504,8 @@ const game = {
     {
         if (this.players === undefined ||
             this.player === undefined ||
-            this.players[this.player] === undefined)
+            this.players[this.player] === undefined ||
+            !tiled.loading)
             return;
 
         if (this.players[this.player].COLLIDER !== undefined)
@@ -726,7 +726,7 @@ const game = {
                              0
                          );
 
-                     action._map = tiled.current;
+                         action._map = tiled.current;
                  });
              }
              else if (data.elements[i].type === 'projectile') {

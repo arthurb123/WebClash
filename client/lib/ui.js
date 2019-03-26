@@ -1123,7 +1123,7 @@ const ui = {
             ui.profile.hide();
             ui.journal.hide();
 
-            lx.CONTEXT.CONTROLLER.TARGET = undefined;
+            player.loseFocus();
 
             if (this.mouse == undefined)
                 this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
@@ -1226,7 +1226,7 @@ const ui = {
             ui.settings.hide();
             ui.journal.hide();
 
-            lx.CONTEXT.CONTROLLER.TARGET = undefined;
+            player.loseFocus();
 
             if (this.mouse == undefined)
                 this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
@@ -1289,7 +1289,7 @@ const ui = {
             ui.profile.hide();
             ui.settings.hide();
 
-            lx.CONTEXT.CONTROLLER.TARGET = undefined;
+            player.loseFocus();
 
             if (this.mouse == undefined)
                 this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {

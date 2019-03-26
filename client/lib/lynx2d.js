@@ -289,7 +289,11 @@ function Lynx2D() {
         CLEAR_EVENT: function(TYPE, EVENT, CB_ID) {
             for (var i = 0; i < this.EVENTS.length; i++) {
                 if (this.EVENTS[i].TYPE == TYPE && this.EVENTS[i].EVENT == EVENT) {
-                    this.EVENTS[i].CALLBACK[CB_ID] = undefined;
+                    if (CB_ID != undefined)
+                        this.EVENTS[i].CALLBACK[CB_ID] = undefined;
+                    else
+                        this.EVENTS.splice(i, 1);
+
                     return;
                 }
             }
@@ -328,28 +332,8 @@ function Lynx2D() {
                 }
 
                 return {
-                    X: Math.floor(Math.round(POS.X)-Math.round(this.FOCUS.Position().X)+lx.GetDimensions().width/2-this.FOCUS.SIZE.W/2),
-                    Y: Math.floor(Math.round(POS.Y)-Math.round(this.FOCUS.Position().Y)+lx.GetDimensions().height/2-this.FOCUS.SIZE.H/2)
-                };
-            }
-        },
-        UNTRANSLATE_FROM_FOCUS: function(POS) {
-            if (this.FOCUS == undefined) return POS;
-            else {
-                if (this.FOCUS.SIZE == undefined)
-                    this.FOCUS.SIZE = {
-                        W: 0,
-                        H: 0
-                    };
-                else if (this.FOCUS.SIZE.W == undefined || this.FOCUS.SIZE.H == undefined)
-                {
-                    this.FOCUS.SIZE.W = 0;
-                    this.FOCUS.SIZE.H = 0;
-                }
-
-                return {
-                    X: Math.floor(Math.round(POS.X)+Math.round(this.FOCUS.Position().X)-lx.GetDimensions().width/2+this.FOCUS.SIZE.W/2),
-                    Y: Math.floor(Math.round(POS.Y)+Math.round(this.FOCUS.Position().Y)-lx.GetDimensions().height/2+this.FOCUS.SIZE.H/2)
+                    X: Math.round(POS.X-this.FOCUS.Position().X+lx.GetDimensions().width/2-this.FOCUS.SIZE.W/2),
+                    Y: Math.round(POS.Y-this.FOCUS.Position().Y+lx.GetDimensions().height/2-this.FOCUS.SIZE.H/2)
                 };
             }
         },
@@ -1303,42 +1287,60 @@ function Lynx2D() {
             return this;
         };
 
-        this.SetTopDownController = function(x_speed, y_speed, max_vel) {
+        this.SetTopDownController = function(max_vel) {
             lx.CONTEXT.CONTROLLER.TARGET = this;
 
-            lx.OnKey('W', function() {
-                if (lx.CONTEXT.CONTROLLER.TARGET != undefined)
+            lx.ClearKey('W');
+            lx.OnKey('W', function(data) {
+                if (lx.CONTEXT.CONTROLLER.TARGET != undefined) {
+                    if (data.state === 0) {
+                        lx.CONTEXT.CONTROLLER.TARGET.MOVEMENT.VY = 0;
+                        return;
+                    }
+
                     if (ui === undefined || !ui.chat.isTyping())
-                        lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(0, -y_speed);
+                        lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(0, -max_vel);
+                }
             });
 
-            lx.OnKey('A', function() {
-                if (lx.CONTEXT.CONTROLLER.TARGET != undefined)
+            lx.ClearKey('A');
+            lx.OnKey('A', function(data) {
+                if (lx.CONTEXT.CONTROLLER.TARGET != undefined) {
+                    if (data.state === 0) {
+                        lx.CONTEXT.CONTROLLER.TARGET.MOVEMENT.VX = 0;
+                        return;
+                    }
+
                     if (ui === undefined || !ui.chat.isTyping())
-                        lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(-x_speed, 0);
+                        lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(-max_vel, 0);
+                }
             });
 
-            lx.OnKey('S', function() {
-                if (lx.CONTEXT.CONTROLLER.TARGET != undefined)
+            lx.ClearKey('S');
+            lx.OnKey('S', function(data) {
+                if (lx.CONTEXT.CONTROLLER.TARGET != undefined) {
+                    if (data.state === 0) {
+                        lx.CONTEXT.CONTROLLER.TARGET.MOVEMENT.VY = 0;
+                        return;
+                    }
+
                     if (ui === undefined || !ui.chat.isTyping())
-                        lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(0, y_speed);
+                        lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(0, max_vel);
+                }
             });
 
-            lx.OnKey('D', function() {
-                if (lx.CONTEXT.CONTROLLER.TARGET != undefined)
+            lx.ClearKey('D');
+            lx.OnKey('D', function(data) {
+                if (lx.CONTEXT.CONTROLLER.TARGET != undefined) {
+                    if (data.state === 0) {
+                        lx.CONTEXT.CONTROLLER.TARGET.MOVEMENT.VX = 0;
+                        return;
+                    }
+
                     if (ui === undefined || !ui.chat.isTyping())
-                        lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(x_speed, 0);
+                        lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(max_vel, 0);
+                }
             });
-
-            this.MaxVelocity(max_vel);
-
-            return this;
-        };
-
-        this.SetSideWaysController = function(speed, max_vel) {
-            lx.CONTEXT.CONTROLLER.TARGET = this;
-            lx.OnKey('A', function() { lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(-speed, 0); });
-            lx.OnKey('D', function() { lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(speed, 0); });
 
             this.MaxVelocity(max_vel);
 

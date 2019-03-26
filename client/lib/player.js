@@ -19,6 +19,12 @@ const player = {
         cur: 0,
         standard: 12
     },
+    loseFocus: function()
+    {
+        game.players[game.player].Movement(0, 0);
+
+        lx.CONTEXT.CONTROLLER.TARGET = undefined;
+    },
     propertyInteraction:
     {
         cooldown: {
@@ -53,6 +59,7 @@ const player = {
 
         go.Loops(player.update)
           .Draws(player.draws)
+          .MovementDecelerates(false)
           .Focus();
 
         go.name = name;
@@ -97,6 +104,8 @@ const player = {
     },
     setCollider: function(collider)
     {
+        game.players[game.player].ClearCollider();
+
         game.players[game.player].ApplyCollider(
             new lx.Collider(
                 collider.x,
@@ -110,8 +119,6 @@ const player = {
     setMovement: function(movement)
     {
         game.players[game.player].SetTopDownController(
-            movement.acceleration,
-            movement.acceleration,
             movement.max
         );
     },

@@ -121,6 +121,9 @@ const ui = {
             lx.CONTEXT.CONTROLLER.KEYS['s'] =
             lx.CONTEXT.CONTROLLER.KEYS['d'] =
                 false;
+
+            if (game.players[game.player] != undefined)
+                game.players[game.player].Movement(0, 0);
         }
     },
     fullscreen:

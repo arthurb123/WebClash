@@ -81,7 +81,6 @@ namespace WebClashServer.Editors
             collWidth.Value = current.collider.width;
             collHeight.Value = current.collider.height;
 
-            acceleration.Value = (decimal)current.movement.acceleration;
             maxVelocity.Value = (decimal)current.movement.max;
 
             canvas.Invalidate();
@@ -272,11 +271,6 @@ namespace WebClashServer.Editors
             canvas.Invalidate();
         }
 
-        private void acceleration_ValueChanged(object sender, EventArgs e)
-        {
-            current.movement.acceleration = float.Parse(acceleration.Value.ToString("0.00"));
-        }
-
         private void maxVelocity_ValueChanged(object sender, EventArgs e)
         {
             current.movement.max = float.Parse(maxVelocity.Value.ToString("0.00"));
@@ -384,8 +378,6 @@ namespace WebClashServer.Editors
 
     public class Movement
     {
-        public float acceleration = .25f;
-
         public float max = 1.50f;
     }
 

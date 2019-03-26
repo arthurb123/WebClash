@@ -64,11 +64,9 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.maxVelocity = new System.Windows.Forms.NumericUpDown();
             this.label12 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.acceleration = new System.Windows.Forms.NumericUpDown();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.onHitSounds = new System.Windows.Forms.Button();
             this.onDeathSounds = new System.Windows.Forms.Button();
+            this.onHitSounds = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).BeginInit();
@@ -82,7 +80,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.collWidth)).BeginInit();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxVelocity)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.acceleration)).BeginInit();
             this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -498,12 +495,10 @@
             // 
             this.groupBox4.Controls.Add(this.maxVelocity);
             this.groupBox4.Controls.Add(this.label12);
-            this.groupBox4.Controls.Add(this.label15);
-            this.groupBox4.Controls.Add(this.acceleration);
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox4.Location = new System.Drawing.Point(15, 257);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(373, 63);
+            this.groupBox4.Size = new System.Drawing.Size(373, 59);
             this.groupBox4.TabIndex = 18;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Movement";
@@ -516,14 +511,14 @@
             0,
             0,
             65536});
-            this.maxVelocity.Location = new System.Drawing.Point(265, 25);
+            this.maxVelocity.Location = new System.Drawing.Point(189, 22);
             this.maxVelocity.Maximum = new decimal(new int[] {
             640,
             0,
             0,
             0});
             this.maxVelocity.Name = "maxVelocity";
-            this.maxVelocity.Size = new System.Drawing.Size(76, 21);
+            this.maxVelocity.Size = new System.Drawing.Size(87, 21);
             this.maxVelocity.TabIndex = 15;
             this.maxVelocity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.maxVelocity.ValueChanged += new System.EventHandler(this.maxVelocity_ValueChanged);
@@ -531,61 +526,22 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(184, 27);
+            this.label12.Location = new System.Drawing.Point(100, 25);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(75, 15);
             this.label12.TabIndex = 14;
             this.label12.Text = "Max Velocity";
             // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(24, 27);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(74, 15);
-            this.label15.TabIndex = 8;
-            this.label15.Text = "Acceleration";
-            // 
-            // acceleration
-            // 
-            this.acceleration.DecimalPlaces = 2;
-            this.acceleration.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.acceleration.Location = new System.Drawing.Point(99, 25);
-            this.acceleration.Maximum = new decimal(new int[] {
-            640,
-            0,
-            0,
-            0});
-            this.acceleration.Name = "acceleration";
-            this.acceleration.Size = new System.Drawing.Size(76, 21);
-            this.acceleration.TabIndex = 13;
-            this.acceleration.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.acceleration.ValueChanged += new System.EventHandler(this.acceleration_ValueChanged);
-            // 
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.onDeathSounds);
             this.groupBox5.Controls.Add(this.onHitSounds);
-            this.groupBox5.Location = new System.Drawing.Point(15, 322);
+            this.groupBox5.Location = new System.Drawing.Point(14, 319);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(373, 46);
             this.groupBox5.TabIndex = 19;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Sounds";
-            // 
-            // onHitSounds
-            // 
-            this.onHitSounds.Location = new System.Drawing.Point(108, 14);
-            this.onHitSounds.Name = "onHitSounds";
-            this.onHitSounds.Size = new System.Drawing.Size(76, 23);
-            this.onHitSounds.TabIndex = 0;
-            this.onHitSounds.Text = "On Hit";
-            this.onHitSounds.UseVisualStyleBackColor = true;
-            this.onHitSounds.Click += new System.EventHandler(this.onHitSounds_Click);
             // 
             // onDeathSounds
             // 
@@ -596,6 +552,16 @@
             this.onDeathSounds.Text = "On Death";
             this.onDeathSounds.UseVisualStyleBackColor = true;
             this.onDeathSounds.Click += new System.EventHandler(this.onDeathSounds_Click);
+            // 
+            // onHitSounds
+            // 
+            this.onHitSounds.Location = new System.Drawing.Point(108, 14);
+            this.onHitSounds.Name = "onHitSounds";
+            this.onHitSounds.Size = new System.Drawing.Size(76, 23);
+            this.onHitSounds.TabIndex = 0;
+            this.onHitSounds.Text = "On Hit";
+            this.onHitSounds.UseVisualStyleBackColor = true;
+            this.onHitSounds.Click += new System.EventHandler(this.onHitSounds_Click);
             // 
             // Characters
             // 
@@ -638,7 +604,6 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxVelocity)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.acceleration)).EndInit();
             this.groupBox5.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -679,8 +644,6 @@
         private System.Windows.Forms.NumericUpDown collWidth;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.NumericUpDown acceleration;
         private System.Windows.Forms.NumericUpDown maxVelocity;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.GroupBox groupBox5;

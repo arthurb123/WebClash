@@ -10,4 +10,5 @@ Available commands:<br>
 /sendmap <i>player</i> <i>map</i><br>
 /spawnnpc <i>name</i><br>
 /giveitem <i>name</i><br>
+/setcharacter <i>name</i><br>
 /shutdown

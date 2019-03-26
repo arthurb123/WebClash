@@ -297,20 +297,16 @@ exports.updateNPCMovement = function(map, id)
         switch (this.onMap[map][id].direction)
         {
             case 0:
-                if (this.onMap[map][id].movement.vel.y < this.onMap[map][id].data.character.movement.max)
-                    this.onMap[map][id].movement.vel.y += this.onMap[map][id].data.character.movement.acceleration;
+                this.onMap[map][id].movement.vel.y = this.onMap[map][id].data.character.movement.max;
                 break;
             case 1:
-                if (this.onMap[map][id].movement.vel.x > -this.onMap[map][id].data.character.movement.max)
-                    this.onMap[map][id].movement.vel.x -= this.onMap[map][id].data.character.movement.acceleration;
+                this.onMap[map][id].movement.vel.x = -this.onMap[map][id].data.character.movement.max;
                 break;
             case 2:
-                if (this.onMap[map][id].movement.vel.x < this.onMap[map][id].data.character.movement.max)
-                    this.onMap[map][id].movement.vel.x += this.onMap[map][id].data.character.movement.acceleration;
+                this.onMap[map][id].movement.vel.x = this.onMap[map][id].data.character.movement.max;
                 break;
             case 3:
-                if (this.onMap[map][id].movement.vel.y > -this.onMap[map][id].data.character.movement.max)
-                    this.onMap[map][id].movement.vel.y -= this.onMap[map][id].data.character.movement.acceleration;
+                this.onMap[map][id].movement.vel.y = -this.onMap[map][id].data.character.movement.max;
                 break;
         }
 

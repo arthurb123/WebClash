@@ -13,8 +13,7 @@
     "height": 12
   },
   "movement": {
-    "acceleration": 0.35,
-    "max": 1.6
+    "max": 1.65
   },
   "sounds": {
     "hitSounds": [

@@ -204,6 +204,23 @@ exports.handleCommand = function(socket, text)
                 items.addPlayerItem(game.players[p].socket, p, item);
 
                 return 'success';
+            //Change character command
+            case 'setcharacter':
+                if (arguments.length < 1)
+                    return 'wrong';
+
+                let char = arguments[0];
+
+                if (game.characters[char] == undefined)
+                    return;
+
+                game.players[p].char_name = char;
+                game.players[p].character = game.characters[game.players[p].char_name];
+
+                server.syncPlayerPartially(p, 'character', game.players[p].socket, false);
+                server.syncPlayerPartially(p, 'character');
+
+                return 'success';
             //Shutdown command
             case 'shutdown':
                 exitHandler();
