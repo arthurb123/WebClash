@@ -736,21 +736,25 @@ const game = {
                      function() {
                          let angle = 0;
 
-                         if (data.elements[i].projectileSpeed.y != 0 &&
-                             data.elements[i].projectileSpeed.x != 0)
-                                 angle = -Math.atan2(data.elements[i].projectileSpeed.x, data.elements[i].projectileSpeed.y);
+                         if (data.elements[i].rotates) {
+                             if (data.elements[i].projectileSpeed.y != 0 &&
+                                 data.elements[i].projectileSpeed.x != 0)
+                                     angle = -Math.atan2(data.elements[i].projectileSpeed.x, data.elements[i].projectileSpeed.y);
 
-                         if (angle == 0) {
-                             if (data.elements[i].projectileSpeed.x == 0 &&
-                                 data.elements[i].projectileSpeed.y < 0)
-                                 angle = Math.PI;
+                             if (angle == 0) {
+                                 if (data.elements[i].projectileSpeed.x == 0 &&
+                                     data.elements[i].projectileSpeed.y < 0)
+                                     angle = Math.PI;
 
-                             else if (data.elements[i].projectileSpeed.y == 0) {
-                                 if (data.elements[i].projectileSpeed.x < 0)
-                                     angle = Math.PI/2;
-                                 else if (data.elements[i].projectileSpeed.x > 0)
-                                     angle = -Math.PI/2;
+                                 else if (data.elements[i].projectileSpeed.y == 0) {
+                                     if (data.elements[i].projectileSpeed.x < 0)
+                                         angle = Math.PI/2;
+                                     else if (data.elements[i].projectileSpeed.x > 0)
+                                         angle = -Math.PI/2;
+                                 }
                              }
+
+                             sprite.Rotation(angle);
                          }
 
                          let projectile = new lx.GameObject(
@@ -771,7 +775,7 @@ const game = {
                                          0,
                                          data.elements[i].w,
                                          data.elements[i].h
-                                     ));
+                                     ).Rotation(angle));
                              if (data.elements[i].direction === 'vertical')
                                  for (let y = 0; y < sprite.Size().H/data.elements[i].h; y++)
                                      sprites.push(new lx.Sprite(data.elements[i].src,
@@ -779,7 +783,7 @@ const game = {
                                          y*data.elements[i].h,
                                          data.elements[i].w,
                                          data.elements[i].h
-                                     ));
+                                     ).Rotation(angle));
 
                              if (sprites.length != 0) {
                                  projectile.ShowAnimation(new lx.Animation(sprites, data.elements[i].speed));

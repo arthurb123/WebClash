@@ -875,9 +875,9 @@ const ui = {
         items: [],
         create: function() {
             view.dom.innerHTML +=
-                '<div id="loot_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 25%; transform: translate(-50%, -50%); width: auto; max-width: 150px; height: auto; max-height: 195px; text-align: center; overflow-y: auto;">' +
+                '<div id="loot_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 25%; transform: translate(-50%, -50%); width: auto; max-width: 150px; height: auto; max-height: 195px; text-align: center;">' +
                     '<p class="info" style="font-size: 14px; margin: 3px;">Loot</p>' +
-                    '<div id="loot_box_content" style="text-align: left;"></div>' +
+                    '<div id="loot_box_content" style="text-align: left; overflow-y: auto; width: 100%;  height: 100%; max-height: 150px; padding: 2px;"></div>' +
                     '<p class="link" onclick="ui.loot.hide()" style="font-size: 12px; color: #ff3333;">Close</p>'
                 '</div>';
         },

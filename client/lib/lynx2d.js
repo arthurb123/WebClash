@@ -1042,7 +1042,7 @@ function Lynx2D() {
         };
 
         this.ShowColorOverlay = function(duration, color) {
-            if (this.COLOR_OVERLAY == undefined && color == undefined)
+            if (this.COLOR_OVERLAY == undefined && color == undefined || this.CLIP.X == undefined || this.CLIP.Y == undefined)
                 return this;
 
             this.ColorOverlay(color);

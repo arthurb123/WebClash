@@ -1027,10 +1027,10 @@ const ui = {
         items: [],
         create: function() {
             view.dom.innerHTML +=
-                '<div id="loot_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 25%; transform: translate(-50%, -50%); width: auto; max-width: 120px; height: auto; text-align: center; padding-top: 1px; padding-bottom: 1px;">' +
+                '<div id="loot_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 25%; transform: translate(-50%, -50%); width: auto; max-width: 120px; height: auto; max-height: 195px; text-align: center;">' +
                     '<p class="info" style="font-size: 12px; margin: 2px;">Loot</p>' +
-                    '<div id="loot_box_content" style="text-align: left;"></div>' +
-                    '<p class="link" onclick="ui.loot.hide()" style="font-size: 11px; color: red;">Close</p>'
+                    '<div id="loot_box_content" style="text-align: left; overflow-y: auto; width: 100%;  height: 100%; max-height: 150px;"></div>' +
+                    '<p class="link" onclick="ui.loot.hide()" style="font-size: 12px; color: #ff3333;">Close</p>'
                 '</div>';
         },
         reset: function() {
@@ -1411,7 +1411,7 @@ const ui = {
         hide: function() {
             if (!this.visible)
                 return;
-                
+
             lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
 
             lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);

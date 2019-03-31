@@ -23,6 +23,7 @@
       "animated": false,
       "speed": 8,
       "direction": "vertical",
+      "rotates": true,
       "projectileSpeed": 5,
       "projectileDistance": 8
     },
@@ -36,6 +37,7 @@
       "animated": false,
       "speed": 8,
       "direction": "vertical",
+      "rotates": true,
       "projectileSpeed": 5,
       "projectileDistance": 8
     },
@@ -49,6 +51,7 @@
       "animated": false,
       "speed": 8,
       "direction": "vertical",
+      "rotates": true,
       "projectileSpeed": 5,
       "projectileDistance": 8
     }

@@ -414,6 +414,10 @@ namespace WebClashServer.Editors
             animationEnabled.Checked = current.elements[curElement].animated;
             speed.Enabled = current.elements[curElement].animated;
             direction.Enabled = current.elements[curElement].animated;
+            projectileRotates.Checked = current.elements[curElement].rotates;
+
+            projectileSpeed.Value = current.elements[curElement].projectileSpeed;
+            projectileDistance.Value = current.elements[curElement].projectileDistance;
 
             if (current.elements[curElement].direction == "horizontal")
                 direction.SelectedItem = "Horizontal";
@@ -442,14 +446,6 @@ namespace WebClashServer.Editors
             current.elements[curElement].src = source.Text;
 
             canvas.Invalidate();
-        }
-        
-        private void animationEnabled_CheckedChanged(object sender, EventArgs e)
-        {
-            current.elements[curElement].animated = animationEnabled.Checked;
-
-            speed.Enabled = current.elements[curElement].animated;
-            direction.Enabled = current.elements[curElement].animated;
         }
 
         private void speed_ValueChanged(object sender, EventArgs e)
@@ -596,9 +592,25 @@ namespace WebClashServer.Editors
 
                 propertyType.SelectedItem = char.ToUpper(current.elements[curElement].type[0]) + current.elements[curElement].type.Substring(1, current.elements[curElement].type.Length - 1);
 
+                animationEnabled.Checked = current.elements[curElement].animated;
+                projectileRotates.Checked = current.elements[curElement].rotates;
+
                 projectileSpeed.Value = current.elements[curElement].projectileSpeed;
                 projectileDistance.Value = current.elements[curElement].projectileDistance;
             }
+        }
+        
+        private void animationEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            current.elements[curElement].animated = animationEnabled.Checked;
+
+            speed.Enabled = current.elements[curElement].animated;
+            direction.Enabled = current.elements[curElement].animated;
+        }
+
+        private void projectileRotates_CheckedChanged(object sender, EventArgs e)
+        {
+            current.elements[curElement].rotates = projectileRotates.Checked;
         }
 
         private void projectileSpeed_ValueChanged(object sender, EventArgs e)
@@ -738,8 +750,8 @@ namespace WebClashServer.Editors
         public int speed = 8;
         public string direction = "horizontal";
 
+        public bool rotates = true;
         public int projectileSpeed = 1;
-
         public int projectileDistance = 0;
     }
 
