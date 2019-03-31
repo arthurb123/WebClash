@@ -48,6 +48,7 @@ namespace WebClashServer.Editors
                     current.killObjective = new QuestObjectiveKill();
 
                 killObjectivePanel.Visible = true;
+                gatherObjectivePanel.Visible = false;
 
                 killNpcSelection.SelectedItem = current.killObjective.npc;
                 killNpcAmount.Value = current.killObjective.amount;
@@ -59,6 +60,7 @@ namespace WebClashServer.Editors
                     current.gatherObjective = new QuestObjectiveGather();
 
                 gatherObjectivePanel.Visible = true;
+                killObjectivePanel.Visible = false;
 
                 itemList.SelectedItem = current.gatherObjective.item;
                 gatherAmount.Value = current.gatherObjective.amount;

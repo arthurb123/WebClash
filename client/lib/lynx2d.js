@@ -262,7 +262,7 @@ function Lynx2D() {
                     for (var ii = 0; ii <= this.EVENTS[i].CALLBACK.length; ii++)
                         if (this.EVENTS[i].CALLBACK[ii] == undefined) {
                             this.EVENTS[i].CALLBACK[ii] = CALLBACK;
-                            
+
                             return ii;
                         }
 

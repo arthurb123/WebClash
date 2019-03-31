@@ -411,6 +411,10 @@ namespace WebClashServer.Editors
 
             source.Text = current.elements[curElement].src;
 
+            animationEnabled.Checked = current.elements[curElement].animated;
+            speed.Enabled = current.elements[curElement].animated;
+            direction.Enabled = current.elements[curElement].animated;
+
             if (current.elements[curElement].direction == "horizontal")
                 direction.SelectedItem = "Horizontal";
             else if (current.elements[curElement].direction == "vertical")
@@ -438,6 +442,14 @@ namespace WebClashServer.Editors
             current.elements[curElement].src = source.Text;
 
             canvas.Invalidate();
+        }
+        
+        private void animationEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            current.elements[curElement].animated = animationEnabled.Checked;
+
+            speed.Enabled = current.elements[curElement].animated;
+            direction.Enabled = current.elements[curElement].animated;
         }
 
         private void speed_ValueChanged(object sender, EventArgs e)
@@ -613,9 +625,15 @@ namespace WebClashServer.Editors
             current.elements[curElement].type = propertyType.SelectedItem.ToString().ToLower();
 
             if (current.elements[curElement].type == "projectile")
+            {
                 projectilePanel.Visible = true;
+            }
             else
+            {
+                animationEnabled.Checked = true;
+
                 projectilePanel.Visible = false;
+            }
 
             canvas.Invalidate();
         }
@@ -716,6 +734,7 @@ namespace WebClashServer.Editors
 
         public string src = "";
 
+        public bool animated = true;
         public int speed = 8;
         public string direction = "horizontal";
 

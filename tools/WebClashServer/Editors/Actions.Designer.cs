@@ -36,14 +36,6 @@
             this.charSelect = new System.Windows.Forms.ComboBox();
             this.canvas = new System.Windows.Forms.PictureBox();
             this.properties = new System.Windows.Forms.GroupBox();
-            this.behaviourPanel = new System.Windows.Forms.Panel();
-            this.projectilePanel = new System.Windows.Forms.Panel();
-            this.projectileDistance = new System.Windows.Forms.NumericUpDown();
-            this.projectileSpeed = new System.Windows.Forms.NumericUpDown();
-            this.label20 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.propertyType = new System.Windows.Forms.ComboBox();
-            this.label18 = new System.Windows.Forms.Label();
             this.appearancePanel = new System.Windows.Forms.Panel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -53,11 +45,20 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.animation = new System.Windows.Forms.GroupBox();
+            this.animationEnabled = new System.Windows.Forms.CheckBox();
             this.direction = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.speed = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.propertyView = new System.Windows.Forms.ComboBox();
+            this.behaviourPanel = new System.Windows.Forms.Panel();
+            this.projectilePanel = new System.Windows.Forms.Panel();
+            this.projectileDistance = new System.Windows.Forms.NumericUpDown();
+            this.projectileSpeed = new System.Windows.Forms.NumericUpDown();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.propertyType = new System.Windows.Forms.ComboBox();
+            this.label18 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -90,16 +91,16 @@
             this.label17 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.properties.SuspendLayout();
-            this.behaviourPanel.SuspendLayout();
-            this.projectilePanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.projectileDistance)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.projectileSpeed)).BeginInit();
             this.appearancePanel.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).BeginInit();
             this.animation.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.speed)).BeginInit();
+            this.behaviourPanel.SuspendLayout();
+            this.projectilePanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.projectileDistance)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.projectileSpeed)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.vitality)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wisdom)).BeginInit();
@@ -160,8 +161,8 @@
             // 
             // properties
             // 
-            this.properties.Controls.Add(this.behaviourPanel);
             this.properties.Controls.Add(this.appearancePanel);
+            this.properties.Controls.Add(this.behaviourPanel);
             this.properties.Controls.Add(this.propertyView);
             this.properties.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.properties.Location = new System.Drawing.Point(145, 184);
@@ -172,111 +173,13 @@
             this.properties.Text = "Properties";
             this.properties.Visible = false;
             // 
-            // behaviourPanel
-            // 
-            this.behaviourPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.behaviourPanel.Controls.Add(this.projectilePanel);
-            this.behaviourPanel.Controls.Add(this.propertyType);
-            this.behaviourPanel.Controls.Add(this.label18);
-            this.behaviourPanel.Location = new System.Drawing.Point(9, 38);
-            this.behaviourPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.behaviourPanel.Name = "behaviourPanel";
-            this.behaviourPanel.Size = new System.Drawing.Size(239, 142);
-            this.behaviourPanel.TabIndex = 18;
-            this.behaviourPanel.Visible = false;
-            // 
-            // projectilePanel
-            // 
-            this.projectilePanel.Controls.Add(this.projectileDistance);
-            this.projectilePanel.Controls.Add(this.projectileSpeed);
-            this.projectilePanel.Controls.Add(this.label20);
-            this.projectilePanel.Controls.Add(this.label19);
-            this.projectilePanel.Location = new System.Drawing.Point(9, 47);
-            this.projectilePanel.Name = "projectilePanel";
-            this.projectilePanel.Size = new System.Drawing.Size(221, 89);
-            this.projectilePanel.TabIndex = 17;
-            this.projectilePanel.Visible = false;
-            // 
-            // projectileDistance
-            // 
-            this.projectileDistance.Location = new System.Drawing.Point(112, 44);
-            this.projectileDistance.Name = "projectileDistance";
-            this.projectileDistance.Size = new System.Drawing.Size(81, 21);
-            this.projectileDistance.TabIndex = 5;
-            this.projectileDistance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.projectileDistance.ValueChanged += new System.EventHandler(this.projectileDistance_ValueChanged);
-            // 
-            // projectileSpeed
-            // 
-            this.projectileSpeed.Location = new System.Drawing.Point(113, 11);
-            this.projectileSpeed.Maximum = new decimal(new int[] {
-            50,
-            0,
-            0,
-            0});
-            this.projectileSpeed.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.projectileSpeed.Name = "projectileSpeed";
-            this.projectileSpeed.Size = new System.Drawing.Size(81, 21);
-            this.projectileSpeed.TabIndex = 4;
-            this.projectileSpeed.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.projectileSpeed.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.projectileSpeed.ValueChanged += new System.EventHandler(this.projectileSpeed_ValueChanged);
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(14, 46);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(85, 30);
-            this.label20.TabIndex = 3;
-            this.label20.Text = "Max Distance \r\n(Tiles)";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(14, 11);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(43, 30);
-            this.label19.TabIndex = 2;
-            this.label19.Text = "Speed\r\n(1-50)";
-            // 
-            // propertyType
-            // 
-            this.propertyType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.propertyType.FormattingEnabled = true;
-            this.propertyType.Items.AddRange(new object[] {
-            "Static",
-            "Projectile"});
-            this.propertyType.Location = new System.Drawing.Point(82, 17);
-            this.propertyType.Name = "propertyType";
-            this.propertyType.Size = new System.Drawing.Size(121, 23);
-            this.propertyType.TabIndex = 1;
-            this.propertyType.SelectedIndexChanged += new System.EventHandler(this.propertyType_SelectedIndexChanged);
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(33, 21);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(33, 15);
-            this.label18.TabIndex = 0;
-            this.label18.Text = "Type";
-            // 
             // appearancePanel
             // 
             this.appearancePanel.AutoSize = true;
             this.appearancePanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.appearancePanel.Controls.Add(this.groupBox3);
             this.appearancePanel.Controls.Add(this.animation);
-            this.appearancePanel.Location = new System.Drawing.Point(9, 41);
+            this.appearancePanel.Location = new System.Drawing.Point(9, 38);
             this.appearancePanel.Margin = new System.Windows.Forms.Padding(0);
             this.appearancePanel.Name = "appearancePanel";
             this.appearancePanel.Size = new System.Drawing.Size(239, 142);
@@ -394,6 +297,17 @@
             this.animation.TabStop = false;
             this.animation.Text = "Animation";
             // 
+            // animationEnabled
+            // 
+            this.animationEnabled.AutoSize = true;
+            this.animationEnabled.Location = new System.Drawing.Point(72, 4);
+            this.animationEnabled.Name = "animationEnabled";
+            this.animationEnabled.Size = new System.Drawing.Size(78, 19);
+            this.animationEnabled.TabIndex = 7;
+            this.animationEnabled.Text = "Animated";
+            this.animationEnabled.UseVisualStyleBackColor = true;
+            this.animationEnabled.CheckedChanged += new System.EventHandler(this.animationEnabled_CheckedChanged);
+            // 
             // direction
             // 
             this.direction.DisplayMember = "0";
@@ -401,16 +315,16 @@
             this.direction.Items.AddRange(new object[] {
             "Horizontal",
             "Vertical"});
-            this.direction.Location = new System.Drawing.Point(106, 42);
+            this.direction.Location = new System.Drawing.Point(107, 42);
             this.direction.Name = "direction";
-            this.direction.Size = new System.Drawing.Size(119, 23);
+            this.direction.Size = new System.Drawing.Size(118, 23);
             this.direction.TabIndex = 6;
             this.direction.SelectedIndexChanged += new System.EventHandler(this.direction_SelectedIndexChanged);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 45);
+            this.label5.Location = new System.Drawing.Point(9, 46);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(56, 15);
             this.label5.TabIndex = 5;
@@ -418,14 +332,14 @@
             // 
             // speed
             // 
-            this.speed.Location = new System.Drawing.Point(106, 15);
+            this.speed.Location = new System.Drawing.Point(152, 14);
             this.speed.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.speed.Name = "speed";
-            this.speed.Size = new System.Drawing.Size(63, 21);
+            this.speed.Size = new System.Drawing.Size(73, 21);
             this.speed.TabIndex = 4;
             this.speed.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.speed.Value = new decimal(new int[] {
@@ -438,7 +352,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 17);
+            this.label4.Location = new System.Drawing.Point(9, 20);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(43, 15);
             this.label4.TabIndex = 3;
@@ -456,6 +370,105 @@
             this.propertyView.Size = new System.Drawing.Size(121, 23);
             this.propertyView.TabIndex = 10;
             this.propertyView.SelectedIndexChanged += new System.EventHandler(this.propertyView_SelectedIndexChanged);
+            // 
+            // behaviourPanel
+            // 
+            this.behaviourPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.behaviourPanel.Controls.Add(this.projectilePanel);
+            this.behaviourPanel.Controls.Add(this.propertyType);
+            this.behaviourPanel.Controls.Add(this.label18);
+            this.behaviourPanel.Location = new System.Drawing.Point(9, 38);
+            this.behaviourPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.behaviourPanel.Name = "behaviourPanel";
+            this.behaviourPanel.Size = new System.Drawing.Size(239, 142);
+            this.behaviourPanel.TabIndex = 18;
+            this.behaviourPanel.Visible = false;
+            // 
+            // projectilePanel
+            // 
+            this.projectilePanel.Controls.Add(this.projectileDistance);
+            this.projectilePanel.Controls.Add(this.animationEnabled);
+            this.projectilePanel.Controls.Add(this.projectileSpeed);
+            this.projectilePanel.Controls.Add(this.label20);
+            this.projectilePanel.Controls.Add(this.label19);
+            this.projectilePanel.Location = new System.Drawing.Point(9, 43);
+            this.projectilePanel.Name = "projectilePanel";
+            this.projectilePanel.Size = new System.Drawing.Size(221, 93);
+            this.projectilePanel.TabIndex = 17;
+            this.projectilePanel.Visible = false;
+            // 
+            // projectileDistance
+            // 
+            this.projectileDistance.Location = new System.Drawing.Point(119, 61);
+            this.projectileDistance.Name = "projectileDistance";
+            this.projectileDistance.Size = new System.Drawing.Size(81, 21);
+            this.projectileDistance.TabIndex = 5;
+            this.projectileDistance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.projectileDistance.ValueChanged += new System.EventHandler(this.projectileDistance_ValueChanged);
+            // 
+            // projectileSpeed
+            // 
+            this.projectileSpeed.Location = new System.Drawing.Point(119, 29);
+            this.projectileSpeed.Maximum = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.projectileSpeed.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.projectileSpeed.Name = "projectileSpeed";
+            this.projectileSpeed.Size = new System.Drawing.Size(81, 21);
+            this.projectileSpeed.TabIndex = 4;
+            this.projectileSpeed.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.projectileSpeed.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.projectileSpeed.ValueChanged += new System.EventHandler(this.projectileSpeed_ValueChanged);
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(20, 55);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(85, 30);
+            this.label20.TabIndex = 3;
+            this.label20.Text = "Max Distance \r\n(Tiles)";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(21, 25);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(43, 30);
+            this.label19.TabIndex = 2;
+            this.label19.Text = "Speed\r\n(1-50)";
+            // 
+            // propertyType
+            // 
+            this.propertyType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.propertyType.FormattingEnabled = true;
+            this.propertyType.Items.AddRange(new object[] {
+            "Static",
+            "Projectile"});
+            this.propertyType.Location = new System.Drawing.Point(81, 11);
+            this.propertyType.Name = "propertyType";
+            this.propertyType.Size = new System.Drawing.Size(121, 23);
+            this.propertyType.TabIndex = 1;
+            this.propertyType.SelectedIndexChanged += new System.EventHandler(this.propertyType_SelectedIndexChanged);
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(37, 16);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(33, 15);
+            this.label18.TabIndex = 0;
+            this.label18.Text = "Type";
             // 
             // button2
             // 
@@ -835,12 +848,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
             this.properties.ResumeLayout(false);
             this.properties.PerformLayout();
-            this.behaviourPanel.ResumeLayout(false);
-            this.behaviourPanel.PerformLayout();
-            this.projectilePanel.ResumeLayout(false);
-            this.projectilePanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.projectileDistance)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.projectileSpeed)).EndInit();
             this.appearancePanel.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
@@ -849,6 +856,12 @@
             this.animation.ResumeLayout(false);
             this.animation.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.speed)).EndInit();
+            this.behaviourPanel.ResumeLayout(false);
+            this.behaviourPanel.PerformLayout();
+            this.projectilePanel.ResumeLayout(false);
+            this.projectilePanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.projectileDistance)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.projectileSpeed)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.vitality)).EndInit();
@@ -927,5 +940,6 @@
         private System.Windows.Forms.NumericUpDown projectileDistance;
         private System.Windows.Forms.NumericUpDown projectileSpeed;
         private System.Windows.Forms.Button editSounds;
+        private System.Windows.Forms.CheckBox animationEnabled;
     }
 }

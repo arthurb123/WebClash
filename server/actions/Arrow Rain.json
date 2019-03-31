@@ -20,36 +20,40 @@
       "h": 32,
       "type": "projectile",
       "src": "res/actions/12.png",
+      "animated": false,
       "speed": 8,
       "direction": "vertical",
       "projectileSpeed": 5,
       "projectileDistance": 8
     },
     {
-      "x": 108,
-      "y": 183,
+      "x": 138,
+      "y": 189,
       "w": 32,
       "h": 32,
       "type": "projectile",
       "src": "res/actions/12.png",
+      "animated": false,
       "speed": 8,
       "direction": "vertical",
       "projectileSpeed": 5,
       "projectileDistance": 8
     },
     {
-      "x": 182,
-      "y": 182,
+      "x": 152,
+      "y": 189,
       "w": 32,
       "h": 32,
       "type": "projectile",
       "src": "res/actions/12.png",
+      "animated": false,
       "speed": 8,
       "direction": "vertical",
       "projectileSpeed": 5,
       "projectileDistance": 8
     }
   ],
+  "sounds": [],
   "heal": 0,
   "cooldown": 15
 }

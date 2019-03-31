@@ -732,58 +732,88 @@ const game = {
              else if (data.elements[i].type === 'projectile') {
                  //Projectile action
 
-                 let sprite = new lx.Sprite(data.elements[i].src, 0, 0, data.elements[i].w, data.elements[i].h,
+                 let sprite = new lx.Sprite(data.elements[i].src, undefined, undefined, undefined, undefined,
                      function() {
-                        let angle = 0;
+                         let angle = 0;
 
-                        if (data.elements[i].projectileSpeed.y != 0 &&
-                            data.elements[i].projectileSpeed.x != 0)
-                                angle = -Math.atan2(data.elements[i].projectileSpeed.x, data.elements[i].projectileSpeed.y);
+                         if (data.elements[i].projectileSpeed.y != 0 &&
+                             data.elements[i].projectileSpeed.x != 0)
+                                 angle = -Math.atan2(data.elements[i].projectileSpeed.x, data.elements[i].projectileSpeed.y);
 
-                        if (angle == 0) {
-                            if (data.elements[i].projectileSpeed.x == 0 &&
-                                data.elements[i].projectileSpeed.y < 0)
-                                angle = Math.PI;
+                         if (angle == 0) {
+                             if (data.elements[i].projectileSpeed.x == 0 &&
+                                 data.elements[i].projectileSpeed.y < 0)
+                                 angle = Math.PI;
 
-                            else if (data.elements[i].projectileSpeed.y == 0) {
-                                if (data.elements[i].projectileSpeed.x < 0)
-                                    angle = Math.PI/2;
-                                else if (data.elements[i].projectileSpeed.x > 0)
-                                    angle = -Math.PI/2;
-                            }
-                        }
+                             else if (data.elements[i].projectileSpeed.y == 0) {
+                                 if (data.elements[i].projectileSpeed.x < 0)
+                                     angle = Math.PI/2;
+                                 else if (data.elements[i].projectileSpeed.x > 0)
+                                     angle = -Math.PI/2;
+                             }
+                         }
 
-                        let projectile = new lx.GameObject(
-                            sprite,
-                            data.pos.X+data.elements[i].x,
-                            data.pos.Y+data.elements[i].y,
-                            data.elements[i].w,
-                            data.elements[i].h
-                        )
-                        .Identifier(data.elements[i].p_id)
-                        .Rotation(angle)
-                        .MovementDecelerates(false)
-                        .Movement(
-                            data.elements[i].projectileSpeed.x,
-                            data.elements[i].projectileSpeed.y
-                        )
-                        .Loops(function() {
-                            this._distance.x += Math.abs(this.MOVEMENT.VX);
-                            this._distance.y += Math.abs(this.MOVEMENT.VY);
+                         let projectile = new lx.GameObject(
+                             sprite,
+                             data.pos.X+data.elements[i].x,
+                             data.pos.Y+data.elements[i].y,
+                             data.elements[i].w,
+                             data.elements[i].h
+                         );
 
-                            if (this._distance.x > data.elements[i].projectileDistance ||
-                                this._distance.y > data.elements[i].projectileDistance ||
-                                tiled.current !== this._map ||
-                                tiled.loading)
-                                this.Hide();
-                        })
-                        .Show(4);
+                         if (data.elements[i].animated) {
+                             let sprites = [];
 
-                        projectile._distance = {
-                            x: 0,
-                            y: 0
-                        };
-                        projectile._map = tiled.current;
+                             if (data.elements[i].direction === 'horizontal')
+                                 for (let x = 0; x < sprite.Size().W/data.elements[i].w; x++)
+                                     sprites.push(new lx.Sprite(data.elements[i].src,
+                                         x*data.elements[i].w,
+                                         0,
+                                         data.elements[i].w,
+                                         data.elements[i].h
+                                     ));
+                             if (data.elements[i].direction === 'vertical')
+                                 for (let y = 0; y < sprite.Size().H/data.elements[i].h; y++)
+                                     sprites.push(new lx.Sprite(data.elements[i].src,
+                                         0,
+                                         y*data.elements[i].h,
+                                         data.elements[i].w,
+                                         data.elements[i].h
+                                     ));
+
+                             if (sprites.length != 0) {
+                                 projectile.ShowAnimation(new lx.Animation(sprites, data.elements[i].speed));
+                             }
+                         }
+                         else {
+                             projectile.Clip(0, 0, data.elements[i].w, data.elements[i].h);
+                         }
+
+                         projectile
+                             .Identifier(data.elements[i].p_id)
+                             .Rotation(angle)
+                             .MovementDecelerates(false)
+                             .Movement(
+                                 data.elements[i].projectileSpeed.x,
+                                 data.elements[i].projectileSpeed.y
+                             )
+                             .Loops(function() {
+                                 this._distance.x += Math.abs(this.MOVEMENT.VX);
+                                 this._distance.y += Math.abs(this.MOVEMENT.VY);
+
+                                 if (this._distance.x > data.elements[i].projectileDistance ||
+                                     this._distance.y > data.elements[i].projectileDistance ||
+                                     tiled.current !== this._map ||
+                                     tiled.loading)
+                                     this.Hide();
+                             })
+                             .Show(4);
+
+                         projectile._distance = {
+                             x: 0,
+                             y: 0
+                         };
+                         projectile._map = tiled.current;
                  });
              }
          }
