@@ -1,12 +1,11 @@
 {
     "port": 5315,
     "allowExternalClients": true,
+    "maxPlayers": 0,
     
     "serverName": "WebClash Server",
     "clientName": "WebClash Client",
     "welcomeMessage": "<b>Welcome to WebClash!</b>",
-    
-    "maxPlayers": 0,
     
     "playerCharacter": "player",
     "playerStartingItems": [

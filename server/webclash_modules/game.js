@@ -324,6 +324,11 @@ exports.damagePlayer = function(id, damage)
 
 exports.healPlayer = function(id, heal)
 {
+    //Check if heal is valid
+
+    if (heal <= 0)
+        return;
+
     //Add damage
 
     this.players[id].health.cur += heal;

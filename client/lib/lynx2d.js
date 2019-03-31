@@ -257,23 +257,22 @@ function Lynx2D() {
             }
         },
         ADD_EVENT: function(TYPE, EVENT, CALLBACK) {
-            for (var i = 0; i < this.EVENTS.length; i++) {
-                if (this.EVENTS[i] != undefined && this.EVENTS[i].TYPE == TYPE && this.EVENTS[i].EVENT == EVENT) {
-                    this.EVENTS[i].CALLBACK[this.EVENTS[i].CALLBACK.length] = CALLBACK;
-                    return this.EVENTS[i].CALLBACK.length-1;
-                }
-            }
+            for (var i = 0; i < this.EVENTS.length; i++)
+                if (this.EVENTS[i] != undefined && this.EVENTS[i].TYPE == TYPE && this.EVENTS[i].EVENT == EVENT)
+                    for (var ii = 0; ii <= this.EVENTS[i].CALLBACK.length; ii++)
+                        if (this.EVENTS[i].CALLBACK[ii] == undefined) {
+                            this.EVENTS[i].CALLBACK[ii] = CALLBACK;
+                            
+                            return ii;
+                        }
 
-            for (var i = 0; i < this.EVENTS.length+1; i++) {
-                if (this.EVENTS[i] == undefined) {
-                    this.EVENTS[i] = {
-                        TYPE: TYPE,
-                        EVENT: EVENT,
-                        CALLBACK: [CALLBACK]
-                    };
-                    return 0;
-                }
-            }
+            this.EVENTS[this.EVENTS.length] = {
+                TYPE: TYPE,
+                EVENT: EVENT,
+                CALLBACK: [CALLBACK]
+            };
+
+            return 0;
         },
         INVALIDATE_EVENT: function(TYPE, EVENT) {
             for (var i = 0; i < this.EVENTS.length; i++) {

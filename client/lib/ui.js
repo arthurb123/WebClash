@@ -219,7 +219,8 @@ const ui = {
         hideDialog: function() {
             document.getElementById('dialog_box').style.visibility = 'hidden';
 
-            lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
+            if (this.mouse != undefined)
+                lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
 
             this.mouse = undefined;
         }
@@ -1141,6 +1142,9 @@ const ui = {
             this.visible = true;
         },
         hide: function() {
+            if (!this.visible)
+                return;
+
             lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
 
             lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
@@ -1244,6 +1248,9 @@ const ui = {
             this.visible = true;
         },
         hide: function() {
+            if (!this.visible)
+                return;
+
             lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
 
             lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
@@ -1307,6 +1314,9 @@ const ui = {
             this.visible = true;
         },
         hide: function() {
+            if (!this.visible)
+                return;
+
             lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
 
             lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
