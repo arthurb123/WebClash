@@ -643,6 +643,12 @@ exports.loadMap = function(socket, map)
     if (id == -1)
         return;
 
+    //Check if map is different from current map
+
+    if (game.players[id].map_id === map_id &&
+        socket.rooms[map_id] != undefined)
+        return;
+
     //Remove player from others on the
     //same map
 

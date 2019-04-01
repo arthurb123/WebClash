@@ -1,7 +1,7 @@
 const tiled = {
     loading: false,
-    queue: [],
     current: '',
+    animations: [],
     convertAndLoadMap: function(map)
     {
         //Set loading
@@ -55,20 +55,20 @@ const tiled = {
 
         lx.ResetLayerDraw();
 
-        //Create colliders
+        //Clear existing map animations
 
-        this.checkObjects(map);
-
-        //Create offset width and height
-
-        let offset_width = -map.width*map.tilewidth/2,
-            offset_height = -map.height*map.tileheight/2;
+        for (let a = 0; a < this.animations.length; a++)
+            this.animations[a].Hide();
+        this.animations = [];
 
         //Cache all tilesets
 
         cache.cacheTilesets(map.tilesets, function() {
-            //Add OnLayerDraw events based on
-            //the map content
+            //Check all tile objects (colliders, properties, animations, etc.)
+
+            tiled.checkObjects(map);
+
+            //Declare necessary variable(s)
 
             let actualLayer = 0;
 
@@ -95,6 +95,11 @@ const tiled = {
                       width = map.layers[l].width,
                       height = map.layers[l].height;
 
+                //Create offset width and height
+
+                let offset_width = -map.width*map.tilewidth/2,
+                    offset_height = -map.height*map.tileheight/2;
+
                 if (map.layers[l].offsetx !== undefined)
                     offset_width += map.layers[l].offsetx;
                 if (map.layers[l].offsety !== undefined)
@@ -102,7 +107,7 @@ const tiled = {
 
                 //Prerender/cache layer for easier drawing
 
-                const cachedLayer = tiled.cacheLayer(map, map.layers[l], offset_width, offset_height);
+                const cachedLayer = tiled.cacheLayer(map, l, offset_width, offset_height);
 
                 //Add drawing loop
 
@@ -166,7 +171,7 @@ const tiled = {
 
             //Add world boundary colliders
 
-            tiled.createWorldBoundaries(map, offset_width, offset_height);
+            tiled.createWorldBoundaries(map);
 
             //Reset the Lynx2D controller target
 
@@ -185,8 +190,12 @@ const tiled = {
             tiled.loading = false;
         });
     },
-    cacheLayer: function(map, layer, offset_width, offset_height)
+    cacheLayer: function(map, layer_id, offset_width, offset_height)
     {
+        //Get layer
+
+        const layer = map.layers[layer_id];
+
         //Create canvas according to layer size
 
         let c = document.createElement('canvas');
@@ -201,17 +210,43 @@ const tiled = {
             for (let x = 0; x < layer.width; x++) {
                 //Convert to tile
 
-                let t = y * layer.width + x;
+                let t = y * layer.width + x,
+                    actual = layer.data[t];
 
                 //Skip empty tiles
 
                 if (layer.data[t] == 0)
                     continue;
 
+                //Calculate tile position
+
+                tp = {
+                    x: t % layer.width * map.tilewidth,
+                    y: Math.floor(t / layer.width) * map.tileheight
+                };
+
+                //If animated, add animation and continue
+
+                if (map.animatedTiles[actual] != undefined) {
+                    let animation = new lx.Animation(map.animatedTiles[actual].sprites);
+                    animation.TIMER.FRAMES = map.animatedTiles[actual].frames;
+
+                    animation.Show(
+                        layer_id,
+                        tp.x+offset_width,
+                        tp.y+offset_height,
+                        map.animatedTiles[actual].size.w,
+                        map.animatedTiles[actual].size.h
+                    );
+
+                    this.animations.push(animation);
+
+                    continue;
+                };
+
                 //Get corresponding tile sprite
 
-                let sprite,
-                    actual = layer.data[t];
+                let sprite;
 
                 for (let i = 0; i < map.tilesets.length; i++)
                     if (layer.data[t] >= map.tilesets[i].firstgid) {
@@ -240,10 +275,6 @@ const tiled = {
                 let tc = {
                     x: (actual % sprite._tilewidth - 1) * map.tilewidth,
                     y: (Math.ceil(actual / sprite._tilewidth) -1) * map.tileheight
-                },
-                    tp = {
-                    x: t % layer.width * map.tilewidth,
-                    y: Math.floor(t / layer.width) * map.tileheight
                 };
 
                 //Tile clip coordinates artefact prevention
@@ -266,8 +297,11 @@ const tiled = {
     },
     checkObjects: function(map)
     {
-        let offset_width = -map.width*map.tilewidth/2,
-            offset_height = -map.height*map.tileheight/2;
+        //Create animated tiles object
+
+        map.animatedTiles = {};
+
+        //Check all layers
 
         for (let l = 0; l < map.layers.length; l++) {
              //Check if layer is visible
@@ -278,8 +312,13 @@ const tiled = {
              const width = map.layers[l].width,
                    height = map.layers[l].height;
 
-             if (map.layers[l].offsetx !== undefined) offset_width += map.layers[l].offsetx;
-             if (map.layers[l].offsety !== undefined) offset_height += map.layers[l].offsety;
+              let offset_width = -map.width*map.tilewidth/2,
+                  offset_height = -map.height*map.tileheight/2;
+
+             if (map.layers[l].offsetx !== undefined)
+                offset_width += map.layers[l].offsetx;
+             if (map.layers[l].offsety !== undefined)
+                offset_height += map.layers[l].offsety;
 
              //Tile layer
 
@@ -315,6 +354,10 @@ const tiled = {
                         x: t % width * map.tilewidth + offset_width,
                         y: Math.floor(t / width) * map.tileheight + offset_height
                     };
+
+                    //Check animation
+
+                    this.checkAnimation(map, tileset, data[t]);
 
                     //Check collider
 
@@ -385,7 +428,69 @@ const tiled = {
              }
         }
     },
-    checkCollider: function(tile_coordinates, tileset, id)
+    checkAnimation: function(map, tileset, id)
+    {
+        for (let i = 0; i < tileset.tiles.length; i++) {
+            if (tileset.tiles[i].id+1 == id) {
+                //Make sure animation tile(s) is/are available
+
+                if (tileset.tiles[i].animation === undefined ||
+                    map.animatedTiles[id] != undefined)
+                    continue;
+
+                let sprites = [],
+                    frames = [];
+
+                //Add all animation frames
+
+                for (let f = 0; f < tileset.tiles[i].animation.length; f++) {
+                    let frame = tileset.tiles[i].animation[f];
+                    frame.tileid++;
+
+                    //Grab tileset sprite
+
+                    let sprite = cache.getTileset(tileset.image);
+
+                    //Check if sprite has a tilewidth specified
+
+                    if (sprite._tilewidth == undefined ||
+                        sprite._tilewidth == 0) {
+                        sprite._tilewidth = sprite.Size().W/map.tilewidth;
+                    }
+
+                    //Calc tile coordinates
+
+                    let tc = {
+                        x: (frame.tileid % sprite._tilewidth - 1) * map.tilewidth,
+                        y: (Math.ceil(frame.tileid / sprite._tilewidth) -1) * map.tileheight
+                    };
+
+                    //Tile clip coordinates artefact prevention
+
+                    if (tc.x == -map.tilewidth)
+                        tc.x = sprite.Size().W - map.tilewidth;
+
+                    //Add sprites and frames to end result
+
+                    sprites.push(new lx.Sprite(sprite.IMG.src, tc.x, tc.y, tileset.tilewidth, tileset.tileheight));
+                    frames.push(frame.duration * 0.06);
+                };
+
+                //Add to the animated tiles available
+                //on the map
+
+                map.animatedTiles[id] = {
+                    sprites: sprites,
+                    frames: frames,
+                    size: {
+                        w: tileset.tilewidth,
+                        h: tileset.tileheight
+                    }
+                };
+            }
+        }
+    },
+    checkCollider: function(tile_position, tileset, id)
     {
         for (let i = 0; i < tileset.tiles.length; i++) {
             if (tileset.tiles[i].id+1 == id) {
@@ -398,8 +503,8 @@ const tiled = {
                 for (let c = 0; c < objects.length; c++)
                     if (objects[c].visible)
                         new lx.Collider(
-                            tile_coordinates.x + objects[c].x,
-                            tile_coordinates.y + objects[c].y,
+                            tile_position.x + objects[c].x,
+                            tile_position.y + objects[c].y,
                             objects[c].width,
                             objects[c].height,
                             true
@@ -407,7 +512,7 @@ const tiled = {
             }
         }
     },
-    checkProperties: function(tile_coordinates, tileset, id)
+    checkProperties: function(tile_position, tileset, id)
     {
         for (let i = 0; i < tileset.tiles.length; i++) {
             if (tileset.tiles[i].id+1 == id) {
@@ -442,8 +547,8 @@ const tiled = {
                 if (callbacks.length > 0) {
                     if (tileset.tiles[i].objectgroup === undefined)
                         new lx.Collider(
-                            tile_coordinates.x,
-                            tile_coordinates.y,
+                            tile_position.x,
+                            tile_position.y,
                             tileset.tilewidth,
                             tileset.tileheight,
                             true,
@@ -493,7 +598,10 @@ const tiled = {
                 }
         }
     },
-    createWorldBoundaries: function(map, offset_width, offset_height) {
+    createWorldBoundaries: function(map) {
+        let offset_width = -map.width*map.tilewidth/2,
+            offset_height = -map.height*map.tileheight/2;
+
         new lx.Collider(offset_width, offset_height-map.tileheight, map.width*map.tilewidth, map.tileheight, true);
         new lx.Collider(offset_width-map.tilewidth, offset_height, map.tilewidth, map.height*map.tileheight, true);
 

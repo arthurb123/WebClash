@@ -1642,6 +1642,7 @@ function Lynx2D() {
         this.FRAME = 0;
         this.MAX_FRAMES = sprite_collection.length;
         this.TIMER = {
+            FRAMES: [],
             STANDARD: speed,
             CURRENT: 0
         };
@@ -1708,6 +1709,9 @@ function Lynx2D() {
         };
 
         this.UPDATE = function() {
+            if (this.TIMER.FRAMES.length === this.MAX_FRAMES)
+                this.TIMER.STANDARD = this.TIMER.FRAMES[this.FRAME];
+
             this.TIMER.CURRENT++;
 
             if (this.LOOPS != undefined)

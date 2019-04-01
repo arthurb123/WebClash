@@ -162,7 +162,7 @@ exports.createNPC = function(map, name, x, y, is_event)
 
     //Orden set actions from high to low range
 
-    npc.data.actions.sort((b,a) => (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0));
+    npc.data.actions.sort((b, a) => (a.range > b.range) ? 1 : ((b.range > a.range) ? -1 : 0));
 
     //Add NPC to map
 
@@ -360,9 +360,10 @@ exports.updateNPCCombat = function(map, id)
         return;
     }
 
-    //Check if target is still on the same map
+    //Check if target is still on the same map.
 
-    if (game.players[this.onMap[map][id].target].map !== tiled.maps[map].name)
+    if (game.players[this.onMap[map][id].target] == undefined ||
+        game.players[this.onMap[map][id].target].map !== tiled.maps[map].name)
     {
         //Reset target
 
@@ -532,10 +533,10 @@ exports.updateNPCCombat = function(map, id)
 
                 return;
             }
-            else if
+            /*else if
                 (Math.abs(dx) < this.onMap[map][id].data.actions[nextAction].range-Math.round(this.onMap[map][id].data.character.width/tiled.maps[map].tilewidth) ||
                  Math.abs(dy) < this.onMap[map][id].data.actions[nextAction].range-Math.round(this.onMap[map][id].data.character.height/tiled.maps[map].tileheight))
-                    return;
+                    return;*/
     }
     else
         return;

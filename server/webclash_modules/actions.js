@@ -553,46 +553,53 @@ exports.healNPCs = function(actionData, action)
 
 exports.damagePlayers = function(map, stats, actionData, action, onlyStatic)
 {
-    let done = false;
+    try {
+        let done = false;
 
-    if (onlyStatic == undefined)
-        onlyStatic = false;
+        if (onlyStatic == undefined)
+            onlyStatic = false;
 
-    for (let e = 0; e < actionData.elements.length; e++) {
-        if (actionData.elements[e].type === 'projectile' &&
-            onlyStatic)
-            continue;
-
-        for (let p = 0; p < game.players.length; p++)
-        {
-            if (game.players[p] == undefined ||
-                game.players[p].map_id != actionData.map)
+        for (let e = 0; e < actionData.elements.length; e++) {
+            if (actionData.elements[e].type === 'projectile' &&
+                onlyStatic)
                 continue;
 
-            let actionRect = {
-                x: actionData.pos.X+actionData.elements[e].x,
-                y: actionData.pos.Y+actionData.elements[e].y,
-                w: actionData.elements[e].w,
-                h: actionData.elements[e].h
-            };
+            for (let p = 0; p < game.players.length; p++)
+            {
+                if (game.players[p] == undefined ||
+                    game.players[p].map_id != actionData.map)
+                    continue;
 
-            let playerRect = {
-                x: game.players[p].pos.X,
-                y: game.players[p].pos.Y,
-                w: game.players[p].character.width,
-                h: game.players[p].character.height
-            };
+                let actionRect = {
+                    x: actionData.pos.X+actionData.elements[e].x,
+                    y: actionData.pos.Y+actionData.elements[e].y,
+                    w: actionData.elements[e].w,
+                    h: actionData.elements[e].h
+                };
 
-            if (tiled.checkRectangularCollision(actionRect, playerRect)) {
-                if (game.damagePlayer(p, this.calculateDamage(stats, action.scaling)))
-                    npcs.removeNPCTargets(map, p);
+                let playerRect = {
+                    x: game.players[p].pos.X,
+                    y: game.players[p].pos.Y,
+                    w: game.players[p].character.width,
+                    h: game.players[p].character.height
+                };
 
-                done = true;
+                if (tiled.checkRectangularCollision(actionRect, playerRect)) {
+                    if (game.damagePlayer(p, this.calculateDamage(stats, action.scaling)))
+                        npcs.removeNPCTargets(map, p);
+
+                    done = true;
+                }
             }
         }
-    }
 
-    return done;
+        return done;
+    }
+    catch (err) {
+        output.giveError('Could not damage player(s): ', err);
+
+        return false;
+    }
 }
 
 exports.healPlayers = function(actionData, heal)

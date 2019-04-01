@@ -459,6 +459,10 @@ exports.handleSocket = function(socket)
 
         game.players[id].inventory[data] = undefined;
 
+        //Evaluate item for gather objectives
+
+        quests.evaluateQuestObjective(id, 'gather', name);
+
         //Sync inventory item
 
         server.syncInventoryItem(data, id, socket);
