@@ -224,11 +224,19 @@ exports.savePlayer = function(name, data, cb)
 
     //Check if a new player data must be created
 
-    if (player === undefined)
+    if (player === undefined) {
+        //Get starting position before saving
+
+        let spos = this.tileToActualPosition(
+            tiled.getMapIndex(properties.startingMap),
+            properties.startingTile.x,
+            properties.startingTile.y
+        );
+
         player = {
             char_name: properties.playerCharacter,
             map: properties.startingMap,
-            pos: { X: 0, Y: 0 },
+            pos: { X: spos.x, Y: spos.y },
             moving: false,
             direction: 0,
             health: { cur: 100, max: 100 },
@@ -253,6 +261,7 @@ exports.savePlayer = function(name, data, cb)
             inventory: properties.playerStartingItems,
             gold: 0
         };
+    }
 
     //Save player data
 
@@ -304,7 +313,7 @@ exports.damagePlayer = function(id, damage)
         npcs.removeNPCTargets(this.players[id].map_id, id);
 
         //reset player pos, stats and send
-        //back to first map
+        //back to first map at the starting tile
 
         this.players[id].health.cur = this.players[id].health.max;
         this.players[id].mana.cur = this.players[id].mana.max;
@@ -315,10 +324,11 @@ exports.damagePlayer = function(id, damage)
         if (this.players[id].map !== properties.startingMap)
             this.loadMap(this.players[id].socket, properties.startingMap);
 
-        this.players[id].pos.X = 0;
-        this.players[id].pos.Y = 0;
-
-        server.syncPlayerPartially(id, 'position');
+        this.setPlayerTilePosition(
+            tiled.getMapIndex(properties.startingMap),
+            properties.startingTile.x,
+            properties.startingTile.y
+        );
 
         return true;
     }
@@ -598,17 +608,38 @@ exports.sendPlayers = function(socket)
 
 exports.setPlayerTilePosition = function(socket, id, map, x, y)
 {
-    //Calculate actual position
+    //Get actual position
 
-    if (x != undefined)
-        this.players[id].pos.X = (x-tiled.maps[map].width/2+.5)*tiled.maps[map].tilewidth-game.players[id].character.width/2;
+    let pos = this.tileToActualPosition(map, x, y);
 
-    if (y != undefined)
-        this.players[id].pos.Y = (y-tiled.maps[map].height/2)*tiled.maps[map].tileheight-game.players[id].character.height/2;
+    //Set new position
+
+    if (pos.x != undefined)
+        this.players[id].pos.X = pos.x-game.players[id].character.width/2;
+
+    if (pos.y != undefined)
+        this.players[id].pos.Y = pos.y-game.players[id].character.height/2;
 
     //Sync to players on the same map
 
     server.syncPlayerPartially(id, 'position');
+};
+
+exports.tileToActualPosition = function(map, x, y)
+{
+    //Calculate actual position
+
+    let result = {};
+
+    if (x != undefined)
+        result.x = (x-tiled.maps[map].width/2+.5)*tiled.maps[map].tilewidth;
+
+    if (y != undefined)
+        result.y = (y-tiled.maps[map].height/2)*tiled.maps[map].tileheight;
+
+    //Return
+
+    return result;
 };
 
 exports.setPlayerGlobalVariable = function(id, name, value)

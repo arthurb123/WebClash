@@ -35,7 +35,7 @@ const cache = {
                 t++;
 
                 if (t < tilesets.length) {
-                    cache.progress.update('Loading map - ' + (t/(tilesets.length-1))*100 + '%');
+                    cache.progress.update('Loading map - ' + ((t/(tilesets.length-1))*100).toFixed(0) + '%');
 
                     cacheTileset();
                 }

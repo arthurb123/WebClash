@@ -79,7 +79,7 @@ const tiled = {
             for (let l = 0; l < map.layers.length; l++) {
                 //Update progress
 
-                cache.progress.update('Building map - ' + l/(map.layers.length-1)*100 + '%');
+                cache.progress.update('Building map - ' + (l/(map.layers.length-1)*100).toFixed(0) + '%');
 
                 //Check if visible
 
@@ -215,7 +215,7 @@ const tiled = {
 
                 //Skip empty tiles
 
-                if (layer.data[t] == 0)
+                if (actual == 0)
                     continue;
 
                 //Calculate tile position
@@ -334,16 +334,20 @@ const tiled = {
 
                     //Get corresponding tileset
 
-                    let tileset;
+                    let tileset,
+                        actual = data[t];
 
                     for (let i = 0; i < map.tilesets.length; i++) {
-                        if (tileset !== undefined && data[t] < tileset.firstgid)
-                            break;
+                        if (data[t] >= map.tilesets[i].firstgid) {
+                            tileset = map.tilesets[i];
 
-                        tileset = map.tilesets[i];
+                            if (i > 0)
+                                actual = data[t] - map.tilesets[i].firstgid + 1;
+                        } else
+                            break;
                     }
 
-                    //Check if tileset has objects
+                    //Check if tileset has unique tiles
 
                     if (tileset.tiles === undefined)
                         continue;
@@ -357,15 +361,15 @@ const tiled = {
 
                     //Check animation
 
-                    this.checkAnimation(map, tileset, data[t]);
+                    this.checkAnimation(map, tileset, data[t], actual);
 
                     //Check collider
 
-                    this.checkCollider(tp, tileset, data[t]);
+                    this.checkCollider(tp, tileset, data[t], actual);
 
                     //Check properties
 
-                    this.checkProperties(tp, tileset, data[t]);
+                    this.checkProperties(tp, tileset, data[t], actual);
                  }
              }
 
@@ -428,10 +432,10 @@ const tiled = {
              }
         }
     },
-    checkAnimation: function(map, tileset, id)
+    checkAnimation: function(map, tileset, id, actual)
     {
         for (let i = 0; i < tileset.tiles.length; i++) {
-            if (tileset.tiles[i].id+1 == id) {
+            if (tileset.tiles[i].id+1 === actual) {
                 //Make sure animation tile(s) is/are available
 
                 if (tileset.tiles[i].animation === undefined ||
@@ -490,10 +494,10 @@ const tiled = {
             }
         }
     },
-    checkCollider: function(tile_position, tileset, id)
+    checkCollider: function(tile_position, tileset, id, actual)
     {
         for (let i = 0; i < tileset.tiles.length; i++) {
-            if (tileset.tiles[i].id+1 == id) {
+            if (tileset.tiles[i].id+1 == actual) {
                 if (tileset.tiles[i].objectgroup === undefined ||
                     tileset.tiles[i].objectgroup.objects === undefined)
                     continue;
@@ -512,10 +516,10 @@ const tiled = {
             }
         }
     },
-    checkProperties: function(tile_position, tileset, id)
+    checkProperties: function(tile_position, tileset, id, actual)
     {
         for (let i = 0; i < tileset.tiles.length; i++) {
-            if (tileset.tiles[i].id+1 == id) {
+            if (tileset.tiles[i].id+1 == actual) {
                 if (tileset.tiles[i].properties === undefined)
                     continue;
 

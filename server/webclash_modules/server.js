@@ -582,7 +582,7 @@ exports.handleSocket = function(socket)
 
         //Get all properties that the player collided with
 
-        let properties = tiled.getPropertiesWithRectangle(map, {
+        let properties = tiled.getPropertiesWithRectangle(game.players[id].map_id, {
             x: game.players[id].pos.X,
             y: game.players[id].pos.Y,
             w: game.players[id].character.width,

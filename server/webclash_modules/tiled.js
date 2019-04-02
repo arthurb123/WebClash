@@ -74,16 +74,18 @@ exports.getMapTileRectangles = function(map, id)
 {
     let rects = [];
 
-    let offset_width = -map.width*map.tilewidth/2,
-        offset_height = -map.height*map.tileheight/2;
-
     for (let l = 0; l < map.layers.length; l++) {
         if (!map.layers[l].visible ||
             map.layers[l].type !== 'tilelayer')
             continue;
 
-        if (map.layers[l].offsetx !== undefined) offset_width += map.layers[l].offsetx;
-        if (map.layers[l].offsety !== undefined) offset_height += map.layers[l].offsety;
+        let offset_width = -map.width*map.tilewidth/2,
+            offset_height = -map.height*map.tileheight/2;
+
+        if (map.layers[l].offsetx !== undefined)
+            offset_width += map.layers[l].offsetx;
+        if (map.layers[l].offsety !== undefined)
+            offset_height += map.layers[l].offsety;
 
         for (let t = 0; t < map.layers[l].data.length; t++)
             if (map.layers[l].data[t] == id+1)
@@ -118,6 +120,12 @@ exports.cacheMap = function(map)
             continue;
 
         for (let i = 0; i < tileset.tiles.length; i++) {
+            //Calculate actual
+
+            let actual = tileset.tiles[i].id;
+            if (t > 0)
+                actual = tileset.tiles[i].id + map.tilesets[t].firstgid - 1;
+
             //Check properties
 
             if (tileset.tiles[i].properties !== undefined)
@@ -129,14 +137,14 @@ exports.cacheMap = function(map)
                         tile: tileset.tiles[i].id,
                         name: property.name,
                         value: property.value,
-                        rectangles: this.getMapTileRectangles(map, tileset.tiles[i].id)
+                        rectangles: this.getMapTileRectangles(map, actual)
                     });
                 }
 
             //Check colliders
 
             if (tileset.tiles[i].objectgroup !== undefined)
-                this.maps_colliders[id].push(this.getMapTileRectangles(map, tileset.tiles[i].id));
+                this.maps_colliders[id].push(this.getMapTileRectangles(map, actual));
         }
     }
 
@@ -148,13 +156,15 @@ exports.cacheMap = function(map)
             map.layers[l].type !== 'objectgroup')
             continue;
 
-        //TEMPORARY: Get offset width and height
+        //Get offset width and height
 
         let offset_width = -map.width*map.tilewidth/2,
             offset_height = -map.height*map.tileheight/2;
 
-        if (map.layers[l].offsetx !== undefined) offset_width += map.layers[l].offsetx;
-        if (map.layers[l].offsety !== undefined) offset_height += map.layers[l].offsety;
+        if (map.layers[l].offsetx !== undefined)
+            offset_width += map.layers[l].offsetx;
+        if (map.layers[l].offsety !== undefined)
+            offset_height += map.layers[l].offsety;
 
         //Cycle through all objects
 
