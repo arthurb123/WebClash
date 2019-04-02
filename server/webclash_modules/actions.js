@@ -324,6 +324,8 @@ exports.createPlayerSlotAction = function(action)
         cooldown: this.collection[id].cooldown,
         scaling: this.collection[id].scaling,
         sounds: this.collection[id].sounds,
+        heal: this.collection[id].heal,
+        mana: this.collection[id].mana,
         src: this.collection[id].src
     };
 };
@@ -333,7 +335,7 @@ exports.createPlayerAction = function(slot, id)
     //Check if action exists at slot
 
     if (game.players[id].actions[slot] == undefined)
-        return;
+        return false;
 
     let name = game.players[id].actions[slot].name,
         a_id = this.getActionIndex(name);
@@ -352,6 +354,16 @@ exports.createPlayerAction = function(slot, id)
 
     if (this.onCooldownPlayerAction(name, id))
         return false;
+
+    //Check if player has the necessary mana,
+    //and delta the mana
+
+    if (this.collection[a_id].mana !== 0) {
+        if (game.players[id].mana.cur+this.collection[a_id].mana < 0)
+            return false;
+
+        game.deltaManaPlayer(id, this.collection[a_id].mana);
+    };
 
     //Decrement action usage if possible
 
@@ -388,6 +400,8 @@ exports.createPlayerAction = function(slot, id)
 
     if (this.collection[a_id].heal > 0)
         this.healPlayers(actionData, this.collection[a_id].heal);
+    else if (this.collection[a_id].heal < 0)
+        game.damagePlayer(id, this.collection[a_id].heal);
 
     //Add projectiles
 
@@ -585,8 +599,8 @@ exports.damagePlayers = function(map, stats, actionData, action, onlyStatic)
                 };
 
                 if (tiled.checkRectangularCollision(actionRect, playerRect)) {
-                    if (game.damagePlayer(p, this.calculateDamage(stats, action.scaling)))
-                        npcs.removeNPCTargets(map, p);
+                    game.damagePlayer(p, this.calculateDamage(stats, action.scaling));
+                        //npcs.removeNPCTargets(map, p);
 
                     done = true;
                 }

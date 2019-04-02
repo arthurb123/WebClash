@@ -20,8 +20,10 @@
       "h": 48,
       "type": "static",
       "src": "res/actions/8.png",
+      "animated": true,
       "speed": 2,
       "direction": "horizontal",
+      "rotates": true,
       "projectileSpeed": 1,
       "projectileDistance": 0
     }
@@ -38,5 +40,6 @@
     }
   ],
   "heal": 0,
+  "mana": 0,
   "cooldown": 20
 }

@@ -163,6 +163,10 @@ exports.removePlayer = function(socket)
         //Remove player entry
 
         this.players.splice(id, 1);
+
+        //Set socket playing to false
+
+        socket.playing = false;
     }
     catch (err) {
         output.giveError('Could not remove player: ', err);
@@ -295,12 +299,18 @@ exports.damagePlayer = function(id, damage)
 
     if (this.players[id].health.cur <= 0)
     {
-        //reset player pos, health and send
+        //Reset all NPC targets on map from player
+
+        npcs.removeNPCTargets(this.players[id].map_id, id);
+
+        //reset player pos, stats and send
         //back to first map
 
         this.players[id].health.cur = this.players[id].health.max;
+        this.players[id].mana.cur = this.players[id].mana.max;
 
         server.syncPlayerPartially(id, 'health');
+        server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
 
         if (this.players[id].map !== properties.startingMap)
             this.loadMap(this.players[id].socket, properties.startingMap);
@@ -345,20 +355,20 @@ exports.healPlayer = function(id, heal)
 
 exports.regeneratePlayer = function(id)
 {
-    //Regenerate health if possible
-
-    if (this.players[id].health.cur < this.players[id].health.max) {
-        this.players[id].health.cur++;
-
-        server.syncPlayerPartially(id, 'health');
-    };
-
     //Regenerate mana if possible
 
     if (this.players[id].mana.cur < this.players[id].mana.max) {
         this.players[id].mana.cur++;
 
         server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
+    };
+
+    //Regenerate health if possible
+
+    if (this.players[id].health.cur < this.players[id].health.max) {
+        this.players[id].health.cur++;
+
+        server.syncPlayerPartially(id, 'health');
     };
 
     //...

@@ -245,7 +245,7 @@
     }
   ],
   "nextlayerid": 8,
-  "nextobjectid": 6,
+  "nextobjectid": 7,
   "orientation": "orthogonal",
   "renderorder": "right-down",
   "tiledversion": "1.2.1",
@@ -269,5 +269,6 @@
   "type": "map",
   "version": 1.2,
   "width": 8,
+  "mapType": "neutral",
   "bgmSource": "res/bgm/Eerie Scene - Aaron Krogh.mp3"
 }

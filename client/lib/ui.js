@@ -382,18 +382,29 @@ const ui = {
             if (dps === 0)
                 dps = '-';
 
+            //Heal/mana delta
+
+            let heal = '',
+                mana = '';
+
+            if (player.actions[slot].heal !== 0)
+                heal = '<font class="info" style="font-size: 10px; margin-top: -3px; display: block;">Health: ' + (player.actions[slot].heal > 0 ? '+' : '') + player.actions[slot].heal + '</font>';
+            if (player.actions[slot].mana !== 0)
+                mana = '<font class="info" style="font-size: 10px; margin-top: -3px; display: block;">Mana: ' + (player.actions[slot].mana > 0 ? '+' : '') + player.actions[slot].mana + '</font>';
+
             //Create displaybox
 
             let displayBox = document.createElement('div');
 
             displayBox.id = 'displayBox';
             displayBox.classList.add('box');
-            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 10px; padding-bottom: 6px; height: auto; text-align: center;';
+            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 6px; height: auto; text-align: center;';
             displayBox.innerHTML =
                     '<font class="header" style="font-size: 15px;">' + player.actions[slot].name + '</font><br>' +
                     '<font class="info" style="position: relative; top: 6px;">' + player.actions[slot].description + '</font><br>' +
-                    '<font class="info" style="position: relative; top: 8px; font-size: 10px;">DPS: ' + dps + '</font><br>' +
-                    '<font class="info" style="position: relative; top: 2px; font-size: 10px;">CD: ' + (player.actions[slot].cooldown/60).toFixed(1) + 's</font>';
+                    '<font class="info" style="margin-top: 10px; font-size: 10px; display: block;">DPS: ' + dps + '</font>' +
+                    heal + mana +
+                    '<font class="info" style="font-size: 10px; margin-top: -3px; display: block;">CD: ' + (player.actions[slot].cooldown/60).toFixed(1) + 's</font>';
 
             //Append
 
@@ -1543,6 +1554,22 @@ const ui = {
                 Math.random()*target.Size().H,
                 15,
                 '#8cff66'
+            );
+
+            t.Follows(target);
+            t.Alignment('center');
+            t.SHADOW = true;
+
+            this.add(t, 32);
+        },
+        manaFloaty: function(target, delta)
+        {
+            let t = new lx.UIText(
+                delta,
+                Math.random()*target.Size().W,
+                Math.random()*target.Size().H,
+                15,
+                '#2B92ED'
             );
 
             t.Follows(target);

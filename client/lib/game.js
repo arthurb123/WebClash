@@ -153,12 +153,28 @@ const game = {
     },
     setPlayerMana: function(id, mana)
     {
+        let delta = 0;
+        if (this.players[id]._mana != undefined)
+            delta = -(this.players[id]._mana.cur-mana.cur);
+
         this.players[id]._mana = mana;
 
-        //If player set UI mana
+        //If player set UI mana and
+        //show mana floaty
 
-        if (this.player == id)
+        if (this.player == id) {
             ui.status.setMana(mana.cur, mana.max);
+
+            if (delta > 0) {
+                //Mana floaty
+
+                ui.floaties.manaFloaty(this.players[id], delta);
+
+                //Show heal color overlay
+
+                this.players[id].SPRITE.ShowColorOverlay(5, 'rgba(43, 146, 237, 0.46)');
+            }
+        }
     },
     setPlayerEquipment: function(id, equipment)
     {

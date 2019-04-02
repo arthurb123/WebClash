@@ -132,6 +132,7 @@ namespace WebClashServer.Editors
             description.Text = current.description;
 
             heal.Value = current.heal;
+            mana.Value = current.mana;
 
             cooldown.Value = current.cooldown * 16;
 
@@ -475,6 +476,14 @@ namespace WebClashServer.Editors
 
                 if (!elementFrames.ContainsKey(current.elements[i]))
                     elementFrames.Add(current.elements[i], new Frame());
+                
+                if (!current.elements[i].animated)
+                {
+                    elementFrames[current.elements[i]].frame = 0;
+                    done = true;
+
+                    continue;
+                }
 
                 elementFrames[current.elements[i]].cur++;
 
@@ -535,6 +544,11 @@ namespace WebClashServer.Editors
         private void heal_ValueChanged(object sender, EventArgs e)
         {
             current.heal = (int)heal.Value;
+        }
+        
+        private void mana_ValueChanged(object sender, EventArgs e)
+        {
+            current.mana = (int)mana.Value;
         }
 
         private void icon_TextChanged(object sender, EventArgs e)
@@ -674,6 +688,8 @@ namespace WebClashServer.Editors
 
                 heal = temp.heal;
 
+                mana = temp.mana;
+
                 src = temp.src;
 
                 description = temp.description;
@@ -719,7 +735,8 @@ namespace WebClashServer.Editors
 
         public PossibleSound[] sounds = new PossibleSound[0];
 
-        public int heal = 0;
+        public int heal = 0,
+                   mana = 0;
 
         public int cooldown = 0;
     }

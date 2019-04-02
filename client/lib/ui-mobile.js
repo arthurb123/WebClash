@@ -1594,6 +1594,22 @@ const ui = {
             t.SHADOW = true;
 
             this.add(t, 32);
+        },
+        manaFloaty: function(target, delta)
+        {
+            let t = new lx.UIText(
+                delta,
+                Math.random()*target.Size().W,
+                Math.random()*target.Size().H,
+                15,
+                '#2B92ED'
+            );
+
+            t.Follows(target);
+            t.Alignment('center');
+            t.SHADOW = true;
+
+            this.add(t, 32);
         }
     }
 };

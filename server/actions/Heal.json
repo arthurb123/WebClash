@@ -3,7 +3,7 @@
   "sh": 320,
   "name": "Heal",
   "src": "res/icons/8.png",
-  "description": "Heals 15 health.",
+  "description": "A simple healing spell.",
   "scaling": {
     "power": 0.0,
     "agility": 0.0,
@@ -20,8 +20,10 @@
       "h": 48,
       "type": "static",
       "src": "res/actions/2.png",
+      "animated": true,
       "speed": 4,
       "direction": "horizontal",
+      "rotates": true,
       "projectileSpeed": 1,
       "projectileDistance": 0
     }
@@ -32,5 +34,6 @@
     }
   ],
   "heal": 15,
+  "mana": -10,
   "cooldown": 312
 }
