@@ -325,6 +325,7 @@ exports.damagePlayer = function(id, damage)
             this.loadMap(this.players[id].socket, properties.startingMap);
 
         this.setPlayerTilePosition(
+            id,
             tiled.getMapIndex(properties.startingMap),
             properties.startingTile.x,
             properties.startingTile.y
@@ -606,7 +607,7 @@ exports.sendPlayers = function(socket)
                 server.syncPlayer(i, socket, false);
 }
 
-exports.setPlayerTilePosition = function(socket, id, map, x, y)
+exports.setPlayerTilePosition = function(id, map, x, y)
 {
     //Get actual position
 

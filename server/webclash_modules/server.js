@@ -598,7 +598,6 @@ exports.handleSocket = function(socket)
 
                 if (properties[p].name === 'positionX')
                     game.setPlayerTilePosition(
-                        socket,
                         id,
                         game.players[id].map_id,
                         properties[p].value
@@ -608,7 +607,6 @@ exports.handleSocket = function(socket)
 
                 else if (properties[p].name === 'positionY')
                     game.setPlayerTilePosition(
-                        socket,
                         id,
                         game.players[id].map_id,
                         undefined,
@@ -711,7 +709,6 @@ exports.handleSocket = function(socket)
                 //Set position
 
                 game.setPlayerTilePosition(
-                    socket,
                     id,
                     new_map,
                     dialogEvent.loadMapEvent.positionX,
