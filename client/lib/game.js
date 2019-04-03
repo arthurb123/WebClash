@@ -268,17 +268,19 @@ const game = {
             .Loops(function() {
                 animation.animateMoving(this);
 
-                if (this._nameplate.Position().X == 0 &&
-                    this._nameplate.Position().Y == 0)
-                  this._nameplate.Position(this.Size().W/2, -12);
+                if (this._nameplate != undefined) {
+                    if (this._nameplate.Position().X == 0 &&
+                        this._nameplate.Position().Y == 0)
+                      this._nameplate.Position(this.Size().W/2, -12);
 
-                if (this._type === 'friendly')
-                    this._nameplate.Color('black');
-                else if (this._type === 'hostile')
-                    this._nameplate.Color('#FF4242');
+                    if (this._type === 'friendly')
+                        this._nameplate.Color('black');
+                    else if (this._type === 'hostile')
+                        this._nameplate.Color('#FF4242');
 
-                if (this._stats !== undefined)
-                    this._nameplate.Text('lvl ' + this._stats.level + ' - ' + this.name);
+                    if (this._stats !== undefined)
+                        this._nameplate.Text('lvl ' + this._stats.level + ' - ' + this.name);
+                }
 
                 if (this._health !== undefined)
                 {
@@ -307,12 +309,14 @@ const game = {
         go._moving = false;
         go._direction = 0;
 
-        go._nameplate = new lx.UIText(name, 0, 0, 14)
-            .Alignment('center')
-            .Follows(go)
-            .Show();
+        if (name.length > 0) {
+            go._nameplate = new lx.UIText(name, 0, 0, 14)
+                .Alignment('center')
+                .Follows(go)
+                .Show();
 
-        go._nameplate.SHADOW = true;
+            go._nameplate.SHADOW = true;
+        }
 
         this.npcs[id] = go.Show(3);
     },
@@ -494,7 +498,8 @@ const game = {
             return;
 
         this.npcs[id].Hide();
-        this.npcs[id]._nameplate.Hide();
+        if (this.npcs[id]._nameplate != undefined)
+            this.npcs[id]._nameplate.Hide();
 
         if (this.npcs[id]._healthbar !== undefined)
         {

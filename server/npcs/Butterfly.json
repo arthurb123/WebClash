@@ -1,0 +1,26 @@
+{
+  "name": "Butterfly",
+  "showNameplate": false,
+  "movement": "free",
+  "range": 4,
+  "type": "hostile",
+  "character": "butterfly",
+  "stats": {
+    "level": 1,
+    "exp": 1,
+    "power": 0,
+    "toughness": 0,
+    "agility": 0,
+    "wisdom": 0,
+    "intelligence": 0,
+    "vitality": 0
+  },
+  "health": {
+    "cur": 1,
+    "max": 1
+  },
+  "actions": [],
+  "items": [],
+  "dialog": [],
+  "dialogElements": []
+}

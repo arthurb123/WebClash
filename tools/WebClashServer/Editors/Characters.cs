@@ -69,12 +69,11 @@ namespace WebClashServer.Editors
             height.Value = current.height;
 
             AttemptSetCharImage(current.src);
-
             src.Text = current.src;
 
             direction.SelectedItem = current.animation.direction.First().ToString().ToUpper() + current.animation.direction.Substring(1);
-
             speed.Value = current.animation.speed;
+            alwaysAnimate.Checked = current.animation.alwaysAnimate;
 
             collX.Value = current.collider.x;
             collY.Value = current.collider.y;
@@ -238,9 +237,9 @@ namespace WebClashServer.Editors
                 charSelect.SelectedItem = charSelect.Items[0];
         }
 
-        public int GetAmount()
+        private void alwaysAnimate_CheckedChanged(object sender, EventArgs e)
         {
-            return charSelect.Items.Count; 
+            current.animation.alwaysAnimate = alwaysAnimate.Checked;
         }
 
         private void collX_ValueChanged(object sender, EventArgs e)
@@ -304,6 +303,11 @@ namespace WebClashServer.Editors
 
             soundSelection.ShowDialog();
         }
+        
+        public int GetAmount()
+        {
+            return charSelect.Items.Count;
+        }
     }
 
     public class Character
@@ -365,6 +369,8 @@ namespace WebClashServer.Editors
         public string direction = "horizontal";
 
         public int speed = 8;
+
+        public bool alwaysAnimate = false;
     }
 
     public class Collider

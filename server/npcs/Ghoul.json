@@ -1,5 +1,6 @@
 {
   "name": "Ghoul",
+  "showNameplate": true,
   "movement": "free",
   "range": 10,
   "type": "hostile",

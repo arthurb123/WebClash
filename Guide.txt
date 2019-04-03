@@ -16,6 +16,12 @@ WebClash makes use of maps created in
 Tiled (www.mapeditor.org), these maps can be
 imported using the Maps interface.
 
+The first three tile-layers of every tiled map
+are considered ground, mask and second mask. 
+All following layers are treated as hovering. 
+This means that the layer lives atop of 
+all other entities. (players, NPCs, items, etc.)
+
 Colliders are supported, however only in
 the rectangular form.
 Colliders can be created using object layers
@@ -51,8 +57,7 @@ To see the list of available commands type
 
 	      -- Art usage --
 
-All provided art is merely being used as 
-example material. 
-
-The art should not be used for commercial 
+All provided graphics except UI and particle graphics
+are merely being used as example material. 
+These graphics should not be used for commercial 
 purposes as it is owned by Enterbrain.

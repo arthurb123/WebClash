@@ -82,6 +82,7 @@ namespace WebClashServer.Editors
                 current = new NPC(Program.main.location + "/npcs/" + npcName + ".json");
 
             name.Text = current.name;
+            showNameplate.Checked = current.showNameplate;
 
             switch (current.movement)
             {
@@ -201,11 +202,6 @@ namespace WebClashServer.Editors
             }
         }
 
-        public int GetAmount()
-        {
-            return npcSelect.Items.Count; 
-        }
-
         private void typeFriendly_CheckedChanged(object sender, EventArgs e)
         {
             if (typeFriendly.Checked)
@@ -225,6 +221,11 @@ namespace WebClashServer.Editors
         private void name_TextChanged(object sender, EventArgs e)
         {
             current.name = name.Text;
+        }
+        
+        private void showNameplate_CheckedChanged(object sender, EventArgs e)
+        {
+            current.showNameplate = showNameplate.Checked;
         }
 
         private void movementFree_CheckedChanged(object sender, EventArgs e)
@@ -332,6 +333,11 @@ namespace WebClashServer.Editors
 
             npcDialogue.ShowDialog();
         }
+
+        public int GetAmount()
+        {
+            return npcSelect.Items.Count;
+        }
     }
 
     public class NPC
@@ -348,6 +354,8 @@ namespace WebClashServer.Editors
                 NPC temp = JsonConvert.DeserializeObject<NPC>(File.ReadAllText(source));
 
                 name = temp.name;
+
+                showNameplate = temp.showNameplate;
 
                 movement = temp.movement;
 
@@ -376,6 +384,7 @@ namespace WebClashServer.Editors
         }
 
         public string name = "New NPC";
+        public bool showNameplate = true;
 
         public string movement = "free";
         public int range = 10;

@@ -56,7 +56,12 @@ namespace WebClashServer.Editors
                 button4_Click(sender, e);
 
             if (charSelect.Items.Count > 0)
-                charSelect.SelectedItem = charSelect.Items[0];
+            {
+                if (charSelect.Items.Contains("player"))
+                    charSelect.SelectedItem = "player";
+                else
+                    charSelect.SelectedItem = charSelect.Items[0];
+            }
 
             canvas.Invalidate();
         }

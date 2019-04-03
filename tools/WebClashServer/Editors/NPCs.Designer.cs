@@ -69,6 +69,7 @@
             this.typeFriendly = new System.Windows.Forms.RadioButton();
             this.typeHostile = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
+            this.showNameplate = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.range)).BeginInit();
@@ -126,6 +127,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.showNameplate);
             this.groupBox1.Controls.Add(this.dialogButton);
             this.groupBox1.Controls.Add(this.name);
             this.groupBox1.Controls.Add(this.label3);
@@ -134,14 +136,14 @@
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(15, 43);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(373, 105);
+            this.groupBox1.Size = new System.Drawing.Size(373, 110);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "NPC";
             // 
             // dialogButton
             // 
-            this.dialogButton.Location = new System.Drawing.Point(12, 69);
+            this.dialogButton.Location = new System.Drawing.Point(13, 77);
             this.dialogButton.Name = "dialogButton";
             this.dialogButton.Size = new System.Drawing.Size(344, 23);
             this.dialogButton.TabIndex = 15;
@@ -151,7 +153,7 @@
             // 
             // name
             // 
-            this.name.Location = new System.Drawing.Point(56, 26);
+            this.name.Location = new System.Drawing.Point(57, 24);
             this.name.Name = "name";
             this.name.Size = new System.Drawing.Size(119, 21);
             this.name.TabIndex = 14;
@@ -160,7 +162,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 27);
+            this.label3.Location = new System.Drawing.Point(10, 25);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(41, 15);
             this.label3.TabIndex = 13;
@@ -172,7 +174,7 @@
             this.charSelect.FormattingEnabled = true;
             this.charSelect.Items.AddRange(new object[] {
             "Horizontal"});
-            this.charSelect.Location = new System.Drawing.Point(246, 24);
+            this.charSelect.Location = new System.Drawing.Point(247, 22);
             this.charSelect.Name = "charSelect";
             this.charSelect.Size = new System.Drawing.Size(110, 23);
             this.charSelect.TabIndex = 12;
@@ -181,7 +183,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(181, 27);
+            this.label2.Location = new System.Drawing.Point(182, 25);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(60, 15);
             this.label2.TabIndex = 11;
@@ -209,7 +211,7 @@
             this.groupBox2.Controls.Add(this.movementFree);
             this.groupBox2.Controls.Add(this.movementStatic);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(15, 154);
+            this.groupBox2.Location = new System.Drawing.Point(15, 156);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(373, 60);
             this.groupBox2.TabIndex = 8;
@@ -544,6 +546,17 @@
             this.label6.TabIndex = 10;
             this.label6.Text = "NPC Type";
             // 
+            // showNameplate
+            // 
+            this.showNameplate.AutoSize = true;
+            this.showNameplate.Location = new System.Drawing.Point(120, 52);
+            this.showNameplate.Name = "showNameplate";
+            this.showNameplate.Size = new System.Drawing.Size(121, 19);
+            this.showNameplate.TabIndex = 16;
+            this.showNameplate.Text = "Show Nameplate";
+            this.showNameplate.UseVisualStyleBackColor = true;
+            this.showNameplate.CheckedChanged += new System.EventHandler(this.showNameplate_CheckedChanged);
+            // 
             // NPCs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -631,5 +644,6 @@
         private System.Windows.Forms.Button editLootTable;
         private System.Windows.Forms.NumericUpDown exp;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.CheckBox showNameplate;
     }
 }

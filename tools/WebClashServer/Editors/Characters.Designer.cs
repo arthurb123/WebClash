@@ -44,6 +44,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.alwaysAnimate = new System.Windows.Forms.CheckBox();
             this.speed = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
             this.direction = new System.Windows.Forms.ComboBox();
@@ -242,6 +243,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.alwaysAnimate);
             this.groupBox2.Controls.Add(this.speed);
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.direction);
@@ -249,14 +251,25 @@
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(15, 123);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(373, 63);
+            this.groupBox2.Size = new System.Drawing.Size(373, 73);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Animation";
             // 
+            // alwaysAnimate
+            // 
+            this.alwaysAnimate.AutoSize = true;
+            this.alwaysAnimate.Location = new System.Drawing.Point(131, 48);
+            this.alwaysAnimate.Name = "alwaysAnimate";
+            this.alwaysAnimate.Size = new System.Drawing.Size(111, 19);
+            this.alwaysAnimate.TabIndex = 11;
+            this.alwaysAnimate.Text = "Always Animate";
+            this.alwaysAnimate.UseVisualStyleBackColor = true;
+            this.alwaysAnimate.CheckedChanged += new System.EventHandler(this.alwaysAnimate_CheckedChanged);
+            // 
             // speed
             // 
-            this.speed.Location = new System.Drawing.Point(265, 26);
+            this.speed.Location = new System.Drawing.Point(265, 20);
             this.speed.Maximum = new decimal(new int[] {
             640,
             0,
@@ -281,7 +294,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(216, 28);
+            this.label7.Location = new System.Drawing.Point(216, 22);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(43, 15);
             this.label7.TabIndex = 10;
@@ -294,7 +307,7 @@
             this.direction.Items.AddRange(new object[] {
             "Horizontal",
             "Vertical"});
-            this.direction.Location = new System.Drawing.Point(90, 25);
+            this.direction.Location = new System.Drawing.Point(90, 19);
             this.direction.Name = "direction";
             this.direction.Size = new System.Drawing.Size(110, 23);
             this.direction.TabIndex = 9;
@@ -303,7 +316,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(28, 28);
+            this.label6.Location = new System.Drawing.Point(28, 22);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(56, 15);
             this.label6.TabIndex = 8;
@@ -313,7 +326,7 @@
             // 
             this.canvas.BackColor = System.Drawing.SystemColors.ControlLight;
             this.canvas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.canvas.Location = new System.Drawing.Point(105, 374);
+            this.canvas.Location = new System.Drawing.Point(105, 384);
             this.canvas.Name = "canvas";
             this.canvas.Size = new System.Drawing.Size(200, 200);
             this.canvas.TabIndex = 6;
@@ -331,7 +344,7 @@
             this.save.AutoSize = true;
             this.save.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.save.LinkColor = System.Drawing.Color.Blue;
-            this.save.Location = new System.Drawing.Point(360, 564);
+            this.save.Location = new System.Drawing.Point(360, 574);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(32, 13);
             this.save.TabIndex = 7;
@@ -352,7 +365,7 @@
             this.groupBox3.Controls.Add(this.collHeight);
             this.groupBox3.Controls.Add(this.collWidth);
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(15, 187);
+            this.groupBox3.Location = new System.Drawing.Point(15, 198);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(373, 70);
             this.groupBox3.TabIndex = 11;
@@ -496,7 +509,7 @@
             this.groupBox4.Controls.Add(this.maxVelocity);
             this.groupBox4.Controls.Add(this.label12);
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox4.Location = new System.Drawing.Point(15, 257);
+            this.groupBox4.Location = new System.Drawing.Point(15, 269);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(373, 59);
             this.groupBox4.TabIndex = 18;
@@ -536,7 +549,7 @@
             // 
             this.groupBox5.Controls.Add(this.onDeathSounds);
             this.groupBox5.Controls.Add(this.onHitSounds);
-            this.groupBox5.Location = new System.Drawing.Point(14, 319);
+            this.groupBox5.Location = new System.Drawing.Point(15, 332);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(373, 46);
             this.groupBox5.TabIndex = 19;
@@ -567,7 +580,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 586);
+            this.ClientSize = new System.Drawing.Size(404, 596);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -582,8 +595,8 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(420, 625);
-            this.MinimumSize = new System.Drawing.Size(420, 625);
+            this.MaximumSize = new System.Drawing.Size(420, 635);
+            this.MinimumSize = new System.Drawing.Size(420, 635);
             this.Name = "Characters";
             this.Text = "WebClash Server - Characters";
             this.Load += new System.EventHandler(this.Characters_Load);
@@ -649,5 +662,6 @@
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button onHitSounds;
         private System.Windows.Forms.Button onDeathSounds;
+        private System.Windows.Forms.CheckBox alwaysAnimate;
     }
 }

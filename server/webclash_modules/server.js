@@ -1120,6 +1120,9 @@ exports.syncNPCPartially = function(map, id, type, socket, broadcast)
         name: npcs.onMap[map][id].data.name
     };
 
+    if (!npcs.onMap[map][id].data.showNameplate)
+        data.name = '';
+
     switch (type)
     {
         case 'position':

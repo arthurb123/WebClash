@@ -1,5 +1,6 @@
 {
   "name": "Eric",
+  "showNameplate": true,
   "movement": "free",
   "range": 1,
   "type": "friendly",

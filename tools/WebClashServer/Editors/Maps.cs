@@ -264,7 +264,7 @@ namespace WebClashServer.Editors
 
         private void mapTypeHelp_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Map types determine the behaviour of the map.\nPossible map types are as follows:\n\nProtected -> Regenerate all stats\nNeutral -> No regeneration\nHostile -> No regeneration, NPCs attack players", "WebClash Server - Map Types");
+            MessageBox.Show("Map types determine the behaviour of the map.\nPossible map types are as follows:\n\nProtected -> Regenerate all stats\nNeutral -> No regeneration\nHostile -> No regeneration, NPCs attack players (not implemented yet)", "WebClash Server - Map Types");
         }
 
         private void SetMapType(string mapTypeString)
