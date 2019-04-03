@@ -446,12 +446,14 @@ exports.handleSocket = function(socket)
 
         //Create world item
 
+        let name = game.players[id].inventory[data];
+
         items.createWorldItem(
             -1,
             game.players[id].map_id,
             game.players[id].pos.X+game.players[id].character.width/2,
             game.players[id].pos.Y+game.players[id].character.height,
-            game.players[id].inventory[data]
+            name
         );
 
         //Remove item from player inventory
