@@ -170,10 +170,15 @@ exports.handleCommand = function(socket, text)
                     y: game.players[p].pos.Y+game.players[p].character.height,
                 };
 
-                for (let i = 0; i < count; i++) {
-                    let npc_id = npcs.createNPC(game.players[p].map_id, arguments[0], pos.x, pos.y, true);
-                    server.syncNPC(game.players[p].map_id, npc_id);
-                }
+                for (let i = 0; i < count; i++)
+                    npcs.createEventNPC(
+                        game.players[p].map_id,
+                        arguments[0],
+                        pos.x,
+                        pos.y,
+                        undefined,
+                        false
+                    );
 
                 return 'success';
             //Set health command

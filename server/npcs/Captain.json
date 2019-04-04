@@ -1,0 +1,110 @@
+{
+  "name": "Captain",
+  "showNameplate": true,
+  "movement": "static",
+  "range": 10,
+  "type": "friendly",
+  "character": "captain",
+  "stats": null,
+  "health": {
+    "cur": 100,
+    "max": 100
+  },
+  "actions": [],
+  "items": [],
+  "dialog": [
+    {
+      "text": "This village now belongs to me.\nLeave or be killed!",
+      "portrait": "res/portraits/2.png",
+      "entry": true,
+      "isEvent": false,
+      "options": [
+        {
+          "text": "Fight me!",
+          "next": 2
+        },
+        {
+          "text": "Exit",
+          "next": -1
+        }
+      ],
+      "eventType": "",
+      "repeatable": false,
+      "giveItemEvent": null,
+      "loadMapEvent": null,
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "showQuestEvent": null
+    },
+    {
+      "text": "",
+      "portrait": "",
+      "entry": false,
+      "isEvent": true,
+      "options": [
+        {
+          "text": "",
+          "next": -1
+        },
+        {
+          "text": "",
+          "next": -1
+        }
+      ],
+      "eventType": "SpawnNPC",
+      "repeatable": true,
+      "giveItemEvent": null,
+      "loadMapEvent": null,
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": {
+        "name": "Soldier",
+        "amount": 4,
+        "hostile": true
+      },
+      "showQuestEvent": null
+    },
+    {
+      "text": "Lolno I got soldiers for that.\nHave fun!",
+      "portrait": "res/portraits/2.png",
+      "entry": false,
+      "isEvent": false,
+      "options": [
+        {
+          "text": "Come at me!",
+          "next": 1
+        },
+        {
+          "text": "No thanks.",
+          "next": -1
+        }
+      ],
+      "eventType": "",
+      "repeatable": false,
+      "giveItemEvent": null,
+      "loadMapEvent": null,
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "showQuestEvent": null
+    }
+  ],
+  "dialogElements": [
+    {
+      "p": "25, 113",
+      "id": 0,
+      "isEvent": false,
+      "size": "100, 80"
+    },
+    {
+      "p": "416, 148",
+      "id": 1,
+      "isEvent": true,
+      "size": "95, 20"
+    },
+    {
+      "p": "216, 52",
+      "id": 2,
+      "isEvent": false,
+      "size": "100, 80"
+    }
+  ]
+}

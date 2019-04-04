@@ -3,8 +3,26 @@
 const fs = require('fs');
 
 exports.collection = [];
-
 exports.projectiles = [];
+
+exports.combat = {
+    players: {},
+    update: function() {
+        for (let player in this.players) {
+            this.players[player]--;
+
+            if (this.players[player] <= 0)
+                delete this.players[player];
+        };
+    },
+    in: function(id) {
+        return this.players[id] != undefined;
+    },
+    add: function(id) {
+        this.players[id] = this.timeout;
+    },
+    timeout: 5     //Combat timeout in seconds
+};
 
 exports.updateCooldowns = function() {
     for (let p = 0; p < game.players.length; p++)
@@ -584,6 +602,8 @@ exports.damagePlayers = function(map, stats, actionData, action, onlyStatic)
                     game.players[p].map_id != actionData.map)
                     continue;
 
+                //Declare rectangles
+
                 let actionRect = {
                     x: actionData.pos.X+actionData.elements[e].x,
                     y: actionData.pos.Y+actionData.elements[e].y,
@@ -599,6 +619,12 @@ exports.damagePlayers = function(map, stats, actionData, action, onlyStatic)
                 };
 
                 if (tiled.checkRectangularCollision(actionRect, playerRect)) {
+                    //Set in-combat
+
+                    this.combat.add(p);
+
+                    //Damage player
+
                     game.damagePlayer(p, this.calculateDamage(stats, action.scaling));
                         //npcs.removeNPCTargets(map, p);
 

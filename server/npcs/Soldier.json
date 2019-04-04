@@ -1,29 +1,29 @@
 {
-  "name": "Slime",
+  "name": "Soldier",
   "showNameplate": true,
   "movement": "free",
   "range": 10,
   "type": "hostile",
-  "character": "slime",
+  "character": "soldier",
   "stats": {
-    "level": 4,
-    "exp": 7,
-    "power": 0,
-    "toughness": 0,
+    "level": 5,
+    "exp": 9,
+    "power": 3,
+    "toughness": 2,
     "agility": 0,
     "wisdom": 0,
-    "intelligence": 3,
-    "vitality": 0
+    "intelligence": 0,
+    "vitality": 1
   },
   "health": {
-    "cur": 50,
-    "max": 50
+    "cur": 60,
+    "max": 60
   },
   "actions": [
     {
-      "action": "Hydrate",
+      "action": "Slash",
       "range": 1,
-      "extraCooldown": 0
+      "extraCooldown": 12
     }
   ],
   "items": [],

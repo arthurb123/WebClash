@@ -171,6 +171,45 @@ exports.createNPC = function(map, name, x, y, is_event)
     return npc.id;
 };
 
+exports.createEventNPC = function(map, name, x, y, owner, hostile)
+{
+    let npc_id = this.createNPC(map, name, x, y, true);
+    this.onMap[map][npc_id].owner = owner;
+
+    server.syncNPC(map, npc_id);
+
+    let cb = function() {
+        let done = false;
+
+        if (npcs.collidesWithOtherNPC(map, npc_id)) {
+            npcs.randomNPCMovement(map, npc_id, cb, true);
+
+            npcs.onMap[map][npc_id].start_pos = {
+                X: npcs.onMap[map][npc_id].pos.X,
+                Y: npcs.onMap[map][npc_id].pos.Y
+            };
+
+            done = true;
+        }
+        else if (hostile)
+            npcs.onMap[map][npc_id].preventAttack = false;
+
+        if (!done)
+            npcs.onMap[map][npc_id].movementCallback = undefined;
+    };
+
+    if (this.onMap[map][npc_id].data.type !== 'friendly') {
+        if (hostile) {
+            this.onMap[map][npc_id].targets[owner] = 1;
+            this.onMap[map][npc_id].target = owner;
+        }
+
+        this.onMap[map][npc_id].preventAttack = true;
+    }
+
+    npcs.randomNPCMovement(map, npc_id, cb);
+};
+
 exports.loadNPC = function(name)
 {
     try
@@ -223,6 +262,35 @@ exports.updateNPC = function(map, id)
 exports.randomNPCMovementTimeout = function()
 {
     return 60 + Math.round(Math.random()*180);
+};
+
+exports.randomNPCMovement = function(map, id, cb)
+{
+    if (this.onMap[map][id].moving)
+        return;
+
+    let dir = Math.round(Math.random()*3);
+
+    this.onMap[map][id].direction = dir;
+
+    if (!this.checkNPCFacingCollision(map, id)) {
+        //Add callback if defined
+
+        this.onMap[map][id].movementCallback = cb;
+
+        //Start moving
+
+        this.onMap[map][id].movement.vel.x = 0;
+        this.onMap[map][id].movement.vel.y = 0;
+        this.onMap[map][id].movement.distance = 0;
+        this.onMap[map][id].moving = true;
+
+        //Sync moving
+
+        server.syncNPCPartially(map, id, 'moving');
+        server.syncNPCPartially(map, id, 'direction');
+    } else
+        cb();
 };
 
 exports.updateNPCMovement = function(map, id)
@@ -311,6 +379,7 @@ exports.updateNPCMovement = function(map, id)
         }
 
         //Add movement velocity
+
         this.onMap[map][id].pos.X+=this.onMap[map][id].movement.vel.x;
         this.onMap[map][id].pos.Y+=this.onMap[map][id].movement.vel.y;
 
@@ -336,8 +405,12 @@ exports.updateNPCMovement = function(map, id)
 
         //If moving is set to false, sync
 
-        if (!this.onMap[map][id].moving)
+        if (!this.onMap[map][id].moving) {
             server.syncNPCPartially(map, id, 'moving');
+
+            if (this.onMap[map][id].movementCallback != undefined)
+                this.onMap[map][id].movementCallback();
+        }
     }
 };
 
@@ -350,9 +423,41 @@ exports.updateNPCCombat = function(map, id)
         this.isTimedOut(map, id))
         return;
 
+    //Check if attacking should be prevented
+
+    if (this.onMap[map][id].preventAttack)
+        return;
+
     //Check if target exists
 
     if (this.onMap[map][id].target == -1) {
+        //If event NPC, despawn
+
+        if (this.onMap[map][id].is_event &&
+            this.onMap[map][id].owner != undefined) {
+            //Check if it is the owner that died,
+            //or if the owner changed maps
+
+            if (this.onMap[map][id].targets[this.onMap[map][id].owner] == undefined ||
+                this.onMap[map][id].targets[this.onMap[map][id].owner] == 0 ||
+                game.players[this.onMap[map][id].owner].map !== tiled.maps[map].name) {
+                    //Remove all targets from event NPC
+
+                    this.onMap[map][id].targets = [];
+
+                    //Kill NPC
+
+                    this.killNPC(map, id);
+                }
+
+            //Otherwise reset target to the owner
+
+            else
+                this.onMap[map][id].target = this.onMap[map][id].owner;
+
+            return;
+        }
+
         //Regenerate if necessary
 
         this.regenerateNPC(map, id);
@@ -586,6 +691,48 @@ exports.checkNPCFacingCollision = function(map, id)
     return false;
 };
 
+exports.collidesWithOtherNPC = function(map, id)
+{
+    //Check if valid
+
+    if (this.onMap[map] === undefined ||
+        this.onMap[map][id] === undefined ||
+        this.isTimedOut(map, id))
+        return;
+
+    //Setup rectangle of NPC
+
+    let rect = {
+        x: this.onMap[map][id].pos.X,
+        y: this.onMap[map][id].pos.Y+this.onMap[map][id].data.character.height/2,
+        w: this.onMap[map][id].data.character.width,
+        h: this.onMap[map][id].data.character.height/2
+    };
+
+    //Check if collides with all other NPCs on map
+
+    for (let n = 0; n < this.onMap[map].length; n++) {
+        if (n === id || this.onMap[map][n] == undefined)
+            continue;
+
+        //Setup rectangle of other NPC
+
+        let otherRect = {
+            x: this.onMap[map][n].pos.X,
+            y: this.onMap[map][n].pos.Y+this.onMap[map][n].data.character.height/2,
+            w: this.onMap[map][n].data.character.width,
+            h: this.onMap[map][n].data.character.height/2
+        };
+
+        //Check collision
+
+        if (tiled.checkRectangularCollision(rect, otherRect))
+            return true;
+    }
+
+    return false;
+};
+
 exports.regenerateNPC = function(map, id)
 {
     //Check if valid
@@ -636,6 +783,10 @@ exports.damageNPC = function(owner, map, id, delta)
 
     this.onMap[map][id].targets[owner] -= delta;
 
+    //Set prevent attack to false
+
+    this.onMap[map][id].preventAttack = false;
+
     //Make sure we update the target
 
     this.setNPCTarget(map, id, owner);
@@ -661,7 +812,9 @@ exports.setNPCTarget = function(map, id, owner)
 
     //Make sure the owner is not the current target
 
-    if (this.onMap[map][id].target == owner)
+    if (owner != undefined &&
+        this.onMap[map][id].target == owner &&
+        this.onMap[map][id].targets[owner] != undefined)
         return;
 
     //Get target with highest priority (damage)
@@ -685,10 +838,6 @@ exports.setNPCTarget = function(map, id, owner)
 
     if (newTarget == this.onMap[map][id].target)
         return;
-
-    //Save old target
-
-    let old = this.onMap[map][id].target;
 
     //Set new target
 
@@ -752,9 +901,9 @@ exports.killNPC = function(map, id)
     //Add to timeout (if the NPC is not an event)
 
     if (!this.onMap[map][id].is_event)
-      this.onTimeOut[map][id] = this.respawnTime*60;
+        this.onTimeOut[map][id] = this.respawnTime*60;
     else
-      this.onMap[map][id] = undefined;
+        this.onMap[map][id] = undefined;
 };
 
 exports.respawnNPC = function(map, id)

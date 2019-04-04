@@ -37,7 +37,27 @@ exports.startLoop = function()
         //Update players
 
         game.updatePlayers();
+
+        //Update in combat
+
+        actions.combat.update();
     }, 1000);
+};
+
+exports.updateInCombat = function() {
+    for (let p = 0; p < game.players.length; p++)
+        if (game.players[p] != undefined &&
+            game.players[p].combat.is)
+            for (let action in game.players[p].actions_cooldown)
+            {
+                if (game.players[p].actions_cooldown[action] == undefined)
+                    continue;
+
+                game.players[p].actions_cooldown[action]--;
+
+                if (game.players[p].actions_cooldown[action] <= 0)
+                    game.players[p].actions_cooldown[action] = undefined;
+            }
 };
 
 exports.savePermissions = function ()
@@ -310,7 +330,7 @@ exports.damagePlayer = function(id, damage)
     {
         //Reset all NPC targets on map from player
 
-        npcs.removeNPCTargets(this.players[id].map_id, id);
+        npcs.removeNPCTargets(this.players[id].map_id, id, false);
 
         //reset player pos, stats and send
         //back to first map at the starting tile
@@ -366,6 +386,11 @@ exports.healPlayer = function(id, heal)
 
 exports.regeneratePlayer = function(id)
 {
+    //Check if in-combat
+
+    if (actions.combat.in(id))
+        return;
+
     //Regenerate mana if possible
 
     if (this.players[id].mana.cur < this.players[id].mana.max) {

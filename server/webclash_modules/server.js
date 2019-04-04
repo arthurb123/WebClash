@@ -723,8 +723,15 @@ exports.handleSocket = function(socket)
             else if (dialogEvent.eventType === 'GiveItem') {
                 //Add item(s)
 
-                for (let a = 0; a < dialogEvent.giveItemEvent.amount; a++)
-                    items.addPlayerItem(socket, id, dialogEvent.giveItemEvent.item);
+                let done = false;
+
+                for (let a = 0; a < dialogEvent.giveItemEvent.amount; a++) {
+                    if (items.addPlayerItem(socket, id, dialogEvent.giveItemEvent.item))
+                        done = true;
+                }
+
+                if (!done)
+                    return;
             }
 
             //Affect player event
@@ -745,7 +752,10 @@ exports.handleSocket = function(socket)
 
                 //Gold
 
-                game.deltaGoldPlayer(id, dialogEvent.affectPlayerEvent.goldDifference);
+                if (!game.deltaGoldPlayer(id, dialogEvent.affectPlayerEvent.goldDifference)) {
+                    callback({ result: false });
+                    return;
+                }
             }
 
             //Spawn NPC event
@@ -758,14 +768,15 @@ exports.handleSocket = function(socket)
                     y: game.players[id].pos.Y+game.players[id].character.height,
                 };
 
-                for (let i = 0; i < dialogEvent.spawnNPCEvent.amount; i++) {
-                    let npc_id = npcs.createNPC(map, dialogEvent.spawnNPCEvent.name, pos.x, pos.y, true);
-                    server.syncNPC(map, npc_id);
-
-                    if (dialogEvent.spawnNPCEvent.hostile &&
-                        npcs.onMap[map][npc_id].data.type !== 'friendly')
-                        npcs.onMap[map][npc_id].target = id;
-                }
+                for (let i = 0; i < dialogEvent.spawnNPCEvent.amount; i++)
+                    npcs.createEventNPC(
+                        map,
+                        dialogEvent.spawnNPCEvent.name,
+                        pos.x,
+                        pos.y,
+                        id,
+                        dialogEvent.spawnNPCEvent.hostile
+                    );
             }
 
             //Show quest event
