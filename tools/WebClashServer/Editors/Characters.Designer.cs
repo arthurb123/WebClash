@@ -53,7 +53,6 @@
             this.animation = new System.Windows.Forms.Timer(this.components);
             this.save = new System.Windows.Forms.LinkLabel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label13 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -355,7 +354,6 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.label13);
             this.groupBox3.Controls.Add(this.label11);
             this.groupBox3.Controls.Add(this.label10);
             this.groupBox3.Controls.Add(this.label9);
@@ -367,20 +365,10 @@
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox3.Location = new System.Drawing.Point(15, 198);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(373, 70);
+            this.groupBox3.Size = new System.Drawing.Size(373, 65);
             this.groupBox3.TabIndex = 11;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Collider";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(248, 52);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(111, 12);
-            this.label13.TabIndex = 18;
-            this.label13.Text = "* NPCs don\'t use colliders";
             // 
             // label11
             // 
@@ -509,7 +497,7 @@
             this.groupBox4.Controls.Add(this.maxVelocity);
             this.groupBox4.Controls.Add(this.label12);
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox4.Location = new System.Drawing.Point(15, 269);
+            this.groupBox4.Location = new System.Drawing.Point(15, 266);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(373, 59);
             this.groupBox4.TabIndex = 18;
@@ -549,7 +537,7 @@
             // 
             this.groupBox5.Controls.Add(this.onDeathSounds);
             this.groupBox5.Controls.Add(this.onHitSounds);
-            this.groupBox5.Location = new System.Drawing.Point(15, 332);
+            this.groupBox5.Location = new System.Drawing.Point(15, 327);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(373, 46);
             this.groupBox5.TabIndex = 19;
@@ -658,7 +646,6 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.NumericUpDown maxVelocity;
-        private System.Windows.Forms.Label label13;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button onHitSounds;
         private System.Windows.Forms.Button onDeathSounds;

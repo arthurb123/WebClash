@@ -33,6 +33,11 @@ exports.sendMap = function(map, socket)
 
 exports.loadMap = function(map)
 {
+    //Check if onMap at map is undefined
+
+    if (this.onMap[map] === undefined)
+        this.onMap[map] = [];
+
     //Check if map has (NPC) properties
 
     if (tiled.maps_properties[map] === undefined)
@@ -43,11 +48,6 @@ exports.loadMap = function(map)
 
     for (let i = 0; i < tiled.maps_properties[map].length; i++)
         if (tiled.maps_properties[map][i].name == 'NPC') {
-            //Check if onMap at map is undefined
-
-            if (this.onMap[map] === undefined)
-                this.onMap[map] = [];
-
             //Create NPC
 
             this.createNPCs(tiled.maps_properties[map][i], map)
@@ -174,9 +174,19 @@ exports.createNPC = function(map, name, x, y, is_event)
 exports.createEventNPC = function(map, name, x, y, owner, hostile)
 {
     let npc_id = this.createNPC(map, name, x, y, true);
+
+    //Check if valid
+
+    if (npc_id === -1)
+        return;
+
+    //Create event specific stuff
+
     this.onMap[map][npc_id].owner = owner;
 
     server.syncNPC(map, npc_id);
+
+    //Movement callback
 
     let cb = function() {
         let done = false;
@@ -198,6 +208,8 @@ exports.createEventNPC = function(map, name, x, y, owner, hostile)
             npcs.onMap[map][npc_id].movementCallback = undefined;
     };
 
+    //If not friendly, handle accordingly
+
     if (this.onMap[map][npc_id].data.type !== 'friendly') {
         if (hostile) {
             this.onMap[map][npc_id].targets[owner] = 1;
@@ -206,6 +218,9 @@ exports.createEventNPC = function(map, name, x, y, owner, hostile)
 
         this.onMap[map][npc_id].preventAttack = true;
     }
+
+    //Start with a random movement and provide
+    //the movement callback
 
     npcs.randomNPCMovement(map, npc_id, cb);
 };
@@ -386,14 +401,22 @@ exports.updateNPCMovement = function(map, id)
         //Check and add distance
 
         if (Math.abs(this.onMap[map][id].movement.vel.x) > Math.abs(this.onMap[map][id].movement.vel.y)) {
-            if (this.onMap[map][id].movement.distance >= tiled.maps[map].tilewidth)
-                    this.onMap[map][id].moving = false;
+            if (this.onMap[map][id].movement.distance >= tiled.maps[map].tilewidth) {
+                if (this.onMap[map][id].target === -1 && Math.random() <= .25)
+                    this.onMap[map][id].movement.cur = this.onMap[map][id].movement.standard;
+                    
+                this.onMap[map][id].moving = false;
+            }
             else
                 this.onMap[map][id].movement.distance += Math.abs(this.onMap[map][id].movement.vel.x);
         }
         else {
-            if (this.onMap[map][id].movement.distance >= tiled.maps[map].tileheight)
-                    this.onMap[map][id].moving = false;
+            if (this.onMap[map][id].movement.distance >= tiled.maps[map].tileheight) {
+                if (this.onMap[map][id].target === -1 && Math.random() <= .25)
+                    this.onMap[map][id].movement.cur = this.onMap[map][id].movement.standard;
+
+                this.onMap[map][id].moving = false;
+            }
             else
                 this.onMap[map][id].movement.distance += Math.abs(this.onMap[map][id].movement.vel.y);
         }
@@ -569,6 +592,8 @@ exports.updateNPCCombat = function(map, id)
             //Start moving
 
             this.onMap[map][id].moving = true;
+            this.onMap[map][id].distance = 0;
+            this.onMap[map][id].movement.vel.y = 0;
 
             //Sync moving
 
@@ -589,6 +614,8 @@ exports.updateNPCCombat = function(map, id)
                 //Start moving
 
                 this.onMap[map][id].moving = true;
+                this.onMap[map][id].distance = 0;
+                this.onMap[map][id].movement.vel.x = 0;
 
                 //Sync moving
 
@@ -620,16 +647,18 @@ exports.updateNPCCombat = function(map, id)
                     this.onMap[map][id].data.movement === 'static')
                     return;
 
-                //Reset NPC movement
-
-                this.onMap[map][id].movement.distance = 0;
-
                 //Check facing collision
 
                 if (!this.checkNPCFacingCollision(map, id)) {
                     //Start moving
 
                     this.onMap[map][id].moving = true;
+                    
+                    //Reset NPC movement
+
+                    this.onMap[map][id].movement.distance = 0;
+                    this.onMap[map][id].movement.vel.x = 0;
+                    this.onMap[map][id].movement.vel.y = 0;
 
                     //Sync moving
 
@@ -646,18 +675,6 @@ exports.updateNPCCombat = function(map, id)
     else
         return;
 
-    //Reset moving if necessary
-
-    if (this.onMap[map][id].moving) {
-        //Reset
-
-        //this.onMap[map][id].moving = false;
-
-        //Sync moving
-
-        //server.syncNPCPartially(map, id, 'moving');
-    }
-
     //Perform action
 
     actions.createNPCAction(
@@ -671,12 +688,31 @@ exports.checkNPCFacingCollision = function(map, id)
 {
     let pos = game.calculateFace(this.onMap[map][id].pos, tiled.maps[map].tilewidth, tiled.maps[map].tileheight, this.onMap[map][id].direction);
 
-    let rect = {
-        x: pos.X,
-        y: pos.Y+this.onMap[map][id].data.character.height/2,
-        w: this.onMap[map][id].data.character.width,
-        h: this.onMap[map][id].data.character.height/2
+    let delta = {
+        x: pos.X-this.onMap[map][id].pos.X,
+        y: pos.Y-this.onMap[map][id].pos.Y
     };
+
+    let rect = {
+        x: this.onMap[map][id].pos.X+this.onMap[map][id].data.character.collider.x,
+        y: this.onMap[map][id].pos.Y+this.onMap[map][id].data.character.collider.y,
+        w: this.onMap[map][id].data.character.collider.width,
+        h: this.onMap[map][id].data.character.collider.height
+    };
+
+    if (delta.x < 0) {
+        rect.x += delta.x;
+        rect.w -= delta.x;
+    }
+    else 
+        rect.w += delta.x;
+
+    if (delta.y < 0) {
+        rect.y += delta.y;
+        rect.h -= delta.y;
+    }
+    else
+        rect.h += delta.y;
 
     //Check if outside map
 

@@ -9,9 +9,9 @@
   },
   "collider": {
     "x": 8,
-    "y": 32,
+    "y": 28,
     "width": 16,
-    "height": 12
+    "height": 18
   },
   "movement": {
     "max": 1.0

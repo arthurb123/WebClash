@@ -38,19 +38,16 @@ const landingScene = new lx.Scene(function() {
                 '<p class="info" style="font-size: 14px;">Username</p>' +
                 '<input id="windowName" autocomplete="username" maxlength="16" type="text" style="width: 95%;"></input><br>' +
                 '<p class="info" style="font-size: 14px;">Password</p>' +
-                '<input id="windowPassword" autocomplete="current-password" type="password" style="width: 95%;"></input><br>' +
+                '<input id="windowPassword" autocomplete="current-password" type="password" style="width: 95%;"></input>' +
             '</form>' +
             '<p id="windowErrorText" style="margin: 6px; height: 18px; color: #ff4d4d; font-size: 11px;"></p>' +
+            '<button id="windowLogin">Login</button>' +
+            '<button id="windowRegister">Register</button>' +
         '</div>';
 
-    //Add buttons
+    //Add login submission event
 
-    let sw = document.getElementById('sceneWindow'),
-        b = document.createElement('button');
-
-    //Add login button
-
-    b.onclick = function() {
+    document.getElementById('windowLogin').addEventListener('click', function() {
         let name = document.getElementById('windowName').value,
             pass = document.getElementById('windowPassword').value;
 
@@ -87,16 +84,11 @@ const landingScene = new lx.Scene(function() {
                     break;
             }
         });
-    };
+    });
 
-    b.innerHTML = 'Login';
-    sw.appendChild(b);
+    //Add register event
 
-    //Add register button
-
-    b = document.createElement('button');
-
-    b.onclick = function() {
+    document.getElementById('windowRegister').addEventListener('click', function() {
         let name = document.getElementById('windowName').value,
             pass = document.getElementById('windowPassword').value;
 
@@ -127,10 +119,7 @@ const landingScene = new lx.Scene(function() {
                     break;
             }
         });
-    };
-
-    b.innerHTML = 'Register';
-    sw.appendChild(b);
+    });
 
     //Focus username textbox
 

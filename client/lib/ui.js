@@ -126,6 +126,8 @@ const ui = {
             this.name = name;
 
             this.setDialog(start);
+
+            player.loseFocus();
         },
         setDialog: function(id, name_override)
         {
@@ -223,6 +225,8 @@ const ui = {
                 lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
 
             this.mouse = undefined;
+
+            lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
         }
     },
     actionbar:
@@ -366,7 +370,7 @@ const ui = {
                 cd.remove();
         },
         displayBox: function(slot) {
-            if (player.actions[slot] === undefined)
+            if (player.actions[slot] == undefined)
                 return;
 
             //Element
