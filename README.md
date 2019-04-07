@@ -4,7 +4,8 @@ Everything in WebClash can be fully customized using the Server tool.
 
 ### Development<br>
 Currently WebClash is still under development.<br>
-If you find a bug or glitch, please submit an issue on this GitHub page.
+If you find a bug or glitch, please submit an issue on this GitHub page.<br>
+The development process can be followed on [Trello](https://trello.com/b/658XHkJU/webclash).
 
 ### (Current) Features<br>
 * Mobile and tablet support<br>
