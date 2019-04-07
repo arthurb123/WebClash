@@ -189,9 +189,9 @@ exports.createEventNPC = function(map, name, x, y, owner, hostile)
     //Movement callback
 
     let cb = function() {
-        let done = false;
-
-        if (npcs.collidesWithOtherNPC(map, npc_id)) {
+        if (npcs.onMap[map][npc_id].preventAttack === true &&
+            npcs.collidesWithOtherNPC(map, npc_id)) {
+                
             npcs.randomNPCMovement(map, npc_id, cb, true);
 
             npcs.onMap[map][npc_id].start_pos = {
@@ -199,13 +199,12 @@ exports.createEventNPC = function(map, name, x, y, owner, hostile)
                 Y: npcs.onMap[map][npc_id].pos.Y
             };
 
-            done = true;
+            return;
         }
         else if (hostile)
             npcs.onMap[map][npc_id].preventAttack = false;
 
-        if (!done)
-            npcs.onMap[map][npc_id].movementCallback = undefined;
+        npcs.onMap[map][npc_id].movementCallback = undefined;
     };
 
     //If not friendly, handle accordingly

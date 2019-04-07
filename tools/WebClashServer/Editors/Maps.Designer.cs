@@ -33,6 +33,9 @@
             this.import = new System.Windows.Forms.Button();
             this.delete = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.bgmSourceHelp = new System.Windows.Forms.Button();
+            this.bgmSource = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.mapTypeHelp = new System.Windows.Forms.Button();
             this.mapType = new System.Windows.Forms.ComboBox();
             this.fixTilesets = new System.Windows.Forms.LinkLabel();
@@ -44,9 +47,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.help = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.bgmSource = new System.Windows.Forms.TextBox();
-            this.bgmSourceHelp = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -104,6 +104,33 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Map Information";
+            // 
+            // bgmSourceHelp
+            // 
+            this.bgmSourceHelp.Location = new System.Drawing.Point(210, 47);
+            this.bgmSourceHelp.Name = "bgmSourceHelp";
+            this.bgmSourceHelp.Size = new System.Drawing.Size(21, 25);
+            this.bgmSourceHelp.TabIndex = 15;
+            this.bgmSourceHelp.Text = "?";
+            this.bgmSourceHelp.UseVisualStyleBackColor = true;
+            this.bgmSourceHelp.Click += new System.EventHandler(this.bgmSourceHelp_Click);
+            // 
+            // bgmSource
+            // 
+            this.bgmSource.Location = new System.Drawing.Point(75, 49);
+            this.bgmSource.Name = "bgmSource";
+            this.bgmSource.Size = new System.Drawing.Size(134, 21);
+            this.bgmSource.TabIndex = 14;
+            this.bgmSource.TextChanged += new System.EventHandler(this.bgmSource_TextChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(11, 52);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(35, 15);
+            this.label4.TabIndex = 13;
+            this.label4.Text = "BGM";
             // 
             // mapTypeHelp
             // 
@@ -216,33 +243,6 @@
             this.help.Text = "Help";
             this.help.UseVisualStyleBackColor = true;
             this.help.Click += new System.EventHandler(this.help_Click);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(11, 52);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(35, 15);
-            this.label4.TabIndex = 13;
-            this.label4.Text = "BGM";
-            // 
-            // bgmSource
-            // 
-            this.bgmSource.Location = new System.Drawing.Point(75, 49);
-            this.bgmSource.Name = "bgmSource";
-            this.bgmSource.Size = new System.Drawing.Size(134, 21);
-            this.bgmSource.TabIndex = 14;
-            this.bgmSource.TextChanged += new System.EventHandler(this.bgmSource_TextChanged);
-            // 
-            // bgmSourceHelp
-            // 
-            this.bgmSourceHelp.Location = new System.Drawing.Point(210, 47);
-            this.bgmSourceHelp.Name = "bgmSourceHelp";
-            this.bgmSourceHelp.Size = new System.Drawing.Size(21, 25);
-            this.bgmSourceHelp.TabIndex = 15;
-            this.bgmSourceHelp.Text = "?";
-            this.bgmSourceHelp.UseVisualStyleBackColor = true;
-            this.bgmSourceHelp.Click += new System.EventHandler(this.bgmSourceHelp_Click);
             // 
             // Maps
             // 

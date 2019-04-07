@@ -34,6 +34,7 @@
             this.add = new System.Windows.Forms.Button();
             this.delete = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.showNameplate = new System.Windows.Forms.CheckBox();
             this.dialogButton = new System.Windows.Forms.Button();
             this.name = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -69,7 +70,6 @@
             this.typeFriendly = new System.Windows.Forms.RadioButton();
             this.typeHostile = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
-            this.showNameplate = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.range)).BeginInit();
@@ -140,6 +140,17 @@
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "NPC";
+            // 
+            // showNameplate
+            // 
+            this.showNameplate.AutoSize = true;
+            this.showNameplate.Location = new System.Drawing.Point(120, 52);
+            this.showNameplate.Name = "showNameplate";
+            this.showNameplate.Size = new System.Drawing.Size(121, 19);
+            this.showNameplate.TabIndex = 16;
+            this.showNameplate.Text = "Show Nameplate";
+            this.showNameplate.UseVisualStyleBackColor = true;
+            this.showNameplate.CheckedChanged += new System.EventHandler(this.showNameplate_CheckedChanged);
             // 
             // dialogButton
             // 
@@ -545,17 +556,6 @@
             this.label6.Size = new System.Drawing.Size(56, 13);
             this.label6.TabIndex = 10;
             this.label6.Text = "NPC Type";
-            // 
-            // showNameplate
-            // 
-            this.showNameplate.AutoSize = true;
-            this.showNameplate.Location = new System.Drawing.Point(120, 52);
-            this.showNameplate.Name = "showNameplate";
-            this.showNameplate.Size = new System.Drawing.Size(121, 19);
-            this.showNameplate.TabIndex = 16;
-            this.showNameplate.Text = "Show Nameplate";
-            this.showNameplate.UseVisualStyleBackColor = true;
-            this.showNameplate.CheckedChanged += new System.EventHandler(this.showNameplate_CheckedChanged);
             // 
             // NPCs
             // 

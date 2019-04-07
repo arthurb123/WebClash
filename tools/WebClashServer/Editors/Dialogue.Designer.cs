@@ -36,8 +36,8 @@
             this.loadMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.affectPlayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.spawnNPCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.canvas = new System.Windows.Forms.PictureBox();
             this.showQuestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.canvas = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.SuspendLayout();
@@ -75,30 +75,37 @@
             // giveItemToolStripMenuItem
             // 
             this.giveItemToolStripMenuItem.Name = "giveItemToolStripMenuItem";
-            this.giveItemToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.giveItemToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.giveItemToolStripMenuItem.Text = "Give Item";
             this.giveItemToolStripMenuItem.Click += new System.EventHandler(this.giveItemToolStripMenuItem_Click);
             // 
             // loadMapToolStripMenuItem
             // 
             this.loadMapToolStripMenuItem.Name = "loadMapToolStripMenuItem";
-            this.loadMapToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadMapToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.loadMapToolStripMenuItem.Text = "Load Map";
             this.loadMapToolStripMenuItem.Click += new System.EventHandler(this.loadMapToolStripMenuItem_Click);
             // 
             // affectPlayerToolStripMenuItem
             // 
             this.affectPlayerToolStripMenuItem.Name = "affectPlayerToolStripMenuItem";
-            this.affectPlayerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.affectPlayerToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.affectPlayerToolStripMenuItem.Text = "Affect Player";
             this.affectPlayerToolStripMenuItem.Click += new System.EventHandler(this.affectPlayerToolStripMenuItem_Click);
             // 
             // spawnNPCToolStripMenuItem
             // 
             this.spawnNPCToolStripMenuItem.Name = "spawnNPCToolStripMenuItem";
-            this.spawnNPCToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.spawnNPCToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.spawnNPCToolStripMenuItem.Text = "Spawn NPC";
             this.spawnNPCToolStripMenuItem.Click += new System.EventHandler(this.spawnNPCToolStripMenuItem_Click);
+            // 
+            // showQuestToolStripMenuItem
+            // 
+            this.showQuestToolStripMenuItem.Name = "showQuestToolStripMenuItem";
+            this.showQuestToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.showQuestToolStripMenuItem.Text = "Show Quest";
+            this.showQuestToolStripMenuItem.Click += new System.EventHandler(this.showQuestToolStripMenuItem_Click);
             // 
             // canvas
             // 
@@ -109,13 +116,6 @@
             this.canvas.Size = new System.Drawing.Size(649, 342);
             this.canvas.TabIndex = 2;
             this.canvas.TabStop = false;
-            // 
-            // showQuestToolStripMenuItem
-            // 
-            this.showQuestToolStripMenuItem.Name = "showQuestToolStripMenuItem";
-            this.showQuestToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.showQuestToolStripMenuItem.Text = "Show Quest";
-            this.showQuestToolStripMenuItem.Click += new System.EventHandler(this.showQuestToolStripMenuItem_Click);
             // 
             // Dialogue
             // 
