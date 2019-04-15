@@ -1,0 +1,67 @@
+{
+  "sw": 320,
+  "sh": 320,
+  "name": "Swingfest",
+  "src": "res/icons/7.png",
+  "description": "A multi swing attack.",
+  "scaling": {
+    "power": 0.25,
+    "agility": 0.025,
+    "intelligence": 0.0,
+    "wisdom": 0.0,
+    "toughness": 0.0,
+    "vitality": 0.0
+  },
+  "elements": [
+    {
+      "x": 95,
+      "y": 154,
+      "w": 48,
+      "h": 48,
+      "type": "static",
+      "src": "res/actions/10.png",
+      "animated": true,
+      "speed": 4,
+      "direction": "horizontal",
+      "rotates": true,
+      "projectileSpeed": 1,
+      "projectileDistance": 0
+    },
+    {
+      "x": 137,
+      "y": 193,
+      "w": 48,
+      "h": 48,
+      "type": "static",
+      "src": "res/actions/10.png",
+      "animated": true,
+      "speed": 4,
+      "direction": "horizontal",
+      "rotates": true,
+      "projectileSpeed": 1,
+      "projectileDistance": 0
+    },
+    {
+      "x": 179,
+      "y": 152,
+      "w": 48,
+      "h": 48,
+      "type": "static",
+      "src": "res/actions/10.png",
+      "animated": true,
+      "speed": 4,
+      "direction": "horizontal",
+      "rotates": true,
+      "projectileSpeed": 1,
+      "projectileDistance": 0
+    }
+  ],
+  "sounds": [
+    {
+      "src": "res/sounds/misc/random1.wav"
+    }
+  ],
+  "heal": 0,
+  "mana": 0,
+  "cooldown": 40
+}

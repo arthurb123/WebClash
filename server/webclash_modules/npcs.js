@@ -171,7 +171,7 @@ exports.createNPC = function(map, name, x, y, is_event)
     return npc.id;
 };
 
-exports.createEventNPC = function(map, name, x, y, owner, hostile)
+exports.createEventNPC = function(map, name, x, y, owner, hostile, resetCallback)
 {
     let npc_id = this.createNPC(map, name, x, y, true);
 
@@ -180,18 +180,26 @@ exports.createEventNPC = function(map, name, x, y, owner, hostile)
     if (npc_id === -1)
         return;
 
+    //Convert type according to if hostile
+
+    if (hostile) {
+        this.onMap[map][npc_id].data.type = 'hostile';
+        this.onMap[map][npc_id].data.movement = 'free';
+    }
+
     //Create event specific stuff
 
     this.onMap[map][npc_id].owner = owner;
+    this.onMap[map][npc_id].resetCallback = resetCallback;
 
     server.syncNPC(map, npc_id);
 
     //Movement callback
 
     let cb = function() {
-        if (npcs.onMap[map][npc_id].preventAttack === true &&
+        if (npcs.onMap[map][npc_id].preventAttack &&
             npcs.collidesWithOtherNPC(map, npc_id)) {
-                
+
             npcs.randomNPCMovement(map, npc_id, cb, true);
 
             npcs.onMap[map][npc_id].start_pos = {
@@ -201,7 +209,7 @@ exports.createEventNPC = function(map, name, x, y, owner, hostile)
 
             return;
         }
-        else if (hostile)
+        else if (hostile) 
             npcs.onMap[map][npc_id].preventAttack = false;
 
         npcs.onMap[map][npc_id].movementCallback = undefined;
@@ -466,6 +474,11 @@ exports.updateNPCCombat = function(map, id)
                     //Remove all targets from event NPC
 
                     this.onMap[map][id].targets = [];
+
+                    //Call reset callback if provided
+
+                    if (this.onMap[map][id].resetCallback != undefined)
+                        this.onMap[map][id].resetCallback();
 
                     //Kill NPC
 
@@ -935,10 +948,18 @@ exports.killNPC = function(map, id)
 
     //Add to timeout (if the NPC is not an event)
 
-    if (!this.onMap[map][id].is_event)
-        this.onTimeOut[map][id] = this.respawnTime*60;
-    else
+    if (!this.onMap[map][id].is_event) {
+        //Give respawn time if hostile
+
+        if (this.onMap[map][id].type === 'hostile')
+            this.onTimeOut[map][id] = this.respawnTime*60;
+    }
+    else {
+        if (this.onMap[map][id].resetCallback != undefined)
+            this.onMap[map][id].resetCallback();
+
         this.onMap[map][id] = undefined;
+    }
 };
 
 exports.respawnNPC = function(map, id)

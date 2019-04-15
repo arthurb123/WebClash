@@ -5,7 +5,16 @@
   "range": 1,
   "type": "friendly",
   "character": "knight",
-  "stats": null,
+  "stats": {
+    "level": 1,
+    "exp": 0,
+    "power": 0,
+    "toughness": 0,
+    "agility": 0,
+    "wisdom": 0,
+    "intelligence": 0,
+    "vitality": 0
+  },
   "health": {
     "cur": 100,
     "max": 100
@@ -38,6 +47,7 @@
       "loadMapEvent": null,
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
+      "turnHostileEvent": null,
       "showQuestEvent": null
     },
     {
@@ -65,6 +75,7 @@
       "loadMapEvent": null,
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
+      "turnHostileEvent": null,
       "showQuestEvent": null
     },
     {
@@ -88,6 +99,7 @@
       "loadMapEvent": null,
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
+      "turnHostileEvent": null,
       "showQuestEvent": null
     },
     {
@@ -111,6 +123,7 @@
       "loadMapEvent": null,
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
+      "turnHostileEvent": null,
       "showQuestEvent": {
         "name": "Eric's Cleanup"
       }
@@ -139,6 +152,7 @@
       "loadMapEvent": null,
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
+      "turnHostileEvent": null,
       "showQuestEvent": null
     },
     {
@@ -158,6 +172,7 @@
       "loadMapEvent": null,
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
+      "turnHostileEvent": null,
       "showQuestEvent": null
     },
     {
@@ -177,6 +192,7 @@
       "loadMapEvent": null,
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
+      "turnHostileEvent": null,
       "showQuestEvent": null
     },
     {
@@ -204,6 +220,7 @@
         "goldDifference": 0
       },
       "spawnNPCEvent": null,
+      "turnHostileEvent": null,
       "showQuestEvent": null
     },
     {
@@ -223,6 +240,7 @@
       "loadMapEvent": null,
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
+      "turnHostileEvent": null,
       "showQuestEvent": null
     },
     {
@@ -246,6 +264,7 @@
       "loadMapEvent": null,
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
+      "turnHostileEvent": null,
       "showQuestEvent": {
         "name": "Big Bastard"
       }
@@ -267,6 +286,7 @@
       "loadMapEvent": null,
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
+      "turnHostileEvent": null,
       "showQuestEvent": null
     }
   ],

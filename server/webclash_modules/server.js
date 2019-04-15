@@ -779,6 +779,39 @@ exports.handleSocket = function(socket)
                     );
             }
 
+            //Turn hostile event
+
+            else if (dialogEvent.eventType === 'TurnHostile') {
+                //Grab target NPC
+
+                let npc = npcs.onMap[map][data.npc];
+
+                //Kill original NPC
+
+                npcs.killNPC(map, data.npc);
+
+                //Create event NPC
+
+                npcs.createEventNPC(
+                    map,
+                    npc.name,
+                    npc.pos.X+npc.data.character.width/2,
+                    npc.pos.Y+npc.data.character.height,
+                    id,
+                    true,
+                    function() {
+                        //On reset, respawn original npc
+
+                        npcs.respawnNPC(map, data.npc);
+                    }
+                );
+
+                //Callback and return
+
+                callback({ result: true });
+                return;
+            }
+
             //Show quest event
 
             else if (dialogEvent.eventType === 'ShowQuest') {

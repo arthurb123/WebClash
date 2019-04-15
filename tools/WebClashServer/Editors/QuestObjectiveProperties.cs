@@ -52,6 +52,8 @@ namespace WebClashServer.Editors
 
                 killNpcSelection.SelectedItem = current.killObjective.npc;
                 killNpcAmount.Value = current.killObjective.amount;
+
+                resetOnDeath.Checked = current.killObjective.resetOnDeath;
             }
 
             if (current.type == "gather")
@@ -119,6 +121,14 @@ namespace WebClashServer.Editors
                 return;
 
             current.killObjective.amount = (int)killNpcAmount.Value;
+        }
+
+        private void ResetOnDeath_CheckedChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.killObjective.resetOnDeath = resetOnDeath.Checked;
         }
 
         //Gather Quest Objective

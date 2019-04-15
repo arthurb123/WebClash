@@ -70,6 +70,8 @@ namespace WebClashServer.Classes
 
         public SpawnNPCEvent spawnNPCEvent = null;
 
+        public TurnHostileEvent turnHostileEvent = null;
+
         public ShowQuestEvent showQuestEvent = null;
     }
 
@@ -120,6 +122,11 @@ namespace WebClashServer.Classes
         public int amount = 1;
 
         public bool hostile = false;
+    }
+
+    public class TurnHostileEvent
+    {
+        //...
     }
 
     public class ShowQuestEvent

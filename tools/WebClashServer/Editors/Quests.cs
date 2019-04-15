@@ -134,7 +134,9 @@ namespace WebClashServer
 
             string t = questList.SelectedItem.ToString();
 
-            LoadQuest(t.Substring(t.IndexOf(" ")+1, t.Length - t.IndexOf(" ")-1));
+            oldName = t.Substring(t.IndexOf(" ") + 1, t.Length - t.IndexOf(" ") - 1);
+
+            LoadQuest(oldName);
         }
 
         private void newLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -191,7 +193,7 @@ namespace WebClashServer
                 return;
             }
 
-            File.Delete(Program.main.location + "/items/" + oldName + ".json");
+            File.Delete(Program.main.location + "/quests/" + oldName + ".json");
 
             ReloadQuests();
 
@@ -307,6 +309,8 @@ namespace WebClashServer
 
         public int amount = 1;
         public int cur = 0;
+
+        public bool resetOnDeath = false;
     }
 
     public class QuestObjectiveGather

@@ -42,6 +42,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.killNpcSelection = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.resetOnDeath = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.gatherObjectivePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gatherAmount)).BeginInit();
@@ -70,8 +71,8 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.gatherObjectivePanel);
             this.groupBox1.Controls.Add(this.killObjectivePanel);
+            this.groupBox1.Controls.Add(this.gatherObjectivePanel);
             this.groupBox1.Location = new System.Drawing.Point(12, 39);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(265, 161);
@@ -145,6 +146,7 @@
             // 
             // killObjectivePanel
             // 
+            this.killObjectivePanel.Controls.Add(this.resetOnDeath);
             this.killObjectivePanel.Controls.Add(this.killNpcAmount);
             this.killObjectivePanel.Controls.Add(this.label3);
             this.killObjectivePanel.Controls.Add(this.killNpcSelection);
@@ -207,6 +209,17 @@
             this.label2.TabIndex = 0;
             this.label2.Text = "NPC";
             // 
+            // resetOnDeath
+            // 
+            this.resetOnDeath.AutoSize = true;
+            this.resetOnDeath.Location = new System.Drawing.Point(45, 99);
+            this.resetOnDeath.Name = "resetOnDeath";
+            this.resetOnDeath.Size = new System.Drawing.Size(154, 17);
+            this.resetOnDeath.TabIndex = 4;
+            this.resetOnDeath.Text = "Reset upon death of player";
+            this.resetOnDeath.UseVisualStyleBackColor = true;
+            this.resetOnDeath.CheckedChanged += new System.EventHandler(this.ResetOnDeath_CheckedChanged);
+            // 
             // QuestObjectiveProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -249,5 +262,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox itemList;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox resetOnDeath;
     }
 }

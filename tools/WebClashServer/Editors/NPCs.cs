@@ -106,19 +106,19 @@ namespace WebClashServer.Editors
                     break;
             }
 
-            if (current.stats != null)
-            {
-                level.Value = current.stats.level;
+            if (current.stats == null)
+                current.stats = new Stats();
 
-                exp.Value = current.stats.exp;
+            level.Value = current.stats.level;
 
-                power.Value = current.stats.power;
-                agility.Value = current.stats.agility;
-                intelligence.Value = current.stats.intelligence;
-                wisdom.Value = current.stats.wisdom;
-                toughness.Value = current.stats.toughness;
-                vitality.Value = current.stats.vitality;
-            }
+            exp.Value = current.stats.exp;
+
+            power.Value = current.stats.power;
+            agility.Value = current.stats.agility;
+            intelligence.Value = current.stats.intelligence;
+            wisdom.Value = current.stats.wisdom;
+            toughness.Value = current.stats.toughness;
+            vitality.Value = current.stats.vitality;
 
             if (current.health != null)
                 health.Value = current.health.max;
@@ -143,9 +143,6 @@ namespace WebClashServer.Editors
 
         private void save_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (current.type == "friendly")
-                current.stats = null;
-
             if (name.Text.Length == 0)
             {
                 MessageBox.Show("This NPC cannot be saved as it has an invalid name.", "WebClash Server - Error");
@@ -190,14 +187,10 @@ namespace WebClashServer.Editors
         {
             if (current.type != "friendly")
             {
-                statistics.Enabled = true;
-
                 dialogButton.Enabled = false;
             }
             else
             {
-                statistics.Enabled = false;
-
                 dialogButton.Enabled = true;
             }
         }
@@ -322,7 +315,7 @@ namespace WebClashServer.Editors
 
         private void dialogButton_Click(object sender, EventArgs e)
         {
-            Dialogue npcDialogue = new Dialogue(current.dialog.ToList(), current.dialogElements.ToList());
+            Dialogue npcDialogue = new Dialogue(current.dialog.ToList(), current.dialogElements.ToList(), false);
 
             npcDialogue.Text = "Edit dialog for '" + current.name + "'";
 

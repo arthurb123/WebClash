@@ -6,7 +6,7 @@
   "type": "hostile",
   "character": "golem",
   "stats": {
-    "level": 10,
+    "level": 6,
     "exp": 20,
     "power": 0,
     "toughness": 2,
@@ -16,8 +16,8 @@
     "vitality": 0
   },
   "health": {
-    "cur": 100,
-    "max": 100
+    "cur": 75,
+    "max": 75
   },
   "actions": [
     {

@@ -1,5 +1,5 @@
 {
-  "minLevel": 3,
+  "minLevel": 5,
   "description": "Terminate one golem on sight and loot the weird greens. \nI will reward you hefty, If you return alive that is.",
   "objectives": [
     {
@@ -7,7 +7,8 @@
       "killObjective": {
         "npc": "Golem",
         "amount": 1,
-        "cur": 0
+        "cur": 0,
+        "resetOnDeath": false
       },
       "gatherObjective": null
     },

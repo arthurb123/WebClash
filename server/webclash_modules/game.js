@@ -328,28 +328,7 @@ exports.damagePlayer = function(id, damage)
 
     if (this.players[id].health.cur <= 0)
     {
-        //Reset all NPC targets on map from player
-
-        npcs.removeNPCTargets(this.players[id].map_id, id, false);
-
-        //reset player pos, stats and send
-        //back to first map at the starting tile
-
-        this.players[id].health.cur = this.players[id].health.max;
-        this.players[id].mana.cur = this.players[id].mana.max;
-
-        server.syncPlayerPartially(id, 'health');
-        server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
-
-        if (this.players[id].map !== properties.startingMap)
-            this.loadMap(this.players[id].socket, properties.startingMap);
-
-        this.setPlayerTilePosition(
-            id,
-            tiled.getMapIndex(properties.startingMap),
-            properties.startingTile.x,
-            properties.startingTile.y
-        );
+        this.killPlayer(id);
 
         return true;
     }
@@ -361,6 +340,45 @@ exports.damagePlayer = function(id, damage)
     //Return false
 
     return false;
+};
+
+exports.killPlayer = function(id)
+{
+    //Reset all NPC targets on map from player
+
+    npcs.removeNPCTargets(this.players[id].map_id, id, false);
+
+    //Reset stats and sync
+
+    this.players[id].health.cur = this.players[id].health.max;
+    this.players[id].mana.cur = this.players[id].mana.max;
+
+    server.syncPlayerPartially(id, 'health');
+    server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
+
+    //Load starting map if not on it
+
+    if (this.players[id].map !== properties.startingMap)
+        this.loadMap(this.players[id].socket, properties.startingMap);
+
+    //Set starting tile
+
+    this.setPlayerTilePosition(
+        id,
+        tiled.getMapIndex(properties.startingMap),
+        properties.startingTile.x,
+        properties.startingTile.y
+    );
+
+    //Check for quest objectives reset
+
+    //Reset all NPC targets on map from player
+
+    npcs.removeNPCTargets(this.players[id].map_id, id, false);
+
+    //Reset player quest objectives (if specified)
+
+    quests.resetQuestObjectives(id);
 };
 
 exports.healPlayer = function(id, heal)

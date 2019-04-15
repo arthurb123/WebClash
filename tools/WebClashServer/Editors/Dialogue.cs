@@ -17,7 +17,7 @@ namespace WebClashServer.Editors
 
         Point oldMouse = new Point(-1, -1);
 
-        public Dialogue(List<DialogueItem> items, List<CanvasElement> elements)
+        public Dialogue(List<DialogueItem> items, List<CanvasElement> elements, bool isItem)
         {
             InitializeComponent();
 
@@ -29,6 +29,14 @@ namespace WebClashServer.Editors
 
             if (elements != null)
                 this.elements = elements;
+
+            //If not an item enable certain options
+            //only applicable to NPCs
+
+            if (!isItem)
+            {
+                turnHostileToolStripMenuItem.Enabled = true;
+            }
         }
 
         private void Dialogue_Load(object sender, EventArgs e)
@@ -104,6 +112,11 @@ namespace WebClashServer.Editors
             }
             else
             {
+                //Make sure it is not the turn hostile event
+
+                if (dialogSystem.items[elements[item].id].eventType == "TurnHostile")
+                    return;
+
                 DialogueEventProperties dep = new DialogueEventProperties(dialogSystem.items[elements[item].id]);
 
                 dep.FormClosed += (object s, FormClosedEventArgs fcea) =>
@@ -299,6 +312,9 @@ namespace WebClashServer.Editors
                 case "ShowQuest":
                     dialogSystem.items[cee.id].showQuestEvent = new ShowQuestEvent();
                     break;
+                case "TurnHostile":
+                    dialogSystem.items[cee.id].turnHostileEvent = new TurnHostileEvent();
+                    break;
             }
 
             dialogSystem.items[cee.id].options.Add(new DialogueOption(-1));
@@ -354,6 +370,13 @@ namespace WebClashServer.Editors
 
             canvas.Invalidate();
         }
+
+        private void TurnHostileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addCanvasEventElement(EventType.TurnHostile);
+
+            canvas.Invalidate();
+        }
     }
 
     public class CanvasElement
@@ -390,6 +413,7 @@ namespace WebClashServer.Editors
         LoadMap,
         AffectPlayer,
         SpawnNPC,
-        ShowQuest
+        ShowQuest,
+        TurnHostile
     }
 }

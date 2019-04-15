@@ -454,7 +454,7 @@ namespace WebClashServer
 
         private void dialogButton_Click(object sender, EventArgs e)
         {
-            Dialogue dialogue = new Dialogue(current.dialog.ToList(), current.dialogElements.ToList());
+            Dialogue dialogue = new Dialogue(current.dialog.ToList(), current.dialogElements.ToList(), true);
 
             dialogue.Text = "Edit dialog for '" + name.Text + "'";
 

@@ -1,0 +1,20 @@
+{
+  "minLevel": 5,
+  "description": "Fight the captain.",
+  "objectives": [
+    {
+      "type": "kill",
+      "killObjective": {
+        "npc": "Captain",
+        "amount": 1,
+        "cur": 0,
+        "resetOnDeath": true
+      },
+      "gatherObjective": null
+    }
+  ],
+  "rewards": {
+    "gold": 50,
+    "experience": 45
+  }
+}

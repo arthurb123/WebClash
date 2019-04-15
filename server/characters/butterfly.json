@@ -8,10 +8,10 @@
     "alwaysAnimate": true
   },
   "collider": {
-    "x": 4,
-    "y": 4,
-    "width": 8,
-    "height": 8
+    "x": 0,
+    "y": 0,
+    "width": 16,
+    "height": 16
   },
   "movement": {
     "max": 1.0

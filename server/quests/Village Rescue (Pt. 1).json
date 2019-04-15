@@ -1,0 +1,20 @@
+{
+  "minLevel": 3,
+  "description": "Fight the captain and his soldiers and take back the village.",
+  "objectives": [
+    {
+      "type": "kill",
+      "killObjective": {
+        "npc": "Soldier",
+        "amount": 4,
+        "cur": 0,
+        "resetOnDeath": true
+      },
+      "gatherObjective": null
+    }
+  ],
+  "rewards": {
+    "gold": 30,
+    "experience": 20
+  }
+}

@@ -277,15 +277,22 @@ const ui = {
                         else
                             ui.dialog.setDialog(ui.dialog.cur[id].options[next].next);
                     } else {
-                        if (player.quests[data.quest.name] == undefined)
-                            data.quest.options = [
-                                { text: 'Accept', next: 'accept', actual_next: ui.dialog.cur[id].options[0].next },
-                                { text: 'Decline', next: -1 }
-                            ];
-                        else
+                        if (data.quest.minLevel <= game.players[game.player]._level) {
+                            if (player.quests[data.quest.name] == undefined)
+                                data.quest.options = [
+                                    { text: 'Accept', next: 'accept', actual_next: ui.dialog.cur[id].options[0].next },
+                                    { text: 'Decline', next: -1 }
+                                ];
+                            else {
+                                ui.dialog.setDialog(ui.dialog.cur[id].options[0].next)
+
+                                return;
+                            }
+                        } else {
                             data.quest.options = [
                                 { text: 'Exit', next: -1 }
                             ];
+                        }
 
                         ui.dialog.cur[id] = data.quest;
 

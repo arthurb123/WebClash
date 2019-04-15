@@ -278,7 +278,8 @@ const game = {
                     else if (this._type === 'hostile')
                         this._nameplate.Color('#FF4242');
 
-                    if (this._stats !== undefined)
+                    if (this._stats !== undefined &&
+                        this._type === 'hostile')
                         this._nameplate.Text('lvl ' + this._stats.level + ' - ' + this.name);
                 }
 
@@ -896,11 +897,7 @@ const game = {
 
             blood.Loops(function() {
                 if (this._timer.cur >= this._timer.standard)
-                {
-                    this._timer.cur = 0;
-
                     blood.Hide();
-                }
                 else
                     this._timer.cur++;
             });

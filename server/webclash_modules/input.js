@@ -231,6 +231,11 @@ exports.handleCommand = function(socket, text)
                 exitHandler();
 
                 return 'success';
+            //TEMP
+            case 'killnpc':
+                npcs.killNPC(0, 4);
+
+                return 'success';
         }
     }
     catch (err)

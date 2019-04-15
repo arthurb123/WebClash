@@ -6,7 +6,7 @@
   "type": "hostile",
   "character": "soldier",
   "stats": {
-    "level": 5,
+    "level": 4,
     "exp": 9,
     "power": 3,
     "toughness": 2,

@@ -195,6 +195,47 @@ exports.evaluateQuestObjective = function(id, type, target)
         server.syncPlayerPartially(id, 'quests', game.players[id].socket, false);
 };
 
+exports.resetQuestObjectives = function(id)
+{
+    //Check if player is valid
+
+    if (game.players[id] == undefined)
+        return;
+
+    //Initialize variables
+
+    let sync = false;
+
+    //Go through all quests
+
+    for (let quest in game.players[id].quests) {
+        //Get current objective id and objective
+
+        let current = game.players[id].quests[quest].id,
+            objective = game.players[id].quests[quest].objectives[current];
+
+        //Check for kill objective reset
+
+        if (objective.type === 'kill' &&
+            objective.killObjective != undefined &&
+            objective.killObjective.resetOnDeath) {
+            objective.killObjective.cur = 0;
+
+            sync = true;
+            continue;
+        }
+
+        //Other objectives that feature on death reset
+
+        //...
+    };
+
+    //Sync quest(s) to player if necessary
+
+    if (sync)
+        server.syncPlayerPartially(id, 'quests', game.players[id].socket, false);
+};
+
 exports.advanceQuest = function(id, name)
 {
     //Check if player has quest
