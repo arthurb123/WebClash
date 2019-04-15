@@ -951,7 +951,7 @@ exports.killNPC = function(map, id)
     if (!this.onMap[map][id].is_event) {
         //Give respawn time if hostile
 
-        if (this.onMap[map][id].type === 'hostile')
+        if (this.onMap[map][id].data.type === 'hostile')
             this.onTimeOut[map][id] = this.respawnTime*60;
     }
     else {
