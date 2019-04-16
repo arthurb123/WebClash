@@ -1,0 +1,130 @@
+{
+  "name": "Tom",
+  "showNameplate": true,
+  "movement": "static",
+  "range": 10,
+  "type": "friendly",
+  "character": "merchant",
+  "stats": {
+    "level": 1,
+    "exp": 0,
+    "power": 0,
+    "toughness": 0,
+    "agility": 0,
+    "wisdom": 0,
+    "intelligence": 0,
+    "vitality": 0
+  },
+  "health": {
+    "cur": 100,
+    "max": 100
+  },
+  "actions": [],
+  "items": [],
+  "dialog": [
+    {
+      "text": "Hello there!\nDo you want to take a look at my wares?",
+      "portrait": "res/portraits/3.png",
+      "entry": true,
+      "isEvent": false,
+      "options": [
+        {
+          "text": "Show me!",
+          "next": 1
+        },
+        {
+          "text": "No thanks.",
+          "next": 2
+        }
+      ],
+      "eventType": "",
+      "repeatable": false,
+      "giveItemEvent": null,
+      "loadMapEvent": null,
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "turnHostileEvent": null,
+      "showQuestEvent": null,
+      "showShopEvent": null
+    },
+    {
+      "text": "",
+      "portrait": "",
+      "entry": false,
+      "isEvent": true,
+      "options": [
+        {
+          "text": "",
+          "next": -1
+        },
+        {
+          "text": "",
+          "next": -1
+        }
+      ],
+      "eventType": "ShowShop",
+      "repeatable": true,
+      "giveItemEvent": null,
+      "loadMapEvent": null,
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "turnHostileEvent": null,
+      "showQuestEvent": null,
+      "showShopEvent": {
+        "name": "Tom's Wares",
+        "items": [
+          {
+            "item": "Healing Slab",
+            "price": 15
+          },
+          {
+            "item": "Sword",
+            "price": 10
+          }
+        ],
+        "acceptSell": true
+      }
+    },
+    {
+      "text": "Stay safe!",
+      "portrait": "res/portraits/3.png",
+      "entry": false,
+      "isEvent": false,
+      "options": [
+        {
+          "text": "See ya.",
+          "next": -1
+        }
+      ],
+      "eventType": "",
+      "repeatable": false,
+      "giveItemEvent": null,
+      "loadMapEvent": null,
+      "affectPlayerEvent": null,
+      "spawnNPCEvent": null,
+      "turnHostileEvent": null,
+      "showQuestEvent": null,
+      "showShopEvent": null
+    }
+  ],
+  "dialogElements": [
+    {
+      "p": "20, 132",
+      "id": 0,
+      "isEvent": false,
+      "size": "100, 80"
+    },
+    {
+      "p": "196, 76",
+      "id": 1,
+      "isEvent": true,
+      "size": "95, 20"
+    },
+    {
+      "p": "190, 198",
+      "id": 2,
+      "isEvent": false,
+      "size": "100, 80"
+    }
+  ]
+}

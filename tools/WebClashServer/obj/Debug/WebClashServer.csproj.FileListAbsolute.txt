@@ -28,3 +28,4 @@ C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClas
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.ResetData.resources
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Quests.resources
 C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.QuestObjectiveProperties.resources
+C:\Users\Arthur\Desktop\projects\webclash\tools\WebClashServer\obj\Debug\WebClashServer.Editors.ShopSelection.resources

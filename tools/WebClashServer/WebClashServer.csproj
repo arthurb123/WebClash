@@ -79,6 +79,12 @@
     <Compile Include="Editors\DialogueProperties.Designer.cs">
       <DependentUpon>DialogueProperties.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\ShopSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\ShopSelection.Designer.cs">
+      <DependentUpon>ShopSelection.cs</DependentUpon>
+    </Compile>
     <Compile Include="Editors\QuestObjectiveProperties.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -158,6 +164,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\DialogueProperties.resx">
       <DependentUpon>DialogueProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\ShopSelection.resx">
+      <DependentUpon>ShopSelection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\QuestObjectiveProperties.resx">
       <DependentUpon>QuestObjectiveProperties.cs</DependentUpon>

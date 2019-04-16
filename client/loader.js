@@ -4,6 +4,7 @@ const scripts = [
     'properties.js',
 
     'lib/socket.io.js',
+    'lib/sha256.js',
     'lib/lynx2d.js',
     'lib/tiled.js',
     'lib/game.js',

@@ -209,6 +209,14 @@ exports.handleCommand = function(socket, text)
                 items.addPlayerItem(game.players[p].socket, p, item);
 
                 return 'success';
+            //Give gold command
+            case 'givegold':
+                if (arguments.length < 1)
+                    return 'wrong';
+
+                game.deltaGoldPlayer(p, parseInt(arguments[0]));
+
+                return 'success';
             //Change character command
             case 'setcharacter':
                 if (arguments.length < 1)

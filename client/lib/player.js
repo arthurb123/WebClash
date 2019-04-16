@@ -91,7 +91,8 @@ const player = {
 
             for (let i = 1; i < 6; i++)
                 lx.OnKey(i, function(data) {
-                    if (data.state == 0)
+                    if (data.state == 0 || 
+                        ui.chat.isTyping())
                         return;
 
                     player.performAction(i+1);

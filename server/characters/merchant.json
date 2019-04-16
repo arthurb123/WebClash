@@ -1,0 +1,23 @@
+{
+  "src": "res/characters/148.png",
+  "width": 32,
+  "height": 48,
+  "animation": {
+    "direction": "horizontal",
+    "speed": 12,
+    "alwaysAnimate": false
+  },
+  "collider": {
+    "x": 8,
+    "y": 32,
+    "width": 16,
+    "height": 16
+  },
+  "movement": {
+    "max": 1.0
+  },
+  "sounds": {
+    "hitSounds": [],
+    "deathSounds": []
+  }
+}

@@ -34,17 +34,17 @@
   "items": [],
   "dialog": [
     {
-      "text": "This village now belongs to me.\nLeave or be killed!",
+      "text": "This village now belongs to me!!",
       "portrait": "res/portraits/2.png",
       "entry": true,
       "isEvent": false,
       "options": [
         {
-          "text": "Fight me!",
+          "text": "No.",
           "next": 3
         },
         {
-          "text": "Exit",
+          "text": "Whatever.",
           "next": -1
         }
       ],
@@ -55,7 +55,8 @@
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
-      "showQuestEvent": null
+      "showQuestEvent": null,
+      "showShopEvent": null
     },
     {
       "text": "",
@@ -83,7 +84,8 @@
         "hostile": true
       },
       "turnHostileEvent": null,
-      "showQuestEvent": null
+      "showQuestEvent": null,
+      "showShopEvent": null
     },
     {
       "text": "Have fun with my soldiers!",
@@ -107,7 +109,8 @@
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
-      "showQuestEvent": null
+      "showQuestEvent": null,
+      "showShopEvent": null
     },
     {
       "text": "",
@@ -133,7 +136,8 @@
       "turnHostileEvent": null,
       "showQuestEvent": {
         "name": "Village Rescue (Pt. 1)"
-      }
+      },
+      "showShopEvent": null
     },
     {
       "text": "",
@@ -159,10 +163,11 @@
       "turnHostileEvent": null,
       "showQuestEvent": {
         "name": "Village Rescue (Pt. 2)"
-      }
+      },
+      "showShopEvent": null
     },
     {
-      "text": "You are making a mistake here.",
+      "text": "You are making a mistake here!!",
       "portrait": "res/portraits/2.png",
       "entry": false,
       "isEvent": false,
@@ -183,7 +188,8 @@
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
-      "showQuestEvent": null
+      "showQuestEvent": null,
+      "showShopEvent": null
     },
     {
       "text": "",
@@ -201,13 +207,14 @@
         }
       ],
       "eventType": "TurnHostile",
-      "repeatable": false,
+      "repeatable": true,
       "giveItemEvent": null,
       "loadMapEvent": null,
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
       "turnHostileEvent": {},
-      "showQuestEvent": null
+      "showQuestEvent": null,
+      "showShopEvent": null
     },
     {
       "text": "Yeah maybe not..",
@@ -227,7 +234,8 @@
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
-      "showQuestEvent": null
+      "showQuestEvent": null,
+      "showShopEvent": null
     }
   ],
   "dialogElements": [

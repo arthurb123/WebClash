@@ -73,6 +73,8 @@ namespace WebClashServer.Classes
         public TurnHostileEvent turnHostileEvent = null;
 
         public ShowQuestEvent showQuestEvent = null;
+
+        public ShowShopEvent showShopEvent = null;
     }
 
     public class DialogueOption
@@ -132,5 +134,14 @@ namespace WebClashServer.Classes
     public class ShowQuestEvent
     {
         public string name = "";
+    }
+
+    public class ShowShopEvent
+    {
+        public string name = "Shop";
+
+        public ShopItem[] items = new ShopItem[0];
+
+        public bool acceptSell = true;
     }
 }

@@ -10,11 +10,22 @@ namespace WebClashServer
 {
     public partial class Main : Form
     {
+        //Server variables
+
         private bool running = false;
 
         public string location = "server";
 
         private Process p = null;
+
+        //Forms
+
+        Characters characters = new Characters();
+        Maps maps = new Maps();
+        NPCs npcs = new NPCs();
+        Actions actions = new Actions();
+        Items items = new Items();
+        Quests quests = new Quests();
 
         public Main()
         {
@@ -232,9 +243,16 @@ namespace WebClashServer
             if (!CheckServerLocation())
                 return;
 
+            if (characters.Visible)
+            {
+                characters.Focus();
+                return;
+            }
+            else
+                characters = new Characters();
+
             int amount = 0;
 
-            Characters characters = new Characters();
             characters.VisibleChanged += (object s, EventArgs ea) =>
             {
                 amount = characters.GetAmount();
@@ -244,7 +262,7 @@ namespace WebClashServer
                     AddOutput("The amount of characters has changed, changes will be visible after a server restart.");
             };
 
-            characters.ShowDialog();
+            characters.Show();
         }
 
         private void mapsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -252,9 +270,16 @@ namespace WebClashServer
             if (!CheckServerLocation())
                 return;
 
+            if (maps.Visible)
+            {
+                maps.Focus();
+                return;
+            }
+            else
+                maps = new Maps();
+
             int amount = 0;
 
-            Maps maps = new Maps();
             maps.VisibleChanged += (object s, EventArgs ea) =>
             {
                 amount = maps.GetAmount();
@@ -264,7 +289,7 @@ namespace WebClashServer
                     AddOutput("The amount of maps has changed, changes will be visible after a server restart.");
             };
 
-            maps.ShowDialog();
+            maps.Show();
         }
 
         private void NPCsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -272,9 +297,16 @@ namespace WebClashServer
             if (!CheckServerLocation())
                 return;
 
+            if (npcs.Visible)
+            {
+                npcs.Focus();
+                return;
+            }
+            else
+                npcs = new NPCs();
+
             int amount = 0;
 
-            NPCs npcs = new NPCs();
             npcs.VisibleChanged += (object s, EventArgs ea) =>
             {
                 amount = npcs.GetAmount();
@@ -284,7 +316,7 @@ namespace WebClashServer
                     AddOutput("The amount of NPCs has changed, changes will be visible after a server restart.");
             };
 
-            npcs.ShowDialog();
+            npcs.Show();
         }
 
         private void actionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -292,9 +324,16 @@ namespace WebClashServer
             if (!CheckServerLocation())
                 return;
 
+            if (actions.Visible)
+            {
+                actions.Focus();
+                return;
+            }
+            else
+                actions = new Actions();
+
             int amount = 0;
 
-            Actions actions = new Actions();
             actions.VisibleChanged += (object s, EventArgs ea) =>
             {
                 amount = actions.GetAmount();
@@ -304,7 +343,7 @@ namespace WebClashServer
                     AddOutput("The amount of actions has changed, changes will be visible after a server restart.");
             };
 
-            actions.ShowDialog();
+            actions.Show();
         }
 
         private void itemsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -312,9 +351,16 @@ namespace WebClashServer
             if (!CheckServerLocation())
                 return;
 
+            if (items.Visible)
+            {
+                items.Focus();
+                return;
+            }
+            else
+                items = new Items();
+
             int amount = 0;
 
-            Items items = new Items();
             items.VisibleChanged += (object s, EventArgs ea) =>
             {
                 amount = items.GetAmount();
@@ -324,7 +370,7 @@ namespace WebClashServer
                     AddOutput("The amount of items has changed, changes will be visible after a server restart.");
             };
 
-            items.ShowDialog();
+            items.Show();
         }
         
         private void questsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -332,9 +378,16 @@ namespace WebClashServer
             if (!CheckServerLocation())
                 return;
 
+            if (quests.Visible)
+            {
+                quests.Focus();
+                return;
+            }
+            else
+                quests = new Quests();
+
             int amount = 0;
 
-            Quests quests = new Quests();
             quests.VisibleChanged += (object s, EventArgs ea) =>
             {
                 amount = quests.GetAmount();
@@ -344,7 +397,7 @@ namespace WebClashServer
                     AddOutput("The amount of quests has changed, changes will be visible after a server restart.");
             };
 
-            quests.ShowDialog();
+            quests.Show();
         }
 
         //Tools
@@ -354,7 +407,7 @@ namespace WebClashServer
             if (!CheckServerLocation())
                 return;
 
-            new ResetData(location).Show();
+            new ResetData(location).ShowDialog();
         }
     }
 }

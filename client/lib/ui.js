@@ -13,6 +13,7 @@ const ui = {
         this.profile.create();
         this.quests.create();
         this.journal.create();
+        this.shop.create();
         this.chat.create();
 
         lx.Loops(this.floaties.update);
@@ -464,7 +465,7 @@ const ui = {
             for (let i = 0; i < this.slots.length; i++) {
                 let equippable = this.getEquippableAtIndex(i);
 
-                document.getElementById('equipmentbar_box').innerHTML += '<div class="slot" id="' + this.slots[i] + '" onmouseover="ui.inventory.displayBox(\'' + equippable + '\')" onclick="player.unequip(\'' + equippable + '\')" onmouseleave="ui.inventory.removeBox()"></div>';
+                document.getElementById('equipmentbar_box').innerHTML += '<div class="slot" id="' + this.slots[i] + '" onmouseover="ui.inventory.displayBox(\'' + equippable + '\', \'equipment\')" onclick="player.unequip(\'' + equippable + '\')" onmouseleave="ui.inventory.removeBox()"></div>';
             }
 
             this.reload();
@@ -564,7 +565,7 @@ const ui = {
                     let i = (y*this.size.width+x);
 
                     document.getElementById('inventory_box').innerHTML +=
-                        '<div class="slot" id="inventory_slot' + i + '" oncontextmenu="ui.inventory.displayContext(' + i + ')" onmouseover="ui.inventory.displayBox(' + i + ')" onclick="ui.inventory.useItem(' + i + ')" onmouseleave="ui.inventory.removeBox();">' +
+                        '<div class="slot" id="inventory_slot' + i + '" oncontextmenu="ui.inventory.displayContext(' + i + ')" onmouseover="ui.inventory.displayBox(' + i + ', \'inventory\')" onclick="ui.inventory.useItem(' + i + ')" onmouseleave="ui.inventory.removeBox();">' +
                         '</div>';
 
                     this.slots[i] = 'inventory_slot' + i;
@@ -661,8 +662,11 @@ const ui = {
                 ui.inventory.removeContext();
             }
         },
-        displayBox: function(slot) {
-            if (player.inventory[slot] === undefined && player.equipment[slot] === undefined)
+        displayBox: function(slot, slotType) {
+            if (slotType === 'inventory' && player.inventory[slot] == undefined ||
+                slotType === 'equipment' && player.equipment[slot] == undefined ||
+                slotType === 'loot' && ui.loot.items[slot] == undefined ||
+                slotType === 'shop' && ui.shop.items[slot] == undefined)
                 return;
 
             //Element
@@ -676,13 +680,21 @@ const ui = {
 
             //Item
 
-            let item = player.inventory[slot],
-                isEquipment = false;
+            let item;
 
-            if (item === undefined) {
-                item = player.equipment[slot];
-
-                isEquipment = true;
+            switch (slotType) {
+                case 'inventory':
+                    item = player.inventory[slot];
+                    break;
+                case 'equipment':
+                    item = player.equipment[slot];
+                    break; 
+                case 'loot':
+                    item = ui.loot.items[slot];
+                    break;
+                case 'shop':
+                    item = ui.shop.items[slot];
+                    break;
             }
 
             //Color
@@ -690,18 +702,22 @@ const ui = {
             let color = this.getItemColor(item.rarity);
             let note = '';
 
-            if (item.minLevel == undefined ||
-                item.minLevel === 0 ||
-                game.players[game.player]._level >= item.minLevel) {
-                if (item.type === 'consumable' ||
-                    item.type === 'dialog')
-                    note = '(Click to use)';
+            if (slotType !== 'shop') {
+                if (slotType === 'loot') 
+                    note = '(Click to loot)';
+                else if (item.minLevel == undefined ||
+                        item.minLevel === 0 ||
+                        game.players[game.player]._level >= item.minLevel) {
+                    if (item.type === 'consumable' ||
+                        item.type === 'dialog')
+                        note = '(Click to use)';
 
-                if (item.type === 'equipment') {
-                    if (player.equipment[slot] === undefined)
-                        note = '(Click to equip)';
-                    else
-                        note = '(Click to unequip)';
+                    if (item.type === 'equipment') {
+                        if (player.equipment[slot] === undefined)
+                            note = '(Click to equip)';
+                        else
+                            note = '(Click to unequip)';
+                    }
                 }
             }
 
@@ -720,7 +736,7 @@ const ui = {
                 item.equippableAction.length > 0) {
                 actionName = '<b>' + item.equippableAction + '</b>';
 
-                if (isEquipment)
+                if (slotType === 'equipment')
                     actionDps = '<br>DPS: ' + game.calculateDamagePerSecond(item.scaling);
                 else
                     actionDps = '<br>DPS: ' + game.calculateDamagePerSecond(item.scaling, item.stats);
@@ -795,7 +811,7 @@ const ui = {
                 y: -displayBox.offsetHeight
             };
 
-            if (isEquipment)
+            if (slotType === 'equipment')
                 offset.y = 8;
 
             displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X+offset.x + 'px';
@@ -908,6 +924,10 @@ const ui = {
 
             this.items = [];
 
+            //Hide (inventory) displaybox
+
+            ui.inventory.removeBox();
+
             //Hide loot box
 
             this.hide();
@@ -936,7 +956,7 @@ const ui = {
             //Add to DOM loot box content
 
             el_content.innerHTML +=
-                '<div class="slot" id="loot_slot' + data.id + '" style="border: 1px solid ' + ui.inventory.getItemColor(data.rarity) + ';" onclick="ui.loot.pickup(' + data.id + ')">' +
+                '<div class="slot" id="loot_slot' + data.id + '" style="border: 1px solid ' + ui.inventory.getItemColor(data.rarity) + ';" onclick="ui.loot.pickup(' + data.id + ')" onmouseenter="ui.inventory.displayBox(' + data.id + ', \'loot\')" onmouseleave="ui.inventory.removeBox();">' +
                     '<img src="' + data.source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' +
                 '</div>';
 
@@ -953,6 +973,10 @@ const ui = {
             //Emit pickup request
 
             socket.emit('CLIENT_PICKUP_ITEM', id);
+
+            //Hide (inventory) displaybox
+
+            ui.inventory.removeBox();
         },
         remove: function(id) {
             //Check if valid
@@ -1145,6 +1169,7 @@ const ui = {
 
             ui.profile.hide();
             ui.journal.hide();
+            ui.shop.hide();
 
             player.loseFocus();
 
@@ -1251,6 +1276,7 @@ const ui = {
 
             ui.settings.hide();
             ui.journal.hide();
+            ui.shop.hide();
 
             player.loseFocus();
 
@@ -1281,6 +1307,121 @@ const ui = {
 
             document.getElementById('status_profile_link').innerHTML = 'Show Profile';
             document.getElementById('profile_box').style.visibility = 'hidden';
+
+            this.visible = false;
+        }
+    },
+    shop: {
+        items: [],
+        prices: [],
+        visible: false,
+        emitted: false,
+        create: function() {
+            view.dom.innerHTML +=
+                '<div id="shop_box" class="box" style="visibility: hidden; text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); min-width: 80px; max-width: 20%; min-height: 80px; max-height: 25%; padding: 4px;">' +
+                    '<p id="shop_name" class="info" style="font-size: 15px; padding-bottom: 2px;"><b>Shop</b></p>' +
+                    '<div id="shop_content" style="overflow-y: auto; padding: 1px;"></div>' +
+                    '<p class="link" onclick="ui.shop.hide()" style="font-size: 12px; color: #ff3333; padding-top: 2px;">Close</p></div>' +
+                '</div>'
+        },
+        showShop: function(target, id, shop) {
+            this.hide();
+
+            this.target = target;
+            this.id = id;
+
+            document.getElementById('shop_content').innerHTML = '';
+            document.getElementById('shop_name').innerHTML = shop.name;
+
+            let items = shop.items;
+            for (let i = 0; i < items.length; i++) {
+                let item = items[i].item;
+
+                this.items[i] = item;
+                this.prices[i] = items[i].price;
+
+                document.getElementById('shop_content').innerHTML += 
+                    '<div id="shop_slot' + i + '" class="slot" onclick="ui.shop.buy(' + i + ');" onmouseenter="ui.inventory.displayBox(' + i + ', \'shop\')" onmouseleave="ui.inventory.removeBox();">' +
+                        '<img src="' + item.source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' +
+                        '<p class="info" style="font-size: 9px; position: absolute; top: 100%; left: 2px; transform: translate(0, -110%); color: yellow;">' + items[i].price + '</p>' +
+                    '</div>';
+
+                document.getElementById('shop_slot' + i).style.border = '1px solid ' + ui.inventory.getItemColor(item.rarity);
+            }
+
+            this.reload();
+
+            this.show();
+        },
+        reload: function() {
+            for (let i = 0; i < this.prices.length; i++) 
+                if (game.players[game.player]._gold-this.prices[i] < 0)
+                    document.getElementById('shop_slot' + i).style.backgroundColor = '#ff6666';
+                else
+                    document.getElementById('shop_slot' + i).style.backgroundColor = '';
+        },
+        buy: function(id) {
+            if (this.emitted)
+                return;
+
+            this.emitted = true;
+            socket.emit('CLIENT_BUY_ITEM', { npc: this.target, id: this.id, item: id }, function(bought) {
+                if (bought) {
+                    //Enough currency, bought item
+
+                    //Reload shop items
+
+                    ui.shop.reload();
+                } else {
+                    //Not enough currency
+
+                    //...
+                }
+
+                ui.shop.emitted = false;
+            });
+        },
+        sell: function(id) {
+            //...
+        },
+        show: function() {
+            if (this.visible) {
+                this.hide();
+
+                return;
+            }
+
+            ui.profile.hide();
+            ui.settings.hide();
+            ui.journal.hide();
+
+            player.loseFocus();
+
+            if (this.mouse == undefined)
+                this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
+                    if (data.state == 0)
+                        return;
+
+                    lx.StopMouse(0);
+
+                    ui.shop.hide();
+                });
+
+            document.getElementById('shop_box').style.visibility = 'visible';
+
+            this.visible = true;
+        },
+        hide: function() {
+            if (!this.visible)
+                return;
+
+            lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
+
+            lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
+
+            this.mouse = undefined;
+
+            document.getElementById('shop_box').style.visibility = 'hidden';
 
             this.visible = false;
         }
@@ -1317,6 +1458,7 @@ const ui = {
 
             ui.profile.hide();
             ui.settings.hide();
+            ui.shop.hide();
 
             player.loseFocus();
 
@@ -1372,7 +1514,7 @@ const ui = {
         max_pinned: 3,
         create: function() {
             view.dom.innerHTML +=
-                '<div id="quests_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 30px; margin-top: -50px; transform: translate(0, -50%); width: auto; height: auto; text-align: center; padding: 4px 4px 4px 4px;">' +
+                '<div id="quests_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 30px; margin-top: -50px; transform: translate(0, -50%); width: auto; height: auto; text-align: center; padding: 4px;">' +
                 '</div>';
         },
         generateQuestDom: function(name, quest, full) {

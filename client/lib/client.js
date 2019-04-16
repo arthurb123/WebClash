@@ -365,5 +365,20 @@ const client = {
 
             ui.dialog.startDialog(data.name, data.name, data.dialog);
         });
+        socket.on('GAME_OPEN_SHOP', function (data) {
+            //Check if the recieved data is valid
+
+            if (data === undefined)
+                return;
+
+            //Check if in-game
+
+            if (!client.inGame)
+                return;
+
+            //Open shop UI
+
+            ui.shop.showShop(data.target, data.id, data.shop);
+        });
     }
 }

@@ -283,7 +283,7 @@ const game = {
                         this._nameplate.Text('lvl ' + this._stats.level + ' - ' + this.name);
                 }
 
-                if (this._health !== undefined)
+                if (this._health != undefined)
                 {
                     if (this._healthbar === undefined) {
                         this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W, 8).Follows(go);
@@ -303,6 +303,9 @@ const game = {
                         }
                     }
                 }
+
+                if (this._dialogTexture != undefined)
+                    this._dialogTexture.Hide();
             });
 
         go.name = name;
@@ -330,14 +333,32 @@ const game = {
         if (type === 'friendly' &&
             hasDialog)
         {
+            //Check if dialog texture already exists
+
+            if (this.npcs[id]._dialogTexture != undefined)
+                return;
+
+            //Add dialog texture
+
+            let dialogTextureSprite = cache.getSprite('res/ui/dialog.png');
+
+            this.npcs[id]._dialogTexture = new lx.UITexture(
+                dialogTextureSprite, 
+                this.npcs[id].Size().W/2, 
+                -dialogTextureSprite.Size().H/2
+            ).Follows(this.npcs[id]);
+            
             //Check if mobile
 
             if (!this.isMobile) {
+                //Add a mouse hover event to show
+                //and or hide the dialog texture
 
-                //Add a mouse hover draw event to draw
-                //the dialog option when in range
+                this.npcs[id].OnHover(function(data) {
+                    //Check if texture is already visible
 
-                this.npcs[id].OnHoverDraw(function(data) {
+                    if (this._dialogTexture.UI_ID != undefined)
+                        return;
 
                     //Get position difference
 
@@ -348,7 +369,7 @@ const game = {
 
                     //Proximity distance in tiles
 
-                    let proximity = 3;
+                    let proximity = 2.875;
 
                     //Check if in proximity
 
@@ -356,22 +377,20 @@ const game = {
                         dy > tiled.tile.height*proximity)
                         return;
 
-                    //Draw dialog sprite
+                    //Show dialog texture
 
-                    let sprite = cache.getSprite('res/ui/dialog.png');
-
-                    lx.DrawSprite(
-                        sprite,
-                        data.position.X+data.size.W/2,
-                        data.position.Y-sprite.Size().H/2
-                    );
+                    this._dialogTexture.Show();
                 });
             } else {
+                //Add NPC specific loops that checks if 
+                //the dialog texture should be displayed
 
-                //Add NPC specific draws that checks if the dialog
-                //button should be displayed
+                this.npcs[id].Loops(function(data) {
+                    //Check if texture is already visible
 
-                this.npcs[id].Draws(function(data) {
+                    if (this._dialogTexture.UI_ID != undefined)
+                        return;
+
                     //Get position difference
 
                     let pos = game.players[game.player].POS;
@@ -381,7 +400,7 @@ const game = {
 
                     //Proximity distance in tiles
 
-                    let proximity = 3;
+                    let proximity = 2.875;
 
                     //Check if in proximity
 
@@ -389,15 +408,9 @@ const game = {
                         dy > tiled.tile.height*proximity)
                         return;
 
-                    //Draw dialog sprite
+                    //Show dialog texture
 
-                    let sprite = cache.getSprite('res/ui/dialog.png');
-
-                    lx.DrawSprite(
-                        sprite,
-                        data.position.X+data.size.W/2,
-                        data.position.Y-sprite.Size().H/2
-                    );
+                    this._dialogTexture.Show();
                 });
             }
 
@@ -405,8 +418,10 @@ const game = {
             //through a click event
 
             this.npcs[id].OnMouse(0, function(data) {
-                if (data.state == 0)
-                     return;
+                if (data.state == 0 || 
+                    game.npcs[id] == undefined || 
+                    game.npcs[id]._type !== 'friendly')
+                    return;
 
                 //Stop mouse
 

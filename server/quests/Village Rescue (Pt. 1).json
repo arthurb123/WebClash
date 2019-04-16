@@ -1,6 +1,6 @@
 {
   "minLevel": 3,
-  "description": "Fight the captain and his soldiers and take back the village.",
+  "description": "Fight the captain his soldiers.",
   "objectives": [
     {
       "type": "kill",

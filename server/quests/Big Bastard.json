@@ -1,6 +1,6 @@
 {
   "minLevel": 5,
-  "description": "Terminate one golem on sight and loot the weird greens. \nI will reward you hefty, If you return alive that is.",
+  "description": "Terminate one golem on sight and loot the weird greens. ",
   "objectives": [
     {
       "type": "kill",

@@ -115,7 +115,32 @@ namespace WebClashServer.Editors
                 //Make sure it is not the turn hostile event
 
                 if (dialogSystem.items[elements[item].id].eventType == "TurnHostile")
+                {
+                    MessageBox.Show("The 'Turn Hostile' event has no event properties.", "WebClash Server - Message");
+
                     return;
+                }
+
+                //If it is a show shop event, open shop selection
+                //form instead of dialogue event properties
+
+                if (dialogSystem.items[elements[item].id].eventType == "ShowShop")
+                {
+                    //Open shop selection
+
+                    ShopSelection ss = new ShopSelection("Shop event #" + elements[item].id, dialogSystem.items[elements[item].id].showShopEvent);
+                    
+                    ss.FormClosed += (object s, FormClosedEventArgs fcea) =>
+                    {
+                        dialogSystem.items[elements[item].id].showShopEvent = ss.GetResult();
+                    };
+
+                    ss.ShowDialog();
+
+                    return;
+                }
+
+                //Open event properties
 
                 DialogueEventProperties dep = new DialogueEventProperties(dialogSystem.items[elements[item].id]);
 
@@ -314,6 +339,11 @@ namespace WebClashServer.Editors
                     break;
                 case "TurnHostile":
                     dialogSystem.items[cee.id].turnHostileEvent = new TurnHostileEvent();
+                    dialogSystem.items[cee.id].repeatable = true;
+                    break;
+                case "ShowShop":
+                    dialogSystem.items[cee.id].showShopEvent = new ShowShopEvent();
+                    dialogSystem.items[cee.id].repeatable = true;
                     break;
             }
 
@@ -377,6 +407,13 @@ namespace WebClashServer.Editors
 
             canvas.Invalidate();
         }
+
+        private void ShowShopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addCanvasEventElement(EventType.ShowShop);
+
+            canvas.Invalidate();
+        }
     }
 
     public class CanvasElement
@@ -414,6 +451,7 @@ namespace WebClashServer.Editors
         AffectPlayer,
         SpawnNPC,
         ShowQuest,
-        TurnHostile
+        TurnHostile,
+        ShowShop
     }
 }

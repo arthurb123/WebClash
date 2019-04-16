@@ -373,16 +373,14 @@ exports.createWorldItem = function(owner, map, x, y, name)
     if (this.onMap[map] == undefined)
         this.onMap[map] = [];
 
-    let worldItem = {
-        owner: ownerName,
-        name: name,
-        pos: {
-            X: x,
-            Y: y
-        },
-        source: item.source,
-        rarity: item.rarity,
-        value: item.value
+    //Get converted item and add
+    //world item specific attributes
+
+    let worldItem = this.getConvertedItem(name);
+    worldItem.owner = ownerName;
+    worldItem.pos = {
+        X: x,
+        Y: y
     };
 
     //Add world item to map
@@ -393,7 +391,6 @@ exports.createWorldItem = function(owner, map, x, y, name)
             worldItem.id = i;
 
             this.onMap[map][i] = {
-                owner: owner,
                 item: worldItem,
                 timer: {
                     cur: 0,
@@ -527,7 +524,7 @@ exports.updateMaps = function()
             //Check if item should be released of it's owner
 
             if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.releaseTime &&
-                this.onMap[m][i].owner != -1)
+                this.onMap[m][i].item.owner != -1)
                 this.releaseWorldItemFromOwner(m, i);
 
             //Check if item should be removed

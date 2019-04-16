@@ -37,8 +37,9 @@
             this.affectPlayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.spawnNPCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showQuestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.canvas = new System.Windows.Forms.PictureBox();
             this.turnHostileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.canvas = new System.Windows.Forms.PictureBox();
+            this.showShopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.SuspendLayout();
@@ -69,6 +70,7 @@
             this.affectPlayerToolStripMenuItem,
             this.spawnNPCToolStripMenuItem,
             this.showQuestToolStripMenuItem,
+            this.showShopToolStripMenuItem,
             this.turnHostileToolStripMenuItem});
             this.eventsToolStripMenuItem.Name = "eventsToolStripMenuItem";
             this.eventsToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
@@ -109,6 +111,14 @@
             this.showQuestToolStripMenuItem.Text = "Show Quest";
             this.showQuestToolStripMenuItem.Click += new System.EventHandler(this.showQuestToolStripMenuItem_Click);
             // 
+            // turnHostileToolStripMenuItem
+            // 
+            this.turnHostileToolStripMenuItem.Enabled = false;
+            this.turnHostileToolStripMenuItem.Name = "turnHostileToolStripMenuItem";
+            this.turnHostileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.turnHostileToolStripMenuItem.Text = "Turn Hostile";
+            this.turnHostileToolStripMenuItem.Click += new System.EventHandler(this.TurnHostileToolStripMenuItem_Click);
+            // 
             // canvas
             // 
             this.canvas.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -119,13 +129,12 @@
             this.canvas.TabIndex = 2;
             this.canvas.TabStop = false;
             // 
-            // turnHostileToolStripMenuItem
+            // showShopToolStripMenuItem
             // 
-            this.turnHostileToolStripMenuItem.Enabled = false;
-            this.turnHostileToolStripMenuItem.Name = "turnHostileToolStripMenuItem";
-            this.turnHostileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.turnHostileToolStripMenuItem.Text = "Turn Hostile";
-            this.turnHostileToolStripMenuItem.Click += new System.EventHandler(this.TurnHostileToolStripMenuItem_Click);
+            this.showShopToolStripMenuItem.Name = "showShopToolStripMenuItem";
+            this.showShopToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showShopToolStripMenuItem.Text = "Show Shop";
+            this.showShopToolStripMenuItem.Click += new System.EventHandler(this.ShowShopToolStripMenuItem_Click);
             // 
             // Dialogue
             // 
@@ -160,5 +169,6 @@
         private System.Windows.Forms.ToolStripMenuItem spawnNPCToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showQuestToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem turnHostileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showShopToolStripMenuItem;
     }
 }

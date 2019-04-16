@@ -1,4 +1,6 @@
 ﻿//Created by Arthur Baars
+//This is a modified version
+//of vanilla Lynx2D (www.lynx2d.com)
 
 function Lynx2D() {
     //1 - Main variables
@@ -1122,6 +1124,7 @@ function Lynx2D() {
         this.SPRITE = sprite;
         this.BUFFER_ID = -1;
         this.CLICK_ID = [];
+        this.LOOP_LENGTH = 0;
         this.BUFFER_LAYER = 0;
         this.UPDATES = true;
 
@@ -1390,13 +1393,17 @@ function Lynx2D() {
         };
 
         this.Loops = function(callback) {
-            this.LOOPS = callback;
+            this['LOOP'+this.LOOP_LENGTH] = callback;
+            this.LOOP_LENGTH++;
 
             return this;
         };
 
         this.ClearLoops = function() {
-            this.LOOPS = undefined;
+            for (let l = 0; l < this.LOOP_LENGTH; l++)
+                delete this['LOOP'+this.LOOP_LENGTH];
+
+            this.LOOP_LENGTH = 0;
 
             return this;
         };
@@ -1424,13 +1431,24 @@ function Lynx2D() {
             return this;
         };
 
-        this.OnHoverDraw = function(callback) {
+        this.OnHover = function(callback) {
             if (this.ON_HOVER != undefined) {
                 console.log(lx.GAME.LOG.TIMEFORMAT() + 'GameObject already has a mousehover handler.');
 
                 return this;
             } else
                 this.ON_HOVER = callback;
+
+            return this;
+        };
+
+        this.OnHoverDraw = function(callback) {
+            if (this.ON_HOVER_DRAW != undefined) {
+                console.log(lx.GAME.LOG.TIMEFORMAT() + 'GameObject already has a mousehover draw handler.');
+
+                return this;
+            } else
+                this.ON_HOVER_DRAW = callback;
 
             return this;
         };
@@ -1448,6 +1466,12 @@ function Lynx2D() {
             return this;
         };
 
+        this.RemoveHoverDraw = function() {
+            this.ON_HOVER_DRAW = undefined;
+
+            return this;
+        };
+
         this.ClearMouse = function() {
             for (var i = 0; i < this.CLICK_ID.length; i++)
                 this.RemoveMouse(i);
@@ -1460,7 +1484,7 @@ function Lynx2D() {
                 if (this.ANIMATION == undefined) this.SPRITE.RENDER(lx.GAME.TRANSLATE_FROM_FOCUS(this.POS), this.SIZE);
                 else this.ANIMATION.RENDER(lx.GAME.TRANSLATE_FROM_FOCUS(this.POS), this.SIZE);
 
-                if (this.ON_HOVER != undefined)
+                if (this.ON_HOVER_DRAW != undefined)
                     if (lx.GAME.GET_MOUSE_IN_BOX(this.POS, this.SIZE))
                         this.ON_HOVER({
                             graphics: lx.CONTEXT.GRAPHICS,
@@ -1478,7 +1502,20 @@ function Lynx2D() {
         };
 
         this.UPDATE = function() {
-            if (this.LOOPS != undefined) this.LOOPS();
+            if (this.LOOP_LENGTH > 0)
+                for (let l = 0; l < this.LOOP_LENGTH; l++)
+                    this['LOOP'+l]({
+                        position: this.Position(),
+                        size: this.Size()
+                    });
+
+            if (this.ON_HOVER != undefined)
+                if (lx.GAME.GET_MOUSE_IN_BOX(this.POS, this.SIZE))
+                    this.ON_HOVER({
+                        position: this.POS,
+                        size: this.SIZE
+                    });
+
             if (this.ANIMATION != undefined) this.ANIMATION.UPDATE();
 
             this.MOVEMENT.UPDATE();

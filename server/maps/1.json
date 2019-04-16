@@ -3605,7 +3605,7 @@
         0,
         0,
         0,
-        256,
+        0,
         0,
         0,
         0,
@@ -8431,7 +8431,7 @@
         282,
         282,
         283,
-        0,
+        256,
         0,
         0,
         0,
@@ -10799,6 +10799,17 @@
           "width": 28,
           "x": 33,
           "y": 212
+        },
+        {
+          "height": 34,
+          "id": 127,
+          "name": "",
+          "rotation": 0,
+          "type": "",
+          "visible": true,
+          "width": 31,
+          "x": 895,
+          "y": 958
         }
       ],
       "opacity": 1,
@@ -10906,6 +10917,25 @@
           "width": 0,
           "x": 497,
           "y": 207
+        },
+        {
+          "height": 0,
+          "id": 128,
+          "name": "",
+          "point": true,
+          "properties": [
+            {
+              "name": "NPC",
+              "type": "string",
+              "value": "Tom"
+            }
+          ],
+          "rotation": 0,
+          "type": "",
+          "visible": true,
+          "width": 0,
+          "x": 1043,
+          "y": 478
         }
       ],
       "opacity": 1,
@@ -10916,7 +10946,7 @@
     }
   ],
   "nextlayerid": 17,
-  "nextobjectid": 127,
+  "nextobjectid": 129,
   "orientation": "orthogonal",
   "renderorder": "right-down",
   "tiledversion": "1.2.1",
