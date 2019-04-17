@@ -945,8 +945,12 @@ function Lynx2D() {
     this.Sprite = function (source, c_x, c_y, c_w, c_h, cb) {
         this.IMG = new Image();
 
-        if (cb != undefined)
-            this.IMG.onload = cb;
+        if (cb != undefined) {
+            let s = this;
+            this.IMG.onload = function() {
+                cb(s)
+            };
+        }
 
         this.IMG.src = source;
         this.ROTATION = 0;

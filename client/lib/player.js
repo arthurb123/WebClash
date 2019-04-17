@@ -6,8 +6,9 @@ const player = {
     forceFrame:
     {
         start: function(dir) {
-            game.players[game.player]._direction = dir;
+            let target = game.players[game.player];
 
+            target._direction = dir;
             this.direction = dir;
 
             this.cur = 0;

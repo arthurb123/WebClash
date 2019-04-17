@@ -152,16 +152,19 @@ const ui = {
                                     { text: 'Accept', next: 'accept', actual_next: ui.dialog.cur[id].options[0].next },
                                     { text: 'Decline', next: -1 }
                                 ];
-                            else {
+                            else if (ui.dialog.cur[id].options[0].next !== -1) {
                                 ui.dialog.setDialog(ui.dialog.cur[id].options[0].next)
 
                                 return;
                             }
-                        } else {
+                            else 
+                                data.quest.options = [
+                                    { text: 'Exit', next: -1 }
+                                ];
+                        } else 
                             data.quest.options = [
                                 { text: 'Exit', next: -1 }
                             ];
-                        }
 
                         ui.dialog.cur[id] = data.quest;
 

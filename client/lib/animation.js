@@ -11,18 +11,18 @@ const animation = {
 
         //Check facing direction
 
-        if (target._animation.direction == 'horizontal')
+        if (target._animation.direction === 'horizontal')
             target.SPRITE.CLIP.Y = target._direction*target.SIZE.H;
-        else if (target._animation.direction == 'vertical')
+        else if (target._animation.direction === 'vertical')
             target.SPRITE.CLIP.X = target._direction*target.SIZE.W;
 
         //Check if moving
 
         if (!target._moving && !target._animation.alwaysAnimate)
         {
-            if (target._animation.direction == 'horizontal')
+            if (target._animation.direction === 'horizontal')
                 target.SPRITE.CLIP.X = 0;
-            else if (target._animation.direction == 'vertical')
+            else if (target._animation.direction === 'vertical')
                 target.SPRITE.CLIP.Y = 0;
 
             return;
@@ -36,7 +36,7 @@ const animation = {
         {
             //Horizontal animating
 
-            if (target._animation.direction == 'horizontal')
+            if (target._animation.direction === 'horizontal')
             {
                 target.SPRITE.CLIP.X+=target.SIZE.W;
 
@@ -46,7 +46,7 @@ const animation = {
 
             //Vertical animating
 
-            else if (target._animation.direction == 'vertical')
+            else if (target._animation.direction === 'vertical')
             {
                 target.SPRITE.CLIP.Y+=target.SIZE.H;
 

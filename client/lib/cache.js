@@ -65,7 +65,7 @@ const cache = {
         this.tilesets[src].CLIP = undefined;
 
         if (cb != undefined && canCallback)
-            cb();
+            cb(this.tilesets[src]);
 
         return this.tilesets[src];
     },
@@ -88,7 +88,7 @@ const cache = {
         this.sprites[src].CLIP = undefined;
 
         if (cb != undefined && canCallback)
-            cb();
+            cb(this.sprites[src]);
 
         return this.sprites[src];
     },

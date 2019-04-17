@@ -338,110 +338,109 @@ const game = {
             if (this.npcs[id]._dialogTexture != undefined)
                 return;
 
-            //Add dialog texture
+            //Load dialog texture
 
-            let dialogTextureSprite = cache.getSprite('res/ui/dialog.png');
-
-            this.npcs[id]._dialogTexture = new lx.UITexture(
-                dialogTextureSprite, 
-                this.npcs[id].Size().W/2, 
-                -dialogTextureSprite.Size().H/2
-            ).Follows(this.npcs[id]);
-            
-            //Check if mobile
-
-            if (!this.isMobile) {
-                //Add a mouse hover event to show
-                //and or hide the dialog texture
-
-                this.npcs[id].OnHover(function(data) {
-                    //Check if texture is already visible
-
-                    if (this._dialogTexture.UI_ID != undefined)
+            cache.getSprite('res/ui/dialog.png', function(sprite) {
+                game.npcs[id]._dialogTexture = new lx.UITexture(
+                    sprite, 
+                    game.npcs[id].Size().W/2, 
+                    -sprite.Size().H/2
+                ).Follows(game.npcs[id]);
+                
+                //Check if mobile
+    
+                if (!game.isMobile) {
+                    //Add a mouse hover event to show
+                    //and or hide the dialog texture
+    
+                    game.npcs[id].OnHover(function(data) {
+                        //Check if texture is already visible
+    
+                        if (this._dialogTexture.UI_ID != undefined)
+                            return;
+    
+                        //Get position difference
+    
+                        let pos = game.players[game.player].POS;
+    
+                        let dx = Math.abs(pos.X-data.position.X),
+                            dy = Math.abs(pos.Y-data.position.Y);
+    
+                        //Proximity distance in tiles
+    
+                        let proximity = 2.875;
+    
+                        //Check if in proximity
+    
+                        if (dx > tiled.tile.width*proximity ||
+                            dy > tiled.tile.height*proximity)
+                            return;
+    
+                        //Show dialog texture
+    
+                        this._dialogTexture.Show();
+                    });
+                } else {
+                    //Add NPC specific loops that checks if 
+                    //the dialog texture should be displayed
+    
+                    game.npcs[id].Loops(function(data) {
+                        //Check if texture is already visible
+    
+                        if (this._dialogTexture.UI_ID != undefined)
+                            return;
+    
+                        //Get position difference
+    
+                        let pos = game.players[game.player].POS;
+    
+                        let dx = Math.abs(pos.X-data.position.X),
+                            dy = Math.abs(pos.Y-data.position.Y);
+    
+                        //Proximity distance in tiles
+    
+                        let proximity = 2.875;
+    
+                        //Check if in proximity
+    
+                        if (dx > tiled.tile.width*proximity ||
+                            dy > tiled.tile.height*proximity)
+                            return;
+    
+                        //Show dialog texture
+    
+                        this._dialogTexture.Show();
+                    });
+                }
+    
+                //Give NPC the possibility to engage in dialog
+                //through a click event
+    
+                game.npcs[id].OnMouse(0, function(data) {
+                    if (data.state == 0 || 
+                        game.npcs[id] == undefined || 
+                        game.npcs[id]._type !== 'friendly')
                         return;
-
-                    //Get position difference
-
-                    let pos = game.players[game.player].POS;
-
-                    let dx = Math.abs(pos.X-data.position.X),
-                        dy = Math.abs(pos.Y-data.position.Y);
-
-                    //Proximity distance in tiles
-
-                    let proximity = 2.875;
-
-                    //Check if in proximity
-
-                    if (dx > tiled.tile.width*proximity ||
-                        dy > tiled.tile.height*proximity)
-                        return;
-
-                    //Show dialog texture
-
-                    this._dialogTexture.Show();
-                });
-            } else {
-                //Add NPC specific loops that checks if 
-                //the dialog texture should be displayed
-
-                this.npcs[id].Loops(function(data) {
-                    //Check if texture is already visible
-
-                    if (this._dialogTexture.UI_ID != undefined)
-                        return;
-
-                    //Get position difference
-
-                    let pos = game.players[game.player].POS;
-
-                    let dx = Math.abs(pos.X-data.position.X),
-                        dy = Math.abs(pos.Y-data.position.Y);
-
-                    //Proximity distance in tiles
-
-                    let proximity = 2.875;
-
-                    //Check if in proximity
-
-                    if (dx > tiled.tile.width*proximity ||
-                        dy > tiled.tile.height*proximity)
-                        return;
-
-                    //Show dialog texture
-
-                    this._dialogTexture.Show();
-                });
-            }
-
-            //Give NPC the possibility to engage in dialog
-            //through a click event
-
-            this.npcs[id].OnMouse(0, function(data) {
-                if (data.state == 0 || 
-                    game.npcs[id] == undefined || 
-                    game.npcs[id]._type !== 'friendly')
-                    return;
-
-                //Stop mouse
-
-                lx.StopMouse(0);
-
-                //Request dialog
-
-                socket.emit('CLIENT_REQUEST_DIALOG', id, function(data) {
-                    //Check if data is valid
-
-                    if (data == undefined ||
-                        !data)
-                        return;
-
-                    //Start dialog
-
-                    ui.dialog.startDialog(id, game.npcs[id].name, data);
+    
+                    //Stop mouse
+    
+                    lx.StopMouse(0);
+    
+                    //Request dialog
+    
+                    socket.emit('CLIENT_REQUEST_DIALOG', id, function(data) {
+                        //Check if data is valid
+    
+                        if (data == undefined ||
+                            !data)
+                            return;
+    
+                        //Start dialog
+    
+                        ui.dialog.startDialog(id, game.npcs[id].name, data);
+                    });
                 });
             });
-
         }
     },
     setNPCHealth: function(id, health)
@@ -516,8 +515,10 @@ const game = {
         this.npcs[id].Hide();
         if (this.npcs[id]._nameplate != undefined)
             this.npcs[id]._nameplate.Hide();
+        if (this.npcs[id]._dialogTexture != undefined)
+            this.npcs[id]._dialogTexture.Hide();
 
-        if (this.npcs[id]._healthbar !== undefined)
+        if (this.npcs[id]._healthbar != undefined)
         {
             this.npcs[id]._healthbarBack.Hide();
             this.npcs[id]._healthbar.Hide();
