@@ -440,7 +440,7 @@ const ui = {
                this.displayBoxLoopID === undefined)
                 return;
 
-            lx.ClearLoop(this.displayBoxLoopID);
+            lx.GAME.LOOPS.splice(this.displayBoxLoopID, 1);
 
             document.getElementById('displayBox').remove();
         }
@@ -821,8 +821,8 @@ const ui = {
             displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y+offset.y + 'px';
 
             this.displayBoxLoopID = lx.GAME.ADD_LOOPS(function() {
-                 displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X+offset.x + 'px';
-                 displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y+offset.y + 'px';
+                displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X+offset.x + 'px';
+                displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y+offset.y + 'px';
             });
         },
         removeBox: function() {
@@ -830,7 +830,7 @@ const ui = {
                this.displayBoxLoopID === undefined)
                 return;
 
-            lx.ClearLoop(this.displayBoxLoopID);
+            lx.GAME.LOOPS.splice(this.displayBoxLoopID, 1);
 
             document.getElementById('displayBox').remove();
         },

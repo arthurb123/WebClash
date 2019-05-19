@@ -120,9 +120,37 @@ const player = {
     },
     setMovement: function(movement)
     {
-        game.players[game.player].SetTopDownController(
-            movement.max
-        );
+        //Set unique movement controller,
+        //this is done for each key (WASD).
+
+        lx.CONTEXT.CONTROLLER.TARGET = this;
+
+        [{ k: 'W', v: { x: 0, y: -1 }},
+         { k: 'A', v: { x: -1, y: 0 }},
+         { k: 'S', v: { x: 0, y: 1 }},
+         { k: 'D', v: { x: 1, y: 0 }}]
+        .forEach(function(key) {
+            lx.ClearKey(key.k);
+            lx.OnKey(key.k, function(data) {
+                if (lx.CONTEXT.CONTROLLER.TARGET != undefined) {
+                    if (data.state === 0) {
+                        if (key.v.x !== 0)
+                            lx.CONTEXT.CONTROLLER.TARGET.MOVEMENT.VX = 0;
+                        if (key.v.y !== 0)
+                            lx.CONTEXT.CONTROLLER.TARGET.MOVEMENT.VY = 0;
+                        return;
+                    }
+    
+                    if (ui === undefined || !ui.chat.isTyping())
+                        lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(
+                            key.v.x*movement.max, 
+                            key.v.y*movement.max
+                        );
+                }
+            });
+        });
+
+        game.players[game.player].MaxVelocity(movement.max);
     },
     setActions: function(actions)
     {

@@ -74,7 +74,7 @@ const game = {
             .Follows(go)
             .Show();
 
-        go._nameplate.SHADOW = true;
+        go._nameplate.SetShadow('rgba(0,0,0,.85)', 0, .85);
 
         this.players.push(go.Show(3));
     },
@@ -117,7 +117,7 @@ const game = {
 
                //Show damage color overlay
 
-               this.players[id].SPRITE.ShowColorOverlay(5, 'rgba(228, 63, 63, 0.46)');
+               this.players[id].SPRITE.ShowColorOverlay('rgba(228, 63, 63, 0.46)', 5);
 
                //Blood particles
 
@@ -139,7 +139,7 @@ const game = {
 
                 //Show heal color overlay
 
-                this.players[id].SPRITE.ShowColorOverlay(5, 'rgba(128, 239, 59, 0.46)');
+                this.players[id].SPRITE.ShowColorOverlay('rgba(128, 239, 59, 0.46)', 5);
             }
         }
         else {
@@ -172,7 +172,7 @@ const game = {
 
                 //Show heal color overlay
 
-                this.players[id].SPRITE.ShowColorOverlay(5, 'rgba(43, 146, 237, 0.46)');
+                this.players[id].SPRITE.ShowColorOverlay('rgba(43, 146, 237, 0.46)', 5);
             }
         }
     },
@@ -262,27 +262,27 @@ const game = {
 
     instantiateNPC: function(id, name)
     {
-        //Instantiate Lynx2D GameObject for NPC
+        //Instantiate Lynx2D GameObject for NPC.
 
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
             .Loops(function() {
                 animation.animateMoving(this);
-
+    
                 if (this._nameplate != undefined) {
                     if (this._nameplate.Position().X == 0 &&
                         this._nameplate.Position().Y == 0)
                       this._nameplate.Position(this.Size().W/2, -12);
-
+    
                     if (this._type === 'friendly')
                         this._nameplate.Color('black');
                     else if (this._type === 'hostile')
                         this._nameplate.Color('#FF4242');
-
+    
                     if (this._stats !== undefined &&
                         this._type === 'hostile')
                         this._nameplate.Text('lvl ' + this._stats.level + ' - ' + this.name);
                 }
-
+    
                 if (this._health != undefined)
                 {
                     if (this._healthbar === undefined) {
@@ -290,7 +290,7 @@ const game = {
                         this._healthbar = new lx.UITexture('#FF4242', 0, -36, this._health.cur/this._health.max*this.SIZE.W, 8).Follows(go);
                     } else {
                         this._healthbar.SIZE.W = this._health.cur/this._health.max*this.SIZE.W;
-
+    
                         if (this._health.cur == this._health.max)
                         {
                             this._healthbarBack.Hide();
@@ -303,13 +303,17 @@ const game = {
                         }
                     }
                 }
-
+    
                 if (this._dialogTexture != undefined)
                     this._dialogTexture.Hide();
+    
+                for (let cb = 0; cb < this._loops.length; cb++) 
+                    this._loops[cb]();
             });
 
         go.name = name;
 
+        go._loops = [];
         go._moving = false;
         go._direction = 0;
 
@@ -319,7 +323,7 @@ const game = {
                 .Follows(go)
                 .Show();
 
-            go._nameplate.SHADOW = true;
+            go._nameplate.SetShadow('rgba(0,0,0,.85)', 0, .85);
         }
 
         this.npcs[id] = go.Show(3);
@@ -384,18 +388,19 @@ const game = {
                     //Add NPC specific loops that checks if 
                     //the dialog texture should be displayed
     
-                    game.npcs[id].Loops(function(data) {
+                    game.npcs[id]._loops[0] = function(data) {
                         //Check if texture is already visible
     
-                        if (this._dialogTexture.UI_ID != undefined)
+                        if (game.npcs[id]._dialogTexture.UI_ID != undefined)
                             return;
     
                         //Get position difference
     
-                        let pos = game.players[game.player].POS;
+                        let pos = game.players[game.player].POS,
+                            pos1 = game.npcs[id].POS;
     
-                        let dx = Math.abs(pos.X-data.position.X),
-                            dy = Math.abs(pos.Y-data.position.Y);
+                        let dx = Math.abs(pos.X-pos1.X),
+                            dy = Math.abs(pos.Y-pos1.Y);
     
                         //Proximity distance in tiles
     
@@ -409,8 +414,8 @@ const game = {
     
                         //Show dialog texture
     
-                        this._dialogTexture.Show();
-                    });
+                        game.npcs[id]._dialogTexture.Show();
+                    };
                 }
     
                 //Give NPC the possibility to engage in dialog
@@ -466,7 +471,7 @@ const game = {
 
                 //Show heal color overlay
 
-                this.npcs[id].SPRITE.ShowColorOverlay(5, 'rgba(128, 239, 59, 0.46)');
+                this.npcs[id].SPRITE.ShowColorOverlay('rgba(128, 239, 59, 0.46)', 5);
 
                 return;
             }
@@ -489,7 +494,7 @@ const game = {
 
             //Show damage color overlay
 
-            this.npcs[id].SPRITE.ShowColorOverlay(5, 'rgba(228, 63, 63, 0.46)');
+            this.npcs[id].SPRITE.ShowColorOverlay('rgba(228, 63, 63, 0.46)', 5);
 
             //Check if valid
 
@@ -629,7 +634,7 @@ const game = {
             //Add name label
 
             worldItem._nameplate = new lx.UIText(name, worldItem.Size().W/2, dy, 12, ui.inventory.getItemColor(data.rarity));
-            worldItem._nameplate.SHADOW = true;
+            worldItem._nameplate.SetShadow('rgba(0,0,0,.85)', 0, .85);
 
             //Set owner
 
@@ -725,31 +730,19 @@ const game = {
                  data.elements[i].type === 'static') {
                  //Static action
 
-                 let sprite = new lx.Sprite(data.elements[i].src, undefined, undefined, undefined, undefined,
+                 let sprite = new lx.Sprite(data.elements[i].src,
                      function() {
                          let sprites = [];
 
                          if (data.elements[i].direction === 'horizontal')
-                             for (let x = 0; x < sprite.Size().W/data.elements[i].w; x++)
-                                 sprites.push(new lx.Sprite(data.elements[i].src,
-                                     x*data.elements[i].w,
-                                     0,
-                                     data.elements[i].w,
-                                     data.elements[i].h
-                                 ));
+                            sprites = lx.CreateHorizontalTileSheet(sprite, data.elements[i].w, data.elements[i].h);
                          if (data.elements[i].direction === 'vertical')
-                             for (let y = 0; y < sprite.Size().H/data.elements[i].h; y++)
-                                 sprites.push(new lx.Sprite(data.elements[i].src,
-                                     0,
-                                     y*data.elements[i].h,
-                                     data.elements[i].w,
-                                     data.elements[i].h
-                                 ));
+                            sprites = lx.CreateVerticalTileSheet(sprite, data.elements[i].w, data.elements[i].h);
 
                          if (sprites.length == 0)
                              return;
 
-                         let action = new lx.Animation(sprites, data.elements[i].speed)
+                         let action = new lx.Animation(sprites[0], data.elements[i].speed)
                              .Loops(function() {
                                 if (tiled.current !== this._map ||
                                     tiled.loading)
@@ -770,7 +763,7 @@ const game = {
              else if (data.elements[i].type === 'projectile') {
                  //Projectile action
 
-                 let sprite = new lx.Sprite(data.elements[i].src, undefined, undefined, undefined, undefined,
+                 let sprite = new lx.Sprite(data.elements[i].src,
                      function() {
                          let angle = 0;
 
@@ -807,23 +800,16 @@ const game = {
                              let sprites = [];
 
                              if (data.elements[i].direction === 'horizontal')
-                                 for (let x = 0; x < sprite.Size().W/data.elements[i].w; x++)
-                                     sprites.push(new lx.Sprite(data.elements[i].src,
-                                         x*data.elements[i].w,
-                                         0,
-                                         data.elements[i].w,
-                                         data.elements[i].h
-                                     ).Rotation(angle));
+                                sprites = lx.CreateHorizontalTileSheet(sprite, data.elements[i].w, data.elements[i].h);
                              if (data.elements[i].direction === 'vertical')
-                                 for (let y = 0; y < sprite.Size().H/data.elements[i].h; y++)
-                                     sprites.push(new lx.Sprite(data.elements[i].src,
-                                         0,
-                                         y*data.elements[i].h,
-                                         data.elements[i].w,
-                                         data.elements[i].h
-                                     ).Rotation(angle));
+                                sprites = lx.CreateVerticalTileSheet(sprite, data.elements[i].w, data.elements[i].h);
 
                              if (sprites.length != 0) {
+                                 sprites = sprites[0];
+
+                                 for (let s = 0; s < sprites.length; s++) 
+                                    sprites[s].Rotation(angle);
+
                                  projectile.ShowAnimation(new lx.Animation(sprites, data.elements[i].speed));
                              }
                          }

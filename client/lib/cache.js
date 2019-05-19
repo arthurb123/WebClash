@@ -81,7 +81,7 @@ const cache = {
             else {
                 canCallback = false;
 
-                this.sprites[src] = new lx.Sprite(src, undefined, undefined, undefined, undefined, cb);
+                this.sprites[src] = new lx.Sprite(src, cb);
             }
         }
 
