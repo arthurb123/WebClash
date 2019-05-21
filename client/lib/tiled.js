@@ -174,28 +174,14 @@ const tiled = {
                     if (game.gameTime.current == undefined)
                         return;
 
-                    let opacity = 0,
-                        maxOpacity = game.gameTime.nightOpacity;
+                    let c = tiled.getShadowCanvas(map);
 
-                    if (game.gameTime.current <= game.gameTime.dayLength) 
-                        opacity = maxOpacity * ((game.gameTime.current-game.gameTime.dayLength/2) / (game.gameTime.dayLength/2));
-                    else {
-                        let offsetTime = game.gameTime.current-game.gameTime.dayLength;
-
-                        if (offsetTime >= game.gameTime.nightLength/2)
-                            opacity = maxOpacity - maxOpacity * ((offsetTime-game.gameTime.nightLength/2) / (game.gameTime.nightLength/2));
-                        else
-                            opacity = maxOpacity;
-                    }
-
-                    if (opacity <= 0)
+                    if (c == undefined)
                         return;
 
                     gfx.save();
-                    gfx.fillStyle = game.gameTime.nightColor;
-                    gfx.globalAlpha = opacity;
                     gfx.globalCompositeOperation = 'source-atop';
-                    gfx.fillRect(0, 0, lx.GetDimensions().width, lx.GetDimensions().height);
+                    gfx.drawImage(c, 0, 0, c.width, c.height);
                     gfx.restore();
                 });
 
@@ -641,5 +627,62 @@ const tiled = {
 
         new lx.Collider(offset_width, offset_height+map.height*map.tileheight, map.width*map.tilewidth, map.tileheight, true);
         new lx.Collider(offset_width+map.width*map.tilewidth, offset_height, map.tilewidth, map.height*map.tileheight, true);
+    },
+
+    shadowCanvas: {},
+    getShadowCanvas: function(map) {
+        let name = lx.GetDimensions().width + 'x' + lx.GetDimensions().height;
+
+        if (this.shadowCanvas[name] != undefined)
+            return this.shadowCanvas[name];
+        else
+            this.shadowCanvas = {};
+
+        let opacity = 0,
+            maxOpacity = game.gameTime.nightOpacity;
+
+        if (game.gameTime.current <= game.gameTime.dayLength) 
+            opacity = maxOpacity * ((game.gameTime.current-game.gameTime.dayLength/2) / (game.gameTime.dayLength/2));
+        else {
+            let offsetTime = game.gameTime.current-game.gameTime.dayLength;
+
+            if (offsetTime >= game.gameTime.nightLength/2)
+                opacity = maxOpacity - maxOpacity * ((offsetTime-game.gameTime.nightLength/2) / (game.gameTime.nightLength/2));
+            else
+                opacity = maxOpacity;
+        }
+
+        if (opacity <= 0)
+            return;
+
+        let c = document.createElement('canvas');
+        c.width = lx.GetDimensions().width;
+        c.height = lx.GetDimensions().height;
+
+        let g = c.getContext('2d'),
+            size = 1.5;
+
+        g.fillStyle = game.gameTime.nightColor;
+        g.globalAlpha = opacity;
+        g.globalCompositeOperation = 'source-over';
+        g.fillRect(0, 0, lx.GetDimensions().width, lx.GetDimensions().height);
+
+        g.fillStyle = 'white';
+        g.globalCompositeOperation = 'destination-out';
+        g.beginPath();
+        g.arc(c.width/2, c.height/2+game.players[game.player].Size().W/3, size*map.tilewidth, 0, 2 * Math.PI);
+        g.filter = 'blur(8px)';
+        g.fill();
+
+        /*g.fillRect(
+            c.width/2-size*map.tilewidth/2, 
+            c.height/2-size*map.tilewidth/2.85,
+            size*map.tilewidth,
+            size*map.tilewidth
+        );*/
+
+        this.shadowCanvas[name] = c;
+
+        return c;
     }
 };

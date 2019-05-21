@@ -175,7 +175,7 @@ const client = {
                  if (data.isPlayer)
                  {
                      player.setCollider(data.character.collider);
-                     player.setMovement(data.character.movement);
+                     player.setMovement(game.players[id], data.character.movement);
                  }
 
                  game.players[id]._animation = data.character.animation;

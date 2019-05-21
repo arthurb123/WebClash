@@ -617,6 +617,19 @@ const ui = {
         },
         useItem: function(slot) {
             if (player.inventory[slot] !== undefined) {
+                //Check if shop is not emitting
+
+                if (ui.shop.emitted)
+                    return;
+
+                //Check if in shop, if so try to sell
+
+                if (ui.shop.visible) {
+                    ui.shop.sell(player.inventory[slot].name);
+
+                    return;
+                }
+
                 //Grab sounds
 
                 let sounds = player.inventory[slot].sounds;
@@ -713,11 +726,11 @@ const ui = {
                         game.players[game.player]._level >= item.minLevel) {
                     if (item.type === 'consumable' ||
                         item.type === 'dialog')
-                        note = '(Click to use)';
+                        note = '(Click to ' + (ui.shop.visible ? 'sell' : 'use') + ')';
 
                     if (item.type === 'equipment') {
                         if (player.equipment[slot] === undefined)
-                            note = '(Click to equip)';
+                            note = '(Click to ' + (ui.shop.visible ? 'sell' : 'equip') + ')';
                         else
                             note = '(Click to unequip)';
                     }
@@ -864,7 +877,7 @@ const ui = {
             contextBox.classList.add('box');
             contextBox.style = 'position: absolute; width: 70px; padding: 4px; height: auto; text-align: center;';
             contextBox.innerHTML =
-                    '<button style="width: 90%; height: 20px; font-size: 12px;" onclick="ui.inventory.useItem(' + slot + ')">Use</button>' +
+                    '<button style="width: 90%; height: 20px; font-size: 12px;" onclick="ui.inventory.useItem(' + slot + ')">' + (ui.shop.visible ? 'Sell' : 'Use') + '</button>' +
                     '<button style="width: 90%; height: 20px; font-size: 12px; margin-top: 5px;" onclick="ui.inventory.dropItem(' + slot + ')">Drop</button>';
 
             //Set on mouse leave event handler
@@ -1384,8 +1397,32 @@ const ui = {
                 ui.shop.emitted = false;
             });
         },
-        sell: function(id) {
-            //...
+        sell: function(name) {
+            if (this.emitted)
+                return;
+
+            this.emitted = true;
+            socket.emit('CLIENT_SELL_ITEM', { npc: this.target, item: name }, function(sold) {
+                if (sold) {
+                    //Play gold sound?
+
+                    //...
+
+                    //Remove box
+
+                    ui.inventory.removeBox();
+
+                    //Remove context menu
+
+                    ui.inventory.removeContext();
+                } else {
+                    //Item is unsellable/could not be sold
+
+                    //...
+                }
+
+                ui.shop.emitted = false;
+            });
         },
         show: function() {
             if (this.visible) {

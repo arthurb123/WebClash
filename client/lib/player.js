@@ -118,12 +118,12 @@ const player = {
             )
         );
     },
-    setMovement: function(movement)
+    setMovement: function(go, movement)
     {
         //Set unique movement controller,
         //this is done for each key (WASD).
 
-        lx.CONTEXT.CONTROLLER.TARGET = this;
+        lx.CONTEXT.CONTROLLER.TARGET = go;
 
         [{ k: 'W', v: { x: 0, y: -1 }},
          { k: 'A', v: { x: -1, y: 0 }},

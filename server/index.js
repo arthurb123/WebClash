@@ -13,6 +13,7 @@ global.io = require('socket.io')(http);
 global.server = require('./webclash_modules/server');
 global.game = require('./webclash_modules/game');
 global.items = require('./webclash_modules/items');
+global.shop = require('./webclash_modules/shop');
 global.npcs = require('./webclash_modules/npcs');
 global.actions = require('./webclash_modules/actions');
 global.quests = require('./webclash_modules/quests');

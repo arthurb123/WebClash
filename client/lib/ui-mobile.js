@@ -593,6 +593,19 @@ const ui = {
         useItem: function(slot) {
             if (player.inventory[slot] !== undefined &&
                 !this.showingContext) {
+                //Check if shop is not emitting
+
+                if (ui.shop.emitted)
+                    return;
+
+                //Check if in shop, if so try to sell
+
+                if (ui.shop.visible) {
+                    ui.shop.sell(player.inventory[slot].name);
+
+                    return;
+                }
+
                 //Grab sounds
 
                 let sounds = player.inventory[slot].sounds;
@@ -688,11 +701,11 @@ const ui = {
                 game.players[game.player]._level >= item.minLevel) {
                 if (item.type === 'consumable' ||
                     item.type === 'dialog')
-                    note = '(Click to use)';
+                    note = '(Click to '  + (ui.shop.visible ? 'sell' : 'use') + ')';
 
                 if (item.type === 'equipment') {
                     if (player.equipment[slot] === undefined)
-                        note = '(Click to equip)';
+                        note = '(Click to ' + (ui.shop.visible ? 'sell' : 'equip') + ')';
                     else
                         note = '(Click to unequip)';
                 }
@@ -1423,7 +1436,7 @@ const ui = {
                     document.getElementById('shop_slot' + i).style.backgroundColor = '';
         },
         buy: function(id) {
-            if (this.emitted)
+            if (this.emitted || this.target == undefined)
                 return;
 
             this.emitted = true;
@@ -1443,8 +1456,38 @@ const ui = {
                 ui.shop.emitted = false;
             });
         },
-        sell: function(id) {
-            //...
+        sell: function(name) {
+            if (this.emitted || this.target == undefined)
+                return;
+
+            this.emitted = true;
+            socket.emit('CLIENT_SELL_ITEM', { npc: this.target, item: name }, function(sold) {
+                if (sold) {
+                    //Play item sound if possible
+                    //(gold sound??)
+
+                    if (sounds != undefined) {
+                        let sound = audio.getRandomSound(sounds);
+
+                        if (sound != undefined)
+                           audio.playSound(sound);
+                     }
+
+                    //Remove box
+
+                    ui.inventory.removeBox();
+
+                    //Remove context menu
+
+                    ui.inventory.removeContext();
+                } else {
+                    //Item is unsellable/could not be sold
+
+                    //...
+                }
+
+                ui.shop.emitted = false;
+            });
         },
         show: function() {
             if (this.visible) {

@@ -571,6 +571,36 @@ exports.handleSocket = function(socket)
         }
     });
 
+    socket.on('CLIENT_SELL_ITEM', function(data, callback) {
+        try {
+            //Check if valid player
+
+            if (socket.playing === undefined || !socket.playing)
+                return;
+
+            //Get player id
+
+            let id = game.getPlayerIndex(socket.name);
+
+            //Check if valid
+
+            if (id == -1)
+                return;
+
+            //Try to sell item
+
+            let sold = shop.sellItem(id, data.item, data.npc);
+
+            //Callback
+
+            if (callback != undefined)
+                callback(sold);
+        }
+        catch (err) {
+            output.giveError('Could not sell item: ', err);
+        }
+    });
+
     socket.on('CLIENT_INTERACT_PROPERTIES', function() {
         //Check if valid player
 
@@ -838,28 +868,9 @@ exports.handleSocket = function(socket)
 
                 callback({ result: true });
 
-                //Convert shop items if necessary
+                //Open shop for the player
 
-                if (!dialogEvent.showShopEvent.converted) {
-                    let shop = [];
-                    for (let i = 0; i < dialogEvent.showShopEvent.items.length; i++)
-                        shop.push({
-                            item: items.getConvertedItem(dialogEvent.showShopEvent.items[i].item),
-                            price: dialogEvent.showShopEvent.items[i].price
-                        });
-
-                    dialogEvent.showShopEvent.items = shop;
-                    dialogEvent.showShopEvent.converted = true;
-                }
-
-                //Open shop on client with the
-                //converted shop items
-
-                socket.emit('GAME_OPEN_SHOP', {
-                    target: data.npc,
-                    id: data.id,
-                    shop: dialogEvent.showShopEvent
-                });
+                shop.openShop(id, data.npc, data.id, dialogEvent.showShopEvent);
             }
 
             //Check if event is repeatable,
@@ -993,59 +1004,21 @@ exports.handleSocket = function(socket)
 
             //Get map index
 
-            let map = game.players[id].map_id,
-                target;
+            let map = game.players[id].map_id;
 
-            //Check if NPC or item dialog
+            //Try to buy item
 
-            //Item
-            if (isNaN(data.npc))
-                target = items.getItem(data.npc).dialog[data.id];
+            let bought = shop.buyItem(
+                id,
+                data.item,
+                data.npc, 
+                data.id
+            );
 
-            //NPC
-            else
-                target = npcs.onMap[map][data.npc].data.dialog[data.id];
+            //Callback if bought
 
-            //Check if target is valid and
-            //a show shop event
-
-            if (target == undefined ||
-                !target.isEvent ||
-                target.showShopEvent == undefined)
-                return;
-
-            //Get shop items from target
-
-            let shop = target.showShopEvent.items;
-
-            //Check if item that needs to be bought
-            //is valid
-
-            if (shop[data.item] == undefined)
-                return;
-
-            //Check if the player has enough currency
-
-            if (game.players[id].gold-shop[data.item].price < 0) {
-                if (callback != undefined)
-                    callback(false);
-
-                return;
-            }
-
-            //Add item to the player inventory
-
-            if (items.addPlayerItem(socket, id, shop[data.item].item.name)) {
-                //Subtract gold from player, because item
-                //has been added successfully!
-
-                game.deltaGoldPlayer(id, -shop[data.item].price);
-
-                //Callback true if possible
-
-                if (callback != undefined)
-                    callback(true);
-            }
+            if (callback != undefined)
+                callback(bought);
         }
         catch (err) {
             output.giveError('Could not buy shop item: ', err);
