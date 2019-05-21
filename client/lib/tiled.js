@@ -631,12 +631,7 @@ const tiled = {
 
     shadowCanvas: {},
     getShadowCanvas: function(map) {
-        let name = lx.GetDimensions().width + 'x' + lx.GetDimensions().height;
-
-        if (this.shadowCanvas[name] != undefined)
-            return this.shadowCanvas[name];
-        else
-            this.shadowCanvas = {};
+        //Calculate shadow opacity
 
         let opacity = 0,
             maxOpacity = game.gameTime.nightOpacity;
@@ -652,8 +647,21 @@ const tiled = {
                 opacity = maxOpacity;
         }
 
+        //Check if opacity is valid
+
         if (opacity <= 0)
             return;
+
+        //Round opacity to reduce rendering stress
+
+        opacity = parseFloat(opacity.toFixed(4));
+
+        //Return shadow canvas if readily rendered
+
+        if (this.shadowCanvas[opacity] != undefined)
+            return this.shadowCanvas[opacity];
+        else
+            this.shadowCanvas = {};
 
         let c = document.createElement('canvas');
         c.width = lx.GetDimensions().width;
@@ -662,10 +670,14 @@ const tiled = {
         let g = c.getContext('2d'),
             size = 1.5;
 
+        //Overall darkness
+
         g.fillStyle = game.gameTime.nightColor;
         g.globalAlpha = opacity;
         g.globalCompositeOperation = 'source-over';
         g.fillRect(0, 0, lx.GetDimensions().width, lx.GetDimensions().height);
+
+        //Blurred hotspot
 
         g.fillStyle = 'white';
         g.globalCompositeOperation = 'destination-out';
@@ -674,14 +686,9 @@ const tiled = {
         g.filter = 'blur(8px)';
         g.fill();
 
-        /*g.fillRect(
-            c.width/2-size*map.tilewidth/2, 
-            c.height/2-size*map.tilewidth/2.85,
-            size*map.tilewidth,
-            size*map.tilewidth
-        );*/
+        //Set shadow canvas
 
-        this.shadowCanvas[name] = c;
+        this.shadowCanvas[opacity] = c;
 
         return c;
     }
