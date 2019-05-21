@@ -58,7 +58,7 @@ const cache = {
             else {
                 canCallback = false;
 
-                this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s), undefined, undefined, undefined, undefined, cb);
+                this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s), cb);
             }
         }
 

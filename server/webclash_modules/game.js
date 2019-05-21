@@ -5,8 +5,20 @@ const fs = require('fs');
 exports.players = [];
 exports.characters = [];
 
+//Game properties
+
 exports.playerConstraints = {
     inventory_size: 20
+};
+
+exports.time = {
+    current: 0,
+    update: function() {
+        if (this.current >= gameTime.dayLength+gameTime.nightLength)
+            this.current = 0;
+        else
+            this.current++;
+    }
 };
 
 exports.startLoop = function()
@@ -25,6 +37,10 @@ exports.startLoop = function()
         //Update action projectiles
 
         actions.updateProjectiles();
+
+        //Update game time
+
+        game.time.update();
     }, 1000/60);
 
     //Start real time loop

@@ -12,4 +12,5 @@ Available commands:<br>
 /giveitem <i>name</i><br>
 /givegold <i>amount</i><br>
 /setcharacter <i>name</i><br>
+/settime <i>time</i><br>
 /shutdown

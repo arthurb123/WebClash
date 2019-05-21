@@ -5,6 +5,7 @@ const game = {
     items: [],
     tilesets: [],
     sprites: [],
+    gameTime: {},
     isMobile: false,
 
     getPlayerIndex: function(name)
@@ -32,7 +33,7 @@ const game = {
             .Loops(function() {
                 animation.animateMoving(go);
 
-                if (go._nameplate.Position().X !== go.Size().W/2)
+                if (go._nameplate.Position().X === 0)
                     go._nameplate.Position(go.Size().W/2, -Math.floor(go.Size().H/5));
 
                 if (go._level !== undefined)
@@ -269,8 +270,7 @@ const game = {
                 animation.animateMoving(this);
     
                 if (this._nameplate != undefined) {
-                    if (this._nameplate.Position().X == 0 &&
-                        this._nameplate.Position().Y == 0)
+                    if (this._nameplate.Position().X === 0)
                       this._nameplate.Position(this.Size().W/2, -12);
     
                     if (this._type === 'friendly')

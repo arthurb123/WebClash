@@ -70,6 +70,16 @@ const client = {
         socket.on('REQUEST_LANDING', view.loadLanding);
         socket.on('REQUEST_GAME', view.loadGame);
 
+        socket.on('GAME_SERVER_TIME', function(data) {
+            game.gameTime = data;
+
+            lx.Loops(function() {
+                game.gameTime.current++;
+
+                if (game.gameTime.current >= game.gameTime.dayLength+game.gameTime.nightLength)
+                    game.gameTime.current = 0;
+            });
+        }); 
         socket.on('GAME_USER_SETTINGS', function (data) {
             //Check if the recieved data is valid
 

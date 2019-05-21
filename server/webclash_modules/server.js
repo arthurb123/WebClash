@@ -198,6 +198,10 @@ exports.handleSocket = function(socket)
 
         socket.emit('GAME_CHAT_UPDATE', properties.welcomeMessage);
 
+        //Send game time
+
+        server.syncGameTime(socket);
+
         //Set playing
 
         socket.playing = true;
@@ -1479,6 +1483,19 @@ exports.syncItemDialog = function(id, itemName, dialog)
     };
 
     game.players[id].socket.emit('GAME_START_ITEM_DIALOG', data);
+};
+
+//Sync game time function, if socket is undefined it will be globally emitted
+
+exports.syncGameTime = function(socket)
+{
+    let time = gameTime;
+    time.current = game.time.current;
+    
+    if (socket === undefined)
+        io.emit('GAME_SERVER_TIME', time);
+    else
+        socket.emit('GAME_SERVER_TIME', time);
 };
 
 //Get socket with name function

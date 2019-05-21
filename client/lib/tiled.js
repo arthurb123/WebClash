@@ -59,6 +59,7 @@ const tiled = {
 
         for (let a = 0; a < this.animations.length; a++)
             this.animations[a].Hide();
+
         this.animations = [];
 
         //Cache all tilesets
@@ -90,10 +91,6 @@ const tiled = {
 
                 if (map.layers[l].type !== 'tilelayer')
                     continue;
-
-                const data = map.layers[l].data,
-                      width = map.layers[l].width,
-                      height = map.layers[l].height;
 
                 //Create offset width and height
 
@@ -168,6 +165,39 @@ const tiled = {
 
                 actualLayer++;
             }
+
+            //Add day/night system on the highest layer,
+            //only do this if the map speficies so
+
+            if (map.showDayNight)
+                lx.OnLayerDraw(actualLayer, function(gfx) {
+                    if (game.gameTime.current == undefined)
+                        return;
+
+                    let opacity = 0,
+                        maxOpacity = game.gameTime.nightOpacity;
+
+                    if (game.gameTime.current <= game.gameTime.dayLength) 
+                        opacity = maxOpacity * ((game.gameTime.current-game.gameTime.dayLength/2) / (game.gameTime.dayLength/2));
+                    else {
+                        let offsetTime = game.gameTime.current-game.gameTime.dayLength;
+
+                        if (offsetTime >= game.gameTime.nightLength/2)
+                            opacity = maxOpacity - maxOpacity * ((offsetTime-game.gameTime.nightLength/2) / (game.gameTime.nightLength/2));
+                        else
+                            opacity = maxOpacity;
+                    }
+
+                    if (opacity <= 0)
+                        return;
+
+                    gfx.save();
+                    gfx.fillStyle = game.gameTime.nightColor;
+                    gfx.globalAlpha = opacity;
+                    gfx.globalCompositeOperation = 'source-atop';
+                    gfx.fillRect(0, 0, lx.GetDimensions().width, lx.GetDimensions().height);
+                    gfx.restore();
+                });
 
             //Add world boundary colliders
 

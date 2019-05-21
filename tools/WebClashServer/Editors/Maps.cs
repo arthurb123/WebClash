@@ -14,6 +14,7 @@ namespace WebClashServer.Editors
         Map current;
 
         Dictionary<int, string> mapBGMSaveRequests = new Dictionary<int, string>();
+        Dictionary<int, bool> mapDayNightSaveRequests = new Dictionary<int, bool>();
 
         public Maps()
         {
@@ -33,6 +34,7 @@ namespace WebClashServer.Editors
         private void Maps_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveBGMRequests();
+            SaveDayNightRequests();
         }
 
         private void LoadMapsList()
@@ -78,6 +80,8 @@ namespace WebClashServer.Editors
 
             if (current.bgmSource != null)
                 bgmSource.Text = current.bgmSource;
+
+            dayNight.Checked = current.showDayNight;
         }
 
         private void CheckTilesets()
@@ -135,6 +139,8 @@ namespace WebClashServer.Editors
 
                     SaveBGMRequests();
 
+                    SaveDayNightRequests();
+
                     SetMapType("Protected");
 
                     LoadMapsList();
@@ -183,6 +189,7 @@ namespace WebClashServer.Editors
                 return;
             
             SaveBGMRequests();
+            SaveDayNightRequests();
 
             LoadMap(mapList.SelectedItem.ToString());
         }
@@ -313,8 +320,6 @@ namespace WebClashServer.Editors
             foreach (KeyValuePair<int, string> entry in mapBGMSaveRequests)
                 if (File.Exists(Program.main.location + "/../client/" + entry.Value))
                     SetMapBGMSource(entry.Key, entry.Value);
-                else
-                    SetMapBGMSource(entry.Key, string.Empty);
 
             mapBGMSaveRequests = new Dictionary<int, string>();
         }
@@ -333,6 +338,46 @@ namespace WebClashServer.Editors
                 mjo.Remove("bgmSource");
 
             mjo.Add("bgmSource", bgmSourceString);
+
+            File.WriteAllText(map, JsonConvert.SerializeObject(mjo, Formatting.Indented));
+        }
+
+        private void DayNight_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mapList.SelectedIndex == -1)
+                return;
+
+            if (mapDayNightSaveRequests.ContainsKey(mapList.SelectedIndex))
+                mapDayNightSaveRequests.Remove(mapList.SelectedIndex);
+
+            mapDayNightSaveRequests.Add(mapList.SelectedIndex, dayNight.Checked);
+
+            current.showDayNight = dayNight.Checked;
+        }
+
+        private void SaveDayNightRequests()
+        {
+            //Check if DayNights exist, if so save
+
+            if (mapDayNightSaveRequests.Count == 0)
+                return;
+
+            foreach (KeyValuePair<int, bool> entry in mapDayNightSaveRequests)
+                SetMapDayNight(entry.Key, entry.Value);
+
+            mapDayNightSaveRequests = new Dictionary<int, bool>();
+        }
+
+        private void SetMapDayNight(int index, bool showDayNight)
+        {
+            string map = Program.main.location + "/maps/" + mapList.Items[index].ToString() + ".json";
+
+            JObject mjo = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(map));
+
+            if (mjo.Property("showDayNight") != null)
+                mjo.Remove("showDayNight");
+
+            mjo.Add("showDayNight", showDayNight);
 
             File.WriteAllText(map, JsonConvert.SerializeObject(mjo, Formatting.Indented));
         }
@@ -356,6 +401,7 @@ namespace WebClashServer.Editors
 
                 mapType = temp.mapType;
                 bgmSource = temp.bgmSource;
+                showDayNight = temp.showDayNight;
             }
             catch (Exception e)
             {
@@ -370,6 +416,8 @@ namespace WebClashServer.Editors
 
         public string mapType = string.Empty;
         public string bgmSource = string.Empty;
+
+        public bool showDayNight = false;
     }
 
     public class Tileset

@@ -26,6 +26,12 @@ global.storage = require('./webclash_modules/storage');
 global.properties = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
 global.permissions = JSON.parse(fs.readFileSync('permissions.json', 'utf-8'));
 global.exptable = JSON.parse(fs.readFileSync('exptable.json', 'utf-8'));
+global.gameTime = JSON.parse(fs.readFileSync('time.json', 'utf-8'));
+
+//Setup game time
+
+gameTime.dayLength *= 60;
+gameTime.nightLength *= 60;
 
 //Setup Express
 

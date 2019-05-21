@@ -234,6 +234,27 @@ exports.handleCommand = function(socket, text)
                 server.syncPlayerPartially(p, 'character');
 
                 return 'success';
+            //Change game time command
+            case 'settime':
+                if (arguments.length < 1)
+                    return 'wrong';
+                
+                let time = arguments[0];
+
+                if (isNaN(time)) 
+                    switch(time) {
+                        case 'day':
+                            time = 0;
+                            break;
+                        case 'night':
+                            time = gameTime.dayLength;
+                            break;
+                    }
+
+                game.time.current = time;
+                server.syncGameTime();
+
+                return 'success';
             //Shutdown command
             case 'shutdown':
                 exitHandler();

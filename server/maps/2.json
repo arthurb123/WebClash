@@ -864,5 +864,6 @@
   "version": 1.2,
   "width": 12,
   "mapType": "neutral",
-  "bgmSource": "res/bgm/Eerie Scene - Aaron Krogh.mp3"
+  "bgmSource": "res/bgm/Eerie Scene - Aaron Krogh.mp3",
+  "showDayNight": false
 }
