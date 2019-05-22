@@ -6,18 +6,18 @@
   "type": "hostile",
   "character": "golem",
   "stats": {
-    "level": 6,
+    "level": 8,
     "exp": 20,
     "power": 0,
-    "toughness": 2,
+    "toughness": 3,
     "agility": 1,
     "wisdom": 2,
-    "intelligence": 6,
+    "intelligence": 5,
     "vitality": 0
   },
   "health": {
-    "cur": 75,
-    "max": 75
+    "cur": 85,
+    "max": 85
   },
   "actions": [
     {

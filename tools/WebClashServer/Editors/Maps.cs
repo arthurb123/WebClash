@@ -14,7 +14,6 @@ namespace WebClashServer.Editors
         Map current;
 
         Dictionary<int, string> mapBGMSaveRequests = new Dictionary<int, string>();
-        Dictionary<int, bool> mapDayNightSaveRequests = new Dictionary<int, bool>();
 
         public Maps()
         {
@@ -34,7 +33,6 @@ namespace WebClashServer.Editors
         private void Maps_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveBGMRequests();
-            SaveDayNightRequests();
         }
 
         private void LoadMapsList()
@@ -82,6 +80,10 @@ namespace WebClashServer.Editors
                 bgmSource.Text = current.bgmSource;
 
             dayNight.Checked = current.showDayNight;
+            alwaysDark.Checked = current.alwaysDark;
+
+            dayNight.Enabled = !current.alwaysDark;
+            alwaysDark.Enabled = !current.showDayNight;
         }
 
         private void CheckTilesets()
@@ -139,9 +141,10 @@ namespace WebClashServer.Editors
 
                     SaveBGMRequests();
 
-                    SaveDayNightRequests();
-
                     SetMapType("Protected");
+
+                    SaveMapAlwaysDark(false);
+                    SaveMapDayNight(false);
 
                     LoadMapsList();
 
@@ -189,7 +192,6 @@ namespace WebClashServer.Editors
                 return;
             
             SaveBGMRequests();
-            SaveDayNightRequests();
 
             LoadMap(mapList.SelectedItem.ToString());
         }
@@ -347,39 +349,60 @@ namespace WebClashServer.Editors
             if (mapList.SelectedIndex == -1)
                 return;
 
-            if (mapDayNightSaveRequests.ContainsKey(mapList.SelectedIndex))
-                mapDayNightSaveRequests.Remove(mapList.SelectedIndex);
-
-            mapDayNightSaveRequests.Add(mapList.SelectedIndex, dayNight.Checked);
-
             current.showDayNight = dayNight.Checked;
+            current.alwaysDark = !current.showDayNight;
+
+            if (current.showDayNight)
+                alwaysDark.Checked = false;
+
+            alwaysDark.Enabled = !current.showDayNight;
+
+            SaveMapDayNight(current.showDayNight);
         }
 
-        private void SaveDayNightRequests()
+        private void SaveMapDayNight(bool dayNight)
         {
-            //Check if DayNights exist, if so save
-
-            if (mapDayNightSaveRequests.Count == 0)
-                return;
-
-            foreach (KeyValuePair<int, bool> entry in mapDayNightSaveRequests)
-                SetMapDayNight(entry.Key, entry.Value);
-
-            mapDayNightSaveRequests = new Dictionary<int, bool>();
-        }
-
-        private void SetMapDayNight(int index, bool showDayNight)
-        {
-            string map = Program.main.location + "/maps/" + mapList.Items[index].ToString() + ".json";
+            string map = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".json";
 
             JObject mjo = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(map));
 
             if (mjo.Property("showDayNight") != null)
                 mjo.Remove("showDayNight");
 
-            mjo.Add("showDayNight", showDayNight);
+            mjo.Add("showDayNight", dayNight);
 
-            File.WriteAllText(map, JsonConvert.SerializeObject(mjo, Formatting.Indented));
+            File.WriteAllText(map, JsonConvert.SerializeObject(mjo));
+        }
+
+        private void AlwaysDark_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mapList.SelectedIndex == -1)
+                return;
+
+            current.alwaysDark = alwaysDark.Checked;
+            current.showDayNight = !current.alwaysDark;
+
+            if (current.alwaysDark)
+                dayNight.Checked = false;
+
+            dayNight.Enabled = !current.alwaysDark;
+
+            SaveMapDayNight(current.showDayNight);
+            SaveMapAlwaysDark(current.alwaysDark);
+        }
+
+        private void SaveMapAlwaysDark(bool alwaysDark)
+        {
+            string map = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".json";
+
+            JObject mjo = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(map));
+
+            if (mjo.Property("alwaysDark") != null)
+                mjo.Remove("alwaysDark");
+
+            mjo.Add("alwaysDark", alwaysDark);
+
+            File.WriteAllText(map, JsonConvert.SerializeObject(mjo));
         }
     }
 
@@ -402,6 +425,7 @@ namespace WebClashServer.Editors
                 mapType = temp.mapType;
                 bgmSource = temp.bgmSource;
                 showDayNight = temp.showDayNight;
+                alwaysDark = temp.alwaysDark;
             }
             catch (Exception e)
             {
@@ -418,6 +442,7 @@ namespace WebClashServer.Editors
         public string bgmSource = string.Empty;
 
         public bool showDayNight = false;
+        public bool alwaysDark = false;
     }
 
     public class Tileset

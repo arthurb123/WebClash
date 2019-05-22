@@ -169,8 +169,8 @@ const tiled = {
             //Add day/night system on the highest layer,
             //only do this if the map speficies so
 
-            if (map.showDayNight)
-                lx.OnLayerDraw(actualLayer, function(gfx) {
+            if (map.showDayNight || map.alwaysDark)
+                lx.OnLayerDraw(actualLayer+1, function(gfx) {
                     if (game.gameTime.current == undefined)
                         return;
 
@@ -636,15 +636,19 @@ const tiled = {
         let opacity = 0,
             maxOpacity = game.gameTime.nightOpacity;
 
-        if (game.gameTime.current <= game.gameTime.dayLength) 
-            opacity = maxOpacity * ((game.gameTime.current-game.gameTime.dayLength/2) / (game.gameTime.dayLength/2));
-        else {
-            let offsetTime = game.gameTime.current-game.gameTime.dayLength;
+        if (map.alwaysDark) {
+            opacity = maxOpacity;
+        } else {
+            if (game.gameTime.current <= game.gameTime.dayLength) 
+                opacity = maxOpacity * ((game.gameTime.current-game.gameTime.dayLength/2) / (game.gameTime.dayLength/2));
+            else {
+                let offsetTime = game.gameTime.current-game.gameTime.dayLength;
 
-            if (offsetTime >= game.gameTime.nightLength/2)
-                opacity = maxOpacity - maxOpacity * ((offsetTime-game.gameTime.nightLength/2) / (game.gameTime.nightLength/2));
-            else
-                opacity = maxOpacity;
+                if (offsetTime >= game.gameTime.nightLength/2)
+                    opacity = maxOpacity - maxOpacity * ((offsetTime-game.gameTime.nightLength/2) / (game.gameTime.nightLength/2));
+                else
+                    opacity = maxOpacity;
+            }
         }
 
         //Check if opacity is valid

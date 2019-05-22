@@ -817,6 +817,13 @@ exports.damageNPC = function(owner, map, id, delta)
         this.isTimedOut(map, id))
         return;
 
+    //Subtract toughness from damage
+
+    delta += this.onMap[map][id].data.stats.toughness-1;
+
+    if (delta >= 0)
+        delta = 0;
+
     //Add delta accordingly
 
     this.onMap[map][id].data.health.cur+=delta;

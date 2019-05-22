@@ -48,6 +48,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.help = new System.Windows.Forms.Button();
+            this.alwaysDark = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,13 +60,13 @@
             this.mapList.ItemHeight = 15;
             this.mapList.Location = new System.Drawing.Point(12, 12);
             this.mapList.Name = "mapList";
-            this.mapList.Size = new System.Drawing.Size(150, 167);
+            this.mapList.Size = new System.Drawing.Size(150, 197);
             this.mapList.TabIndex = 0;
             this.mapList.SelectedIndexChanged += new System.EventHandler(this.mapList_SelectedIndexChanged);
             // 
             // import
             // 
-            this.import.Location = new System.Drawing.Point(11, 183);
+            this.import.Location = new System.Drawing.Point(12, 211);
             this.import.Name = "import";
             this.import.Size = new System.Drawing.Size(52, 23);
             this.import.TabIndex = 1;
@@ -75,7 +76,7 @@
             // 
             // delete
             // 
-            this.delete.Location = new System.Drawing.Point(110, 183);
+            this.delete.Location = new System.Drawing.Point(110, 211);
             this.delete.Name = "delete";
             this.delete.Size = new System.Drawing.Size(52, 23);
             this.delete.TabIndex = 2;
@@ -85,6 +86,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.alwaysDark);
             this.groupBox1.Controls.Add(this.dayNight);
             this.groupBox1.Controls.Add(this.bgmSourceHelp);
             this.groupBox1.Controls.Add(this.bgmSource);
@@ -102,7 +104,7 @@
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(168, 5);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(237, 174);
+            this.groupBox1.Size = new System.Drawing.Size(237, 204);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Map Information";
@@ -174,7 +176,7 @@
             this.fixTilesets.ActiveLinkColor = System.Drawing.Color.Blue;
             this.fixTilesets.AutoSize = true;
             this.fixTilesets.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.fixTilesets.Location = new System.Drawing.Point(208, 148);
+            this.fixTilesets.Location = new System.Drawing.Point(208, 176);
             this.fixTilesets.Name = "fixTilesets";
             this.fixTilesets.Size = new System.Drawing.Size(23, 15);
             this.fixTilesets.TabIndex = 10;
@@ -186,7 +188,7 @@
             // 
             // mapTilesets
             // 
-            this.mapTilesets.Location = new System.Drawing.Point(72, 126);
+            this.mapTilesets.Location = new System.Drawing.Point(72, 150);
             this.mapTilesets.Name = "mapTilesets";
             this.mapTilesets.Size = new System.Drawing.Size(159, 15);
             this.mapTilesets.TabIndex = 9;
@@ -195,7 +197,7 @@
             // 
             // mapSize
             // 
-            this.mapSize.Location = new System.Drawing.Point(72, 104);
+            this.mapSize.Location = new System.Drawing.Point(72, 128);
             this.mapSize.Name = "mapSize";
             this.mapSize.Size = new System.Drawing.Size(159, 15);
             this.mapSize.TabIndex = 7;
@@ -206,7 +208,7 @@
             // 
             this.mapTilesetStatus.AutoSize = true;
             this.mapTilesetStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mapTilesetStatus.Location = new System.Drawing.Point(11, 148);
+            this.mapTilesetStatus.Location = new System.Drawing.Point(11, 176);
             this.mapTilesetStatus.Name = "mapTilesetStatus";
             this.mapTilesetStatus.Size = new System.Drawing.Size(155, 15);
             this.mapTilesetStatus.TabIndex = 5;
@@ -215,7 +217,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(11, 126);
+            this.label5.Location = new System.Drawing.Point(11, 149);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(49, 15);
             this.label5.TabIndex = 4;
@@ -224,7 +226,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 103);
+            this.label3.Location = new System.Drawing.Point(11, 127);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(31, 15);
             this.label3.TabIndex = 2;
@@ -249,7 +251,7 @@
             // 
             // help
             // 
-            this.help.Location = new System.Drawing.Point(349, 183);
+            this.help.Location = new System.Drawing.Point(349, 211);
             this.help.Name = "help";
             this.help.Size = new System.Drawing.Size(58, 23);
             this.help.TabIndex = 4;
@@ -257,11 +259,22 @@
             this.help.UseVisualStyleBackColor = true;
             this.help.Click += new System.EventHandler(this.help_Click);
             // 
+            // alwaysDark
+            // 
+            this.alwaysDark.AutoSize = true;
+            this.alwaysDark.Location = new System.Drawing.Point(61, 102);
+            this.alwaysDark.Name = "alwaysDark";
+            this.alwaysDark.Size = new System.Drawing.Size(124, 19);
+            this.alwaysDark.TabIndex = 17;
+            this.alwaysDark.Text = "Always Dark/Night";
+            this.alwaysDark.UseVisualStyleBackColor = true;
+            this.alwaysDark.CheckedChanged += new System.EventHandler(this.AlwaysDark_CheckedChanged);
+            // 
             // Maps
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(419, 213);
+            this.ClientSize = new System.Drawing.Size(419, 241);
             this.Controls.Add(this.help);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.delete);
@@ -270,8 +283,8 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(435, 252);
-            this.MinimumSize = new System.Drawing.Size(435, 252);
+            this.MaximumSize = new System.Drawing.Size(435, 280);
+            this.MinimumSize = new System.Drawing.Size(435, 280);
             this.Name = "Maps";
             this.Text = "WebClash Server - Maps";
             this.Load += new System.EventHandler(this.Maps_Load);
@@ -302,5 +315,6 @@
         private System.Windows.Forms.TextBox bgmSource;
         private System.Windows.Forms.Button bgmSourceHelp;
         private System.Windows.Forms.CheckBox dayNight;
+        private System.Windows.Forms.CheckBox alwaysDark;
     }
 }

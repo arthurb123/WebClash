@@ -8,9 +8,9 @@
   "stats": {
     "level": 4,
     "exp": 9,
-    "power": 3,
-    "toughness": 2,
-    "agility": 0,
+    "power": 2,
+    "toughness": 1,
+    "agility": 1,
     "wisdom": 0,
     "intelligence": 0,
     "vitality": 1
