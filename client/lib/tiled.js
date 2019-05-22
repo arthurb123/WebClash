@@ -2,6 +2,7 @@ const tiled = {
     loading: false,
     current: '',
     animations: [],
+    lightHotspots: [],
     convertAndLoadMap: function(map)
     {
         //Set loading
@@ -61,6 +62,10 @@ const tiled = {
             this.animations[a].Hide();
 
         this.animations = [];
+
+        //Clear existing map light hotspots
+
+        this.lightHotspots = [];
 
         //Cache all tilesets
 
@@ -325,8 +330,7 @@ const tiled = {
              if (!map.layers[l].visible)
                  continue;
 
-             const width = map.layers[l].width,
-                   height = map.layers[l].height;
+             const width = map.layers[l].width;
 
               let offset_width = -map.width*map.tilewidth/2,
                   offset_height = -map.height*map.tileheight/2;
@@ -398,24 +402,65 @@ const tiled = {
                  {
                     //Check if visible
 
-                     if (!data[o].visible ||
-                         data.point ||
-                         data[o].width === 0 ||
-                         data[o].height === 0)
+                     if (!data[o].visible)
                          continue;
 
-                    //Create collider with properties
+                    //Grab properties and
+                    //setup callbacks array
 
                     const properties = map.layers[l].objects[o].properties,
                           callbacks = [];
 
-                    if (properties != undefined)
+                    //Check properties
+
+                    if (properties != undefined) {
+                        let isMapEvent = false;
+
+                        //First check if the properties contain a 
+                        //load map event, this affects property handling
+
                         for (let p = 0; p < properties.length; p++) {
+                            if (properties[p].name === 'loadMap')
+                            {
+                                isMapEvent = true;
+
+                                break;
+                            }
+                        }
+
+                        for (let p = 0; p < properties.length; p++) {
+                            //Skip map related events, as these 
+                            //are handled by the server upon map change
+
+                            if (properties[p].name === 'positionX' || properties[p].name === 'positionY')
+                            if (isMapEvent)
+                                continue;
+
+                            //Handle property
+
                             let f = this.handleProperty(properties[p]);
 
                             if (f !== undefined)
                                 callbacks.push(f);
                         }
+
+                        //Handle design events/light hotspot events
+
+                        this.handleDesign(
+                            properties, 
+                            data[o].x+offset_width, 
+                            data[o].y+offset_height
+                        );
+                    }
+
+                    //Check if collider should be created
+
+                    if (data.point ||
+                        data[o].width === 0 ||
+                        data[o].height === 0)
+                        continue;
+
+                    //Create collider
 
                     let coll = new lx.Collider(
                         data[o].x+offset_width,
@@ -424,6 +469,9 @@ const tiled = {
                         data[o].height,
                         true
                     );
+
+                    //Append callbacks to collider
+                    //if necessary
 
                     if (callbacks.length > 0) {
                         coll.OnCollide = function(data) {
@@ -534,6 +582,8 @@ const tiled = {
     },
     checkProperties: function(tile_position, tileset, id, actual)
     {
+        //Check all tile properties
+
         for (let i = 0; i < tileset.tiles.length; i++) {
             if (tileset.tiles[i].id+1 == actual) {
                 if (tileset.tiles[i].properties === undefined)
@@ -543,6 +593,9 @@ const tiled = {
                       callbacks = [];
 
                 let isMapEvent = false;
+
+                //First check if the properties contain a 
+                //load map event, this affects property handling
 
                 for (let p = 0; p < properties.length; p++) {
                     if (properties[p].name === 'loadMap')
@@ -554,15 +607,26 @@ const tiled = {
                 }
 
                 for (let p = 0; p < properties.length; p++) {
-                    if (properties[p].name === 'positionX' || properties[p].name === 'positionY')
+                    //Skip map related events, as these 
+                    //are handled by the server upon map change
+
+                    if (properties[p].name === 'positionX' || 
+                        properties[p].name === 'positionY')
                         if (isMapEvent)
                             continue;
 
+                    //Handle the property
+
                     let f = this.handleProperty(properties[p]);
+
+                    //Add the property callback
 
                     if (f !== undefined)
                         callbacks.push(f);
                 }
+
+                //Add all generated callbacks
+                //as a collider
 
                 if (callbacks.length > 0) {
                     if (tileset.tiles[i].objectgroup === undefined)
@@ -590,6 +654,14 @@ const tiled = {
                         //Add callbacks to objectgroup colliders
                     }
                 }
+
+                //Handle design events/light hotspot events
+
+                this.handleDesign(
+                    properties, 
+                    tile_position.x, 
+                    tile_position.y
+                );
             }
         }
     },
@@ -600,6 +672,8 @@ const tiled = {
 
         switch (property.name)
         {
+            //Callback related events
+
             case "loadMap":
                 return function(go) {
                     if (go === game.players[game.player]) {
@@ -618,6 +692,34 @@ const tiled = {
                 }
         }
     },
+    handleDesign: function(properties, p_x, p_y)
+    {
+        //Light hotspot
+
+        let lightHotspotID;
+
+        //Other design variables
+
+        //...
+
+        //Check for design properties
+
+        for (let p = 0; p < properties.length; p++) {
+            let property = properties[p];
+
+            switch (property.name) {
+                case 'lightHotspot':
+                    if (lightHotspotID == undefined)
+                        lightHotspotID = this.addLightHotspot(
+                            p_x, 
+                            p_y
+                        );
+                    
+                    this.lightHotspots[lightHotspotID].size = property.value;
+                    break;
+            }
+        }
+    },
     createWorldBoundaries: function(map) {
         let offset_width = -map.width*map.tilewidth/2,
             offset_height = -map.height*map.tileheight/2;
@@ -634,10 +736,12 @@ const tiled = {
         //Calculate shadow opacity
 
         let opacity = 0,
-            maxOpacity = game.gameTime.nightOpacity;
+            maxOpacity = properties.nightOpacity,
+            color = properties.nightColor;
 
         if (map.alwaysDark) {
-            opacity = maxOpacity;
+            opacity = properties.darknessOpacity;
+            color = properties.darknessColor;
         } else {
             if (game.gameTime.current <= game.gameTime.dayLength) 
                 opacity = maxOpacity * ((game.gameTime.current-game.gameTime.dayLength/2) / (game.gameTime.dayLength/2));
@@ -656,44 +760,100 @@ const tiled = {
         if (opacity <= 0)
             return;
 
-        //Round opacity to reduce rendering stress
+        //Round opacity to reduce rendering stress,
+        //only do this when caching is available
 
-        opacity = parseFloat(opacity.toFixed(4));
+        if (this.lightHotspots.length === 0)
+            opacity = parseFloat(opacity.toFixed(4));
 
-        //Return shadow canvas if readily rendered
+        //Generate cached name
 
-        if (this.shadowCanvas[opacity] != undefined)
-            return this.shadowCanvas[opacity];
-        else
-            this.shadowCanvas = {};
+        let name = 
+            lx.GetDimensions().width + 'x' + 
+            lx.GetDimensions().height + 'x' + 
+            opacity + 'c' +
+            color;
+
+        //Return shadow canvas if readily rendered,
+        //only do this if there are no extra light hotspots
+
+        if (this.lightHotspots.length === 0)
+            if (this.shadowCanvas[name] != undefined)
+                return this.shadowCanvas[name];
+            else
+                this.shadowCanvas = {};
 
         let c = document.createElement('canvas');
         c.width = lx.GetDimensions().width;
         c.height = lx.GetDimensions().height;
 
         let g = c.getContext('2d'),
-            size = 1.5;
+            size = properties.hotspotSize;
 
-        //Overall darkness
+        //Overall shading
 
-        g.fillStyle = game.gameTime.nightColor;
+        g.fillStyle = color;
         g.globalAlpha = opacity;
         g.globalCompositeOperation = 'source-over';
         g.fillRect(0, 0, lx.GetDimensions().width, lx.GetDimensions().height);
 
-        //Blurred hotspot
+        //Blurred player hotspot
 
-        g.fillStyle = 'white';
         g.globalCompositeOperation = 'destination-out';
-        g.beginPath();
-        g.arc(c.width/2, c.height/2+game.players[game.player].Size().W/3, size*map.tilewidth, 0, 2 * Math.PI);
         g.filter = 'blur(8px)';
+
+        g.beginPath();
+        g.arc(
+            c.width/2, 
+            c.height/2+game.players[game.player].Size().W/3, 
+            size*map.tilewidth,
+            0, 
+            2 * Math.PI
+        );
+        g.closePath();
         g.fill();
 
-        //Set shadow canvas
+        //Blurred map hotspots
 
-        this.shadowCanvas[opacity] = c;
+        for (let lhs = 0; lhs < this.lightHotspots.length; lhs++) {
+            if (this.lightHotspots[lhs] == undefined)
+                continue;
+
+            let pos = lx.GAME.TRANSLATE_FROM_FOCUS({
+                X: this.lightHotspots[lhs].x,
+                Y: this.lightHotspots[lhs].y
+            });
+
+            g.beginPath();
+            g.arc(
+                pos.X, 
+                pos.Y, 
+                this.lightHotspots[lhs].size*map.tilewidth,
+                0, 
+                2 * Math.PI
+            );
+            g.closePath();
+            g.fill();
+        }
+
+        //Set shadow canvas if there
+        //are no extra light hotspots,
+        //this is used for caching
+
+        if (this.lightHotspots.length === 0)
+            this.shadowCanvas[name] = c;
 
         return c;
+    },
+    addLightHotspot: function(x, y) {
+        let lhs = {
+            x: x,
+            y: y,
+            size: properties.hotspotSize
+        };
+
+        this.lightHotspots.push(lhs);
+
+        return this.lightHotspots.length-1;
     }
 };

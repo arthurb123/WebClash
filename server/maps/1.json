@@ -5424,7 +5424,7 @@
         0,
         0,
         0,
-        0,
+        2799,
         0,
         0,
         0,
@@ -10810,6 +10810,86 @@
           "width": 31,
           "x": 895,
           "y": 958
+        },
+        {
+          "height": 20,
+          "id": 137,
+          "name": "",
+          "rotation": 0,
+          "type": "",
+          "visible": true,
+          "width": 13,
+          "x": 1097,
+          "y": 454
+        }
+      ],
+      "opacity": 1,
+      "type": "objectgroup",
+      "visible": true,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "draworder": "topdown",
+      "id": 17,
+      "name": "Hotspots",
+      "objects": [
+        {
+          "height": 0,
+          "id": 129,
+          "name": "",
+          "point": true,
+          "properties": [
+            {
+              "name": "lightHotspot",
+              "type": "float",
+              "value": 1.25
+            }
+          ],
+          "rotation": 0,
+          "type": "",
+          "visible": true,
+          "width": 0,
+          "x": 207,
+          "y": 177
+        },
+        {
+          "height": 0,
+          "id": 131,
+          "name": "",
+          "point": true,
+          "properties": [
+            {
+              "name": "lightHotspot",
+              "type": "float",
+              "value": 1.25
+            }
+          ],
+          "rotation": 0,
+          "type": "",
+          "visible": true,
+          "width": 0,
+          "x": 272,
+          "y": 177
+        },
+        {
+          "height": 0,
+          "id": 138,
+          "name": "",
+          "point": true,
+          "properties": [
+            {
+              "name": "lightHotspot",
+              "type": "float",
+              "value": 1.5
+            }
+          ],
+          "rotation": 0,
+          "type": "",
+          "visible": true,
+          "width": 0,
+          "x": 1103,
+          "y": 480
         }
       ],
       "opacity": 1,
@@ -10945,8 +11025,8 @@
       "y": 0
     }
   ],
-  "nextlayerid": 17,
-  "nextobjectid": 129,
+  "nextlayerid": 18,
+  "nextobjectid": 139,
   "orientation": "orthogonal",
   "renderorder": "right-down",
   "tiledversion": "1.2.1",
@@ -11234,7 +11314,6 @@
   "version": 1.2,
   "width": 40,
   "mapType": "protected",
-  "alwaysDark": false,
   "showDayNight": true,
   "bgmSource": "res/bgm/World Map - Aaron Krogh.mp3"
 }

@@ -32,17 +32,20 @@ objects are as follows:
 
 [Design]
 
-* "NPC"		-> Spawns a NPC with the specified 
-		   name (string value)
+* "NPC"		 -> Spawns a NPC with the specified 
+		    name (string value)
+* "lightHotspot" -> Creates a light hotspot in dark
+		    areas with the specified radius
+		    in tiles (float value)
 
 [Events]
 
-* "loadMap" 	-> Loads the map with the specified 
-		   name (string value)
-* "positionX"   -> Set player position tile X
-                   (int value)
-* "positionY"   -> Set player position tile Y
-		   (int value)
+* "loadMap" 	 -> Loads the map with the specified 
+		    name (string value)
+* "positionX"    -> Set player position tile X
+                    (int value)
+* "positionY"    -> Set player position tile Y
+		    (int value)
 
 
 	      -- Commands --

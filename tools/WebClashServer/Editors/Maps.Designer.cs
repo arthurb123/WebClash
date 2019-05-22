@@ -33,6 +33,7 @@
             this.import = new System.Windows.Forms.Button();
             this.delete = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.alwaysDark = new System.Windows.Forms.CheckBox();
             this.dayNight = new System.Windows.Forms.CheckBox();
             this.bgmSourceHelp = new System.Windows.Forms.Button();
             this.bgmSource = new System.Windows.Forms.TextBox();
@@ -48,7 +49,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.help = new System.Windows.Forms.Button();
-            this.alwaysDark = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -108,6 +108,17 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Map Information";
+            // 
+            // alwaysDark
+            // 
+            this.alwaysDark.AutoSize = true;
+            this.alwaysDark.Location = new System.Drawing.Point(74, 103);
+            this.alwaysDark.Name = "alwaysDark";
+            this.alwaysDark.Size = new System.Drawing.Size(92, 19);
+            this.alwaysDark.TabIndex = 17;
+            this.alwaysDark.Text = "Always Dark";
+            this.alwaysDark.UseVisualStyleBackColor = true;
+            this.alwaysDark.CheckedChanged += new System.EventHandler(this.AlwaysDark_CheckedChanged);
             // 
             // dayNight
             // 
@@ -258,17 +269,6 @@
             this.help.Text = "Help";
             this.help.UseVisualStyleBackColor = true;
             this.help.Click += new System.EventHandler(this.help_Click);
-            // 
-            // alwaysDark
-            // 
-            this.alwaysDark.AutoSize = true;
-            this.alwaysDark.Location = new System.Drawing.Point(61, 102);
-            this.alwaysDark.Name = "alwaysDark";
-            this.alwaysDark.Size = new System.Drawing.Size(124, 19);
-            this.alwaysDark.TabIndex = 17;
-            this.alwaysDark.Text = "Always Dark/Night";
-            this.alwaysDark.UseVisualStyleBackColor = true;
-            this.alwaysDark.CheckedChanged += new System.EventHandler(this.AlwaysDark_CheckedChanged);
             // 
             // Maps
             // 

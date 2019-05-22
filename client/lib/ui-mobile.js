@@ -1463,15 +1463,9 @@ const ui = {
             this.emitted = true;
             socket.emit('CLIENT_SELL_ITEM', { npc: this.target, item: name }, function(sold) {
                 if (sold) {
-                    //Play item sound if possible
-                    //(gold sound??)
+                    //Play gold sound??
 
-                    if (sounds != undefined) {
-                        let sound = audio.getRandomSound(sounds);
-
-                        if (sound != undefined)
-                           audio.playSound(sound);
-                     }
+                    //...
 
                     //Remove box
 
@@ -1480,6 +1474,10 @@ const ui = {
                     //Remove context menu
 
                     ui.inventory.removeContext();
+
+                    //Reload shop items
+
+                    ui.shop.reload();
                 } else {
                     //Item is unsellable/could not be sold
 

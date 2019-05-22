@@ -1,7 +1,4 @@
 {
     "dayLength": 360,
-    "nightLength": 300,
-    
-    "nightColor": "#0f1842",
-    "nightOpacity": 0.425
+    "nightLength": 300
 }

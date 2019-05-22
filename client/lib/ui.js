@@ -1415,6 +1415,10 @@ const ui = {
                     //Remove context menu
 
                     ui.inventory.removeContext();
+
+                    //Reload shop items
+
+                    ui.shop.reload();
                 } else {
                     //Item is unsellable/could not be sold
 
