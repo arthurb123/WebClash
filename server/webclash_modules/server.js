@@ -262,28 +262,34 @@ exports.handleSocket = function(socket)
     socket.on('CLIENT_PLAYER_ACTION', function(data, callback) {
          try
          {
-             //Check if valid
+            //Check if valid
 
-             if (socket.name === undefined)
+            if (socket.name === undefined)
+                return;
+
+            let id = game.getPlayerIndex(socket.name);
+
+            if (id == -1)
                  return;
 
-             let id = game.getPlayerIndex(socket.name);
+            //Try to create an action based
+            //on the map conditions (PvP)
 
-             if (id == -1)
-                 return;
+            let result;
+            
+            if (!tiled.maps[game.players[id].map_id].pvp)
+                result = actions.createPlayerAction(data, id);
+            else
+                result = actions.createPvPAction(data, id);
 
-             //Try to create action
+            //Callback result
 
-             let result = actions.createPlayerAction(data, id);
-
-             //Callback result
-
-             if (callback != undefined)
+            if (callback != undefined)
                 callback(result);
          }
          catch (err)
          {
-             output.giveError('Could not add player action: ', err);
+            output.giveError('Could not add player action: ', err);
          }
     });
 

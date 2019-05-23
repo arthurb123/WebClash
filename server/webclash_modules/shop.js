@@ -68,11 +68,11 @@ exports.buyItem = function(player, item, owner, dialogId) {
 
     //Add item to the player inventory
 
-    if (items.addPlayerItem(game.players[player].socket, player, shop[data.item].item.name)) {
+    if (items.addPlayerItem(game.players[player].socket, player, shop[item].item.name)) {
         //Subtract gold from player, because item
         //has been added successfully!
 
-        game.deltaGoldPlayer(player, -shop[data.item].price);
+        game.deltaGoldPlayer(player, -shop[item].price);
 
         //Return successful
 

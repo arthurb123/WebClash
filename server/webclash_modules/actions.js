@@ -66,9 +66,48 @@ exports.updateProjectiles = function() {
                     if (game.players[this.projectiles[m][p].playerOwner] == undefined)
                         continue;
 
+                    //Check if NPCs can be damaged
+
                     if (this.damageNPCs(
                         this.projectiles[m][p].playerOwner,
                         game.players[this.projectiles[m][p].playerOwner].stats.attributes,
+                        this.projectiles[m][p],
+                        this.collection[this.projectiles[m][p].a_id]
+                    )) {
+                        server.removeAction(this.projectiles[m][p].elements[0].p_id, this.projectiles[m][p].map);
+
+                        this.projectiles[m][p] = undefined;
+
+                        continue;
+                    }
+                }
+
+                //PvP projectile handling
+
+                if (this.projectiles[m][p].pvpOwner != undefined) {
+                    if (game.players[this.projectiles[m][p].pvpOwner] == undefined)
+                        continue;
+
+                    //Check if players can be damaged
+
+                    if (this.damagePlayers(
+                        this.projectiles[m][p].map,
+                        game.players[this.projectiles[m][p].pvpOwner].stats.attributes,
+                        this.projectiles[m][p],
+                        this.collection[this.projectiles[m][p].a_id]
+                    )) {
+                        server.removeAction(this.projectiles[m][p].elements[0].p_id, this.projectiles[m][p].map);
+
+                        this.projectiles[m][p] = undefined;
+
+                        continue;
+                    }
+
+                    //And check if NPCs can be damaged
+
+                    if (this.damageNPCs(
+                        this.projectiles[m][p].playerOwner,
+                        game.players[this.projectiles[m][p].pvpOwner].stats.attributes,
                         this.projectiles[m][p],
                         this.collection[this.projectiles[m][p].a_id]
                     )) {
@@ -86,6 +125,8 @@ exports.updateProjectiles = function() {
                     if (npcs.onMap[this.projectiles[m][p].map][this.projectiles[m][p].npcOwner] == undefined ||
                         npcs.isTimedOut(this.projectiles[m][p].map, this.projectiles[m][p].npcOwner))
                         continue;
+
+                    //Check if players can be damaged
 
                     if (this.damagePlayers(
                         this.projectiles[m][p].map,
@@ -348,20 +389,10 @@ exports.createPlayerSlotAction = function(action)
     };
 };
 
-exports.createPlayerAction = function(slot, id)
-{
-    //Check if action exists at slot
+exports.canPlayerPerformAction = function(slot, id, a_id) {
+    //Grab action name
 
-    if (game.players[id].actions[slot] == undefined)
-        return false;
-
-    let name = game.players[id].actions[slot].name,
-        a_id = this.getActionIndex(name);
-
-    //Check if valid
-
-    if (a_id == -1)
-        return false;
+    let name = game.players[id].actions[slot].name;
 
     //Check if player has the action
 
@@ -391,6 +422,29 @@ exports.createPlayerAction = function(slot, id)
         if (game.players[id].actions[slot].uses <= 0)
             game.players[id].actions[slot] = undefined;
     }
+
+    return true;
+};
+
+exports.createPlayerAction = function(slot, id)
+{
+    //Check if action exists at slot
+
+    if (game.players[id].actions[slot] == undefined)
+        return false;
+
+    let name = game.players[id].actions[slot].name,
+        a_id = this.getActionIndex(name);
+
+    //Check if valid
+
+    if (a_id == -1)
+        return false;
+
+    //Check if action can be used
+
+    if (!this.canPlayerPerformAction(slot, id, a_id))
+        return false;
 
     //Generate action data
 
@@ -443,6 +497,80 @@ exports.createPlayerAction = function(slot, id)
     return true;
 };
 
+exports.createPvPAction = function(slot, id)
+{
+    //Check if action exists at slot
+
+    if (game.players[id].actions[slot] == undefined)
+        return false;
+
+    let name = game.players[id].actions[slot].name,
+        a_id = this.getActionIndex(name);
+
+    //Check if action can be used
+
+    if (!this.canPlayerPerformAction(slot, id, a_id))
+        return false;
+
+    //Generate action data
+
+    let actionData = this.convertActionData(
+        {
+            pos: game.calculateFace(
+                game.players[id].pos,
+                game.players[id].character.width,
+                game.players[id].character.height,
+                game.players[id].direction
+            ),
+            map: game.players[id].map_id,
+            elements: JSON.parse(JSON.stringify(this.collection[a_id].elements))
+        },
+        a_id,
+        game.players[id].direction,
+        game.players[id].character
+    );
+
+    let map = game.players[id].map_id;
+
+    //Damage players and NPCs
+
+    this.damagePlayers(game.players[id].attributes, actionData, this.collection[a_id], true, id);
+    this.damageNPCs(id, game.players[id].attributes, actionData, this.collection[a_id], true);
+
+    //Check for healing. 
+    //For now only heal the caster itself.
+    //This might switch to all collided players
+    //in case of large/group battles, when
+    //there is a party system in place.
+
+    if (this.collection[a_id].heal > 0)
+        game.healPlayer(id, this.collection[a_id].heal);
+        //this.healPlayers(actionData, this.collection[a_id].heal);
+    else if (this.collection[a_id].heal < 0)
+        game.damagePlayer(id, this.collection[a_id].heal);
+
+    //Add projectiles
+
+    for (let e = 0; e < actionData.elements.length; e++)
+        if (actionData.elements[e].type === 'projectile')
+            actionData.elements[e].p_id = this.createPvpProjectile(id, actionData, e, a_id);
+
+    //Add cooldown to slot
+
+    if (game.players[id].actions_cooldown === undefined)
+        game.players[id].actions_cooldown = {};
+
+    game.players[id].actions_cooldown[name] = this.collection[a_id].cooldown;
+
+    //Sync action
+
+    server.syncAction(actionData);
+
+    //Return true
+
+    return true;
+};
+
 exports.createNPCAction = function(possibleAction, map, id)
 {
     let a_id = this.getActionIndex(possibleAction.action);
@@ -472,7 +600,7 @@ exports.createNPCAction = function(possibleAction, map, id)
 
     //Damage players
 
-    this.damagePlayers(map, npcs.onMap[map][id].data.stats, actionData, this.collection[a_id], true);
+    this.damagePlayers(npcs.onMap[map][id].data.stats, actionData, this.collection[a_id], true);
 
     //Check for healing
 
@@ -583,7 +711,7 @@ exports.healNPCs = function(actionData, action)
         }
 };
 
-exports.damagePlayers = function(map, stats, actionData, action, onlyStatic)
+exports.damagePlayers = function(stats, actionData, action, onlyStatic, except)
 {
     try {
         let done = false;
@@ -599,7 +727,8 @@ exports.damagePlayers = function(map, stats, actionData, action, onlyStatic)
             for (let p = 0; p < game.players.length; p++)
             {
                 if (game.players[p] == undefined ||
-                    game.players[p].map_id != actionData.map)
+                    game.players[p].map_id != actionData.map ||
+                    p === except)
                     continue;
 
                 //Declare rectangles
@@ -672,8 +801,7 @@ exports.healPlayers = function(actionData, heal)
 
 exports.createProjectile = function(type, id, actionData, e_id, a_id)
 {
-    let projectileData = actionData.elements[e_id],
-        p_id = -1;
+    let p_id = -1;
 
     //Check if projectiles on map exist
 
@@ -696,16 +824,10 @@ exports.createProjectile = function(type, id, actionData, e_id, a_id)
 
             this.projectiles[actionData.map][p].a_id = a_id;
 
-            //Switch the owner type
+            //Set the owner identifier according
+            //to it's type
 
-            switch (type) {
-                case 'player':
-                    this.projectiles[actionData.map][p].playerOwner = id;
-                    break;
-                case 'npc':
-                    this.projectiles[actionData.map][p].npcOwner = id;
-                    break;
-            };
+            this.projectiles[actionData.map][p][type + 'Owner'] = id;
 
             //Set the empty distance
 
@@ -726,6 +848,11 @@ exports.createProjectile = function(type, id, actionData, e_id, a_id)
 exports.createPlayerProjectile = function(id, actionData, e_id, a_id)
 {
     return this.createProjectile('player', id, actionData, e_id, a_id)
+};
+
+exports.createPvpProjectile = function(id, actionData, e_id, a_id)
+{
+    return this.createProjectile('pvp', id, actionData, e_id, a_id)
 };
 
 exports.createNPCProjectile = function(id, actionData, e_id, a_id)

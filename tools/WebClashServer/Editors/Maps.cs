@@ -76,6 +76,8 @@ namespace WebClashServer.Editors
             else
                 mapType.SelectedItem = string.Empty;
 
+            pvp.Checked = current.pvp;
+
             if (current.bgmSource != null)
                 bgmSource.Text = current.bgmSource;
 
@@ -404,6 +406,30 @@ namespace WebClashServer.Editors
 
             File.WriteAllText(map, JsonConvert.SerializeObject(mjo));
         }
+
+        private void Pvp_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mapList.SelectedIndex == -1)
+                return;
+
+            current.pvp = pvp.Checked;
+
+            SaveMapPvP(current.pvp);
+        }
+
+        private void SaveMapPvP(bool pvp)
+        {
+            string map = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".json";
+
+            JObject mjo = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(map));
+
+            if (mjo.Property("pvp") != null)
+                mjo.Remove("pvp");
+
+            mjo.Add("pvp", pvp);
+
+            File.WriteAllText(map, JsonConvert.SerializeObject(mjo));
+        }
     }
 
     public class Map
@@ -426,6 +452,7 @@ namespace WebClashServer.Editors
                 bgmSource = temp.bgmSource;
                 showDayNight = temp.showDayNight;
                 alwaysDark = temp.alwaysDark;
+                pvp = temp.pvp;
             }
             catch (Exception e)
             {
@@ -440,6 +467,8 @@ namespace WebClashServer.Editors
 
         public string mapType = string.Empty;
         public string bgmSource = string.Empty;
+
+        public bool pvp = false;
 
         public bool showDayNight = false;
         public bool alwaysDark = false;

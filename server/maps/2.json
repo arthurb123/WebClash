@@ -863,6 +863,7 @@
   "type": "map",
   "version": 1.2,
   "width": 12,
+  "pvp": false,
   "mapType": "neutral",
   "showDayNight": false,
   "alwaysDark": true,

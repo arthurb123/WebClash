@@ -420,7 +420,7 @@ const ui = {
             if (player.actions[a].uses != undefined)
                 usesContent = player.actions[a].uses + '/' + player.actions[a].max;
 
-            uses = '<font class="info" style="position: absolute; top: 100%; margin-top: -15px; margin-left: -6px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%; text-align: right;">' + usesContent + '</font>';
+            uses = '<font class="info" style="position: absolute; top: 100%; margin-top: -12px; margin-left: -6px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%; text-align: right;">' + usesContent + '</font>';
 
             let size = 24;
 
@@ -1396,7 +1396,7 @@ const ui = {
                 '<div id="shop_box" class="box" style="visibility: hidden; text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); min-width: 80px; max-width: 20%; min-height: 80px; max-height: 25%; padding: 4px;">' +
                     '<p id="shop_name" class="info" style="font-size: 15px; padding-bottom: 2px;"><b>Shop</b></p>' +
                     '<div id="shop_content" style="overflow-y: auto; padding: 1px;"></div>' +
-                    '<p class="link" onclick="ui.shop.hide()" style="font-size: 12px; color: #ff3333; padding-top: 2px;">Close</p></div>' +
+                    '<p class="link" onclick="ui.shop.hide()" style="font-size: 12px; color: #ff3333; position: relative; top: -4px;">Close</p></div>' +
                 '</div>'
         },
         showShop: function(target, id, shop) {

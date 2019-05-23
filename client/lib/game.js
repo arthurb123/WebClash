@@ -33,25 +33,30 @@ const game = {
             .Loops(function() {
                 animation.animateMoving(go);
 
-                if (go._nameplate.Position().X === 0)
-                    go._nameplate.Position(go.Size().W/2, -Math.floor(go.Size().H/5));
+                if (this._nameplate.Position().X === 0)
+                    this._nameplate.Position(this.Size().W/2, -Math.floor(this.Size().H/5));
 
-                if (go._level !== undefined)
-                    go._nameplate.Text('lvl ' + go._level + ' - ' + go.name);
+                if (!tiled.pvp)
+                    this._nameplate.Color('whitesmoke');
+                else
+                    this._nameplate.Color('#ce1010');
+
+                if (this._level !== undefined)
+                    this._nameplate.Text('lvl ' + this._level + ' - ' + this.name);
             })
             .Draws(function() {
                 let equipment = [];
 
-                for (let i = 0; i < go._equipment.length-2; i++)
-                    equipment.push(go._equipment[i]);
+                for (let i = 0; i < this._equipment.length-2; i++)
+                    equipment.push(this._equipment[i]);
 
                 if (this._direction == 1 || this._direction == 0) {
-                    equipment.push(go._equipment[go._equipment.length-1]);
-                    equipment.push(go._equipment[go._equipment.length-2]);
+                    equipment.push(this._equipment[this._equipment.length-1]);
+                    equipment.push(this._equipment[this._equipment.length-2]);
                 }
                 else if (this._direction == 2 || this._direction == 3) {
-                    equipment.push(go._equipment[go._equipment.length-2]);
-                    equipment.push(go._equipment[go._equipment.length-1]);
+                    equipment.push(this._equipment[this._equipment.length-2]);
+                    equipment.push(this._equipment[this._equipment.length-1]);
                 }
 
                 for (let i = 0; i < equipment.length; i++)
@@ -59,9 +64,15 @@ const game = {
                     if (equipment[i] === undefined)
                         continue
 
-                    equipment[i].CLIP = go.SPRITE.CLIP;
+                    equipment[i].CLIP = this.SPRITE.CLIP;
 
-                    lx.DrawSprite(equipment[i], go.Position().X, go.Position().Y, go.Size().W, go.Size().H)
+                    lx.DrawSprite(
+                        equipment[i], 
+                        this.Position().X, 
+                        this.Position().Y, 
+                        this.Size().W, 
+                        this.Size().H
+                    );
                 }
             });
 

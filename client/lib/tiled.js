@@ -131,7 +131,9 @@ const tiled = {
 
                     let clip = tiled.calculateScreenClip(
                         cachedLayer.width,
-                        cachedLayer.height
+                        cachedLayer.height,
+                        offset_width,
+                        offset_height
                     );
 
                     //Draw cached layer
@@ -194,7 +196,9 @@ const tiled = {
 
                     let clip = tiled.calculateScreenClip(
                         shadowMap.width, 
-                        shadowMap.height
+                        shadowMap.height,
+                        tiled.offset.width,
+                        tiled.offset.height
                     );
 
                     //Render (clipped) shadow map
@@ -216,6 +220,10 @@ const tiled = {
 
             tiled.createWorldBoundaries(map);
 
+            //Set if map is pvp
+
+            tiled.pvp = map.pvp;
+
             //Reset the Lynx2D controller target
 
             lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
@@ -233,7 +241,7 @@ const tiled = {
             tiled.loading = false;
         });
     },
-    calculateScreenClip: function(mapWidth, mapHeight) 
+    calculateScreenClip: function(mapWidth, mapHeight, offsetWidth, offsetHeight) 
     {
         if (game.player === -1 ||
             game.players[game.player] == undefined)
@@ -244,8 +252,8 @@ const tiled = {
         let size = lx.GetDimensions();
 
         let clip = {
-            X: Math.round(game.players[game.player].POS.X+game.players[game.player].SIZE.W/2-this.offset.width-size.width/2),
-            Y: Math.round(game.players[game.player].POS.Y+game.players[game.player].SIZE.H/2-this.offset.height-size.height/2)
+            X: Math.round(game.players[game.player].POS.X+game.players[game.player].SIZE.W/2-offsetWidth-size.width/2),
+            Y: Math.round(game.players[game.player].POS.Y+game.players[game.player].SIZE.H/2-offsetHeight-size.height/2)
         };
 
         //Declare size and pos
