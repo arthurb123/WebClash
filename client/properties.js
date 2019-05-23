@@ -22,9 +22,4 @@ const properties = {
     
     darknessColor: "black",
     darknessOpacity: 0.45,
-    
-    //The graphics setting for the
-    //size of light hotspots (in tiles)
-    
-    hotspotSize: 1.5
 };
