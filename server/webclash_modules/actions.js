@@ -91,7 +91,6 @@ exports.updateProjectiles = function() {
                     //Check if players can be damaged
 
                     if (this.damagePlayers(
-                        this.projectiles[m][p].map,
                         game.players[this.projectiles[m][p].pvpOwner].stats.attributes,
                         this.projectiles[m][p],
                         this.collection[this.projectiles[m][p].a_id]
@@ -129,7 +128,6 @@ exports.updateProjectiles = function() {
                     //Check if players can be damaged
 
                     if (this.damagePlayers(
-                        this.projectiles[m][p].map,
                         npcs.onMap[this.projectiles[m][p].map][this.projectiles[m][p].npcOwner].data.stats,
                         this.projectiles[m][p],
                         this.collection[this.projectiles[m][p].a_id]
