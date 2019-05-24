@@ -16,6 +16,7 @@ The development process can be followed on [Trello](https://trello.com/b/658XHkJ
 * Item editor<br>
 * Action editor<br>
 * Chat with commands<br>
+* Day and night system<br>
 ...<br>
 
 ### Lynx2D<br>
