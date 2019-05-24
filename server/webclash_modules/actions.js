@@ -105,7 +105,7 @@ exports.updateProjectiles = function() {
                     //And check if NPCs can be damaged
 
                     if (this.damageNPCs(
-                        this.projectiles[m][p].playerOwner,
+                        this.projectiles[m][p].pvpOwner,
                         game.players[this.projectiles[m][p].pvpOwner].stats.attributes,
                         this.projectiles[m][p],
                         this.collection[this.projectiles[m][p].a_id]
