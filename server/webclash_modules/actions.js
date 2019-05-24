@@ -528,8 +528,6 @@ exports.createPvPAction = function(slot, id)
         game.players[id].character
     );
 
-    let map = game.players[id].map_id;
-
     //Damage players and NPCs
 
     this.damagePlayers(game.players[id].attributes, actionData, this.collection[a_id], true, id);

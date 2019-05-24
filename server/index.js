@@ -4,7 +4,8 @@ const fs = require('fs'),
       express = require('express'),
       app = express(),
       http = require('http').Server(app),
-      path = require('path');
+      path = require('path'),
+      readline = require('readline');
 
 global.io = require('socket.io')(http);
 
@@ -33,6 +34,20 @@ global.gameTime = JSON.parse(fs.readFileSync('time.json', 'utf-8'));
 
 gameTime.dayLength *= 60;
 gameTime.nightLength *= 60;
+
+//Setup readline and set input
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+rl.on('line', (text) => {
+    let result = input.handleCommand(text);
+
+    if (result === 'wrong')
+        output.give('Wrong syntax or the command is not supported.');
+});
 
 //Setup Express
 
@@ -106,8 +121,11 @@ let hasSaved = false;
 global.exitHandler = function() {
     //Check if exit handler has already been executed
 
-    if (hasSaved)
+    if (hasSaved) {
+        output.give('Completed shut down procedure.');
+
         return;
+    }
 
     //Output
 

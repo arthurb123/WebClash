@@ -45,6 +45,7 @@
             this.resetDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.permissions = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.inputCommand = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -57,18 +58,19 @@
             this.output.Location = new System.Drawing.Point(0, 24);
             this.output.Name = "output";
             this.output.ReadOnly = true;
-            this.output.Size = new System.Drawing.Size(404, 192);
+            this.output.Size = new System.Drawing.Size(404, 196);
             this.output.TabIndex = 0;
             this.output.Text = "";
             // 
             // startButton
             // 
             this.startButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.startButton.Location = new System.Drawing.Point(3, 1);
-            this.startButton.MaximumSize = new System.Drawing.Size(120, 23);
-            this.startButton.MinimumSize = new System.Drawing.Size(120, 23);
+            this.startButton.Dock = System.Windows.Forms.DockStyle.Left;
+            this.startButton.Location = new System.Drawing.Point(0, 0);
+            this.startButton.MaximumSize = new System.Drawing.Size(120, 21);
+            this.startButton.MinimumSize = new System.Drawing.Size(120, 21);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(120, 23);
+            this.startButton.Size = new System.Drawing.Size(120, 21);
             this.startButton.TabIndex = 1;
             this.startButton.Text = "Start";
             this.startButton.UseVisualStyleBackColor = true;
@@ -76,25 +78,28 @@
             // 
             // status
             // 
-            this.status.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.status.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.status.Location = new System.Drawing.Point(123, 1);
+            this.status.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.status.BackColor = System.Drawing.SystemColors.Control;
+            this.status.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.status.Location = new System.Drawing.Point(174, 2);
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(227, 20);
             this.status.TabIndex = 2;
-            this.status.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.status.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // settings
             // 
-            this.settings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.settings.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("settings.BackgroundImage")));
             this.settings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.settings.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.settings.Dock = System.Windows.Forms.DockStyle.Right;
             this.settings.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.settings.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.settings.Location = new System.Drawing.Point(378, 1);
+            this.settings.Location = new System.Drawing.Point(362, 0);
+            this.settings.MaximumSize = new System.Drawing.Size(21, 21);
+            this.settings.MinimumSize = new System.Drawing.Size(21, 21);
             this.settings.Name = "settings";
-            this.settings.Size = new System.Drawing.Size(23, 23);
+            this.settings.Size = new System.Drawing.Size(21, 21);
             this.settings.TabIndex = 3;
             this.settings.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.settings.UseVisualStyleBackColor = true;
@@ -102,6 +107,7 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.BackColor = System.Drawing.SystemColors.Control;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.editToolStripMenuItem,
             this.toolsToolStripMenuItem});
@@ -183,15 +189,17 @@
             // 
             // permissions
             // 
-            this.permissions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.permissions.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("permissions.BackgroundImage")));
             this.permissions.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.permissions.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.permissions.Dock = System.Windows.Forms.DockStyle.Right;
             this.permissions.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.permissions.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.permissions.Location = new System.Drawing.Point(353, 1);
+            this.permissions.Location = new System.Drawing.Point(383, 0);
+            this.permissions.MaximumSize = new System.Drawing.Size(21, 21);
+            this.permissions.MinimumSize = new System.Drawing.Size(21, 21);
             this.permissions.Name = "permissions";
-            this.permissions.Size = new System.Drawing.Size(23, 23);
+            this.permissions.Size = new System.Drawing.Size(21, 21);
             this.permissions.TabIndex = 5;
             this.permissions.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.permissions.UseVisualStyleBackColor = true;
@@ -199,15 +207,23 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.inputCommand);
             this.panel1.Controls.Add(this.startButton);
             this.panel1.Controls.Add(this.settings);
             this.panel1.Controls.Add(this.permissions);
-            this.panel1.Controls.Add(this.status);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 216);
+            this.panel1.Location = new System.Drawing.Point(0, 220);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(404, 25);
+            this.panel1.Size = new System.Drawing.Size(404, 21);
             this.panel1.TabIndex = 6;
+            // 
+            // inputCommand
+            // 
+            this.inputCommand.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.inputCommand.Location = new System.Drawing.Point(120, 0);
+            this.inputCommand.Name = "inputCommand";
+            this.inputCommand.Size = new System.Drawing.Size(242, 20);
+            this.inputCommand.TabIndex = 6;
             // 
             // Main
             // 
@@ -217,6 +233,7 @@
             this.ClientSize = new System.Drawing.Size(404, 241);
             this.Controls.Add(this.output);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.status);
             this.Controls.Add(this.menuStrip1);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -227,6 +244,7 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -250,6 +268,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem questsToolStripMenuItem;
+        private System.Windows.Forms.TextBox inputCommand;
     }
 }
 

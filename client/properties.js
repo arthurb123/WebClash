@@ -21,5 +21,5 @@ const properties = {
     //general darkness shading
     
     darknessColor: "black",
-    darknessOpacity: 0.45,
+    darknessOpacity: 0.45
 };

@@ -31,6 +31,23 @@ namespace WebClashServer
         {
             InitializeComponent();
 
+            //Setup command enter event
+
+            inputCommand.KeyDown += new KeyEventHandler((object s, KeyEventArgs kea) =>
+            {
+                if (kea.KeyCode == Keys.Enter && 
+                    running && 
+                    p != null)
+                {
+                    if (inputCommand.Text.IndexOf("shutdown") == -1)
+                        p.StandardInput.WriteLine(inputCommand.Text);
+                    else
+                        AttemptStopServer();
+
+                    inputCommand.Text = "";
+                }
+            });
+
             FormClosing += ((object s, FormClosingEventArgs e) =>
             {
                 AttemptStopServer();
@@ -65,6 +82,8 @@ namespace WebClashServer
             startButton.Text = "Stop";
 
             running = true;
+
+            output.Text = "";
 
             try
             {
@@ -105,21 +124,18 @@ namespace WebClashServer
         private void AttemptStopServer()
         {
             if (running)
-            {
-                running = false;
+                p.StandardInput.WriteLine("shutdown");
+        }
 
-                output.Text = "";
+        private void FinalShutDownProcedure()
+        {
+            status.Text = "Server has been stopped.";
 
-                startButton.Text = "Start";
+            startButton.Text = "Start";
 
-                if (p != null &&
-                    !p.HasExited)
-                    p.Kill();
+            p = null;
 
-                status.Text = "Server has been stopped.";
-
-                p = null;
-            }
+            running = false;
         }
 
         private bool CheckServerLocation()
@@ -165,17 +181,28 @@ namespace WebClashServer
 
         public void AddOutput(string msg)
         {
-            if (!running)
-                return;
-
-            if (!InvokeRequired)
+            try
             {
-                output.Text += msg + "\n";
+                if (!running || msg == null)
+                    return;
 
-                output.ScrollToCaret();
+                if (!InvokeRequired)
+                {
+                    if (msg.IndexOf("Completed shut down procedure.") != -1)
+                        FinalShutDownProcedure();
+
+                    output.Text += msg + "\n";
+
+                    output.SelectionStart = output.TextLength;
+                    output.ScrollToCaret();
+                }
+                else
+                    Invoke(new Action<string>(AddOutput), msg);
             }
-            else
-                Invoke(new Action<string>(AddOutput), msg);
+            catch (Exception exc)
+            {
+                //...
+            }
         }
 
         private string getNodeJSLocation()

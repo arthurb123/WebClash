@@ -383,7 +383,7 @@ exports.handleSocket = function(socket)
         {
             //Check command and handle output
 
-            let output = input.handleCommand(socket, data);
+            let output = input.handleCommand(data, socket);
 
             if (output == 'invalid')
                 msg = 'Invalid command.';

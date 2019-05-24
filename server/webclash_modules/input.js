@@ -28,38 +28,50 @@ exports.filterText = function(text)
     return text;
 }
 
-exports.handleCommand = function(socket, text)
+exports.handleCommand = function(text, socket)
 {
     try
     {
-        //Check if client has permissions
+        //Check if client has permissions if
+        //command originated from a client
 
-        if (permissions.admins.indexOf(socket.name) == -1)
+        if (socket != undefined &&
+            permissions.admins.indexOf(socket.name) == -1)
             return 'success';
 
-        //Split the '/' character
+        //Split the '/' character if
+        //necessary
 
-        let command = '';
+        let command;
 
-        if (text.indexOf(' ') == -1)
-            command = text.substr(1, text.length);
+        if (text.indexOf('/') !== -1)
+            if (text.indexOf(' ') === -1)
+                command = text.substr(1, text.length);
+            else
+                command = text.substr(1, text.indexOf(' ')-1);
         else
-            command = text.substr(1, text.indexOf(' ')-1);
+            if (text.indexOf(' ') === -1)
+                command = text;
+            else
+                command = text.substr(0, text.indexOf(' '));
 
         //Filter out argument(s)
 
-        let arguments = [];
+        let args = [];
 
         let sp = text.indexOf(' ');
-        if (sp != -1) {
+        if (sp !== -1) {
             let wt = text.substr(sp+1, text.length-sp);
 
-            arguments = wt.split(' ');
+            args = wt.split(' ');
         }
 
         //Get player
 
-        let p = game.getPlayerIndex(socket.name);
+        let p;
+        
+        if (socket != undefined)
+            p = game.getPlayerIndex(socket.name);
 
         //Check which command applies
 
@@ -68,32 +80,41 @@ exports.handleCommand = function(socket, text)
             //Help command
             case 'help':
                 fs.readFile('commands.txt', 'utf8', function(err, data) {
-                    if (err) throw err;
-                    socket.emit('GAME_CHAT_UPDATE', data);
+                    if (err) 
+                        throw err;
+
+                    if (socket != undefined)
+                        socket.emit('GAME_CHAT_UPDATE', data);
+                    else
+                        output.give(data + '\nNote that some commands are not supported on the server-side.', true);
                 });
 
                 return 'success';
             //OP command
             case 'op':
-                if (arguments.length == 0)
+                if (args.length == 0)
                     return 'wrong';
 
                 for (let i = 0; i < permissions.admins.length; i++)
-                    if (permissions.admins[i] === arguments[0])
+                    if (permissions.admins[i] === args[0])
                         return 'success';
 
-                permissions.admins.push(arguments[0]);
+                permissions.admins.push(args[0]);
                 game.savePermissions();
+
+                output.give('Opped \'' + args[0] + '\'.');
 
                 return 'success';
             //DEOP command
             case 'deop':
-                if (arguments.length == 0)
+                if (args.length == 0)
                     return 'wrong';
 
-                let a_id = permissions.admins.indexOf(arguments[0]);
+                let a_id = permissions.admins.indexOf(args[0]);
                 if (a_id != -1) {
                     permissions.admins.splice(a_id, 1);
+
+                    output.give('Deopped \'' + args[0] + '\'.');
 
                     game.savePermissions();
                 }
@@ -101,25 +122,29 @@ exports.handleCommand = function(socket, text)
                 return 'success';
             //Ban command
             case 'ban':
-                if (arguments.length == 0)
+                if (args.length == 0)
                     return 'wrong';
 
                 for (let i = 0; i < permissions.banned.length; i++)
-                    if (permissions.banned[i] == arguments[0])
+                    if (permissions.banned[i] == args[0])
                         return 'success';
 
-                permissions.banned.push(arguments[0]);
+                permissions.banned.push(args[0]);
                 game.savePermissions();
+
+                output.give('Banned \'' + args[0] + '\'.');
 
                 return 'success';
             //Unban command
             case 'unban':
-                if (arguments.length == 0)
+                if (args.length == 0)
                     return 'wrong';
 
-                let b_id = permissions.banned.indexOf(arguments[0]);
+                let b_id = permissions.banned.indexOf(args[0]);
                 if (b_id != -1) {
                     permissions.banned.splice(b_id, 1);
+
+                    output.give('Unbanned \'' + args[0] + '\'.');
 
                     game.savePermissions();
                 }
@@ -133,37 +158,42 @@ exports.handleCommand = function(socket, text)
                     msg += '> ' + map.name + '<br>';
                 });
 
-                socket.emit('GAME_CHAT_UPDATE', msg);
+                if (socket != undefined)
+                    socket.emit('GAME_CHAT_UPDATE', msg);
+                else
+                    output.give(msg, true);
 
                 return 'success';
             //Load map command, requires map name
             case 'loadmap':
-                if (arguments.length == 0)
+                if (args.length == 0 ||
+                    socket == undefined)
                     return 'wrong';
 
-                game.loadMap(socket, arguments[0]);
+                game.loadMap(socket, args[0]);
 
                 return 'success';
             //Load map for player command, requires
             //player name and map name
             case 'sendmap':
-                if (arguments.length < 2)
+                if (args.length < 2)
                     return 'wrong';
 
-                let s = server.getSocketWithName(arguments[0]);
+                let s = server.getSocketWithName(args[0]);
                 if (s !== undefined)
-                    game.loadMap(s, arguments[1]);
+                    game.loadMap(s, args[1]);
 
                 return 'success';
             //Spawn NPC command
             case 'spawnnpc':
-                if (arguments.length < 1)
+                if (args.length < 1 ||
+                    socket == undefined)
                     return 'wrong';
 
                 let count = 1;
 
-                if (arguments.length == 2)
-                    count = parseInt(arguments[1]);
+                if (args.length == 2)
+                    count = parseInt(args[1]);
 
                 let pos = {
                     x: game.players[p].pos.X+game.players[p].character.width/2,
@@ -173,7 +203,7 @@ exports.handleCommand = function(socket, text)
                 for (let i = 0; i < count; i++)
                     npcs.createEventNPC(
                         game.players[p].map_id,
-                        arguments[0],
+                        args[0],
                         pos.x,
                         pos.y,
                         undefined,
@@ -183,12 +213,18 @@ exports.handleCommand = function(socket, text)
                 return 'success';
             //Set health command
             case 'heal':
+                if (socket == undefined)
+                    return 'wrong';
+
                 game.players[p].health.cur = game.players[p].health.max;
 
                 server.syncPlayerPartially(p, 'health');
 
                 return 'success';
             case 'levelup':
+                if (socket == undefined)
+                    return 'wrong';
+
                 let amount = exptable[game.players[p].level-1]-game.players[p].stats.exp;
 
                 game.addPlayerExperience(p, amount);
@@ -196,14 +232,17 @@ exports.handleCommand = function(socket, text)
                 return 'success';
             //Give item command
             case 'giveitem':
+                if (socket == undefined)
+                    return 'wrong';
+
                 let item = '';
 
-                for (let i = 0; i < arguments.length; i++)
+                for (let i = 0; i < args.length; i++)
                 {
                     if (i > 0)
                         item += ' ';
 
-                    item += arguments[i];
+                    item += args[i];
                 }
 
                 items.addPlayerItem(game.players[p].socket, p, item);
@@ -211,18 +250,20 @@ exports.handleCommand = function(socket, text)
                 return 'success';
             //Give gold command
             case 'givegold':
-                if (arguments.length < 1)
+                if (args.length < 1 ||
+                    socket == undefined)
                     return 'wrong';
 
-                game.deltaGoldPlayer(p, parseInt(arguments[0]));
+                game.deltaGoldPlayer(p, parseInt(args[0]));
 
                 return 'success';
             //Change character command
             case 'setcharacter':
-                if (arguments.length < 1)
+                if (args.length < 1 ||
+                    socket == undefined)
                     return 'wrong';
 
-                let char = arguments[0];
+                let char = args[0];
 
                 if (game.characters[char] == undefined)
                     return;
@@ -236,10 +277,10 @@ exports.handleCommand = function(socket, text)
                 return 'success';
             //Change game time command
             case 'settime':
-                if (arguments.length < 1)
+                if (args.length < 1)
                     return 'wrong';
                 
-                let time = arguments[0];
+                let time = args[0];
 
                 if (isNaN(time)) 
                     switch(time) {
