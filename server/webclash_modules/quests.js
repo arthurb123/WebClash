@@ -134,7 +134,7 @@ exports.acceptQuest = function(id, name)
 
     //Sync to player
 
-    server.syncPlayerPartially(id, 'quests', game.players[id].socket, false);
+    server.syncPlayerPartially(id, 'quests', game.players[id].channel, false);
 
     //Return true
 
@@ -192,7 +192,7 @@ exports.evaluateQuestObjective = function(id, type, target)
     //Sync quest(s) to player if necessary
 
     if (sync)
-        server.syncPlayerPartially(id, 'quests', game.players[id].socket, false);
+        server.syncPlayerPartially(id, 'quests', game.players[id].channel, false);
 };
 
 exports.resetQuestObjectives = function(id)
@@ -233,7 +233,7 @@ exports.resetQuestObjectives = function(id)
     //Sync quest(s) to player if necessary
 
     if (sync)
-        server.syncPlayerPartially(id, 'quests', game.players[id].socket, false);
+        server.syncPlayerPartially(id, 'quests', game.players[id].channel, false);
 };
 
 exports.advanceQuest = function(id, name)

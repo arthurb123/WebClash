@@ -444,17 +444,7 @@ const game = {
     
                     //Request dialog
     
-                    socket.emit('CLIENT_REQUEST_DIALOG', id, function(data) {
-                        //Check if data is valid
-    
-                        if (data == undefined ||
-                            !data)
-                            return;
-    
-                        //Start dialog
-    
-                        ui.dialog.startDialog(id, game.npcs[id].name, data);
-                    });
+                    channel.emit('CLIENT_REQUEST_DIALOG', id);
                 });
             });
         }

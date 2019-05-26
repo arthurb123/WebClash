@@ -62,9 +62,11 @@ const landingScene = new lx.Scene(function() {
             return;
         }
 
-        //Handle login package
+        //Send and handle login package
 
-        socket.emit('CLIENT_LOGIN', { name: name, pass: pass.hashCode() }, function(data) {
+        channel.emit('CLIENT_LOGIN', { name: name, pass: pass.hashCode() });
+
+        channel.on('CLIENT_LOGIN_RESPONSE', function(data) {
             switch (data)
             {
                 case 'none':
@@ -103,9 +105,11 @@ const landingScene = new lx.Scene(function() {
             return;
         }
 
-        //Handle register package
+        //Send and handle register package
 
-        socket.emit('CLIENT_REGISTER', { name: name, pass: pass.hashCode() }, function(data) {
+        channel.emit('CLIENT_REGISTER', { name: name, pass: pass.hashCode() });
+
+        channel.on('CLIENT_REGISTER_RESPONSE', function(data) {
             switch (data)
             {
                 case 'invalid':

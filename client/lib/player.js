@@ -49,7 +49,7 @@ const player = {
             if (this.cooldown.on)
                 return;
 
-            socket.emit('CLIENT_INTERACT_PROPERTIES');
+            channel.emit('CLIENT_INTERACT_PROPERTIES');
 
             this.cooldown.on = true;
         }
@@ -224,18 +224,11 @@ const player = {
     {
         //Send request
 
-        socket.emit('CLIENT_ACCEPT_QUEST', { npc: target, id: id }, function(name) {
-            ui.chat.addMessage('Accepted "' + name + '".');
-        });
+        channel.emit('CLIENT_ACCEPT_QUEST', { npc: target, id: id });
     },
     requestExpTarget: function()
     {
-        socket.emit('CLIENT_REQUEST_EXP', function(data) {
-            player.expTarget = data;
-
-            if (player.exp != undefined)
-                ui.status.setExperience(player.exp, player.expTarget);
-        });
+        channel.emit('CLIENT_REQUEST_EXP');
     },
     faceMouse: function()
     {
@@ -271,31 +264,7 @@ const player = {
 
         //Send action request
 
-        socket.emit('CLIENT_PLAYER_ACTION', slot, function(data) {
-            if (data && player.actions[slot] != undefined) {
-                //Action name
-
-                let name = player.actions[slot].name;
-
-                //Decrease usage
-
-                if (player.actions[slot].uses !== undefined) {
-                    player.actions[slot].uses--;
-
-                    if (player.actions[slot].uses <= 0)
-                        player.removeAction(slot);
-                    else
-                        ui.actionbar.reloadAction(slot);
-                }
-
-                //Set cooldown
-
-                for (let a = 0; a < player.actions.length; a++)
-                    if (player.actions[a] != undefined &&
-                        player.actions[a].name === name)
-                        ui.actionbar.setCooldown(a);
-            }
-        });
+        channel.emit('CLIENT_PLAYER_ACTION', slot);
     },
     unequip: function(equippable)
     {
@@ -304,24 +273,20 @@ const player = {
 
         ui.inventory.removeBox();
 
-        let sounds = this.equipment[equippable].sounds;
-
-        socket.emit('CLIENT_UNEQUIP_ITEM', equippable, function() {
-            //Play item sound if possible
-
-            if (sounds != undefined) {
-                let sound = audio.getRandomSound(sounds);
-
-                if (sound != undefined)
-                   audio.playSound(sound);
-            }
-        });
+        channel.emit('CLIENT_UNEQUIP_ITEM', equippable);
     },
     getEquipmentSprite: function(equippable)
     {
         if (player.equipment[equippable] !== undefined &&
             player.equipment[equippable]._sprite !== undefined)
             return player.equipment[equippable]._sprite;
+    },
+    getInventorySlot: function(name)
+    {
+        for (let i = 0; i < this.inventory.length; i++)
+            if (this.inventory[i] != undefined &&
+                this.inventory[i].name === name)
+                return i;
     },
 
     update: function()
@@ -416,6 +381,6 @@ const player = {
                 break;
         }
 
-        socket.emit('CLIENT_PLAYER_UPDATE', data);
+        channel.emit('CLIENT_PLAYER_UPDATE', data);
     }
 };

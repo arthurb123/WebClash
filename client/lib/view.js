@@ -5,6 +5,10 @@ const view = {
         //Clear innerHTML
         
         view.dom.innerHTML = '';
+
+        //Reset in-game
+
+        client.inGame = false;
         
         //Load landing page scene
         

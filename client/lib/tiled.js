@@ -756,7 +756,7 @@ const tiled = {
 
                         tiled.loading = true;
 
-                        socket.emit('CLIENT_REQUEST_MAP', property.value);
+                        channel.emit('CLIENT_REQUEST_MAP', property.value);
                     }
                 };
             case "positionX":

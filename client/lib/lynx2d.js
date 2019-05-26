@@ -879,6 +879,7 @@ this.FindGameObjectWithIdentifier = function(ID) {
         if (this.GAME.BUFFER[i] != undefined) 
             for (let ii = 0; ii < this.GAME.BUFFER[i].length; ii++) 
                 if (this.GAME.BUFFER[i][ii] != undefined && 
+                    this.GAME.BUFFER[i][ii].Identifier != undefined &&
                     this.GAME.BUFFER[i][ii].Identifier() === ID) 
                     return this.GAME.BUFFER[i][ii];
 };
@@ -890,6 +891,7 @@ this.FindGameObjectsWithIdentifier = function(ID) {
         if (this.GAME.BUFFER[i] != undefined) {
             for (let ii = 0; ii < this.GAME.BUFFER[i].length; ii++)
                 if (this.GAME.BUFFER[i][ii] != undefined && 
+                    this.GAME.BUFFER[i][ii].Identifier != undefined &&
                     this.GAME.BUFFER[i][ii].Identifier() === ID) 
                     result[result.length] = this.GAME.BUFFER[i][ii];
             
@@ -1094,7 +1096,9 @@ this.Animation = function (sprite_collection, speed) {
         if (this.BUFFER_ID == -1) 
             return;
         
-        lx.GAME.BUFFER[this.BUFFER_LAYER][this.BUFFER_ID] = undefined;
+        if (lx.GAME.BUFFER[this.BUFFER_LAYER] != undefined)
+            lx.GAME.BUFFER[this.BUFFER_LAYER][this.BUFFER_ID] = undefined;
+        
         this.BUFFER_ID = -1;
         this.BUFFER_LAYER = 0;
         
@@ -1799,13 +1803,17 @@ this.GameObject = function (sprite, x, y, w, h) {
     };
     
     this.Hide = function() {
-        if (this.BUFFER_ID == -1) return;
+        if (this.BUFFER_ID == -1) 
+            return;
         
-        lx.GAME.BUFFER[this.BUFFER_LAYER][this.BUFFER_ID] = undefined;
+        if (lx.GAME.BUFFER[this.BUFFER_LAYER] != undefined)
+            lx.GAME.BUFFER[this.BUFFER_LAYER][this.BUFFER_ID] = undefined;
+        
         this.BUFFER_ID = -1;
         this.BUFFER_LAYER = 0;
         
-        if (this.COLLIDER != undefined) this.COLLIDER.Disable();
+        if (this.COLLIDER != undefined) 
+            this.COLLIDER.Disable();
         
         return this;
     };

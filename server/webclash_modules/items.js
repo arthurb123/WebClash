@@ -134,7 +134,7 @@ exports.loadItem = function(location)
     }
 };
 
-exports.addPlayerItem = function(socket, id, name)
+exports.addPlayerItem = function(channel, id, name)
 {
     //Get free slot
 
@@ -162,7 +162,7 @@ exports.addPlayerItem = function(socket, id, name)
 
     //Sync player item
 
-    server.syncInventoryItem(slot, id, socket);
+    server.syncInventoryItem(slot, id, channel);
 
     return true;
 };
@@ -189,7 +189,7 @@ exports.getPlayerItemAmount = function(id, name)
     return result;
 };
 
-exports.usePlayerItem = function(socket, id, name)
+exports.usePlayerItem = function(channel, id, name)
 {
     //Get item
 
@@ -218,7 +218,7 @@ exports.usePlayerItem = function(socket, id, name)
 
         //Set equipment and if it is not possible return
 
-        if (!this.setPlayerEquipment(socket, id, item))
+        if (!this.setPlayerEquipment(channel, id, item))
             return false;
 
         //Remove player item
@@ -282,13 +282,13 @@ exports.removePlayerItem = function(id, name)
 
             //Sync to player
 
-            server.syncInventoryItem(i, id, game.players[id].socket, false);
+            server.syncInventoryItem(i, id, game.players[id].channel, false);
 
             break;
         }
 };
 
-exports.setPlayerEquipment = function(socket, id, item)
+exports.setPlayerEquipment = function(channel, id, item)
 {
     //Get equippable
 
@@ -299,7 +299,7 @@ exports.setPlayerEquipment = function(socket, id, item)
     //If this is not possible return.
 
     if (game.players[id].equipment[equippable] !== undefined)
-        if (!this.addPlayerItem(socket, id, game.players[id].equipment[equippable]))
+        if (!this.addPlayerItem(channel, id, game.players[id].equipment[equippable]))
             return false;
 
     //Set equipment equippable of player
@@ -312,12 +312,12 @@ exports.setPlayerEquipment = function(socket, id, item)
         //Set action at 0 if main
 
         if (equippable === 'main')
-            actions.setPlayerAction(socket, item.equippableAction, 0, id);
+            actions.setPlayerAction(channel, item.equippableAction, 0, id);
 
         //Set action at 1 if offhand
 
         if (equippable === 'offhand')
-            actions.setPlayerAction(socket, item.equippableAction, 1, id);
+            actions.setPlayerAction(channel, item.equippableAction, 1, id);
     }
 
     //Calculate new attributes
@@ -326,11 +326,11 @@ exports.setPlayerEquipment = function(socket, id, item)
 
     //Sync to others
 
-    server.syncPlayerPartially(id, 'equipment', socket, true);
+    server.syncPlayerPartially(id, 'equipment', channel, true);
 
     //Sync equipment to player
 
-    server.syncEquipmentItem(equippable, id, socket, false);
+    server.syncEquipmentItem(equippable, id, channel, false);
 
     //Return true
 
@@ -466,7 +466,7 @@ exports.pickupWorldItem = function(map, id, item)
 
     //Attempt to add item
 
-    if (!this.addPlayerItem(game.players[id].socket, id, this.onMap[map][item].item.name))
+    if (!this.addPlayerItem(game.players[id].channel, id, this.onMap[map][item].item.name))
         return false;
 
     //Remove world item
@@ -535,7 +535,7 @@ exports.updateMaps = function()
     }
 };
 
-exports.sendMap = function(map, socket)
+exports.sendMap = function(map, channel)
 {
     //Check if valid
 
@@ -547,5 +547,5 @@ exports.sendMap = function(map, socket)
 
     for (let i = 0; i < this.onMap[map].length; i++)
         if (this.onMap[map][i] !== undefined)
-            server.syncWorldItem(map, this.onMap[map][i].item, socket, false);
+            server.syncWorldItem(map, this.onMap[map][i].item, channel, false);
 };

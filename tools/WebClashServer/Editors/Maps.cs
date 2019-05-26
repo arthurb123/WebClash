@@ -83,9 +83,6 @@ namespace WebClashServer.Editors
 
             dayNight.Checked = current.showDayNight;
             alwaysDark.Checked = current.alwaysDark;
-
-            dayNight.Enabled = !current.alwaysDark;
-            alwaysDark.Enabled = !current.showDayNight;
         }
 
         private void CheckTilesets()

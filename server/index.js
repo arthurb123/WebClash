@@ -1,13 +1,17 @@
 //NodeJS Modules
 
 const fs = require('fs'),
+      geckos = require('@geckos.io/server').default,
       express = require('express'),
       app = express(),
       http = require('http').Server(app),
       path = require('path'),
       readline = require('readline');
 
-global.io = require('socket.io')(http);
+//Load and setup geckos.io
+
+global.io = geckos();
+io.addServer(http);
 
 //Unique Modules
 
@@ -23,7 +27,7 @@ global.output = require('./webclash_modules/output');
 global.input = require('./webclash_modules/input');
 global.storage = require('./webclash_modules/storage');
 
-//(Setup/load) Server settings
+//Load server settings
 
 global.properties = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
 global.permissions = JSON.parse(fs.readFileSync('permissions.json', 'utf-8'));
@@ -35,7 +39,7 @@ global.gameTime = JSON.parse(fs.readFileSync('time.json', 'utf-8'));
 gameTime.dayLength *= 60;
 gameTime.nightLength *= 60;
 
-//Setup readline and set input
+//Setup readline and setup line input
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -100,15 +104,15 @@ function checkProperties(cb) {
 //Start server function
 
 function startServer() {
+    //Setup channel interaction
+
+    io.onConnection(server.handleChannel);
+
     //Listen on specified port
 
     http.listen(properties.port, function(){
         output.give('WebClash Server is running on *:' + properties.port);
     });
-
-    //Handle socket interaction
-
-    io.on('connection', server.handleSocket);
 
     //Start game loop
 
@@ -118,7 +122,7 @@ function startServer() {
 //Exit handler
 
 let hasSaved = false;
-global.exitHandler = function() {
+global.exitHandler = function(code) {
     //Check if exit handler has already been executed
 
     if (hasSaved) {

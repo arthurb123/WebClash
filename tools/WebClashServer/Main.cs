@@ -124,7 +124,16 @@ namespace WebClashServer
         private void AttemptStopServer()
         {
             if (running)
+            {
+                if (p.HasExited)
+                {
+                    FinalShutDownProcedure();
+
+                    return;
+                }
+
                 p.StandardInput.WriteLine("shutdown");
+            }
         }
 
         private void FinalShutDownProcedure()

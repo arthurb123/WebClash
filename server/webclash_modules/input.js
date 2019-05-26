@@ -28,15 +28,15 @@ exports.filterText = function(text)
     return text;
 }
 
-exports.handleCommand = function(text, socket)
+exports.handleCommand = function(text, channel)
 {
     try
     {
         //Check if client has permissions if
         //command originated from a client
 
-        if (socket != undefined &&
-            permissions.admins.indexOf(socket.name) == -1)
+        if (channel != undefined &&
+            permissions.admins.indexOf(channel.name) == -1)
             return 'success';
 
         //Split the '/' character if
@@ -70,8 +70,8 @@ exports.handleCommand = function(text, socket)
 
         let p;
         
-        if (socket != undefined)
-            p = game.getPlayerIndex(socket.name);
+        if (channel != undefined)
+            p = game.getPlayerIndex(channel.name);
 
         //Check which command applies
 
@@ -83,8 +83,8 @@ exports.handleCommand = function(text, socket)
                     if (err) 
                         throw err;
 
-                    if (socket != undefined)
-                        socket.emit('GAME_CHAT_UPDATE', data);
+                    if (channel != undefined)
+                        channel.emit('GAME_CHAT_UPDATE', data);
                     else
                         output.give(data + '\nNote that some commands are not supported on the server-side.', true);
                 });
@@ -158,8 +158,8 @@ exports.handleCommand = function(text, socket)
                     msg += '> ' + map.name + '<br>';
                 });
 
-                if (socket != undefined)
-                    socket.emit('GAME_CHAT_UPDATE', msg);
+                if (channel != undefined)
+                    channel.emit('GAME_CHAT_UPDATE', msg);
                 else
                     output.give(msg, true);
 
@@ -167,10 +167,10 @@ exports.handleCommand = function(text, socket)
             //Load map command, requires map name
             case 'loadmap':
                 if (args.length == 0 ||
-                    socket == undefined)
+                    channel == undefined)
                     return 'wrong';
 
-                game.loadMap(socket, args[0]);
+                game.loadMap(channel, args[0]);
 
                 return 'success';
             //Load map for player command, requires
@@ -179,7 +179,7 @@ exports.handleCommand = function(text, socket)
                 if (args.length < 2)
                     return 'wrong';
 
-                let s = server.getSocketWithName(args[0]);
+                let s = server.getChannelWithName(args[0]);
                 if (s !== undefined)
                     game.loadMap(s, args[1]);
 
@@ -187,7 +187,7 @@ exports.handleCommand = function(text, socket)
             //Spawn NPC command
             case 'spawnnpc':
                 if (args.length < 1 ||
-                    socket == undefined)
+                    channel == undefined)
                     return 'wrong';
 
                 let count = 1;
@@ -213,7 +213,7 @@ exports.handleCommand = function(text, socket)
                 return 'success';
             //Set health command
             case 'heal':
-                if (socket == undefined)
+                if (channel == undefined)
                     return 'wrong';
 
                 game.players[p].health.cur = game.players[p].health.max;
@@ -222,7 +222,7 @@ exports.handleCommand = function(text, socket)
 
                 return 'success';
             case 'levelup':
-                if (socket == undefined)
+                if (channel == undefined)
                     return 'wrong';
 
                 let amount = exptable[game.players[p].level-1]-game.players[p].stats.exp;
@@ -232,7 +232,7 @@ exports.handleCommand = function(text, socket)
                 return 'success';
             //Give item command
             case 'giveitem':
-                if (socket == undefined)
+                if (channel == undefined)
                     return 'wrong';
 
                 let item = '';
@@ -245,13 +245,13 @@ exports.handleCommand = function(text, socket)
                     item += args[i];
                 }
 
-                items.addPlayerItem(game.players[p].socket, p, item);
+                items.addPlayerItem(game.players[p].channel, p, item);
 
                 return 'success';
             //Give gold command
             case 'givegold':
                 if (args.length < 1 ||
-                    socket == undefined)
+                    channel == undefined)
                     return 'wrong';
 
                 game.deltaGoldPlayer(p, parseInt(args[0]));
@@ -260,7 +260,7 @@ exports.handleCommand = function(text, socket)
             //Change character command
             case 'setcharacter':
                 if (args.length < 1 ||
-                    socket == undefined)
+                    channel == undefined)
                     return 'wrong';
 
                 let char = args[0];
@@ -271,7 +271,7 @@ exports.handleCommand = function(text, socket)
                 game.players[p].char_name = char;
                 game.players[p].character = game.characters[game.players[p].char_name];
 
-                server.syncPlayerPartially(p, 'character', game.players[p].socket, false);
+                server.syncPlayerPartially(p, 'character', game.players[p].channel, false);
                 server.syncPlayerPartially(p, 'character');
 
                 return 'success';

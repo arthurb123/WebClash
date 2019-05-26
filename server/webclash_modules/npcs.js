@@ -8,17 +8,19 @@ exports.respawnTime = 15;
 
 //Properties
 
+exports.mapPopularity = [];
+
 exports.onMap = [];
 exports.onTimeOut = [];
 
-exports.sendMap = function(map, socket)
+exports.sendMap = function(map, channel)
 {
     //Check if valid
 
     if (this.onMap[map] === undefined)
         return;
 
-    //Cycle through all NPCs and send to socket
+    //Cycle through all NPCs and send to channel
     //if the NPC is not on timeout
 
     for (let i = 0; i < this.onMap[map].length; i++) {
@@ -27,7 +29,7 @@ exports.sendMap = function(map, socket)
 
         if (this.onTimeOut[map] == undefined ||
             this.onTimeOut[map][i] == undefined)
-            server.syncNPC(map, i, socket, false);
+            server.syncNPC(map, i, channel, false);
     };
 }
 
@@ -37,6 +39,11 @@ exports.loadMap = function(map)
 
     if (this.onMap[map] === undefined)
         this.onMap[map] = [];
+
+    //Check if mapPopularity at map is undefined
+
+    if (this.mapPopularity[map] === undefined)
+        this.mapPopularity[map] = 0;
 
     //Check if map has (NPC) properties
 
@@ -60,8 +67,8 @@ exports.updateMaps = function()
     //if so update the NPCs
 
     for (let i = 0; i < tiled.maps.length; i++)
-        if (io.sockets.adapter.rooms[i] !== undefined &&
-            io.sockets.adapter.rooms[i].length > 0)
+        if (this.mapPopularity[i] !== undefined &&
+            this.mapPopularity[i] > 0)
             this.updateMap(i);
 };
 

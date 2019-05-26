@@ -22,7 +22,7 @@ exports.openShop = function(player, owner, target, showShopEvent) {
     //Open shop on client with the
     //converted shop items
 
-    game.players[player].socket.emit('GAME_OPEN_SHOP', {
+    game.players[player].channel.emit('GAME_OPEN_SHOP', {
         target: owner,
         id: target,
         shop: showShopEvent
@@ -68,7 +68,7 @@ exports.buyItem = function(player, item, owner, dialogId) {
 
     //Add item to the player inventory
 
-    if (items.addPlayerItem(game.players[player].socket, player, shop[item].item.name)) {
+    if (items.addPlayerItem(game.players[player].channel, player, shop[item].item.name)) {
         //Subtract gold from player, because item
         //has been added successfully!
 

@@ -11313,8 +11313,8 @@
   "type": "map",
   "version": 1.2,
   "width": 40,
-  "alwaysDark": false,
   "mapType": "protected",
+  "alwaysDark": false,
   "showDayNight": true,
   "bgmSource": "res/bgm/World Map - Aaron Krogh.mp3"
 }

@@ -22,14 +22,6 @@ const ui = {
     {
         cache: [],
         create: function() {
-            if (this.dom !== undefined)
-                if (this.dom.box.parentNode !== undefined &&
-                    this.dom.box.parentNode !== null) {
-                    this.dom.box.parentNode.removeChild(this.dom.box);
-
-                    this.dom = undefined;
-                };
-
             view.dom.innerHTML +=
                 '<div id="chat_box" class="box" style="position: absolute; top: 100%; left: 30px; transform: translate(0, -100%); margin-top: -30px; width: 340px; height: 182px;">' +
                     '<div id="chat_box_content" class="content" style="overflow-y: auto; height: 155px;"></div>' +
@@ -82,7 +74,7 @@ const ui = {
                 this.dom.message.value.length == 0)
                 return;
 
-            socket.emit('CLIENT_NEW_CHAT', this.dom.message.value);
+            channel.emit('CLIENT_NEW_CHAT', this.dom.message.value);
 
             this.dom.message.value = '';
         },
@@ -134,46 +126,9 @@ const ui = {
         {
             if (this.cur[id].isEvent)
             {
-                socket.emit('CLIENT_DIALOG_EVENT', {
+                channel.emit('CLIENT_DIALOG_EVENT', {
                     npc: this.npc,
                     id: id
-                }, function(data) {
-                    if (data.quest == undefined) {
-                        let next = (data.result ? 0 : 1);
-
-                        if (ui.dialog.cur[id].options[next].next == -1)
-                            ui.dialog.hideDialog();
-                        else
-                            ui.dialog.setDialog(ui.dialog.cur[id].options[next].next);
-                    } else {
-                        if (data.quest.minLevel <= game.players[game.player]._level) {
-                            if (player.quests[data.quest.name] == undefined)
-                                data.quest.options = [
-                                    { text: 'Accept', next: 'accept', actual_next: ui.dialog.cur[id].options[0].next },
-                                    { text: 'Decline', next: -1 }
-                                ];
-                            else if (ui.dialog.cur[id].options[0].next !== -1) {
-                                ui.dialog.setDialog(ui.dialog.cur[id].options[0].next)
-
-                                return;
-                            }
-                            else 
-                                data.quest.options = [
-                                    { text: 'Exit', next: -1 }
-                                ];
-                        } else 
-                            data.quest.options = [
-                                { text: 'Exit', next: -1 }
-                            ];
-
-                        ui.dialog.cur[id] = data.quest;
-
-                        let minLevel = '';
-                        if (data.quest.minLevel > 0)
-                            minLevel = ' (Lv. ' + data.quest.minLevel + ')';
-
-                        ui.dialog.setDialog(id, data.quest.name + minLevel);
-                    }
                 });
 
                 return;
@@ -238,15 +193,50 @@ const ui = {
             this.mouse = undefined;
 
             lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
+        },
+        handleDialogEvent: function(data) {
+            if (data.quest == undefined) {
+                let next = (data.result ? 0 : 1);
+
+                if (ui.dialog.cur[data.id].options[next].next == -1)
+                    ui.dialog.hideDialog();
+                else
+                    ui.dialog.setDialog(ui.dialog.cur[data.id].options[next].next);
+            } else {
+                if (data.quest.minLevel <= game.players[game.player]._level) {
+                    if (player.quests[data.quest.name] == undefined)
+                        data.quest.options = [
+                            { text: 'Accept', next: 'accept', actual_next: ui.dialog.cur[data.id].options[0].next },
+                            { text: 'Decline', next: -1 }
+                        ];
+                    else if (ui.dialog.cur[data.id].options[0].next !== -1) {
+                        ui.dialog.setDialog(ui.dialog.cur[data.id].options[0].next)
+
+                        return;
+                    }
+                    else 
+                        data.quest.options = [
+                            { text: 'Exit', next: -1 }
+                        ];
+                } else 
+                    data.quest.options = [
+                        { text: 'Exit', next: -1 }
+                    ];
+
+                ui.dialog.cur[data.id] = data.quest;
+
+                let minLevel = '';
+                if (data.quest.minLevel > 0)
+                    minLevel = ' (Lv. ' + data.quest.minLevel + ')';
+
+                ui.dialog.setDialog(data.id, data.quest.name + minLevel);
+            }
         }
     },
     actionbar:
     {
         cooldowns: [],
         create: function() {
-            if (this.slots !== undefined)
-                return;
-
             this.slots = [];
 
             let r = '<div id="actionbar_box" class="box" style="position: absolute; top: 100%; left: 50%; transform: translate(-50%, -100%); margin-top: -30px; width: 338px; height: 48px;">';
@@ -448,9 +438,6 @@ const ui = {
     equipment:
     {
         create: function() {
-            if (this.slots !== undefined)
-                return;
-
             view.dom.innerHTML +=
                 '<div id="equipmentbar_box" class="box" style="position: absolute; top: 30px; left: 100%; margin-left: -30px; transform: translate(-100%, 0); width: 336px; height: 46px; text-align: center;">' +
                 '</div>';
@@ -554,9 +541,6 @@ const ui = {
             height: 5
         },
         create: function() {
-            if (this.slots !== undefined)
-                return;
-
             this.slots = [];
 
             view.dom.innerHTML +=
@@ -630,32 +614,9 @@ const ui = {
                     return;
                 }
 
-                //Grab sounds
-
-                let sounds = player.inventory[slot].sounds;
-
                 //Send to server
 
-                socket.emit('CLIENT_USE_ITEM', player.inventory[slot].name, function(valid) {
-                    if (valid) {
-                        //Play item sound if possible
-
-                        if (sounds != undefined) {
-                            let sound = audio.getRandomSound(sounds);
-
-                            if (sound != undefined)
-                               audio.playSound(sound);
-                         }
-
-                        //Remove box
-
-                        ui.inventory.removeBox();
-
-                        //Remove context menu
-
-                        ui.inventory.removeContext();
-                    }
-                });
+                channel.emit('CLIENT_USE_ITEM', player.inventory[slot].name);
             }
         },
         dropItem: function(slot) {
@@ -671,7 +632,7 @@ const ui = {
 
                 //Send to server
 
-                socket.emit('CLIENT_DROP_ITEM', slot);
+                channel.emit('CLIENT_DROP_ITEM', slot);
 
                 //Remove box
 
@@ -988,7 +949,7 @@ const ui = {
 
             //Emit pickup request
 
-            socket.emit('CLIENT_PICKUP_ITEM', id);
+            channel.emit('CLIENT_PICKUP_ITEM', id);
 
             //Hide (inventory) displaybox
 
@@ -1219,7 +1180,7 @@ const ui = {
             this.visible = false;
 
             if (this.hasChanged)
-                socket.emit('CLIENT_USER_SETTINGS', {
+                channel.emit('CLIENT_USER_SETTINGS', {
                     audio: {
                         main: audio.actualMainVolume*100,
                         music: audio.actualBGMVolume*100,
@@ -1281,7 +1242,7 @@ const ui = {
             if (player.points == 0)
                 return;
 
-            socket.emit('CLIENT_INCREMENT_ATTRIBUTE', attribute);
+            channel.emit('CLIENT_INCREMENT_ATTRIBUTE', attribute);
         },
         show: function() {
             if (this.visible) {
@@ -1381,52 +1342,16 @@ const ui = {
                 return;
 
             this.emitted = true;
-            socket.emit('CLIENT_BUY_ITEM', { npc: this.target, id: this.id, item: id }, function(bought) {
-                if (bought) {
-                    //Enough currency, bought item
 
-                    //Reload shop items
-
-                    ui.shop.reload();
-                } else {
-                    //Not enough currency
-
-                    //...
-                }
-
-                ui.shop.emitted = false;
-            });
+            channel.emit('CLIENT_BUY_ITEM', { npc: this.target, id: this.id, item: id });
         },
         sell: function(name) {
             if (this.emitted)
                 return;
 
             this.emitted = true;
-            socket.emit('CLIENT_SELL_ITEM', { npc: this.target, item: name }, function(sold) {
-                if (sold) {
-                    //Play gold sound?
 
-                    //...
-
-                    //Remove box
-
-                    ui.inventory.removeBox();
-
-                    //Remove context menu
-
-                    ui.inventory.removeContext();
-
-                    //Reload shop items
-
-                    ui.shop.reload();
-                } else {
-                    //Item is unsellable/could not be sold
-
-                    //...
-                }
-
-                ui.shop.emitted = false;
-            });
+            channel.emit('CLIENT_SELL_ITEM', { npc: this.target, item: name });
         },
         show: function() {
             if (this.visible) {
@@ -1543,14 +1468,7 @@ const ui = {
             this.reload();
         },
         abandon: function(name) {
-            socket.emit('CLIENT_ABANDON_QUEST', name, function() {
-                delete player.quests[name];
-
-                ui.chat.addMessage('Abandoned "' + name + '".');
-
-                ui.journal.reload();
-                ui.quests.reload();
-            });
+            channel.emit('CLIENT_ABANDON_QUEST', name);
         }
     },
     quests:

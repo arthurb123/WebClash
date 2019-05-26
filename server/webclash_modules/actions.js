@@ -326,7 +326,7 @@ exports.addPlayerAction = function(name, id, uses)
 
             done = true;
 
-            server.syncActionSlot(a, id, game.players[id].socket);
+            server.syncActionSlot(a, id, game.players[id].channel);
 
             break;
         }
@@ -334,7 +334,7 @@ exports.addPlayerAction = function(name, id, uses)
     return done;
 };
 
-exports.setPlayerAction = function(socket, name, position, id)
+exports.setPlayerAction = function(channel, name, position, id)
 {
     if (game.players[id] == undefined)
         return false;
@@ -343,12 +343,12 @@ exports.setPlayerAction = function(socket, name, position, id)
         name: name
     };
 
-    server.syncPlayerPartially(id, 'actions', socket, false);
+    server.syncPlayerPartially(id, 'actions', channel, false);
 
     return true;
 };
 
-exports.removePlayerAction = function(socket, name, id)
+exports.removePlayerAction = function(channel, name, id)
 {
     if (!this.hasPlayerAction(name, id))
         return true;
@@ -361,7 +361,7 @@ exports.removePlayerAction = function(socket, name, id)
             break;
         }
 
-    server.syncPlayerPartially(id, 'actions', socket, false);
+    server.syncPlayerPartially(id, 'actions', channel, false);
 
     return true;
 };

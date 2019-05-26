@@ -84,26 +84,81 @@ exports.savePermissions = function ()
     });
 };
 
-exports.addPlayer = function(socket)
+exports.refreshPlayer = function(channel, id)
 {
-    //Check if socket is valid
+    //Set channel
 
-    if (socket.name === undefined)
+    game.players[id].channel = channel;
+
+    //Set name of channel
+
+    channel.name = game.players[id].name;
+    
+    try {
+        storage.load('accounts', channel.name, function(user_data) {
+            //Sync user settings if they exist
+
+            if (user_data.settings != null)
+                channel.emit('GAME_USER_SETTINGS', user_data.settings);
+
+            //Load current world
+
+            game.loadMap(channel, game.players[id].map);
+
+            //Sync to player
+
+            server.syncPlayer(id, channel, false);
+
+            //Sync partial stats
+
+            server.syncPlayerPartially(id, 'exp', channel, false);
+            server.syncPlayerPartially(id, 'points', channel, false);
+            server.syncPlayerPartially(id, 'attributes', channel, false);
+            server.syncPlayerPartially(id, 'health', channel, false);
+            server.syncPlayerPartially(id, 'mana', channel, false);
+            server.syncPlayerPartially(id, 'actions', channel, false);
+            server.syncPlayerPartially(id, 'quests', channel, false);
+            server.syncPlayerPartially(id, 'gold', channel, false);
+
+            //Sync inventory
+
+            for (let i = 0; i < game.players[id].inventory.length; i++)
+                if (game.players[id].inventory[i] != undefined)
+                    server.syncInventoryItem(i, id, channel, false);
+
+            //Sync equipment
+
+            for (let equipment in game.players[id].equipment) {
+                if (equipment != undefined)
+                    server.syncEquipmentItem(equipment, id, channel, false);
+            };
+        });
+    }
+    catch (err) {
+        output.giveError('Could not refresh player: ' + err);
+    }
+};
+
+exports.addPlayer = function(channel)
+{
+    //Check if channel is valid
+
+    if (channel.name === undefined)
         return;
 
     try {
         //Grab user data, player stats
 
-        storage.load('accounts', socket.name, function(user_data) {
+        storage.load('accounts', channel.name, function(user_data) {
             //Sync user settings if they exist
 
             if (user_data.settings != null)
-                socket.emit('GAME_USER_SETTINGS', user_data.settings);
+                channel.emit('GAME_USER_SETTINGS', user_data.settings);
 
-            storage.load('stats', socket.name, function(player) {
-                player.name = socket.name;
+            storage.load('stats', channel.name, function(player) {
+                player.name = channel.name;
                 player.character = game.characters[player.char_name];
-                player.socket = socket;
+                player.channel = channel;
 
                 player.map_id = tiled.getMapIndex(player.map);
 
@@ -118,43 +173,43 @@ exports.addPlayer = function(socket)
 
                 //Load current world
 
-                game.loadMap(socket, player.map);
+                game.loadMap(channel, player.map);
 
                 //Sync across server
 
-                server.syncPlayer(id, socket, true);
+                server.syncPlayer(id, channel, true);
 
                 //Sync to player
 
-                server.syncPlayer(id, socket, false);
+                server.syncPlayer(id, channel, false);
 
                 //Sync partial stats
 
-                server.syncPlayerPartially(id, 'exp', socket, false);
-                server.syncPlayerPartially(id, 'points', socket, false);
-                server.syncPlayerPartially(id, 'attributes', socket, false);
-                server.syncPlayerPartially(id, 'health', socket, false);
-                server.syncPlayerPartially(id, 'mana', socket, false);
-                server.syncPlayerPartially(id, 'actions', socket, false);
-                server.syncPlayerPartially(id, 'quests', socket, false);
-                server.syncPlayerPartially(id, 'gold', socket, false);
+                server.syncPlayerPartially(id, 'exp', channel, false);
+                server.syncPlayerPartially(id, 'points', channel, false);
+                server.syncPlayerPartially(id, 'attributes', channel, false);
+                server.syncPlayerPartially(id, 'health', channel, false);
+                server.syncPlayerPartially(id, 'mana', channel, false);
+                server.syncPlayerPartially(id, 'actions', channel, false);
+                server.syncPlayerPartially(id, 'quests', channel, false);
+                server.syncPlayerPartially(id, 'gold', channel, false);
 
                 //Sync inventory
 
                 for (let i = 0; i < game.players[id].inventory.length; i++)
                     if (game.players[id].inventory[i] != undefined)
-                        server.syncInventoryItem(i, id, socket, false);
+                        server.syncInventoryItem(i, id, channel, false);
 
                 //Sync equipment
 
                 for (let equipment in game.players[id].equipment) {
                     if (equipment != undefined)
-                        server.syncEquipmentItem(equipment, id, socket, false);
+                        server.syncEquipmentItem(equipment, id, channel, false);
                 };
 
                 //Sync equipment to others
 
-                server.syncPlayerPartially(id, 'equipment', socket, true);
+                server.syncPlayerPartially(id, 'equipment', channel, true);
             });
         });
     }
@@ -163,17 +218,17 @@ exports.addPlayer = function(socket)
     }
 };
 
-exports.removePlayer = function(socket)
+exports.removePlayer = function(channel)
 {
     try {
-        //Check if socket is valid
+        //Check if channel is valid
 
-        if (socket === undefined || socket.name === undefined)
+        if (channel === undefined || channel.name === undefined)
             return;
 
          //Get player index
 
-        let id = game.getPlayerIndex(socket.name);
+        let id = game.getPlayerIndex(channel.name);
 
         //Check if valid
 
@@ -186,7 +241,7 @@ exports.removePlayer = function(socket)
 
         //Remove from clients
 
-        server.removePlayer(id, socket);
+        server.removePlayer(id, channel);
 
         //Release owned world items
 
@@ -194,15 +249,15 @@ exports.removePlayer = function(socket)
 
         //Save player
 
-        this.savePlayer(socket.name, this.players[id]);
+        this.savePlayer(channel.name, this.players[id]);
 
         //Remove player entry
 
         this.players.splice(id, 1);
 
-        //Set socket playing to false
+        //Set channel playing to false
 
-        socket.playing = false;
+        channel.playing = false;
     }
     catch (err) {
         output.giveError('Could not remove player: ', err);
@@ -370,12 +425,12 @@ exports.killPlayer = function(id)
     this.players[id].mana.cur = this.players[id].mana.max;
 
     server.syncPlayerPartially(id, 'health');
-    server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
+    server.syncPlayerPartially(id, 'mana', this.players[id].channel, false);
 
     //Load starting map if not on it
 
     if (this.players[id].map !== properties.startingMap)
-        this.loadMap(this.players[id].socket, properties.startingMap);
+        this.loadMap(this.players[id].channel, properties.startingMap);
 
     //Set starting tile
 
@@ -430,7 +485,7 @@ exports.regeneratePlayer = function(id)
     if (this.players[id].mana.cur < this.players[id].mana.max) {
         this.players[id].mana.cur++;
 
-        server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
+        server.syncPlayerPartially(id, 'mana', this.players[id].channel, false);
     };
 
     //Regenerate health if possible
@@ -459,7 +514,7 @@ exports.deltaManaPlayer = function(id, delta)
 
     //Sync mana
 
-    server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
+    server.syncPlayerPartially(id, 'mana', this.players[id].channel, false);
 };
 
 exports.deltaGoldPlayer = function(id, delta)
@@ -475,7 +530,7 @@ exports.deltaGoldPlayer = function(id, delta)
 
     //Sync gold
 
-    server.syncPlayerPartially(id, 'gold', this.players[id].socket, false);
+    server.syncPlayerPartially(id, 'gold', this.players[id].channel, false);
 
     //Return true
 
@@ -506,12 +561,12 @@ exports.addPlayerExperience = function(id, exp)
         if (this.players[id].health.cur < this.players[id].health.max) {
             this.players[id].health.cur = this.players[id].health.max;
 
-            server.syncPlayerPartially(id, 'health', this.players[id].socket, false);
+            server.syncPlayerPartially(id, 'health', this.players[id].channel, false);
         }
         if (this.players[id].mana.cur < this.players[id].mana.max) {
             this.players[id].mana.cur = this.players[id].mana.max;
 
-            server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
+            server.syncPlayerPartially(id, 'mana', this.players[id].channel, false);
         }
 
         //Sync to map (and player)
@@ -520,12 +575,12 @@ exports.addPlayerExperience = function(id, exp)
 
         //Sync to player
 
-        server.syncPlayerPartially(id, 'points', this.players[id].socket, false);
+        server.syncPlayerPartially(id, 'points', this.players[id].channel, false);
     }
 
     //Sync to player
 
-    server.syncPlayerPartially(id, 'exp', this.players[id].socket, false);
+    server.syncPlayerPartially(id, 'exp', this.players[id].channel, false);
 };
 
 exports.incrementPlayerAttribute = function(id, attribute)
@@ -554,7 +609,7 @@ exports.incrementPlayerAttribute = function(id, attribute)
 
     //Sync new amount of points
 
-    server.syncPlayerPartially(id, 'points', this.players[id].socket, false);
+    server.syncPlayerPartially(id, 'points', this.players[id].channel, false);
 };
 
 exports.calculatePlayerStats = function(id, sync)
@@ -626,12 +681,12 @@ exports.calculatePlayerStats = function(id, sync)
         this.players[id].mana.cur = this.players[id].mana.max;
 
     if (oldMana !== this.players[id].mana.max && sync)
-        server.syncPlayerPartially(id, 'mana', this.players[id].socket, false);
+        server.syncPlayerPartially(id, 'mana', this.players[id].channel, false);
 
     //Sync to player if sync is true
 
     if (result !== this.players[id].stats.attributes && sync)
-        server.syncPlayerPartially(id, 'attributes', this.players[id].socket, false);
+        server.syncPlayerPartially(id, 'attributes', this.players[id].channel, false);
 };
 
 exports.getPlayerIndex = function(name)
@@ -643,16 +698,16 @@ exports.getPlayerIndex = function(name)
     return -1;
 };
 
-exports.sendPlayers = function(socket)
+exports.sendPlayers = function(channel)
 {
     //Check if valid
 
-    if (socket === undefined || socket.name === undefined)
+    if (channel === undefined || channel.name === undefined)
         return;
 
     //Get player id
 
-    let id = this.getPlayerIndex(socket.name);
+    let id = this.getPlayerIndex(channel.name);
 
     //Check if valid player
 
@@ -663,7 +718,7 @@ exports.sendPlayers = function(socket)
 
     for (let i = 0; i < this.players.length; i++)
             if (i != id && this.players[id].map === this.players[i].map)
-                server.syncPlayer(i, socket, false);
+                server.syncPlayer(i, channel, false);
 }
 
 exports.setPlayerTilePosition = function(id, map, x, y)
@@ -716,11 +771,11 @@ exports.getPlayerGlobalVariable = function(id, name)
     return game.players[id].gvars[name];
 };
 
-exports.loadMap = function(socket, map)
+exports.loadMap = function(channel, map)
 {
     //Check if valid
 
-    if (socket.name === undefined)
+    if (channel.name === undefined)
         return;
 
     //Get map ID
@@ -737,7 +792,7 @@ exports.loadMap = function(socket, map)
 
     //Get player id
 
-    let id = this.getPlayerIndex(socket.name);
+    let id = this.getPlayerIndex(channel.name);
 
     //Check if valid player
 
@@ -747,17 +802,26 @@ exports.loadMap = function(socket, map)
     //Check if map is different from current map
 
     if (game.players[id].map_id === map_id &&
-        socket.rooms[map_id] != undefined)
+        channel._roomId === map_id)
         return;
 
     //Remove player from others on the
     //same map
 
-    server.removePlayer(id, socket);
+    server.removePlayer(id, channel);
 
-    //Leave old room, if it is available
+    //Decrement map popularity and leave old
+    //room, if it is available
 
-    socket.leave(game.players[id].map_id);
+    if (channel._roomId === game.players[id].map_id) {
+        //Decrement map popularity
+
+        npcs.mapPopularity[game.players[id].map_id]--;
+
+        //Leave old room
+
+        channel.leave();
+    }
 
     //Set new map
 
@@ -766,27 +830,31 @@ exports.loadMap = function(socket, map)
 
     //Join map specific room
 
-    socket.join(map_id);
+    channel.join(map_id);
+
+    //Increment map popularity
+
+    npcs.mapPopularity[map_id]++;
 
     //Send the corresponding map
 
-    socket.emit('GAME_MAP_UPDATE', tiled.maps[map_id]);
+    channel.emit('GAME_MAP_UPDATE', tiled.maps[map_id]);
 
     //Send player to all players in the same map
 
-    server.syncPlayer(id, socket, true);
+    server.syncPlayer(id, channel, true);
 
     //Send all players in the same map
 
-    this.sendPlayers(socket);
+    this.sendPlayers(channel);
 
     //Send all NPCs in the same map
 
-    npcs.sendMap(map_id, socket);
+    npcs.sendMap(map_id, channel);
 
     //Send all items in the same map
 
-    items.sendMap(map_id, socket);
+    items.sendMap(map_id, channel);
 };
 
 exports.loadAllCharacters = function(cb)

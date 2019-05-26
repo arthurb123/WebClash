@@ -1,68 +1,81 @@
-exports.handleSocket = function(socket)
+exports.handleChannel = function(channel)
 {
     //Check if direct or external connection
 
-    if (socket.handshake.xdomain) {
+    /*
+    Is this possible to check with gecko.io?
+
+    if (channel.handshake.xdomain) {
 
         //Check if external connections/clients are allowed
 
         if (!properties.allowExternalClients) {
-            //If not allowed, disconnect socket
+            //If not allowed, disconnect channel
 
-            socket.disconnect();
+            channel.disconnect();
 
             return;
         }
     }
+    */
 
-    //If the connected socket is not playing,
-    //send to the landing page (login)
+    //Disconnect and logout event listener
 
-    if (socket.playing == undefined || !socket.playing)
-        socket.emit('REQUEST_LANDING');
+    const logOut = function() {
+        if (channel.playing) {
+            //Grab id
 
-    //Send client and server name
+            let id = game.getPlayerIndex(channel.name);
 
-    socket.emit('UPDATE_CLIENT_NAME', properties.clientName);
-    socket.emit('UPDATE_SERVER_NAME', properties.serverName);
+            //Check if player is in-combat,
+            //if so do not logout
 
-    //Disconnect event listener
+            if (actions.combat.in(id))
+                return;
 
-    socket.on('disconnect', function() {
-        if (socket.playing) {
             //Remove player
 
-            game.removePlayer(socket);
+            game.removePlayer(channel);
 
             //Output
 
-            output.give('User \'' + socket.name + '\' has logged out.');
+            output.give('User \'' + channel.name + '\' has logged out.');
         }
-    });
+    }
 
-    //Socket event listeners
+    channel.onDisconnect(logOut);
+    channel.on('CLIENT_LOGOUT', logOut);
 
-    socket.on('CLIENT_LOGIN', function(data, callback) {
+    //If the connected channel is not playing,
+    //send to the landing page (login)
+
+    if (channel.playing == undefined || !channel.playing)
+        channel.emit('REQUEST_LANDING');
+
+    //Send client and server name
+
+    channel.emit('UPDATE_CLIENT_NAME', properties.clientName);
+    channel.emit('UPDATE_SERVER_NAME', properties.serverName);
+
+    //channel event listeners
+
+    channel.on('CLIENT_LOGIN', function(data) {
         //Check if valid package
 
-        if (data === undefined || data.name === undefined)
+        if (data === undefined || 
+            data.name === undefined)
             return;
 
         //Convert name to string
 
         let name = data.name.toString();
 
-        //Check if callback is provided
-
-        if (callback == undefined)
-            return;
-
         //Grab entry with username
 
         storage.load('accounts', name, function(player) {
             if (player === undefined)
             {
-                callback('none');
+                channel.emit('CLIENT_LOGIN_RESPONSE', 'none');
                 return;
             }
 
@@ -70,7 +83,7 @@ exports.handleSocket = function(socket)
 
             if (player.pass != data.pass)
             {
-                callback('wrong');
+                channel.emit('CLIENT_LOGIN_RESPONSE', 'wrong');
                 return;
             }
 
@@ -79,7 +92,7 @@ exports.handleSocket = function(socket)
             if (properties.maxPlayers != 0 &&
                 game.players.length >= properties.maxPlayers)
             {
-                callback('full');
+                channel.emit('CLIENT_LOGIN_RESPONSE', 'full');
                 return;
             }
 
@@ -87,32 +100,52 @@ exports.handleSocket = function(socket)
 
             if (permissions.banned.indexOf(name) != -1)
             {
-                callback('banned');
+                channel.emit('CLIENT_LOGIN_RESPONSE', 'banned');
                 return;
             }
 
             //Check if already logged in
 
-            if (game.getPlayerIndex(name) != -1)
+            let p_id = game.getPlayerIndex(name);
+            if (p_id != -1)
             {
-                callback('loggedin');
-                return;
+                //If so, log other person out and login
+                //This can also be blocked using
+                //channel.emit('CLIENT_LOGIN_RESPONSE', 'loggedin');
+                //However this is necessary to protect against
+                //account blocking when in-combat and logging out.
+
+                let ch = server.getChannelWithName(name);
+                ch.playing = false;
+
+                ch.leave();
+                ch.emit('disconnected');
+
+                //Respond with a successful login
+
+                channel.emit('CLIENT_LOGIN_RESPONSE', 'success');
+
+                //Output
+
+                output.give('User \'' + name + '\' has relogged.');
             }
+            else
+            {
+                //Output
 
-            //Output
-
-            output.give('User \'' + name + '\' has logged in.');
+                output.give('User \'' + name + '\' has logged in.');
+            }
 
             //Set variables
 
-            socket.name = name;
+            channel.name = name;
 
             //Request game page
 
-            socket.emit('REQUEST_GAME');
+            channel.emit('REQUEST_GAME');
         });
     });
-    socket.on('CLIENT_REGISTER', function(data, callback) {
+    channel.on('CLIENT_REGISTER', function(data) {
         //Check if valid package
 
         if (data === undefined || data.name === undefined)
@@ -122,16 +155,11 @@ exports.handleSocket = function(socket)
 
         let name = data.name.toString();
 
-        //Check if callback is provided
-
-        if (callback == undefined)
-            return;
-
         //Check profanity
 
         if (input.filterText(name).indexOf('*') != -1)
         {
-            callback('invalid');
+            channel.emit('CLIENT_REGISTER_RESPONSE', 'invalid');
             return;
         }
 
@@ -140,7 +168,7 @@ exports.handleSocket = function(socket)
         storage.exists('accounts', name, function(is) {
             if (is)
             {
-                callback('taken');
+                channel.emit('CLIENT_REGISTER_RESPONSE', 'taken');
                 return;
             }
 
@@ -149,7 +177,7 @@ exports.handleSocket = function(socket)
             if (properties.maxPlayers != 0 &&
                 game.players.length >= properties.maxPlayers)
             {
-                callback('full');
+                channel.emit('CLIENT_REGISTER_RESPONSE', 'full');
                 return;
             }
 
@@ -159,8 +187,8 @@ exports.handleSocket = function(socket)
                 pass: data.pass,
                 settings: {
                     audio: {
-                      main: 100,
-                      music: 75,
+                      main: 50,
+                      music: 50,
                       sound: 50
                     }
                 }
@@ -176,47 +204,54 @@ exports.handleSocket = function(socket)
 
             //Set variables
 
-            socket.name = name;
+            channel.name = name;
 
             //Request game page
 
-            socket.emit('REQUEST_GAME');
+            channel.emit('REQUEST_GAME');
         });
     });
 
-    socket.on('CLIENT_JOIN_GAME', function() {
+    channel.on('CLIENT_JOIN_GAME', function() {
         //Check if client is already playing
 
-        if (socket.playing != undefined && socket.playing)
+        if (channel.playing != undefined && channel.playing)
             return;
 
-        //Add client as player
+        //Add client as player if the player
+        //does not exist yet, otherwise
+        //refresh player
 
-        game.addPlayer(socket);
+        let p_id = game.getPlayerIndex(channel.name);
+
+        if (p_id === -1)
+            game.addPlayer(channel);
+        else
+            game.refreshPlayer(channel, p_id);
 
         //Send MOTD message
 
-        socket.emit('GAME_CHAT_UPDATE', properties.welcomeMessage);
+        channel.emit('GAME_CHAT_UPDATE', properties.welcomeMessage);
 
         //Send game time
 
-        server.syncGameTime(socket);
+        server.syncGameTime(channel);
 
         //Set playing
 
-        socket.playing = true;
+        channel.playing = true;
     });
 
-    socket.on('CLIENT_PLAYER_UPDATE', function(data) {
+    channel.on('CLIENT_PLAYER_UPDATE', function(data) {
         try {
             //Check if valid player
 
-            if (socket.playing === undefined || !socket.playing)
+            if (channel.playing === undefined || !channel.playing)
                 return;
 
             //Get player id
 
-            let id = game.getPlayerIndex(socket.name);
+            let id = game.getPlayerIndex(channel.name);
 
             //Check if valid player id
 
@@ -245,13 +280,13 @@ exports.handleSocket = function(socket)
 
                     type = 'position';
                 } else
-                    server.syncPlayerPartially(id, 'position', socket, false);
+                    server.syncPlayerPartially(id, 'position', channel, false);
             }
 
             //Sync across all
 
             if (type.length > 0)
-                server.syncPlayerPartially(id, type, socket, true);
+                server.syncPlayerPartially(id, type, channel, true);
         }
         catch (err)
         {
@@ -259,15 +294,15 @@ exports.handleSocket = function(socket)
         }
     });
 
-    socket.on('CLIENT_PLAYER_ACTION', function(data, callback) {
+    channel.on('CLIENT_PLAYER_ACTION', function(data) {
          try
          {
             //Check if valid
 
-            if (socket.name === undefined)
+            if (channel.name === undefined)
                 return;
 
-            let id = game.getPlayerIndex(socket.name);
+            let id = game.getPlayerIndex(channel.name);
 
             if (id == -1)
                  return;
@@ -282,10 +317,10 @@ exports.handleSocket = function(socket)
             else
                 result = actions.createPvPAction(data, id);
 
-            //Callback result
+            //Emit result
 
-            if (callback != undefined)
-                callback(result);
+            if (result)
+                channel.emit('CLIENT_PLAYER_ACTION_RESPONSE', data);
          }
          catch (err)
          {
@@ -293,15 +328,15 @@ exports.handleSocket = function(socket)
          }
     });
 
-    socket.on('CLIENT_REQUEST_MAP', function(data) {
+    channel.on('CLIENT_REQUEST_MAP', function(data) {
         //Check if valid
 
-        if (socket.name === undefined || data === undefined)
+        if (channel.name === undefined || data === undefined)
             return;
 
         //Get player index
 
-        let id = game.getPlayerIndex(socket.name),
+        let id = game.getPlayerIndex(channel.name),
             next_map = tiled.getMapIndex(data);
 
         //Check if valid player and if
@@ -324,7 +359,7 @@ exports.handleSocket = function(socket)
 
         //Send map to player
 
-        game.loadMap(socket, data);
+        game.loadMap(channel, data);
 
         //Check if positioning properties exist
 
@@ -356,63 +391,68 @@ exports.handleSocket = function(socket)
         }
     });
 
-    socket.on('CLIENT_NEW_CHAT', function(data) {
-        //Check if valid player
+    channel.on('CLIENT_NEW_CHAT', function(data) {
+        try {
+            //Check if valid player
 
-        if (socket.playing === undefined || !socket.playing)
-            return;
-
-        //Get player id
-
-        let id = game.getPlayerIndex(socket.name);
-
-        //Check if valid
-
-        if (id == -1)
-            return;
-
-        let msg = '';
-
-        //TODO:
-        //Check correct length
-        //Check if spamming
-
-        //Check if command
-
-        if (data[0] === '/')
-        {
-            //Check command and handle output
-
-            let output = input.handleCommand(data, socket);
-
-            if (output == 'invalid')
-                msg = 'Invalid command.';
-            else if (output == 'wrong')
-                msg = 'Incorrect command syntax.';
-            else
+            if (channel.playing === undefined || !channel.playing)
                 return;
 
-            socket.emit('GAME_CHAT_UPDATE', msg);
+            //Get player id
 
-            return;
+            let id = game.getPlayerIndex(channel.name);
+
+            //Check if valid
+
+            if (id == -1)
+                return;
+
+            let msg = '';
+
+            //TODO:
+            //Check correct length
+            //Check if spamming
+
+            //Check if command
+
+            if (data[0] === '/')
+            {
+                //Check command and handle output
+
+                let output = input.handleCommand(data, channel);
+
+                if (output == 'invalid')
+                    msg = 'Invalid command.';
+                else if (output == 'wrong')
+                    msg = 'Incorrect command syntax.';
+                else
+                    return;
+
+                channel.emit('GAME_CHAT_UPDATE', msg);
+
+                return;
+            }
+            else
+                msg = '<b>' + channel.name + '</b>: ' + input.filterText(data);
+
+            //Send chat message to all other players
+
+            io.room(game.players[id].map_id).emit('GAME_CHAT_UPDATE', msg);
         }
-        else
-            msg = '<b>' + socket.name + '</b>: ' + input.filterText(data);
-
-        //Send chat message to all other players
-
-        io.to(game.players[id].map_id).emit('GAME_CHAT_UPDATE', msg);
+        catch (err) {
+            output.giveError('Could not handle chat message: ', err);
+        }
     });
 
-    socket.on('CLIENT_USE_ITEM', function(data, callback) {
+    channel.on('CLIENT_USE_ITEM', function(data) {
         //Check if valid player
 
-        if (socket.playing === undefined || !socket.playing)
+        if (channel.playing === undefined || !channel.playing)
             return;
 
         //Get player id
 
-        let id = game.getPlayerIndex(socket.name);
+        let id = game.getPlayerIndex(channel.name);
 
         //Check if valid
 
@@ -426,23 +466,25 @@ exports.handleSocket = function(socket)
 
         //Use item
 
-        let result = items.usePlayerItem(socket, id, data);
+        let result = items.usePlayerItem(channel, id, data);
 
-        //Callback
+        //Respond with result
 
-        if (callback != undefined)
-            callback(result);
+        channel.emit('CLIENT_USE_ITEM_RESPONSE', {
+            valid: result,
+            sounds: items.getItem(data).sounds
+        });
     });
 
-    socket.on('CLIENT_DROP_ITEM', function(data) {
+    channel.on('CLIENT_DROP_ITEM', function(data) {
         //Check if valid player
 
-        if (socket.playing === undefined || !socket.playing)
+        if (channel.playing === undefined || !channel.playing)
             return;
 
         //Get player id
 
-        let id = game.getPlayerIndex(socket.name);
+        let id = game.getPlayerIndex(channel.name);
 
         //Check if valid
 
@@ -477,18 +519,18 @@ exports.handleSocket = function(socket)
 
         //Sync inventory item
 
-        server.syncInventoryItem(data, id, socket);
+        server.syncInventoryItem(data, id, channel);
     });
 
-    socket.on('CLIENT_UNEQUIP_ITEM', function(data, callback) {
+    channel.on('CLIENT_UNEQUIP_ITEM', function(data) {
         //Check if valid player
 
-        if (socket.playing === undefined || !socket.playing)
+        if (channel.playing === undefined || !channel.playing)
             return;
 
         //Get player id
 
-        let id = game.getPlayerIndex(socket.name);
+        let id = game.getPlayerIndex(channel.name);
 
         //Check if valid
 
@@ -511,7 +553,7 @@ exports.handleSocket = function(socket)
 
         //Add item
 
-        if (!items.addPlayerItem(socket, id, game.players[id].equipment[data]))
+        if (!items.addPlayerItem(channel, id, game.players[id].equipment[data]))
             return;
 
         //Check if equipment has action
@@ -527,7 +569,7 @@ exports.handleSocket = function(socket)
 
                         //Sync to player
 
-                        server.syncPlayerPartially(id, 'actions', socket, false);
+                        server.syncPlayerPartially(id, 'actions', channel, false);
 
                         break;
                     }
@@ -542,27 +584,26 @@ exports.handleSocket = function(socket)
 
         //Sync to others
 
-        server.syncPlayerPartially(id, 'equipment', socket, true);
+        server.syncPlayerPartially(id, 'equipment', channel, true);
 
         //Sync to player
 
-        server.syncEquipmentItem(data, id, socket, false);
+        server.syncEquipmentItem(data, id, channel, false);
 
-        //Callback if provided
+        //Respond
 
-        if (callback != undefined)
-            callback();
+        channel.emit('CLIENT_UNEQUIP_ITEM_RESPONSE', item.sounds);
     });
 
-    socket.on('CLIENT_PICKUP_ITEM', function(data) {
+    channel.on('CLIENT_PICKUP_ITEM', function(data) {
         //Check if valid player
 
-        if (socket.playing === undefined || !socket.playing)
+        if (channel.playing === undefined || !channel.playing)
             return;
 
         //Get player id
 
-        let id = game.getPlayerIndex(socket.name);
+        let id = game.getPlayerIndex(channel.name);
 
         //Check if valid
 
@@ -577,16 +618,16 @@ exports.handleSocket = function(socket)
         }
     });
 
-    socket.on('CLIENT_SELL_ITEM', function(data, callback) {
+    channel.on('CLIENT_SELL_ITEM', function(data) {
         try {
             //Check if valid player
 
-            if (socket.playing === undefined || !socket.playing)
+            if (channel.playing === undefined || !channel.playing)
                 return;
 
             //Get player id
 
-            let id = game.getPlayerIndex(socket.name);
+            let id = game.getPlayerIndex(channel.name);
 
             //Check if valid
 
@@ -597,25 +638,24 @@ exports.handleSocket = function(socket)
 
             let sold = shop.sellItem(id, data.item, data.npc);
 
-            //Callback
+            //Respond with result
 
-            if (callback != undefined)
-                callback(sold);
+            channel.emit('CLIENT_SELL_ITEM_RESPONSE', sold);
         }
         catch (err) {
             output.giveError('Could not sell item: ', err);
         }
     });
 
-    socket.on('CLIENT_INTERACT_PROPERTIES', function() {
+    channel.on('CLIENT_INTERACT_PROPERTIES', function() {
         //Check if valid player
 
-        if (socket.playing === undefined || !socket.playing)
+        if (channel.playing === undefined || !channel.playing)
             return;
 
         //Get player id
 
-        let id = game.getPlayerIndex(socket.name);
+        let id = game.getPlayerIndex(channel.name);
 
         //Check if valid
 
@@ -659,16 +699,16 @@ exports.handleSocket = function(socket)
 
     });
 
-    socket.on('CLIENT_DIALOG_EVENT', function(data, callback) {
+    channel.on('CLIENT_DIALOG_EVENT', function(data) {
         try {
             //Check if valid player
 
-            if (socket.playing === undefined || !socket.playing)
+            if (channel.playing === undefined || !channel.playing)
                 return;
 
             //Get player id
 
-            let id = game.getPlayerIndex(socket.name);
+            let id = game.getPlayerIndex(channel.name);
 
             //Check if valid
 
@@ -721,10 +761,9 @@ exports.handleSocket = function(socket)
 
             if (game.getPlayerGlobalVariable(id, eventName) &&
                 !dialogEvent.repeatable) {
-                //Callback false (occurred)
+                //Respond with false (occurred)
 
-                if (callback != undefined)
-                    callback({ result: false });
+                channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: false, id: data.id });
 
                 return;
             }
@@ -745,7 +784,7 @@ exports.handleSocket = function(socket)
 
                 //Load map
 
-                game.loadMap(socket, dialogEvent.loadMapEvent.map);
+                game.loadMap(channel, dialogEvent.loadMapEvent.map);
 
                 //Set position
 
@@ -765,7 +804,7 @@ exports.handleSocket = function(socket)
                 let done = false;
 
                 for (let a = 0; a < dialogEvent.giveItemEvent.amount; a++) {
-                    if (items.addPlayerItem(socket, id, dialogEvent.giveItemEvent.item))
+                    if (items.addPlayerItem(channel, id, dialogEvent.giveItemEvent.item))
                         done = true;
                 }
 
@@ -792,7 +831,7 @@ exports.handleSocket = function(socket)
                 //Gold
 
                 if (!game.deltaGoldPlayer(id, dialogEvent.affectPlayerEvent.goldDifference)) {
-                    callback({ result: false });
+                    channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: false, id: data.id });
                     return;
                 }
             }
@@ -845,9 +884,9 @@ exports.handleSocket = function(socket)
                     }
                 );
 
-                //Callback and return
+                //Respond and return
 
-                callback({ result: true });
+                channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: true, id: data.id });
                 return;
             }
 
@@ -860,8 +899,8 @@ exports.handleSocket = function(socket)
 
                 if (!quests.hasCompleted(id, dialogEvent.showQuestEvent.name) || dialogEvent.repeatable)
                     quest = quests.getQuestDialog(dialogEvent.showQuestEvent.name);
-                else if (callback != undefined) {
-                    callback({ result: false });
+                else {
+                    channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: false, id: data.id });
 
                     return;
                 }
@@ -870,9 +909,9 @@ exports.handleSocket = function(socket)
             //Show shop event
 
             else if (dialogEvent.eventType === 'ShowShop') {
-                //Callback to make sure the dialog closes
+                //Respond to make sure the dialog closes
 
-                callback({ result: true });
+                channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: true, id: data.id });
 
                 //Open shop for the player
 
@@ -890,26 +929,25 @@ exports.handleSocket = function(socket)
                 );
             }
 
-            //Callback true (success)
+            //Respond true (success)
 
-            if (callback != undefined)
-                callback({ result: true, quest: quest });
+            channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: true, quest: quest, id: data.id });
         }
         catch (err) {
             output.giveError('Could not handle dialog event: ', err);
         }
     });
 
-    socket.on('CLIENT_ACCEPT_QUEST', function(data, callback) {
+    channel.on('CLIENT_ACCEPT_QUEST', function(data) {
         try {
             //Check if valid player
 
-            if (socket.playing === undefined || !socket.playing)
+            if (channel.playing === undefined || !channel.playing)
                return;
 
             //Get player id
 
-            let id = game.getPlayerIndex(socket.name);
+            let id = game.getPlayerIndex(channel.name);
 
             //Check if valid
 
@@ -946,10 +984,9 @@ exports.handleSocket = function(socket)
                 if (!quests.acceptQuest(id, dialogEvent.showQuestEvent.name))
                     return;
 
-                //Callback if possible
+                //Respond
 
-                if (callback != undefined)
-                    callback(dialogEvent.showQuestEvent.name);
+                channel.emit('CLIENT_ACCEPT_QUEST_RESPONSE', dialogEvent.showQuestEvent.name)
             }
         }
         catch (err) {
@@ -957,16 +994,16 @@ exports.handleSocket = function(socket)
         }
     });
 
-    socket.on('CLIENT_ABANDON_QUEST', function(data, callback) {
+    channel.on('CLIENT_ABANDON_QUEST', function(data) {
         try {
             //Check if valid player
 
-            if (socket.playing === undefined || !socket.playing)
+            if (channel.playing === undefined || !channel.playing)
                return;
 
             //Get player id
 
-            let id = game.getPlayerIndex(socket.name);
+            let id = game.getPlayerIndex(channel.name);
 
             //Check if valid
 
@@ -982,26 +1019,25 @@ exports.handleSocket = function(socket)
 
             delete game.players[id].quests[data];
 
-            //Callback if possible
+            //Respond
 
-            if (callback != undefined)
-                callback();
+            channel.emit('CLIENT_ABANDON_QUEST_RESPONSE', data);
         }
         catch (err) {
             output.giveError('Could not abandon quest: ', err);
         }
     });
 
-    socket.on('CLIENT_BUY_ITEM', function(data, callback) {
+    channel.on('CLIENT_BUY_ITEM', function(data) {
         try {
             //Check if valid player
 
-            if (socket.playing === undefined || !socket.playing)
+            if (channel.playing === undefined || !channel.playing)
                 return;
 
             //Get player id
 
-            let id = game.getPlayerIndex(socket.name);
+            let id = game.getPlayerIndex(channel.name);
 
             //Check if valid
 
@@ -1021,25 +1057,24 @@ exports.handleSocket = function(socket)
                 data.id
             );
 
-            //Callback if bought
+            //Respond if bought
 
-            if (callback != undefined)
-                callback(bought);
+            channel.emit('CLIENT_BUY_ITEM_RESPONSE', bought);
         }
         catch (err) {
             output.giveError('Could not buy shop item: ', err);
         }
     });
 
-    socket.on('CLIENT_REQUEST_DIALOG', function(data, callback) {
+    channel.on('CLIENT_REQUEST_DIALOG', function(data) {
         //Check if valid player
 
-        if (socket.playing === undefined || !socket.playing)
+        if (channel.playing === undefined || !channel.playing)
             return;
 
         //Get player id
 
-        let id = game.getPlayerIndex(socket.name);
+        let id = game.getPlayerIndex(channel.name);
 
         //Check if valid
 
@@ -1050,22 +1085,24 @@ exports.handleSocket = function(socket)
 
         let map = game.players[id].map_id;
 
-        //If in dialog range callback the dialog
+        //If in dialog range respond with the dialog
 
-        if (npcs.inDialogRange(map, data, game.players[id].pos.X, game.players[id].pos.Y) &&
-            callback != undefined)
-            callback(npcs.onMap[map][data].data.dialog);
+        if (npcs.inDialogRange(map, data, game.players[id].pos.X, game.players[id].pos.Y))
+            channel.emit('CLIENT_REQUEST_DIALOG_RESPONSE', {
+                npc: data,
+                dialog: npcs.onMap[map][data].data.dialog
+            });    
     });
 
-    socket.on('CLIENT_INCREMENT_ATTRIBUTE', function(data) {
+    channel.on('CLIENT_INCREMENT_ATTRIBUTE', function(data) {
         //Check if valid player
 
-        if (socket.playing === undefined || !socket.playing)
+        if (channel.playing === undefined || !channel.playing)
             return;
 
         //Get player id
 
-        let id = game.getPlayerIndex(socket.name);
+        let id = game.getPlayerIndex(channel.name);
 
         //Check if valid
 
@@ -1077,31 +1114,30 @@ exports.handleSocket = function(socket)
         game.incrementPlayerAttribute(id, data);
     });
 
-    socket.on('CLIENT_REQUEST_EXP', function(callback) {
+    channel.on('CLIENT_REQUEST_EXP', function() {
          //Check if valid player
 
-        if (socket.playing === undefined || !socket.playing)
+        if (channel.playing === undefined || !channel.playing)
             return;
 
         //Get player id
 
-        let id = game.getPlayerIndex(socket.name);
+        let id = game.getPlayerIndex(channel.name);
 
         //Check if valid
 
         if (id == -1)
             return;
 
-        //Callback current target xp
+        //Respond with current target xp
 
-        if (callback != undefined)
-            callback(exptable[game.players[id].level-1]);
+        channel.emit('CLIENT_REQUEST_EXP_RESPONSE', exptable[game.players[id].level-1]);
     });
 
-    socket.on('CLIENT_USER_SETTINGS', function(settings) {
+    channel.on('CLIENT_USER_SETTINGS', function(settings) {
          //Check if valid player
 
-         if (socket.playing === undefined || !socket.playing)
+         if (channel.playing === undefined || !channel.playing)
              return;
 
         //Check if valid data
@@ -1121,7 +1157,7 @@ exports.handleSocket = function(socket)
 
         //Save user settings
 
-        game.saveUserSettings(socket.name, {
+        game.saveUserSettings(channel.name, {
             audio: {
                 main: settings.audio.main,
                 sound: settings.audio.sound,
@@ -1131,9 +1167,9 @@ exports.handleSocket = function(socket)
     });
 };
 
-//Sync player partially function, if socket is undefined it will be globally emitted
+//Sync player partially function, if channel is undefined it will be globally emitted
 
-exports.syncPlayerPartially = function(id, type, socket, broadcast)
+exports.syncPlayerPartially = function(id, type, channel, broadcast)
 {
     let data = {
         name: game.players[id].name
@@ -1202,49 +1238,55 @@ exports.syncPlayerPartially = function(id, type, socket, broadcast)
             break;
     }
 
-    if (socket === undefined)
-        io.to(game.players[id].map_id).emit('GAME_PLAYER_UPDATE', data);
+    if (channel === undefined)
+        io.room(game.players[id].map_id).emit('GAME_PLAYER_UPDATE', data);
     else {
         if (broadcast === undefined || !broadcast) {
-            if (socket.name == data.name)
+            if (channel.name == data.name)
                 data.isPlayer = true;
 
-            socket.emit('GAME_PLAYER_UPDATE', data);
+            channel.emit('GAME_PLAYER_UPDATE', data);
         }
         else
-            socket.broadcast.to(game.players[id].map_id).emit('GAME_PLAYER_UPDATE', data);
+            channel.broadcast.emit('GAME_PLAYER_UPDATE', data);
     }
 };
 
-//Sync whole player function, if socket is undefined it will be globally emitted
+//Sync whole player function, if channel is undefined it will be globally emitted
 
-exports.syncPlayer = function(id, socket, broadcast)
+exports.syncPlayer = function(id, channel, broadcast)
 {
-    this.syncPlayerPartially(id, 'moving', socket, broadcast);
-    this.syncPlayerPartially(id, 'position', socket, broadcast);
-    this.syncPlayerPartially(id, 'direction', socket, broadcast);
-    this.syncPlayerPartially(id, 'character', socket, broadcast);
-    this.syncPlayerPartially(id, 'equipment', socket, broadcast);
-    this.syncPlayerPartially(id, 'level', socket, broadcast);
+    this.syncPlayerPartially(id, 'moving', channel, broadcast);
+    this.syncPlayerPartially(id, 'position', channel, broadcast);
+    this.syncPlayerPartially(id, 'direction', channel, broadcast);
+    this.syncPlayerPartially(id, 'character', channel, broadcast);
+    this.syncPlayerPartially(id, 'equipment', channel, broadcast);
+    this.syncPlayerPartially(id, 'level', channel, broadcast);
 };
 
 //Sync player remove function, will be broadcast by default
 
-exports.removePlayer = function(id, socket)
+exports.removePlayer = function(id, channel)
 {
     //Check if valid
 
-    if (socket === undefined || socket.name === undefined)
+    if (channel === undefined || channel.name === undefined)
         return;
 
     //Broadcast player removal
 
-    socket.broadcast.to(game.players[id].map_id).emit('GAME_PLAYER_UPDATE', { name: socket.name, remove: true });
+    channel.broadcast.emit('GAME_PLAYER_UPDATE', { name: channel.name, remove: true });
+
+    //Leave room and decrement map popularity
+
+    npcs.mapPopularity[channel._roomId]--;
+
+    channel.leave();
 }
 
-//Sync NPC partially function, if socket is undefined it will be globally emitted
+//Sync NPC partially function, if channel is undefined it will be globally emitted
 
-exports.syncNPCPartially = function(map, id, type, socket, broadcast)
+exports.syncNPCPartially = function(map, id, type, channel, broadcast)
 {
     if (npcs.onMap[map] === undefined || npcs.onMap[map][id] === undefined)
         return;
@@ -1286,92 +1328,92 @@ exports.syncNPCPartially = function(map, id, type, socket, broadcast)
             break;
     }
 
-    if (socket === undefined)
-        io.to(map).emit('GAME_NPC_UPDATE', data);
+    if (channel === undefined)
+        io.room(map).emit('GAME_NPC_UPDATE', data);
     else {
         if (broadcast === undefined || !broadcast)
-            socket.emit('GAME_NPC_UPDATE', data);
+            channel.emit('GAME_NPC_UPDATE', data);
         else
-            socket.broadcast.to(map).emit('GAME_NPC_UPDATE', data);
+            channel.broadcast.emit('GAME_NPC_UPDATE', data);
     }
 }
 
-//Sync whole NPC function, if socket is undefined it will be globally emitted
+//Sync whole NPC function, if channel is undefined it will be globally emitted
 
-exports.syncNPC = function(map, id, socket, broadcast)
+exports.syncNPC = function(map, id, channel, broadcast)
 {
-    this.syncNPCPartially(map, id, 'moving', socket, broadcast);
-    this.syncNPCPartially(map, id, 'position', socket, broadcast);
-    this.syncNPCPartially(map, id, 'direction', socket, broadcast);
-    this.syncNPCPartially(map, id, 'character', socket, broadcast);
-    this.syncNPCPartially(map, id, 'type', socket, broadcast);
+    this.syncNPCPartially(map, id, 'moving', channel, broadcast);
+    this.syncNPCPartially(map, id, 'position', channel, broadcast);
+    this.syncNPCPartially(map, id, 'direction', channel, broadcast);
+    this.syncNPCPartially(map, id, 'character', channel, broadcast);
+    this.syncNPCPartially(map, id, 'type', channel, broadcast);
 
     //Some NPCs don't have stats, so we dont send it if
     //it is empty
 
     if (npcs.onMap[map][id].data.stats !== undefined &&
         npcs.onMap[map][id].data.stats !== null) {
-        this.syncNPCPartially(map, id, 'stats', socket, broadcast);
+        this.syncNPCPartially(map, id, 'stats', channel, broadcast);
 
-        this.syncNPCPartially(map, id, 'health', socket, broadcast);
+        this.syncNPCPartially(map, id, 'health', channel, broadcast);
     }
 };
 
-//Remove NPC function, if socket is undefined it will be globally emitted
+//Remove NPC function, if channel is undefined it will be globally emitted
 
-exports.removeNPC = function(map, id, socket, broadcast)
+exports.removeNPC = function(map, id, channel, broadcast)
 {
     let data = {
         id: id,
         remove: true
     };
 
-    if (socket === undefined)
-        io.to(map).emit('GAME_NPC_UPDATE', data);
+    if (channel === undefined)
+        io.room(map).emit('GAME_NPC_UPDATE', data);
     else {
         if (broadcast === undefined || !broadcast)
-            socket.emit('GAME_NPC_UPDATE', data);
+            channel.emit('GAME_NPC_UPDATE', data);
         else
-            socket.broadcast.to(map).emit('GAME_NPC_UPDATE', data);
+            channel.broadcast.emit('GAME_NPC_UPDATE', data);
     }
 };
 
-//Sync whole action function, if socket is undefined it will be globally emitted
+//Sync whole action function, if channel is undefined it will be globally emitted
 
-exports.syncAction = function(data, socket, broadcast)
+exports.syncAction = function(data, channel, broadcast)
 {
-    if (socket === undefined)
-        io.to(data.map).emit('GAME_ACTION_UPDATE', data);
+    if (channel === undefined)
+        io.room(data.map).emit('GAME_ACTION_UPDATE', data);
     else {
         if (broadcast === undefined || !broadcast)
-            socket.emit('GAME_ACTION_UPDATE', data);
+            channel.emit('GAME_ACTION_UPDATE', data);
         else
-            socket.broadcast.to(data.map).emit('GAME_ACTION_UPDATE', data);
+            channel.broadcast.emit('GAME_ACTION_UPDATE', data);
     }
 };
 
-//Remove Action function, if socket is undefined it will be globally emitted
+//Remove Action function, if channel is undefined it will be globally emitted
 
-exports.removeAction = function(id, map, socket, broadcast)
+exports.removeAction = function(id, map, channel, broadcast)
 {
     let data = {
         remove: true,
         id: id
     };
 
-    if (socket === undefined)
-        io.to(map).emit('GAME_ACTION_UPDATE', data);
+    if (channel === undefined)
+        io.room(map).emit('GAME_ACTION_UPDATE', data);
     else {
         if (broadcast === undefined || !broadcast)
-            socket.emit('GAME_ACTION_UPDATE', data);
+            channel.emit('GAME_ACTION_UPDATE', data);
         else
-            socket.broadcast.to(map).emit('GAME_ACTION_UPDATE', data);
+            channel.broadcast.emit('GAME_ACTION_UPDATE', data);
     }
 };
 
 //Sync single action slot (for specific player) function
 
-exports.syncActionSlot = function(slot, id, socket)
+exports.syncActionSlot = function(slot, id, channel)
 {
     let data = {
         slot: slot
@@ -1387,12 +1429,12 @@ exports.syncActionSlot = function(slot, id, socket)
     else
         data.remove = true;
 
-    socket.emit('GAME_ACTION_SLOT', data);
+    channel.emit('GAME_ACTION_SLOT', data);
 };
 
 //Sync single inventory item (for specific player) function
 
-exports.syncInventoryItem = function(slot, id, socket)
+exports.syncInventoryItem = function(slot, id, channel)
 {
     let data = {
         slot: slot
@@ -1408,12 +1450,12 @@ exports.syncInventoryItem = function(slot, id, socket)
     else
         data.remove = true;
 
-    socket.emit('GAME_INVENTORY_UPDATE', data);
+    channel.emit('GAME_INVENTORY_UPDATE', data);
 }
 
-//Sync single equipment item function, if socket is undefined it will be globally emitted
+//Sync single equipment item function, if channel is undefined it will be globally emitted
 
-exports.syncEquipmentItem = function(equippable, id, socket, broadcast)
+exports.syncEquipmentItem = function(equippable, id, channel, broadcast)
 {
     let data;
 
@@ -1428,27 +1470,27 @@ exports.syncEquipmentItem = function(equippable, id, socket, broadcast)
             remove: true
         };
 
-    if (socket === undefined)
-        io.to(data.map).emit('GAME_EQUIPMENT_UPDATE', data);
+    if (channel === undefined)
+        io.room(data.map).emit('GAME_EQUIPMENT_UPDATE', data);
     else {
         if (broadcast === undefined || !broadcast)
-            socket.emit('GAME_EQUIPMENT_UPDATE', data);
+            channel.emit('GAME_EQUIPMENT_UPDATE', data);
         else
-            socket.broadcast.to(data.map).emit('GAME_EQUIPMENT_UPDATE', data);
+            channel.broadcast.emit('GAME_EQUIPMENT_UPDATE', data);
     }
 }
 
-//Sync single world item function, if socket is undefined it will be globally emitted
+//Sync single world item function, if channel is undefined it will be globally emitted
 
-exports.syncWorldItem = function(map, data, socket, broadcast)
+exports.syncWorldItem = function(map, data, channel, broadcast)
 {
-    if (socket === undefined)
-        io.to(map).emit('GAME_WORLD_ITEM_UPDATE', data);
+    if (channel === undefined)
+        io.room(map).emit('GAME_WORLD_ITEM_UPDATE', data);
     else {
         if (broadcast === undefined || !broadcast)
-            socket.emit('GAME_WORLD_ITEM_UPDATE', data);
+            channel.emit('GAME_WORLD_ITEM_UPDATE', data);
         else
-            socket.broadcast.to(map).emit('GAME_WORLD_ITEM_UPDATE', data);
+            channel.broadcast.emit('GAME_WORLD_ITEM_UPDATE', data);
     }
 };
 
@@ -1461,32 +1503,33 @@ exports.syncItemDialog = function(id, itemName, dialog)
         name: itemName
     };
 
-    game.players[id].socket.emit('GAME_START_ITEM_DIALOG', data);
+    game.players[id].channel.emit('GAME_START_ITEM_DIALOG', data);
 };
 
-//Sync game time function, if socket is undefined it will be globally emitted
+//Sync game time function, if channel is undefined it will be globally emitted
 
-exports.syncGameTime = function(socket)
+exports.syncGameTime = function(channel)
 {
     let time = gameTime;
     time.current = game.time.current;
     
-    if (socket === undefined)
+    if (channel === undefined)
         io.emit('GAME_SERVER_TIME', time);
     else
-        socket.emit('GAME_SERVER_TIME', time);
+        channel.emit('GAME_SERVER_TIME', time);
 };
 
-//Get socket with name function
+//Get channel with name function
 
-exports.getSocketWithName = function(name)
+exports.getChannelWithName = function(name)
 {
-    //Loop through all sockets until socket
+    //Loop through all players until channel
     //with the same name is found
 
-    for (let socketId in io.sockets.sockets) {
-        if (io.sockets.sockets[socketId] !== undefined &&
-            io.sockets.sockets[socketId].name == name)
-            return io.sockets.sockets[socketId];
-    }
+    for (let i = 0; i < game.players.length; i++) {
+        let p = game.players[i];
+
+        if (p.name === name)
+            return p.channel;
+    };
 };
