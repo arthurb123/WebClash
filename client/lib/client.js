@@ -17,14 +17,10 @@ const client = {
 
             //Try to make a connection
 
-            window['channel'] = geckos({ 
+            window['channel'] = geckos({
+                url: (properties.address.length > 0 ? properties.address : window.location.protocol + '//' + window.location.hostname),
                 port: properties.port 
             });
-
-            /*{
-                url: '${location.protocol}//' + (properties.address.length > 0 ? properties.address : '${location.hostname}'),
-                port: properties.port
-            });*/
 
             //Set on connect callback
 

@@ -59,6 +59,13 @@ To see the list of available commands type
 /help in the chat.
 
 
+	      -- Deployment --
+
+Because WebClash makes use of real-time UDP, it
+is necessary to open up the port 9208/tcp and 
+the range of ports 0-65535/upd on your server.
+
+
 	      -- Art usage --
 
 All provided graphics except UI and particle graphics
