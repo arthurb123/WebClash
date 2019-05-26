@@ -792,6 +792,15 @@ const tiled = {
                     
                     this.lightHotspots[lightHotspotID].size = property.value;
                     break;
+                case 'lightHotspotColor':
+                    if (lightHotspotID == undefined)
+                        lightHotspotID = this.addLightHotspot(
+                            p_x, 
+                            p_y
+                        );
+                    
+                    this.lightHotspots[lightHotspotID].color = '#' + property.value.substr(3, property.value.length-3);
+                    break;
             }
         }
     },
@@ -832,6 +841,9 @@ const tiled = {
             if (this.lightHotspots[lhs] == undefined)
                 continue;
 
+            //Actual light hotspot
+
+            g.globalAlpha = 1;
             g.beginPath();
             g.arc(
                 this.lightHotspots[lhs].x, 
@@ -842,6 +854,15 @@ const tiled = {
             );
             g.closePath();
             g.fill();
+
+            //Coloring, if specified
+
+            if (this.lightHotspots[lhs].color != undefined) {
+                g.globalAlpha = .5;
+                g.globalCompositeOperation = 'source-over';
+                g.fillStyle = this.lightHotspots[lhs].color;
+                g.fill();
+            }
         }
 
         //Return cached shadow canvas

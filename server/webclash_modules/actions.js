@@ -93,7 +93,9 @@ exports.updateProjectiles = function() {
                     if (this.damagePlayers(
                         game.players[this.projectiles[m][p].pvpOwner].stats.attributes,
                         this.projectiles[m][p],
-                        this.collection[this.projectiles[m][p].a_id]
+                        this.collection[this.projectiles[m][p].a_id],
+                        false,
+                        this.projectiles[m][p].pvpOwner
                     )) {
                         server.removeAction(this.projectiles[m][p].elements[0].p_id, this.projectiles[m][p].map);
 
