@@ -864,7 +864,7 @@
   "version": 1.2,
   "width": 12,
   "pvp": false,
-  "mapType": "neutral",
+  "mapType": "protected",
   "showDayNight": false,
   "alwaysDark": true,
   "bgmSource": "res/bgm/Eerie Scene - Aaron Krogh.mp3"

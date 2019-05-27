@@ -121,10 +121,6 @@ exports.handleChannel = function(channel)
                 ch.leave();
                 ch.emit('disconnected');
 
-                //Respond with a successful login
-
-                channel.emit('CLIENT_LOGIN_RESPONSE', 'success');
-
                 //Output
 
                 output.give('User \'' + name + '\' has relogged.');
@@ -140,11 +136,17 @@ exports.handleChannel = function(channel)
 
             channel.name = name;
 
-            //Request game page
+            //Request the respective page,
+            //based on if the account has
+            //created a character
 
-            channel.emit('REQUEST_GAME');
+            if (player.created)
+                channel.emit('REQUEST_GAME');
+            else
+                channel.emit('REQUEST_CREATION', game.getPlayerCharacters());
         });
     });
+
     channel.on('CLIENT_REGISTER', function(data) {
         //Check if valid package
 
@@ -185,6 +187,7 @@ exports.handleChannel = function(channel)
 
             storage.save('accounts', name, {
                 pass: data.pass,
+                created: false,
                 settings: {
                     audio: {
                       main: 50,
@@ -192,23 +195,65 @@ exports.handleChannel = function(channel)
                       sound: 50
                     }
                 }
+            }, function() {
+                //Insert and save default stats
+
+                game.savePlayer(name, undefined, function() {
+                    //Give output
+
+                    output.give('New user \'' + name + '\' created.');
+
+                    //Set variables
+
+                    channel.name = name;
+
+                    //Request character creation page
+
+                    channel.emit('REQUEST_CREATION', game.getPlayerCharacters());
+                });
             });
+        });
+    });
 
-            //Insert and save default stats
+    channel.on('CLIENT_CREATE_CHARACTER', function(data) {
+        //Check if client is already playing
 
-            game.savePlayer(name);
+        if (channel.playing != undefined && channel.playing)
+            return;
 
-            //Give output
+        //Check if player is allowed to
+        //create a character
 
-            output.give('New user \'' + name + '\' created.');
+        storage.load('accounts', channel.name, function(account) {
+            if (account.created)
+                return;
 
-            //Set variables
+            //Check if character exists and
+            //is an allowed option
 
-            channel.name = name;
+            if (properties.playerCharacters[data] == undefined)
+                return;
 
-            //Request game page
+            //Load stats
 
-            channel.emit('REQUEST_GAME');
+            storage.load('stats', channel.name, function(player) {
+                //Change character name
+
+                player.char_name = properties.playerCharacters[data];
+
+                //Save account
+
+                account.created = true;
+                storage.save('accounts', channel.name, account);
+
+                //Save player
+
+                game.savePlayer(channel.name, player, function() {
+                    //Request game
+
+                    channel.emit('REQUEST_GAME');
+                });
+            });
         });
     });
 

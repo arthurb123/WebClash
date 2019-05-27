@@ -5,7 +5,7 @@ const landingScene = new lx.Scene(function() {
 
     lx.Background('#b4c8e8');
 
-    //Draw title logo
+    //Add a title logo
 
     let logo_sprite = new lx.Sprite('res/ui/title.png');
 
@@ -17,18 +17,17 @@ const landingScene = new lx.Scene(function() {
         );
     });
 
-    //Draw server name text and
+    //Add a server name text and
     //add a loop thats keeps updating
     //the text in case of new package
 
-    let server_name = new lx.UIText('Connected to: -', lx.GetDimensions().width/2, lx.GetDimensions().height-20, 11, '#3d3d3d')
+    new lx.UIText('Connected to: -', lx.GetDimensions().width/2, lx.GetDimensions().height-20, 11, '#3d3d3d')
         .Loops(function() {
             this.Text('Connected to: ' + client.serverName);
             this.Position(lx.GetDimensions().width/2, lx.GetDimensions().height-20);
         })
         .Alignment('center')
         .Show();
-
 
     //Set innerHTML
 
@@ -70,13 +69,11 @@ const landingScene = new lx.Scene(function() {
             switch (data)
             {
                 case 'none':
-                    document.getElementById('windowErrorText').innerHTML = 'Username does not exist';
+                case 'wrong':
+                    document.getElementById('windowErrorText').innerHTML = 'Wrong username or password';
                     break;
                 case 'full':
                     document.getElementById('windowErrorText').innerHTML = 'The server is full';
-                    break;
-                case 'wrong':
-                    document.getElementById('windowErrorText').innerHTML = 'Wrong password';
                     break;
                 case 'loggedin':
                     document.getElementById('windowErrorText').innerHTML = 'You are already logged in';

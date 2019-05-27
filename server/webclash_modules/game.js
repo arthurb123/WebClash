@@ -3,7 +3,7 @@
 const fs = require('fs');
 
 exports.players = [];
-exports.characters = [];
+exports.characters = {};
 
 //Game properties
 
@@ -315,7 +315,7 @@ exports.savePlayer = function(name, data, cb)
 
     //Check if a new player data must be created
 
-    if (player === undefined) {
+    if (player == undefined) {
         //Get starting position before saving
 
         let spos = this.tileToActualPosition(
@@ -886,6 +886,26 @@ exports.loadCharacter = function(location)
     {
         output.giveError('Could not load character: ', err);
     }
+};
+
+exports.getPlayerCharacters = function()
+{
+    let result = [];
+
+    for (let p = 0; p < properties.playerCharacters.length; p++) {
+        let name = properties.playerCharacters[p],
+            char = this.characters[name];
+
+        result[p] = {
+            name: name,
+            src: char.src,
+            width: char.width,
+            height: char.height,
+            animation: char.animation
+        };
+    }
+
+    return result;
 };
 
 exports.calculateFace = function(pos, width, height, direction)

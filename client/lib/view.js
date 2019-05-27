@@ -14,6 +14,20 @@ const view = {
         
         lx.LoadScene(landingScene);
     },
+    loadCreation: function(characters)
+    {
+        //Clear innerHTML
+                
+        view.dom.innerHTML = '';
+
+        //Set player characters
+
+        playerCharacters = characters;
+                
+        //Load game scene
+
+        lx.LoadScene(creationScene);
+    },
     loadGame: function() 
     {
         //Clear innerHTML

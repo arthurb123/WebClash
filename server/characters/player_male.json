@@ -4,7 +4,8 @@
   "height": 48,
   "animation": {
     "direction": "horizontal",
-    "speed": 10
+    "speed": 10,
+    "alwaysAnimate": false
   },
   "collider": {
     "x": 6,

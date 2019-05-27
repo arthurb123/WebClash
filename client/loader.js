@@ -18,6 +18,7 @@ const scripts = [
     'misc/prototypes.js',
 
     'scenes/landing.js',
+    'scenes/creation.js',
     'scenes/game.js'
 ];
 

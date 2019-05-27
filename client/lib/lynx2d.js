@@ -2633,10 +2633,10 @@ this.Sprite = function (source, c_x, c_y, c_w, c_h, cb) {
             if (OPACITY == undefined)
                 OPACITY = this.OPACITY;
             
-            lx.CONTEXT.GRAPHICS.save();
+            TARGET.save();
             CANVAS_SAVED = true;
 
-            lx.CONTEXT.GRAPHICS.globalAlpha = OPACITY;
+            TARGET.globalAlpha = OPACITY;
         }
 
         //Check for color overlay

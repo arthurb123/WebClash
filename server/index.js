@@ -80,14 +80,21 @@ game.loadAllCharacters(function() {
 //Check properties function
 
 function checkProperties(cb) {
-    //Check if player character is present
+    //Check if player characters are present
 
-    if (game.characters[properties.playerCharacter] == undefined)
-    {
-        output.give('Player character could not be found!');
+    if (properties.playerCharacters.length === 0) {
+        output.give('No player characters available.');
 
         return;
     }
+
+    for (let p = 0; p < properties.playerCharacters.length; p++)
+        if (game.characters[properties.playerCharacters[p]] == undefined)
+        {
+            output.give('Player character \'' + properties.playerCharacters[p] + '\' could not be found!');
+
+            return;
+        }
 
     //Check if starting map is present
 

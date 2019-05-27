@@ -1,0 +1,33 @@
+{
+  "src": "res/characters/8.png",
+  "width": 32,
+  "height": 48,
+  "animation": {
+    "direction": "horizontal",
+    "speed": 10,
+    "alwaysAnimate": false
+  },
+  "collider": {
+    "x": 6,
+    "y": 32,
+    "width": 20,
+    "height": 12
+  },
+  "movement": {
+    "max": 1.65
+  },
+  "sounds": {
+    "hitSounds": [
+      {
+        "src": "res/sounds/characters/human/human1.wav"
+      },
+      {
+        "src": "res/sounds/characters/human/human2.wav"
+      },
+      {
+        "src": "res/sounds/characters/human/human3.wav"
+      }
+    ],
+    "deathSounds": []
+  }
+}

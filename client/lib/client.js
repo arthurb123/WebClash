@@ -78,8 +78,7 @@ const client = {
         //Disconnection listener
 
         channel.onDisconnect(function() {
-            if (client.inGame)
-                window.location.reload();
+            window.location.reload();
         });
 
         //General events
@@ -90,6 +89,7 @@ const client = {
         //Issue events
 
         channel.on('REQUEST_LANDING', view.loadLanding);
+        channel.on('REQUEST_CREATION', view.loadCreation);
         channel.on('REQUEST_GAME', view.loadGame);
 
         //Game update events
