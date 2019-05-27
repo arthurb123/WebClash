@@ -280,9 +280,9 @@ const tiled = {
 
         //Avoid out-of-bounds size
 
-        if (pos.X == 0 && clip.X+size.width > mapWidth)
+        if (clip.X+size.width > mapWidth)
             size.width = mapWidth - clip.X;
-        if (pos.Y == 0 && clip.Y+size.height > mapHeight)
+        if (clip.Y+size.height > mapHeight)
             size.height = mapHeight - clip.Y;
 
         return {

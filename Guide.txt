@@ -9,6 +9,9 @@ already exist:
 user: admin
 pass: password
 
+All accounts can be found in the data folder
+located in the server directory.
+
 
 	        -- Maps --
 

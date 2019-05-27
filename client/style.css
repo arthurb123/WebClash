@@ -82,7 +82,7 @@ canvas {
     z-index: 0;
 }
 
-@media screen and (min-width: 960px) {
+@media screen and (min-width: 1080px) {
     ::-webkit-scrollbar
     {
       width: 2px;
