@@ -53,6 +53,8 @@ const creationScene = new lx.Scene(function() {
     canvas.height = maxHeight+20;
     canvas.width = 200;
 
+    gfx.imageSmoothingEnabled = lx.GAME.SETTINGS.AA;
+
     //Add characters update loop,
     //this is used for animating
     //the currently selected character
@@ -124,6 +126,7 @@ const creationScene = new lx.Scene(function() {
 
     let button = document.createElement('button');
     button.innerHTML = '◀';
+    button.style.fontSize = '12px';
 
     button.addEventListener('click', function() {
         playerCharacters[currentCharacter].FRAME = 0;
@@ -140,6 +143,7 @@ const creationScene = new lx.Scene(function() {
 
     button = document.createElement('button');
     button.innerHTML = '▶';
+    button.style.fontSize = '12px';
 
     button.addEventListener('click', function() {
         playerCharacters[currentCharacter].FRAME = 0;

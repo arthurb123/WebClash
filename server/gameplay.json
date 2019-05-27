@@ -1,0 +1,18 @@
+{
+    "dayLength": 360,
+    "nightLength": 360,
+    
+    "onPlayerDeath": {
+        "loseGold": {
+            "enabled": false,
+            "losePercentage": 50
+        },
+        "loseExperience": {
+            "enabled": false,
+            "losePercentage": 50
+        },
+        
+        "loseItems": true,
+        "loseEquipment": false
+    }
+}

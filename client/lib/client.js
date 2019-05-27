@@ -83,8 +83,12 @@ const client = {
 
         //General events
 
-        channel.on('UPDATE_CLIENT_NAME', function(t) { document.title = t; });
-        channel.on('UPDATE_SERVER_NAME', function(t) { client.serverName = t; });
+        channel.on('UPDATE_CLIENT_NAME', function(t) { 
+            document.title = t; 
+        });
+        channel.on('UPDATE_SERVER_NAME', function(t) { 
+            client.serverName = t; 
+        });
 
         //Issue events
 

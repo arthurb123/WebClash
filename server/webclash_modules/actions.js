@@ -752,7 +752,7 @@ exports.damagePlayers = function(stats, actionData, action, onlyStatic, except)
 
                     //Damage player
 
-                    game.damagePlayer(p, this.calculateDamage(stats, action.scaling));
+                    game.damagePlayer(p, this.calculateDamage(stats, action.scaling), except);
                         //npcs.removeNPCTargets(map, p);
 
                     done = true;

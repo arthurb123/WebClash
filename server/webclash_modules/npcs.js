@@ -1076,7 +1076,7 @@ exports.distributeExperience = function(map, id)
     if (this.onMap[map][id].targets.length === 1) {
         //If so add the total experience
 
-        game.addPlayerExperience(this.onMap[map][id].target, this.onMap[map][id].data.stats.exp);
+        game.deltaExperiencePlayer(this.onMap[map][id].target, this.onMap[map][id].data.stats.exp);
 
         //Evaluate for kill quest objectives
 
@@ -1099,7 +1099,7 @@ exports.distributeExperience = function(map, id)
         if (xp == null || xp < 0)
             xp = 0;
 
-        game.addPlayerExperience(p, xp);
+        game.deltaExperiencePlayer(p, xp);
 
         //Evaluate for kill quest objectives
 

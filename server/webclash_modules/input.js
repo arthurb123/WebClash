@@ -227,7 +227,7 @@ exports.handleCommand = function(text, channel)
 
                 let amount = exptable[game.players[p].level-1]-game.players[p].stats.exp;
 
-                game.addPlayerExperience(p, amount);
+                game.deltaExperiencePlayer(p, amount);
 
                 return 'success';
             //Give item command
@@ -288,7 +288,7 @@ exports.handleCommand = function(text, channel)
                             time = 0;
                             break;
                         case 'night':
-                            time = gameTime.dayLength;
+                            time = gameplay.dayLength;
                             break;
                     }
 

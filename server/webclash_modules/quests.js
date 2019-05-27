@@ -269,7 +269,7 @@ exports.finishQuest = function(id, name)
     //Redeem quest rewards
 
     game.deltaGoldPlayer(id, rewards.gold);
-    game.addPlayerExperience(id, rewards.experience);
+    game.deltaExperiencePlayer(id, rewards.experience);
 
     //Set quest completed global variable
 

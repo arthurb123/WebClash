@@ -490,176 +490,119 @@ exports.handleChannel = function(channel)
     });
 
     channel.on('CLIENT_USE_ITEM', function(data) {
-        //Check if valid player
+        try {
+            //Check if valid player
 
-        if (channel.playing === undefined || !channel.playing)
-            return;
+            if (channel.playing === undefined || !channel.playing)
+                return;
 
-        //Get player id
+            //Get player id
 
-        let id = game.getPlayerIndex(channel.name);
+            let id = game.getPlayerIndex(channel.name);
 
-        //Check if valid
+            //Check if valid
 
-        if (id == -1)
-            return;
+            if (id == -1)
+                return;
 
-        //Check if player has item
+            //Check if player has item
 
-        if (!items.hasPlayerItem(id, data))
-            return;
+            if (!items.hasPlayerItem(id, data))
+                return;
 
-        //Use item
+            //Use item
 
-        let result = items.usePlayerItem(channel, id, data);
+            let result = items.usePlayerItem(channel, id, data);
 
-        //Respond with result
+            //Respond with result
 
-        channel.emit('CLIENT_USE_ITEM_RESPONSE', {
-            valid: result,
-            sounds: items.getItem(data).sounds
-        });
+            channel.emit('CLIENT_USE_ITEM_RESPONSE', {
+                valid: result,
+                sounds: items.getItem(data).sounds
+            });
+        }
+        catch (err) {
+            output.giveError('Could not use item: ', err);
+        }
     });
 
     channel.on('CLIENT_DROP_ITEM', function(data) {
-        //Check if valid player
+        try {
+            //Check if valid player
 
-        if (channel.playing === undefined || !channel.playing)
-            return;
+            if (channel.playing === undefined || !channel.playing)
+                return;
 
-        //Get player id
+            //Get player id
 
-        let id = game.getPlayerIndex(channel.name);
+            let id = game.getPlayerIndex(channel.name);
 
-        //Check if valid
+            //Check if valid
 
-        if (id == -1)
-            return;
+            if (id == -1)
+                return;
 
-        //Check if player has item in slot
+            //Attempt to drop item
 
-        if (game.players[id].inventory[data] == null)
-            return;
-
-        //Create world item
-
-        let name = game.players[id].inventory[data];
-
-        items.createWorldItem(
-            -1,
-            game.players[id].map_id,
-            game.players[id].pos.X+game.players[id].character.width/2,
-            game.players[id].pos.Y+game.players[id].character.height,
-            name
-        );
-
-        //Remove item from player inventory
-        //at specific slot
-
-        game.players[id].inventory[data] = undefined;
-
-        //Evaluate item for gather objectives
-
-        quests.evaluateQuestObjective(id, 'gather', name);
-
-        //Sync inventory item
-
-        server.syncInventoryItem(data, id, channel);
+            items.dropPlayerItem(id, data);
+        }
+        catch (err) {
+            output.giveError('Could not drop item: ', err);
+        }
     });
 
     channel.on('CLIENT_UNEQUIP_ITEM', function(data) {
-        //Check if valid player
+        try {
+            //Check if valid player
 
-        if (channel.playing === undefined || !channel.playing)
-            return;
+            if (channel.playing === undefined || !channel.playing)
+                return;
 
-        //Get player id
+            //Get player id
 
-        let id = game.getPlayerIndex(channel.name);
+            let id = game.getPlayerIndex(channel.name);
 
-        //Check if valid
+            //Check if valid
 
-        if (id == -1)
-            return;
+            if (id == -1)
+                return;
 
-        //Check if player has equipped item
+            let sounds = items.unequipPlayerEquipment(id, data);
 
-        if (game.players[id].equipment[data] === undefined)
-            return;
+            //Respond
 
-        //Get item
-
-        let item = items.getItem(game.players[id].equipment[data]);
-
-        //Check if valid
-
-        if (item === undefined)
-            return;
-
-        //Add item
-
-        if (!items.addPlayerItem(channel, id, game.players[id].equipment[data]))
-            return;
-
-        //Check if equipment has action
-
-        if (item.equippableAction !== undefined)
-            for (let a = 0; a < game.players[id].actions.length; a++)
-                if (game.players[id].actions[a] != undefined &&
-                    game.players[id].actions[a].name === item.equippableAction)
-                    {
-                        //Remove equipped action
-
-                        game.players[id].actions[a] = undefined;
-
-                        //Sync to player
-
-                        server.syncPlayerPartially(id, 'actions', channel, false);
-
-                        break;
-                    }
-
-        //Remove equipped item
-
-        game.players[id].equipment[data] = undefined;
-
-        //Calculate new stats
-
-        game.calculatePlayerStats(id, true);
-
-        //Sync to others
-
-        server.syncPlayerPartially(id, 'equipment', channel, true);
-
-        //Sync to player
-
-        server.syncEquipmentItem(data, id, channel, false);
-
-        //Respond
-
-        channel.emit('CLIENT_UNEQUIP_ITEM_RESPONSE', item.sounds);
+            channel.emit('CLIENT_UNEQUIP_ITEM_RESPONSE', sounds);
+        }
+        catch (err) {
+            output.giveError('Could not unequip item: ', err);
+        }
     });
 
     channel.on('CLIENT_PICKUP_ITEM', function(data) {
-        //Check if valid player
+        try {
+            //Check if valid player
 
-        if (channel.playing === undefined || !channel.playing)
-            return;
+            if (channel.playing === undefined || !channel.playing)
+                return;
 
-        //Get player id
+            //Get player id
 
-        let id = game.getPlayerIndex(channel.name);
+            let id = game.getPlayerIndex(channel.name);
 
-        //Check if valid
+            //Check if valid
 
-        if (id == -1)
-            return;
+            if (id == -1)
+                return;
 
-        //Pick up world item
+            //Pick up world item
 
-        if (!items.pickupWorldItem(game.players[id].map_id, id, data))
-        {
-            //Failure, notify user
+            if (!items.pickupWorldItem(game.players[id].map_id, id, data))
+            {
+                //Failure, notify user
+            }
+        }
+        catch (err) {
+            output.giveError('Could not pickup item: ', err);
         }
     });
 
@@ -693,55 +636,59 @@ exports.handleChannel = function(channel)
     });
 
     channel.on('CLIENT_INTERACT_PROPERTIES', function() {
-        //Check if valid player
+        try {
+            //Check if valid player
 
-        if (channel.playing === undefined || !channel.playing)
-            return;
+            if (channel.playing === undefined || !channel.playing)
+                return;
 
-        //Get player id
+            //Get player id
 
-        let id = game.getPlayerIndex(channel.name);
+            let id = game.getPlayerIndex(channel.name);
 
-        //Check if valid
+            //Check if valid
 
-        if (id == -1)
-            return;
+            if (id == -1)
+                return;
 
-        //Get all properties that the player collided with
+            //Get all properties that the player collided with
 
-        let properties = tiled.getPropertiesWithRectangle(game.players[id].map_id, {
-            x: game.players[id].pos.X,
-            y: game.players[id].pos.Y,
-            w: game.players[id].character.width,
-            h: game.players[id].character.height
-        });
+            let properties = tiled.getPropertiesWithRectangle(game.players[id].map_id, {
+                x: game.players[id].pos.X,
+                y: game.players[id].pos.Y,
+                w: game.players[id].character.width,
+                h: game.players[id].character.height
+            });
 
-        //Handle unique properties
+            //Handle unique properties
 
-        if (properties != undefined) {
-            for (let p = 0; p < properties.length; p++)
-            {
-                //Position X property
+            if (properties != undefined) {
+                for (let p = 0; p < properties.length; p++)
+                {
+                    //Position X property
 
-                if (properties[p].name === 'positionX')
-                    game.setPlayerTilePosition(
-                        id,
-                        game.players[id].map_id,
-                        properties[p].value
-                    );
+                    if (properties[p].name === 'positionX')
+                        game.setPlayerTilePosition(
+                            id,
+                            game.players[id].map_id,
+                            properties[p].value
+                        );
 
-                //Position Y property
+                    //Position Y property
 
-                else if (properties[p].name === 'positionY')
-                    game.setPlayerTilePosition(
-                        id,
-                        game.players[id].map_id,
-                        undefined,
-                        properties[p].value
-                    );
+                    else if (properties[p].name === 'positionY')
+                        game.setPlayerTilePosition(
+                            id,
+                            game.players[id].map_id,
+                            undefined,
+                            properties[p].value
+                        );
+                }
             }
         }
-
+        catch (err) {
+            output.giveError('Could not interact with properties: ', err);
+        }
     });
 
     channel.on('CLIENT_DIALOG_EVENT', function(data) {
@@ -1555,8 +1502,11 @@ exports.syncItemDialog = function(id, itemName, dialog)
 
 exports.syncGameTime = function(channel)
 {
-    let time = gameTime;
-    time.current = game.time.current;
+    let time = {
+        dayLength: gameplay.dayLength,
+        nightLength: gameplay.nightLength,
+        current: game.time.current
+    };
     
     if (channel === undefined)
         io.emit('GAME_SERVER_TIME', time);

@@ -337,17 +337,117 @@ exports.setPlayerEquipment = function(channel, id, item)
     return true;
 };
 
+exports.unequipPlayerEquipment = function(id, slot) {
+    //Check if player has equipped item
+
+    if (game.players[id].equipment[slot] === undefined)
+        return;
+
+    //Get item
+
+    let item = items.getItem(game.players[id].equipment[slot]);
+
+    //Check if valid
+
+    if (item === undefined)
+        return;
+
+    //Add item
+
+    if (!items.addPlayerItem(game.players[id].channel, id, game.players[id].equipment[slot]))
+        return;
+
+    //Check if equipment has action
+
+    if (item.equippableAction !== undefined)
+        for (let a = 0; a < game.players[id].actions.length; a++)
+            if (game.players[id].actions[a] != undefined &&
+                game.players[id].actions[a].name === item.equippableAction)
+                {
+                    //Remove equipped action
+
+                    game.players[id].actions[a] = undefined;
+
+                    //Sync to player
+
+                    server.syncPlayerPartially(id, 'actions', game.players[id].channel, false);
+
+                    break;
+                }
+
+    //Remove equipped item
+
+    game.players[id].equipment[slot] = undefined;
+
+    //Calculate new stats
+
+    game.calculatePlayerStats(id, true);
+
+    //Sync to others
+
+    server.syncPlayerPartially(id, 'equipment', game.players[id].channel, true);
+
+    //Sync to player
+
+    server.syncEquipmentItem(slot, id, game.players[id].channel, false);
+
+    //Return item sound sources
+
+    return item.sounds;
+}
+
 exports.getPlayerFreeSlot = function(id)
 {
     //Search for a undefined/non-existing slot
 
-    for (let i = 0; i < game.playerConstraints.inventory_size; i++)
+    for (let i = 0; i < game.playerConstraints.inventorySize; i++)
         if (game.players[id].inventory[i] == null)
             return i;
 
     //Otherwise return an invalid slot
 
     return -1;
+};
+
+exports.dropPlayerItem = function(id, slot, ownerOverride) {
+    //Check if player has item in slot,
+    //otherwise check if it is equipment
+
+    let isEquipment = false;
+
+    if (game.players[id].inventory[slot] == undefined) 
+        if (game.players[id].equipment[slot] != undefined)
+            isEquipment = true;
+        else
+            return false;
+
+    //Create world item
+
+    let name;
+    
+    if (isEquipment)
+        name = game.players[id].equipment[slot];
+    else
+        name = game.players[id].inventory[slot];
+
+    items.createWorldItem(
+        (ownerOverride == undefined ? -1 : ownerOverride),
+        game.players[id].map_id,
+        game.players[id].pos.X+game.players[id].character.width/2,
+        game.players[id].pos.Y+game.players[id].character.height,
+        name
+    );
+
+    //Remove item from player inventory
+    //or equipment at specific slot and
+    //sync to the player or everyone
+
+    if (isEquipment) 
+        this.unequipPlayerEquipment(id, slot);
+    
+    this.removePlayerItem(id, name);
+
+    return true;
 };
 
 exports.createWorldItem = function(owner, map, x, y, name)

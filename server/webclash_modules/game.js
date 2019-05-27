@@ -8,13 +8,13 @@ exports.characters = {};
 //Game properties
 
 exports.playerConstraints = {
-    inventory_size: 20
+    inventorySize: 20
 };
 
 exports.time = {
     current: 0,
     update: function() {
-        if (this.current >= gameTime.dayLength+gameTime.nightLength)
+        if (this.current >= gameplay.dayLength+gameplay.nightLength)
             this.current = 0;
         else
             this.current++;
@@ -382,7 +382,7 @@ exports.saveUserSettings = function(name, settings)
     });
 };
 
-exports.damagePlayer = function(id, damage)
+exports.damagePlayer = function(id, damage, pvpDamager)
 {
     //Subtract toughness from damage
 
@@ -399,7 +399,7 @@ exports.damagePlayer = function(id, damage)
 
     if (this.players[id].health.cur <= 0)
     {
-        this.killPlayer(id);
+        this.killPlayer(id, pvpDamager);
 
         return true;
     }
@@ -411,45 +411,6 @@ exports.damagePlayer = function(id, damage)
     //Return false
 
     return false;
-};
-
-exports.killPlayer = function(id)
-{
-    //Reset all NPC targets on map from player
-
-    npcs.removeNPCTargets(this.players[id].map_id, id, false);
-
-    //Reset stats and sync
-
-    this.players[id].health.cur = this.players[id].health.max;
-    this.players[id].mana.cur = this.players[id].mana.max;
-
-    server.syncPlayerPartially(id, 'health');
-    server.syncPlayerPartially(id, 'mana', this.players[id].channel, false);
-
-    //Load starting map if not on it
-
-    if (this.players[id].map !== properties.startingMap)
-        this.loadMap(this.players[id].channel, properties.startingMap);
-
-    //Set starting tile
-
-    this.setPlayerTilePosition(
-        id,
-        tiled.getMapIndex(properties.startingMap),
-        properties.startingTile.x,
-        properties.startingTile.y
-    );
-
-    //Check for quest objectives reset
-
-    //Reset all NPC targets on map from player
-
-    npcs.removeNPCTargets(this.players[id].map_id, id, false);
-
-    //Reset player quest objectives (if specified)
-
-    quests.resetQuestObjectives(id);
 };
 
 exports.healPlayer = function(id, heal)
@@ -499,6 +460,84 @@ exports.regeneratePlayer = function(id)
     //...
 };
 
+exports.killPlayer = function(id, pvpKiller)
+{
+    //Handle on player death events
+
+    game.onPlayerDeath(id, pvpKiller);
+
+    //Reset all NPC targets on map from player
+
+    npcs.removeNPCTargets(this.players[id].map_id, id, false);
+
+    //Reset stats and sync
+
+    this.players[id].health.cur = this.players[id].health.max;
+    this.players[id].mana.cur = this.players[id].mana.max;
+
+    server.syncPlayerPartially(id, 'health');
+    server.syncPlayerPartially(id, 'mana', this.players[id].channel, false);
+
+    //Load starting map if not on it
+
+    if (this.players[id].map !== properties.startingMap)
+        this.loadMap(this.players[id].channel, properties.startingMap);
+
+    //Set starting tile
+
+    this.setPlayerTilePosition(
+        id,
+        tiled.getMapIndex(properties.startingMap),
+        properties.startingTile.x,
+        properties.startingTile.y
+    );
+
+    //Check for quest objectives reset
+
+    //Reset all NPC targets on map from player
+
+    npcs.removeNPCTargets(this.players[id].map_id, id, false);
+
+    //Reset player quest objectives (if specified)
+
+    quests.resetQuestObjectives(id);
+};
+
+exports.onPlayerDeath = function(id, pvpKiller)
+{
+    //Check for all on player death events
+
+    let deathEvents = gameplay.onPlayerDeath;
+
+    //Lose gold death event
+
+    if (deathEvents.loseGold.enabled) {
+        let delta = -this.players[id].gold*(deathEvents.loseGold.losePercentage/100);
+
+        this.deltaGoldPlayer(id, delta);
+    }
+
+    //Lose experience death event
+
+    if (deathEvents.loseExperience.enabled) {
+        let delta = -this.players[id].stats.exp*(deathEvents.loseExperience.losePercentage/100);
+
+        this.deltaExperiencePlayer(id, delta)
+    }
+
+    //Lose inventory items death event
+
+    if (deathEvents.loseItems) 
+        for (let i = 0; i < this.playerConstraints.inventorySize; i++)
+            items.dropPlayerItem(id, i, pvpKiller);
+
+    //Lose equipment items death event
+
+    if (deathEvents.loseEquipment)
+        for (let key in this.players[id].equipment) 
+            items.dropPlayerItem(id, key, pvpKiller);
+};
+
 exports.deltaManaPlayer = function(id, delta)
 {
     //Add delta
@@ -537,11 +576,24 @@ exports.deltaGoldPlayer = function(id, delta)
     return true;
 };
 
-exports.addPlayerExperience = function(id, exp)
+exports.deltaExperiencePlayer = function(id, exp)
 {
-    //Add experience
+    //Make sure we only delta if
+    //possible
+
+    if (this.players[id].stats.exp === 0 &&
+        exp < 0)
+        return;
+
+    //Delta experience
 
     this.players[id].stats.exp += exp;
+
+    //Make sure experience gets adjusted
+    //respectively when losing experience
+
+    if (this.players[id].stats.exp < 0)
+        this.players[id].stats.exp = 0;
 
     //Check if should level up
 
@@ -549,7 +601,7 @@ exports.addPlayerExperience = function(id, exp)
     {
         //Level up and reset xp
 
-        this.players[id].stats.exp = this.players[id].stats.exp-exptable[this.players[id].level-1];
+        this.players[id].stats.exp = 0; //this.players[id].stats.exp-exptable[this.players[id].level-1];
         this.players[id].level++;
 
         //Give one player point to spend
