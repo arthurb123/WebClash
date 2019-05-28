@@ -2,8 +2,8 @@
  "map": "1",
  "char_name": "player_male",
  "pos": {
-  "X": -16,
-  "Y": 288
+  "X": -32,
+  "Y": 272
  },
  "moving": false,
  "direction": 0,

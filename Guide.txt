@@ -60,8 +60,10 @@ objects are as follows:
 
 WebClash allows chat commands when the said
 player has admin priviliges.
-Admin priviliges can be granted in the permissions
-file, located in the server folder.
+Admin priviliges can be granted by typing
+"op name" in the server (name is your player
+name), or by changing the permissions file 
+located in the server folder.
 
 To see the list of available commands type
 /help in the chat.

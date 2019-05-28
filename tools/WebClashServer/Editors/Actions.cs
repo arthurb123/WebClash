@@ -24,6 +24,8 @@ namespace WebClashServer.Editors
 
         private int oldActionSelection = 0;
 
+        private bool dataHasChanged = false;
+
         public Actions()
         {
             InitializeComponent();
@@ -124,6 +126,8 @@ namespace WebClashServer.Editors
             else
                 properties.Visible = false;
 
+            name.Text = current.name;
+
             power.Value = (decimal)current.scaling.power;
             intelligence.Value = (decimal)current.scaling.intelligence;
             wisdom.Value = (decimal)current.scaling.wisdom;
@@ -207,7 +211,10 @@ namespace WebClashServer.Editors
                 {
                     Element el = current.elements[i];
 
-                    Rectangle r = new Rectangle(el.x, el.y, el.w, el.h);
+                    int w = (int)(el.w * el.scale),
+                        h = (int)(el.h * el.scale);
+
+                    Rectangle r = new Rectangle(el.x, el.y, w, h);
 
                     if (el.src.Length > 0)
                     {
@@ -339,6 +346,8 @@ namespace WebClashServer.Editors
 
             if (charSelect.Items.Count > 0)
                 charSelect.SelectedItem = charSelect.Items[0];
+
+            dataHasChanged = true;
         }
 
         private void save_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -353,11 +362,16 @@ namespace WebClashServer.Editors
             ReloadActions();
 
             actionSelect.SelectedItem = current.name;
+
+            dataHasChanged = true;
         }
 
-        public int GetAmount()
+        private void Name_TextChanged(object sender, EventArgs e)
         {
-            return actionSelect.Items.Count;
+            if (current == null)
+                return;
+
+            current.name = name.Text;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -414,6 +428,7 @@ namespace WebClashServer.Editors
 
             width.Value = current.elements[curElement].w;
             height.Value = current.elements[curElement].h;
+            scale.Value = (decimal)current.elements[curElement].scale;
 
             source.Text = current.elements[curElement].src;
 
@@ -443,6 +458,13 @@ namespace WebClashServer.Editors
         private void height_ValueChanged(object sender, EventArgs e)
         {
             current.elements[curElement].h = (int)height.Value;
+
+            canvas.Invalidate();
+        }
+
+        private void Scale_ValueChanged(object sender, EventArgs e)
+        {
+            current.elements[curElement].scale = float.Parse(scale.Value.ToString("0.000")); ;
 
             canvas.Invalidate();
         }
@@ -668,6 +690,11 @@ namespace WebClashServer.Editors
 
             canvas.Invalidate();
         }
+
+        public bool GetChanged()
+        {
+            return dataHasChanged;
+        }
     }
 
     public class Action
@@ -763,6 +790,8 @@ namespace WebClashServer.Editors
 
         public int w = 64,
                    h = 64;
+
+        public float scale = 1.0f;
 
         public string type = "static";
 

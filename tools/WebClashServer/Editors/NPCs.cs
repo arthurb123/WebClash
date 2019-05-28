@@ -10,7 +10,9 @@ namespace WebClashServer.Editors
 {
     public partial class NPCs : Form
     {
-        NPC current;
+        private NPC current;
+
+        private bool dataHasChanged = false;
 
         public NPCs()
         {
@@ -157,6 +159,8 @@ namespace WebClashServer.Editors
             ReloadNPCs();
 
             npcSelect.SelectedItem = name.Text;
+
+            dataHasChanged = true;
         }
 
         private void add_Click(object sender, EventArgs e)
@@ -327,9 +331,9 @@ namespace WebClashServer.Editors
             npcDialogue.ShowDialog();
         }
 
-        public int GetAmount()
+        public bool GetChanged()
         {
-            return npcSelect.Items.Count;
+            return dataHasChanged;
         }
     }
 

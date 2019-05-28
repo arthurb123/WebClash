@@ -43,6 +43,27 @@ const game = {
 
                 if (this._level !== undefined)
                     this._nameplate.Text('lvl ' + this._level + ' - ' + this.name);
+   
+                if (this._health != undefined)
+                {
+                    if (this._healthbar === undefined) {
+                        this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W, 8).Follows(go);
+                        this._healthbar = new lx.UITexture('#FF4242', 0, -36, this._health.cur/this._health.max*this.SIZE.W, 8).Follows(go);
+                    } else {
+                        this._healthbar.SIZE.W = this._health.cur/this._health.max*this.SIZE.W;
+    
+                        if (this._health.cur == this._health.max || !tiled.pvp)
+                        {
+                            this._healthbarBack.Hide();
+                            this._healthbar.Hide();
+                        }
+                        else if (tiled.pvp)
+                        {
+                            this._healthbarBack.Show();
+                            this._healthbar.Show();
+                        }
+                    }
+                }
             })
             .Draws(function() {
                 let equipment = [];
@@ -76,17 +97,23 @@ const game = {
                 }
             });
 
+        //Set variables
+
         go.name = name;
         go._moving = false;
         go._direction = 0;
         go._equipment = {};
+
+        //Add nameplate
 
         go._nameplate = new lx.UIText(name, 0, 0, 14)
             .Alignment('center')
             .Follows(go)
             .Show();
 
-        go._nameplate.SetShadow('rgba(0,0,0,.85)', 0, .85);
+        go._nameplate.SetShadow('rgba(0, 0, 0, .85)', 0, .85);
+
+        //Add to players
 
         this.players.push(go.Show(3));
     },
@@ -237,6 +264,11 @@ const game = {
         //Hide target GameObject
 
         this.players[id]._nameplate.Hide();
+
+        if (this.players[id]._healthbar != undefined) {
+            this.players[id]._healthbar.Hide();
+            this.players[id]._healthbarBack.Hide();
+        }
         this.players[id].Hide();
 
         //Get player name
@@ -293,7 +325,7 @@ const game = {
                         this._type === 'hostile')
                         this._nameplate.Text('lvl ' + this._stats.level + ' - ' + this.name);
                 }
-    
+
                 if (this._health != undefined)
                 {
                     if (this._healthbar === undefined) {

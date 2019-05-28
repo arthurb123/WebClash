@@ -41,6 +41,8 @@
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.itemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.questsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.restartAfterNewChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.permissions = new System.Windows.Forms.Button();
@@ -110,6 +112,7 @@
             this.menuStrip1.BackColor = System.Drawing.SystemColors.Control;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.editToolStripMenuItem,
+            this.optionsToolStripMenuItem,
             this.toolsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -135,6 +138,7 @@
             this.mapsToolStripMenuItem.Name = "mapsToolStripMenuItem";
             this.mapsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.mapsToolStripMenuItem.Text = "Maps";
+            this.mapsToolStripMenuItem.ToolTipText = "Edit the maps";
             this.mapsToolStripMenuItem.Click += new System.EventHandler(this.mapsToolStripMenuItem_Click);
             // 
             // charactersToolStripMenuItem
@@ -142,6 +146,7 @@
             this.charactersToolStripMenuItem.Name = "charactersToolStripMenuItem";
             this.charactersToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.charactersToolStripMenuItem.Text = "Characters";
+            this.charactersToolStripMenuItem.ToolTipText = "Edit the characters";
             this.charactersToolStripMenuItem.Click += new System.EventHandler(this.charactersToolStripMenuItem_Click);
             // 
             // NPCsToolStripMenuItem
@@ -149,6 +154,7 @@
             this.NPCsToolStripMenuItem.Name = "NPCsToolStripMenuItem";
             this.NPCsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.NPCsToolStripMenuItem.Text = "NPCs";
+            this.NPCsToolStripMenuItem.ToolTipText = "Edit the NPCs";
             this.NPCsToolStripMenuItem.Click += new System.EventHandler(this.NPCsToolStripMenuItem_Click);
             // 
             // actionsToolStripMenuItem
@@ -156,6 +162,7 @@
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
             this.actionsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.actionsToolStripMenuItem.Text = "Actions";
+            this.actionsToolStripMenuItem.ToolTipText = "Edit the actions";
             this.actionsToolStripMenuItem.Click += new System.EventHandler(this.actionsToolStripMenuItem_Click);
             // 
             // itemsToolStripMenuItem
@@ -163,6 +170,7 @@
             this.itemsToolStripMenuItem.Name = "itemsToolStripMenuItem";
             this.itemsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.itemsToolStripMenuItem.Text = "Items";
+            this.itemsToolStripMenuItem.ToolTipText = "Edit the items";
             this.itemsToolStripMenuItem.Click += new System.EventHandler(this.itemsToolStripMenuItem_Click);
             // 
             // questsToolStripMenuItem
@@ -170,7 +178,26 @@
             this.questsToolStripMenuItem.Name = "questsToolStripMenuItem";
             this.questsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.questsToolStripMenuItem.Text = "Quests";
+            this.questsToolStripMenuItem.ToolTipText = "Edit the quests";
             this.questsToolStripMenuItem.Click += new System.EventHandler(this.questsToolStripMenuItem_Click);
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.restartAfterNewChangesToolStripMenuItem});
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionsToolStripMenuItem.Text = "Options";
+            // 
+            // restartAfterNewChangesToolStripMenuItem
+            // 
+            this.restartAfterNewChangesToolStripMenuItem.Checked = true;
+            this.restartAfterNewChangesToolStripMenuItem.CheckOnClick = true;
+            this.restartAfterNewChangesToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.restartAfterNewChangesToolStripMenuItem.Name = "restartAfterNewChangesToolStripMenuItem";
+            this.restartAfterNewChangesToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.restartAfterNewChangesToolStripMenuItem.Text = "Restart after changes";
+            this.restartAfterNewChangesToolStripMenuItem.ToolTipText = "Enable or disable server restarting after server data has changed";
             // 
             // toolsToolStripMenuItem
             // 
@@ -185,6 +212,7 @@
             this.resetDataToolStripMenuItem.Name = "resetDataToolStripMenuItem";
             this.resetDataToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.resetDataToolStripMenuItem.Text = "Reset Data";
+            this.resetDataToolStripMenuItem.ToolTipText = "Allows for server data resetting";
             this.resetDataToolStripMenuItem.Click += new System.EventHandler(this.resetDataToolStripMenuItem_Click);
             // 
             // permissions
@@ -269,6 +297,8 @@
         private System.Windows.Forms.ToolStripMenuItem resetDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem questsToolStripMenuItem;
         private System.Windows.Forms.TextBox inputCommand;
+        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem restartAfterNewChangesToolStripMenuItem;
     }
 }
 

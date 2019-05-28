@@ -51,7 +51,10 @@
       "giveItemEvent": null,
       "loadMapEvent": null,
       "affectPlayerEvent": null,
-      "spawnNPCEvent": null
+      "spawnNPCEvent": null,
+      "turnHostileEvent": null,
+      "showQuestEvent": null,
+      "showShopEvent": null
     },
     {
       "text": "",
@@ -77,7 +80,10 @@
         "manaDifference": -85,
         "goldDifference": 0
       },
-      "spawnNPCEvent": null
+      "spawnNPCEvent": null,
+      "turnHostileEvent": null,
+      "showQuestEvent": null,
+      "showShopEvent": null
     },
     {
       "text": "That was really bad..",
@@ -95,7 +101,10 @@
       "giveItemEvent": null,
       "loadMapEvent": null,
       "affectPlayerEvent": null,
-      "spawnNPCEvent": null
+      "spawnNPCEvent": null,
+      "turnHostileEvent": null,
+      "showQuestEvent": null,
+      "showShopEvent": null
     },
     {
       "text": "I'm not gonna eat that again!",
@@ -113,7 +122,10 @@
       "giveItemEvent": null,
       "loadMapEvent": null,
       "affectPlayerEvent": null,
-      "spawnNPCEvent": null
+      "spawnNPCEvent": null,
+      "turnHostileEvent": null,
+      "showQuestEvent": null,
+      "showShopEvent": null
     },
     {
       "text": "",
@@ -139,7 +151,10 @@
         "name": "Slime",
         "amount": 1,
         "hostile": true
-      }
+      },
+      "turnHostileEvent": null,
+      "showQuestEvent": null,
+      "showShopEvent": null
     }
   ],
   "dialogElements": [

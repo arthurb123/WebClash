@@ -1288,7 +1288,8 @@ const ui = {
             this.visible = false;
         }
     },
-    shop: {
+    shop: 
+    {
         items: [],
         prices: [],
         visible: false,

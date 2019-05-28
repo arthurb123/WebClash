@@ -15,6 +15,8 @@ namespace WebClashServer.Editors
 
         Dictionary<int, string> mapBGMSaveRequests = new Dictionary<int, string>();
 
+        private bool dataHasChanged = false;
+
         public Maps()
         {
             InitializeComponent();
@@ -148,6 +150,8 @@ namespace WebClashServer.Editors
                     LoadMapsList();
 
                     mapList.SelectedItem = ofd.SafeFileName.Substring(0, ofd.SafeFileName.IndexOf('.'));
+
+                    dataHasChanged = true;
                 }
                 catch (Exception exc)
                 {
@@ -178,6 +182,8 @@ namespace WebClashServer.Editors
                 File.Delete(path);
 
             LoadMapsList();
+
+            dataHasChanged = true;
         }
 
         private void help_Click(object sender, EventArgs e)
@@ -193,11 +199,6 @@ namespace WebClashServer.Editors
             SaveBGMRequests();
 
             LoadMap(mapList.SelectedItem.ToString());
-        }
-
-        public int GetAmount()
-        {
-            return mapList.Items.Count;
         }
 
         private void fixTilesets_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -291,6 +292,8 @@ namespace WebClashServer.Editors
             mjo.Add("mapType", mapTypeString.ToLower());
 
             File.WriteAllText(map, JsonConvert.SerializeObject(mjo));
+
+            dataHasChanged = true;
         }
 
         private void bgmSourceHelp_Click(object sender, EventArgs e)
@@ -341,6 +344,8 @@ namespace WebClashServer.Editors
             mjo.Add("bgmSource", bgmSourceString);
 
             File.WriteAllText(map, JsonConvert.SerializeObject(mjo, Formatting.Indented));
+
+            dataHasChanged = true;
         }
 
         private void DayNight_CheckedChanged(object sender, EventArgs e)
@@ -371,6 +376,8 @@ namespace WebClashServer.Editors
             mjo.Add("showDayNight", dayNight);
 
             File.WriteAllText(map, JsonConvert.SerializeObject(mjo));
+
+            dataHasChanged = true;
         }
 
         private void AlwaysDark_CheckedChanged(object sender, EventArgs e)
@@ -402,6 +409,8 @@ namespace WebClashServer.Editors
             mjo.Add("alwaysDark", alwaysDark);
 
             File.WriteAllText(map, JsonConvert.SerializeObject(mjo));
+
+            dataHasChanged = true;
         }
 
         private void Pvp_CheckedChanged(object sender, EventArgs e)
@@ -426,6 +435,13 @@ namespace WebClashServer.Editors
             mjo.Add("pvp", pvp);
 
             File.WriteAllText(map, JsonConvert.SerializeObject(mjo));
+
+            dataHasChanged = true;
+        }
+
+        public bool GetChanged()
+        {
+            return dataHasChanged;
         }
     }
 

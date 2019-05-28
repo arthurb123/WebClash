@@ -15,6 +15,8 @@ namespace WebClashServer
         private Item current;
         private string oldName;
 
+        private bool dataHasChanged = false;
+
         public Items()
         {
             InitializeComponent();
@@ -199,6 +201,8 @@ namespace WebClashServer
             ReloadItems();
 
             itemList.SelectedItem = name.Text;
+
+            dataHasChanged = true;
         }
 
         private void SetTypes()
@@ -321,6 +325,8 @@ namespace WebClashServer
                 itemList.SelectedItem = itemList.Items[0];
             else
                 newLink_LinkClicked(sender, e);
+
+            dataHasChanged = true;
         }
 
         //Consumable settings
@@ -471,9 +477,9 @@ namespace WebClashServer
             current.consumableDialog = dialogConsumable.Checked;
         }
 
-        public int GetAmount()
+        public bool GetChanged()
         {
-            return itemList.Items.Count;
+            return dataHasChanged;
         }
     }
 

@@ -38,6 +38,8 @@
             this.properties = new System.Windows.Forms.GroupBox();
             this.appearancePanel = new System.Windows.Forms.Panel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.scale = new System.Windows.Forms.NumericUpDown();
+            this.label23 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.height = new System.Windows.Forms.NumericUpDown();
             this.source = new System.Windows.Forms.TextBox();
@@ -82,14 +84,16 @@
             this.heal = new System.Windows.Forms.NumericUpDown();
             this.label14 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.name = new System.Windows.Forms.TextBox();
+            this.label22 = new System.Windows.Forms.Label();
             this.editSounds = new System.Windows.Forms.Button();
             this.description = new System.Windows.Forms.RichTextBox();
+            this.cooldown = new System.Windows.Forms.NumericUpDown();
             this.label16 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
             this.iconImage = new System.Windows.Forms.PictureBox();
             this.icon = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
-            this.cooldown = new System.Windows.Forms.NumericUpDown();
-            this.label17 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.mana = new System.Windows.Forms.NumericUpDown();
             this.label21 = new System.Windows.Forms.Label();
@@ -97,6 +101,7 @@
             this.properties.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.scale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).BeginInit();
             this.animation.SuspendLayout();
@@ -114,8 +119,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.power)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.heal)).BeginInit();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.iconImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cooldown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.iconImage)).BeginInit();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mana)).BeginInit();
             this.SuspendLayout();
@@ -123,7 +128,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 15);
+            this.label1.Location = new System.Drawing.Point(12, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(74, 13);
             this.label1.TabIndex = 0;
@@ -131,8 +136,9 @@
             // 
             // actionSelect
             // 
+            this.actionSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.actionSelect.FormattingEnabled = true;
-            this.actionSelect.Location = new System.Drawing.Point(131, 12);
+            this.actionSelect.Location = new System.Drawing.Point(145, 12);
             this.actionSelect.Name = "actionSelect";
             this.actionSelect.Size = new System.Drawing.Size(135, 21);
             this.actionSelect.TabIndex = 1;
@@ -141,17 +147,17 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(409, 15);
+            this.label2.Location = new System.Drawing.Point(408, 66);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(77, 13);
+            this.label2.Size = new System.Drawing.Size(91, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Test Character";
+            this.label2.Text = "Testing Character";
             // 
             // charSelect
             // 
             this.charSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.charSelect.FormattingEnabled = true;
-            this.charSelect.Location = new System.Drawing.Point(597, 12);
+            this.charSelect.Location = new System.Drawing.Point(596, 60);
             this.charSelect.Name = "charSelect";
             this.charSelect.Size = new System.Drawing.Size(135, 21);
             this.charSelect.TabIndex = 3;
@@ -160,7 +166,7 @@
             // canvas
             // 
             this.canvas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.canvas.Location = new System.Drawing.Point(412, 80);
+            this.canvas.Location = new System.Drawing.Point(411, 92);
             this.canvas.Name = "canvas";
             this.canvas.Size = new System.Drawing.Size(320, 320);
             this.canvas.TabIndex = 4;
@@ -172,9 +178,9 @@
             this.properties.Controls.Add(this.behaviourPanel);
             this.properties.Controls.Add(this.propertyView);
             this.properties.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.properties.Location = new System.Drawing.Point(145, 226);
+            this.properties.Location = new System.Drawing.Point(144, 231);
             this.properties.Name = "properties";
-            this.properties.Size = new System.Drawing.Size(254, 187);
+            this.properties.Size = new System.Drawing.Size(254, 243);
             this.properties.TabIndex = 5;
             this.properties.TabStop = false;
             this.properties.Text = "Properties";
@@ -186,15 +192,17 @@
             this.appearancePanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.appearancePanel.Controls.Add(this.groupBox3);
             this.appearancePanel.Controls.Add(this.animation);
-            this.appearancePanel.Location = new System.Drawing.Point(9, 38);
+            this.appearancePanel.Location = new System.Drawing.Point(9, 49);
             this.appearancePanel.Margin = new System.Windows.Forms.Padding(0);
             this.appearancePanel.Name = "appearancePanel";
-            this.appearancePanel.Size = new System.Drawing.Size(239, 142);
+            this.appearancePanel.Size = new System.Drawing.Size(239, 178);
             this.appearancePanel.TabIndex = 17;
             this.appearancePanel.Visible = false;
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.scale);
+            this.groupBox3.Controls.Add(this.label23);
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.height);
             this.groupBox3.Controls.Add(this.source);
@@ -203,15 +211,49 @@
             this.groupBox3.Controls.Add(this.label7);
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(236, 69);
+            this.groupBox3.Size = new System.Drawing.Size(236, 103);
             this.groupBox3.TabIndex = 9;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Image";
             // 
+            // scale
+            // 
+            this.scale.DecimalPlaces = 2;
+            this.scale.Location = new System.Drawing.Point(104, 76);
+            this.scale.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.scale.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.scale.Name = "scale";
+            this.scale.Size = new System.Drawing.Size(66, 21);
+            this.scale.TabIndex = 10;
+            this.scale.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.scale.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.scale.ValueChanged += new System.EventHandler(this.Scale_ValueChanged);
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(60, 78);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(38, 15);
+            this.label23.TabIndex = 9;
+            this.label23.Text = "Scale";
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 44);
+            this.label6.Location = new System.Drawing.Point(5, 52);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(38, 15);
             this.label6.TabIndex = 5;
@@ -219,10 +261,10 @@
             // 
             // height
             // 
-            this.height.Location = new System.Drawing.Point(164, 42);
+            this.height.Location = new System.Drawing.Point(163, 50);
             this.height.Maximum = new decimal(new int[] {
-            320,
-            0,
+            1874919423,
+            2328306,
             0,
             0});
             this.height.Minimum = new decimal(new int[] {
@@ -243,7 +285,7 @@
             // 
             // source
             // 
-            this.source.Location = new System.Drawing.Point(65, 15);
+            this.source.Location = new System.Drawing.Point(65, 20);
             this.source.Name = "source";
             this.source.Size = new System.Drawing.Size(165, 21);
             this.source.TabIndex = 1;
@@ -251,10 +293,10 @@
             // 
             // width
             // 
-            this.width.Location = new System.Drawing.Point(45, 42);
+            this.width.Location = new System.Drawing.Point(44, 50);
             this.width.Maximum = new decimal(new int[] {
-            320,
-            0,
+            276447231,
+            23283,
             0,
             0});
             this.width.Minimum = new decimal(new int[] {
@@ -276,7 +318,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 18);
+            this.label3.Location = new System.Drawing.Point(6, 23);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(46, 15);
             this.label3.TabIndex = 0;
@@ -285,7 +327,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(118, 44);
+            this.label7.Location = new System.Drawing.Point(117, 52);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(43, 15);
             this.label7.TabIndex = 7;
@@ -297,7 +339,7 @@
             this.animation.Controls.Add(this.label5);
             this.animation.Controls.Add(this.speed);
             this.animation.Controls.Add(this.label4);
-            this.animation.Location = new System.Drawing.Point(0, 68);
+            this.animation.Location = new System.Drawing.Point(0, 104);
             this.animation.Name = "animation";
             this.animation.Size = new System.Drawing.Size(236, 71);
             this.animation.TabIndex = 4;
@@ -311,9 +353,9 @@
             this.direction.Items.AddRange(new object[] {
             "Horizontal",
             "Vertical"});
-            this.direction.Location = new System.Drawing.Point(107, 42);
+            this.direction.Location = new System.Drawing.Point(104, 42);
             this.direction.Name = "direction";
-            this.direction.Size = new System.Drawing.Size(118, 23);
+            this.direction.Size = new System.Drawing.Size(121, 23);
             this.direction.TabIndex = 6;
             this.direction.SelectedIndexChanged += new System.EventHandler(this.direction_SelectedIndexChanged);
             // 
@@ -360,7 +402,7 @@
             this.behaviourPanel.Controls.Add(this.projectilePanel);
             this.behaviourPanel.Controls.Add(this.propertyType);
             this.behaviourPanel.Controls.Add(this.label18);
-            this.behaviourPanel.Location = new System.Drawing.Point(9, 38);
+            this.behaviourPanel.Location = new System.Drawing.Point(9, 49);
             this.behaviourPanel.Margin = new System.Windows.Forms.Padding(0);
             this.behaviourPanel.Name = "behaviourPanel";
             this.behaviourPanel.Size = new System.Drawing.Size(239, 142);
@@ -483,7 +525,7 @@
             this.propertyView.Items.AddRange(new object[] {
             "Appearance",
             "Behaviour"});
-            this.propertyView.Location = new System.Drawing.Point(74, 15);
+            this.propertyView.Location = new System.Drawing.Point(74, 21);
             this.propertyView.Name = "propertyView";
             this.propertyView.Size = new System.Drawing.Size(121, 23);
             this.propertyView.TabIndex = 10;
@@ -491,7 +533,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(299, 415);
+            this.button2.Location = new System.Drawing.Point(261, 203);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(100, 23);
             this.button2.TabIndex = 7;
@@ -501,7 +543,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(144, 415);
+            this.button1.Location = new System.Drawing.Point(180, 203);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 6;
@@ -511,9 +553,9 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(299, 37);
+            this.button3.Location = new System.Drawing.Point(330, 12);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(100, 23);
+            this.button3.Size = new System.Drawing.Size(69, 21);
             this.button3.TabIndex = 9;
             this.button3.Text = "Remove Action";
             this.button3.UseVisualStyleBackColor = true;
@@ -521,11 +563,11 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(12, 37);
+            this.button4.Location = new System.Drawing.Point(286, 12);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.Size = new System.Drawing.Size(39, 21);
             this.button4.TabIndex = 8;
-            this.button4.Text = "Add Action";
+            this.button4.Text = "Add";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
@@ -535,7 +577,7 @@
             this.save.AutoSize = true;
             this.save.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.save.LinkColor = System.Drawing.Color.Blue;
-            this.save.Location = new System.Drawing.Point(700, 425);
+            this.save.Location = new System.Drawing.Point(699, 461);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(32, 13);
             this.save.TabIndex = 11;
@@ -565,9 +607,9 @@
             this.groupBox1.Controls.Add(this.power);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(145, 64);
+            this.groupBox1.Location = new System.Drawing.Point(145, 40);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(254, 96);
+            this.groupBox1.Size = new System.Drawing.Size(254, 99);
             this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Scaling";
@@ -718,7 +760,7 @@
             // 
             // heal
             // 
-            this.heal.Location = new System.Drawing.Point(55, 41);
+            this.heal.Location = new System.Drawing.Point(54, 22);
             this.heal.Maximum = new decimal(new int[] {
             99999999,
             0,
@@ -738,7 +780,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(10, 43);
+            this.label14.Location = new System.Drawing.Point(9, 24);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(43, 15);
             this.label14.TabIndex = 12;
@@ -746,23 +788,44 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.name);
+            this.groupBox2.Controls.Add(this.label22);
             this.groupBox2.Controls.Add(this.editSounds);
             this.groupBox2.Controls.Add(this.description);
+            this.groupBox2.Controls.Add(this.cooldown);
             this.groupBox2.Controls.Add(this.label16);
+            this.groupBox2.Controls.Add(this.label17);
             this.groupBox2.Controls.Add(this.iconImage);
             this.groupBox2.Controls.Add(this.icon);
             this.groupBox2.Controls.Add(this.label15);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(12, 66);
+            this.groupBox2.Location = new System.Drawing.Point(11, 40);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(127, 347);
+            this.groupBox2.Size = new System.Drawing.Size(127, 434);
             this.groupBox2.TabIndex = 14;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General Info";
             // 
+            // name
+            // 
+            this.name.Location = new System.Drawing.Point(6, 41);
+            this.name.Name = "name";
+            this.name.Size = new System.Drawing.Size(115, 21);
+            this.name.TabIndex = 18;
+            this.name.TextChanged += new System.EventHandler(this.Name_TextChanged);
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(6, 23);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(41, 15);
+            this.label22.TabIndex = 17;
+            this.label22.Text = "Name";
+            // 
             // editSounds
             // 
-            this.editSounds.Location = new System.Drawing.Point(6, 317);
+            this.editSounds.Location = new System.Drawing.Point(6, 404);
             this.editSounds.Name = "editSounds";
             this.editSounds.Size = new System.Drawing.Size(115, 23);
             this.editSounds.TabIndex = 5;
@@ -772,28 +835,51 @@
             // 
             // description
             // 
-            this.description.Location = new System.Drawing.Point(6, 185);
+            this.description.Location = new System.Drawing.Point(6, 229);
             this.description.Name = "description";
-            this.description.Size = new System.Drawing.Size(115, 116);
+            this.description.Size = new System.Drawing.Size(115, 102);
             this.description.TabIndex = 4;
             this.description.Text = "";
             this.description.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
             // 
+            // cooldown
+            // 
+            this.cooldown.Location = new System.Drawing.Point(6, 362);
+            this.cooldown.Maximum = new decimal(new int[] {
+            99999999,
+            0,
+            0,
+            0});
+            this.cooldown.Name = "cooldown";
+            this.cooldown.Size = new System.Drawing.Size(115, 21);
+            this.cooldown.TabIndex = 16;
+            this.cooldown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.cooldown.ValueChanged += new System.EventHandler(this.cooldown_ValueChanged);
+            // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(27, 160);
+            this.label16.Location = new System.Drawing.Point(3, 206);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(69, 15);
             this.label16.TabIndex = 3;
             this.label16.Text = "Description";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(6, 339);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(90, 15);
+            this.label17.TabIndex = 15;
+            this.label17.Text = "Cooldown (ms)";
             // 
             // iconImage
             // 
             this.iconImage.BackColor = System.Drawing.SystemColors.ControlLight;
             this.iconImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.iconImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.iconImage.Location = new System.Drawing.Point(30, 78);
+            this.iconImage.Location = new System.Drawing.Point(32, 129);
             this.iconImage.Name = "iconImage";
             this.iconImage.Size = new System.Drawing.Size(64, 64);
             this.iconImage.TabIndex = 2;
@@ -801,7 +887,7 @@
             // 
             // icon
             // 
-            this.icon.Location = new System.Drawing.Point(6, 47);
+            this.icon.Location = new System.Drawing.Point(7, 94);
             this.icon.Name = "icon";
             this.icon.Size = new System.Drawing.Size(115, 21);
             this.icon.TabIndex = 1;
@@ -810,54 +896,29 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(45, 26);
+            this.label15.Location = new System.Drawing.Point(7, 76);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(30, 15);
+            this.label15.Size = new System.Drawing.Size(72, 15);
             this.label15.TabIndex = 0;
-            this.label15.Text = "Icon";
-            // 
-            // cooldown
-            // 
-            this.cooldown.Location = new System.Drawing.Point(117, 14);
-            this.cooldown.Maximum = new decimal(new int[] {
-            99999999,
-            0,
-            0,
-            0});
-            this.cooldown.Name = "cooldown";
-            this.cooldown.Size = new System.Drawing.Size(129, 21);
-            this.cooldown.TabIndex = 16;
-            this.cooldown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.cooldown.ValueChanged += new System.EventHandler(this.cooldown_ValueChanged);
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(11, 17);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(90, 15);
-            this.label17.TabIndex = 15;
-            this.label17.Text = "Cooldown (ms)";
+            this.label15.Text = "Icon Source";
             // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.mana);
             this.groupBox4.Controls.Add(this.label21);
-            this.groupBox4.Controls.Add(this.cooldown);
-            this.groupBox4.Controls.Add(this.label17);
             this.groupBox4.Controls.Add(this.heal);
             this.groupBox4.Controls.Add(this.label14);
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox4.Location = new System.Drawing.Point(144, 159);
+            this.groupBox4.Location = new System.Drawing.Point(144, 139);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(255, 69);
+            this.groupBox4.Size = new System.Drawing.Size(255, 57);
             this.groupBox4.TabIndex = 17;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Usage";
+            this.groupBox4.Text = "Delta Stats";
             // 
             // mana
             // 
-            this.mana.Location = new System.Drawing.Point(173, 41);
+            this.mana.Location = new System.Drawing.Point(172, 22);
             this.mana.Maximum = new decimal(new int[] {
             99999999,
             0,
@@ -877,7 +938,7 @@
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(131, 43);
+            this.label21.Location = new System.Drawing.Point(130, 24);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(39, 15);
             this.label21.TabIndex = 17;
@@ -887,7 +948,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(744, 446);
+            this.ClientSize = new System.Drawing.Size(746, 486);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -905,8 +966,8 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(760, 485);
-            this.MinimumSize = new System.Drawing.Size(760, 485);
+            this.MaximumSize = new System.Drawing.Size(762, 525);
+            this.MinimumSize = new System.Drawing.Size(762, 525);
             this.Name = "Actions";
             this.Text = "WebClash Server - Actions";
             this.Load += new System.EventHandler(this.Actions_Load);
@@ -916,6 +977,7 @@
             this.appearancePanel.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.scale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.height)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).EndInit();
             this.animation.ResumeLayout(false);
@@ -938,8 +1000,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.heal)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.iconImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cooldown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.iconImage)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mana)).EndInit();
@@ -1013,5 +1075,9 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.NumericUpDown mana;
         private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.TextBox name;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.NumericUpDown scale;
+        private System.Windows.Forms.Label label23;
     }
 }

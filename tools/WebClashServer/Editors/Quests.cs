@@ -1,11 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using WebClashServer.Classes;
 using WebClashServer.Editors;
 
 namespace WebClashServer
@@ -14,6 +12,8 @@ namespace WebClashServer
     {
         private Quest current;
         private string oldName;
+
+        private bool dataHasChanged = false;
 
         public Quests()
         {
@@ -167,6 +167,8 @@ namespace WebClashServer
             ReloadQuests();
 
             questList.SelectedItem = name.Text;
+
+            dataHasChanged = true;
         }
         
         private void minLevel_ValueChanged(object sender, EventArgs e)
@@ -201,6 +203,8 @@ namespace WebClashServer
                 questList.SelectedItem = questList.Items[0];
             else
                 newLink_LinkClicked(sender, e);
+
+            dataHasChanged = true;
         }
 
         private void newObjective_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -245,9 +249,9 @@ namespace WebClashServer
             current.rewards.experience = (int)experienceReward.Value;
         }
 
-        public int GetAmount()
+        public bool GetChanged()
         {
-            return questList.Items.Count;
+            return dataHasChanged;
         }
     }
 

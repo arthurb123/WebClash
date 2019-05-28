@@ -785,7 +785,7 @@ exports.setPlayerTilePosition = function(id, map, x, y)
         this.players[id].pos.X = pos.x-game.players[id].character.width/2;
 
     if (pos.y != undefined)
-        this.players[id].pos.Y = pos.y-game.players[id].character.height/2;
+        this.players[id].pos.Y = pos.y-game.players[id].character.height;
 
     //Sync to players on the same map
 
@@ -799,10 +799,10 @@ exports.tileToActualPosition = function(map, x, y)
     let result = {};
 
     if (x != undefined)
-        result.x = (x-tiled.maps[map].width/2+.5)*tiled.maps[map].tilewidth;
+        result.x = (x-tiled.maps[map].width/2)*tiled.maps[map].tilewidth;
 
     if (y != undefined)
-        result.y = (y-tiled.maps[map].height/2)*tiled.maps[map].tileheight;
+        result.y = (y-tiled.maps[map].height/2-.5)*tiled.maps[map].tileheight;
 
     //Return
 

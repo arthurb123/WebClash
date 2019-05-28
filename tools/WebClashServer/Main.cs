@@ -18,6 +18,8 @@ namespace WebClashServer
 
         private Process p = null;
 
+        private bool shouldRestart = false;
+
         //Forms
 
         Characters characters = new Characters();
@@ -145,6 +147,29 @@ namespace WebClashServer
             p = null;
 
             running = false;
+
+            if (shouldRestart)
+            {
+                shouldRestart = false;
+
+                AttemptStartServer();
+            }
+        }
+
+        private void RestartServerOnChange(string changedData)
+        {
+            if (!restartAfterNewChangesToolStripMenuItem.Checked)
+                AddOutput("The " + changedData + " have changed, changes will be visible after a server restart.");
+            else
+            {
+                //AddOutput("The " + changedData + " have changed, restarting server..");
+
+                status.Text = "Restarting server..";
+
+                shouldRestart = true;
+
+                AttemptStopServer();
+            }
         }
 
         private bool CheckServerLocation()
@@ -197,13 +222,13 @@ namespace WebClashServer
 
                 if (!InvokeRequired)
                 {
-                    if (msg.IndexOf("Completed shut down procedure.") != -1)
-                        FinalShutDownProcedure();
-
                     output.Text += msg + "\n";
 
                     output.SelectionStart = output.TextLength;
                     output.ScrollToCaret();
+
+                    if (msg.IndexOf("Completed shut down procedure.") != -1)
+                        FinalShutDownProcedure();
                 }
                 else
                     Invoke(new Action<string>(AddOutput), msg);
@@ -287,15 +312,9 @@ namespace WebClashServer
             else
                 characters = new Characters();
 
-            int amount = 0;
-
-            characters.VisibleChanged += (object s, EventArgs ea) =>
-            {
-                amount = characters.GetAmount();
-            };
             characters.FormClosed += (object s, FormClosedEventArgs fcea) => {
-                if (amount != characters.GetAmount())
-                    AddOutput("The amount of characters has changed, changes will be visible after a server restart.");
+                if (characters.GetChanged())
+                    RestartServerOnChange("characters");
             };
 
             characters.Show();
@@ -314,15 +333,9 @@ namespace WebClashServer
             else
                 maps = new Maps();
 
-            int amount = 0;
-
-            maps.VisibleChanged += (object s, EventArgs ea) =>
-            {
-                amount = maps.GetAmount();
-            };
             maps.FormClosed += (object s, FormClosedEventArgs fcea) => {
-                if (amount != maps.GetAmount())
-                    AddOutput("The amount of maps has changed, changes will be visible after a server restart.");
+                if (maps.GetChanged())
+                    RestartServerOnChange("maps");
             };
 
             maps.Show();
@@ -341,15 +354,9 @@ namespace WebClashServer
             else
                 npcs = new NPCs();
 
-            int amount = 0;
-
-            npcs.VisibleChanged += (object s, EventArgs ea) =>
-            {
-                amount = npcs.GetAmount();
-            };
             npcs.FormClosed += (object s, FormClosedEventArgs fcea) => {
-                if (amount != npcs.GetAmount())
-                    AddOutput("The amount of NPCs has changed, changes will be visible after a server restart.");
+                if (npcs.GetChanged())
+                    RestartServerOnChange("NPCs");
             };
 
             npcs.Show();
@@ -368,15 +375,9 @@ namespace WebClashServer
             else
                 actions = new Actions();
 
-            int amount = 0;
-
-            actions.VisibleChanged += (object s, EventArgs ea) =>
-            {
-                amount = actions.GetAmount();
-            };
             actions.FormClosed += (object s, FormClosedEventArgs fcea) => {
-                if (amount != actions.GetAmount())
-                    AddOutput("The amount of actions has changed, changes will be visible after a server restart.");
+                if (actions.GetChanged())
+                    RestartServerOnChange("actions");
             };
 
             actions.Show();
@@ -395,15 +396,9 @@ namespace WebClashServer
             else
                 items = new Items();
 
-            int amount = 0;
-
-            items.VisibleChanged += (object s, EventArgs ea) =>
-            {
-                amount = items.GetAmount();
-            };
             items.FormClosed += (object s, FormClosedEventArgs fcea) => {
-                if (amount != items.GetAmount())
-                    AddOutput("The amount of items has changed, changes will be visible after a server restart.");
+                if (items.GetChanged())
+                    RestartServerOnChange("items");
             };
 
             items.Show();
@@ -422,15 +417,9 @@ namespace WebClashServer
             else
                 quests = new Quests();
 
-            int amount = 0;
-
-            quests.VisibleChanged += (object s, EventArgs ea) =>
-            {
-                amount = quests.GetAmount();
-            };
             quests.FormClosed += (object s, FormClosedEventArgs fcea) => {
-                if (amount != quests.GetAmount())
-                    AddOutput("The amount of quests has changed, changes will be visible after a server restart.");
+                if (quests.GetChanged())
+                    RestartServerOnChange("quests");
             };
 
             quests.Show();

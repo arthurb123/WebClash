@@ -18,6 +18,8 @@ namespace WebClashServer.Editors
 
         private Pen colliderPen = new Pen(Brushes.Purple, 2);
 
+        private bool dataHasChanged = false;
+
         public Characters()
         {
             InitializeComponent();
@@ -202,6 +204,8 @@ namespace WebClashServer.Editors
             ReloadCharacters();
 
             charSelect.SelectedItem = name.Text;
+
+            dataHasChanged = true;
         }
 
         private void add_Click(object sender, EventArgs e)
@@ -220,21 +224,14 @@ namespace WebClashServer.Editors
                 return;
             }
 
-            /*
-            if (name.Text == "player")
-            {
-                MessageBox.Show("The player character cannot be removed, this is a standard character.", "WebClash Server - Error");
-
-                return;
-            }
-            */
-
             File.Delete(Program.main.location + "/characters/" + name.Text + ".json");
 
             ReloadCharacters();
 
             if (charSelect.Items.Count > 0)
                 charSelect.SelectedItem = charSelect.Items[0];
+
+            dataHasChanged = true;
         }
 
         private void alwaysAnimate_CheckedChanged(object sender, EventArgs e)
@@ -304,9 +301,9 @@ namespace WebClashServer.Editors
             soundSelection.ShowDialog();
         }
         
-        public int GetAmount()
+        public bool GetChanged()
         {
-            return charSelect.Items.Count;
+            return dataHasChanged;
         }
     }
 
