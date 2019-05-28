@@ -18,6 +18,7 @@
       "y": 192,
       "w": 47,
       "h": 48,
+      "scale": 1.0,
       "type": "static",
       "src": "res/actions/13.png",
       "animated": true,

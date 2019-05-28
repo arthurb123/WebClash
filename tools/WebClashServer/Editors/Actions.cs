@@ -279,8 +279,8 @@ namespace WebClashServer.Editors
                 Rectangle r = new Rectangle(
                     current.elements[i].x,
                     current.elements[i].y,
-                    current.elements[i].w,
-                    current.elements[i].h
+                    (int)(current.elements[i].w * current.elements[i].scale),
+                    (int)(current.elements[i].h * current.elements[i].scale)
                 );
 
                 if (r.Contains(mp))

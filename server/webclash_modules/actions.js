@@ -199,8 +199,11 @@ exports.convertActionData = function(actionData, a_id, direction, character)
 
     for (let e = 0; e < actionData.elements.length; e++)
         if (actionData.elements[e].type === 'projectile') {
-            let dx = actionData.elements[e].x+actionData.elements[e].w/2-this.collection[a_id].sw/2,
-                dy = actionData.elements[e].y+actionData.elements[e].h/2-this.collection[a_id].sh/2
+            let w = actionData.elements[e].w*actionData.elements[e].scale,
+                h = actionData.elements[e].h*actionData.elements[e].scale;
+
+            let dx = actionData.elements[e].x+w/2-this.collection[a_id].sw/2,
+                dy = actionData.elements[e].y+h/2-this.collection[a_id].sh/2
 
             let wl = this.collection[a_id].sw/6,
                 hl = this.collection[a_id].sh/6;
@@ -228,13 +231,15 @@ exports.convertActionData = function(actionData, a_id, direction, character)
 
     if (direction == 1 || direction == 2)
          for (let e = 0; e < actionData.elements.length; e++) {
+            let w = actionData.elements[e].w*actionData.elements[e].scale;
+
              let x = actionData.elements[e].x;
 
              actionData.elements[e].x = actionData.elements[e].y;
              actionData.elements[e].y = x+character.height;
 
              if (direction == 1) {
-                 actionData.elements[e].x = this.collection[a_id].sw-actionData.elements[e].x-actionData.elements[e].w+character.width;
+                 actionData.elements[e].x = this.collection[a_id].sw-actionData.elements[e].x-w+character.width;
 
                  if (actionData.elements[e].type === 'projectile') {
                      let y = actionData.elements[e].projectileSpeed.y;
@@ -257,7 +262,9 @@ exports.convertActionData = function(actionData, a_id, direction, character)
 
     if (direction == 3)
         for (let e = 0; e < actionData.elements.length; e++) {
-             actionData.elements[e].y = this.collection[a_id].sh-actionData.elements[e].y-actionData.elements[e].h+character.height*2;
+            let h = actionData.elements[e].h*actionData.elements[e].scale;
+
+             actionData.elements[e].y = this.collection[a_id].sh-actionData.elements[e].y-h+character.height*2;
 
              if (actionData.elements[e].type === 'projectile')
                  actionData.elements[e].projectileSpeed.y *= -1;
@@ -647,8 +654,8 @@ exports.damageNPCs = function(owner, stats, actionData, action, onlyStatic)
             let actionRect = {
                 x: actionData.pos.X+actionData.elements[e].x,
                 y: actionData.pos.Y+actionData.elements[e].y,
-                w: actionData.elements[e].w,
-                h: actionData.elements[e].h
+                w: actionData.elements[e].w*actionData.elements[e].scale,
+                h: actionData.elements[e].h*actionData.elements[e].scale
             };
 
             let npcRect = {
@@ -686,8 +693,8 @@ exports.healNPCs = function(actionData, action)
             let actionRect = {
                 x: actionData.pos.X+actionData.elements[e].x,
                 y: actionData.pos.Y+actionData.elements[e].y,
-                w: actionData.elements[e].w,
-                h: actionData.elements[e].h
+                w: actionData.elements[e].w*actionData.elements[e].scale,
+                h: actionData.elements[e].h*actionData.elements[e].scale
             };
 
             let npcRect = {
@@ -734,8 +741,8 @@ exports.damagePlayers = function(stats, actionData, action, onlyStatic, except)
                 let actionRect = {
                     x: actionData.pos.X+actionData.elements[e].x,
                     y: actionData.pos.Y+actionData.elements[e].y,
-                    w: actionData.elements[e].w,
-                    h: actionData.elements[e].h
+                    w: actionData.elements[e].w*actionData.elements[e].scale,
+                    h: actionData.elements[e].h*actionData.elements[e].scale
                 };
 
                 let playerRect = {
@@ -781,8 +788,8 @@ exports.healPlayers = function(actionData, heal)
             let actionRect = {
                 x: actionData.pos.X+actionData.elements[e].x,
                 y: actionData.pos.Y+actionData.elements[e].y,
-                w: actionData.elements[e].w,
-                h: actionData.elements[e].h
+                w: actionData.elements[e].w*actionData.elements[e].scale,
+                h: actionData.elements[e].h*actionData.elements[e].scale
             };
 
             let playerRect = {
@@ -870,5 +877,4 @@ exports.calculateDamage = function(stats, scaling)
     total += 10*stats.vitality*scaling.vitality;
 
     return -Math.round(Math.random()*total);
-
 };

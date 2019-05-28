@@ -785,8 +785,8 @@ const game = {
                              4,
                              data.pos.X+data.elements[i].x,
                              data.pos.Y+data.elements[i].y,
-                             data.elements[i].w,
-                             data.elements[i].h,
+                             data.elements[i].w*data.elements[i].scale,
+                             data.elements[i].h*data.elements[i].scale,
                              0
                          );
 
@@ -825,8 +825,8 @@ const game = {
                              sprite,
                              data.pos.X+data.elements[i].x,
                              data.pos.Y+data.elements[i].y,
-                             data.elements[i].w,
-                             data.elements[i].h
+                             data.elements[i].w*data.elements[i].scale,
+                             data.elements[i].h*data.elements[i].scale
                          );
 
                          if (data.elements[i].animated) {
@@ -840,8 +840,11 @@ const game = {
                              if (sprites.length != 0) {
                                  sprites = sprites[0];
 
-                                 for (let s = 0; s < sprites.length; s++) 
+                                 for (let s = 0; s < sprites.length; s++) {
                                     sprites[s].Rotation(angle);
+                                    sprites[s].SIZE.W *= data.elements[i].scale;
+                                    sprites[s].SIZE.H *= data.elements[i].scale;
+                                 }
 
                                  projectile.ShowAnimation(new lx.Animation(sprites, data.elements[i].speed));
                              }

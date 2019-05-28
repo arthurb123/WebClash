@@ -160,7 +160,7 @@ namespace WebClashServer
         {
             if (!restartAfterNewChangesToolStripMenuItem.Checked)
                 AddOutput("The " + changedData + " have changed, changes will be visible after a server restart.");
-            else
+            else if (running)
             {
                 //AddOutput("The " + changedData + " have changed, restarting server..");
 
