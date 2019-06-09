@@ -31,7 +31,7 @@ const game = {
 
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
             .Loops(function() {
-                animation.animateMoving(go);
+                animation.animateMoving(this);
 
                 if (this._nameplate.Position().X === 0)
                     this._nameplate.Position(this.Size().W/2, -Math.floor(this.Size().H/5));
@@ -311,7 +311,7 @@ const game = {
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
             .Loops(function() {
                 animation.animateMoving(this);
-    
+
                 if (this._nameplate != undefined) {
                     if (this._nameplate.Position().X === 0)
                       this._nameplate.Position(this.Size().W/2, -12);
@@ -574,6 +574,25 @@ const game = {
         //Reset NPCs array
 
         this.npcs = [];
+    },
+
+    orderTargets: function(target1, target2) {
+        if (target1 == undefined || 
+            target2 == undefined)
+            return;
+
+        let onTop = false;
+
+        if (target1.Position().Y+target1.Size().H <
+            target2.Position().Y+target2.Size().H)
+            onTop = true;
+
+        if (onTop && target1.BUFFER_ID > target2.BUFFER_ID ||
+            !onTop && target1.BUFFER_ID < target2.BUFFER_ID)
+            lx.GAME.SWITCH_BUFFER_POSITION(
+                target1,
+                target2
+            );
     },
 
     resetColliders: function()
@@ -964,5 +983,30 @@ const game = {
 
         if (isMobile)
             ui.fullscreen.append();
+    },
+    update: function() {
+        //Order NPCs against NPCs
+
+        for (let i = 0; i < game.npcs.length; i++)
+            if (game.npcs[i] != undefined)
+                for (let ii = 0; ii < game.npcs.length; ii++)
+                    if (game.npcs[ii] != undefined && i !== ii)
+                        game.orderTargets(game.npcs[ii], game.npcs[i]);
+
+        //Order players against NPCs
+
+        for (let i = 0; i < game.players.length; i++)
+            if (game.players[i] != undefined)
+                for (let ii = 0; ii < game.npcs.length; ii++)
+                    if (game.npcs[ii] != undefined)
+                        game.orderTargets(game.npcs[ii], game.players[i]);
+
+        //Order players against players
+
+        for (let i = 0; i < game.players.length; i++)
+            if (game.players[i] != undefined)
+                for (let ii = 0; ii < game.players.length; ii++)
+                    if (game.players[ii] != undefined && i !== ii)
+                        game.orderTargets(game.players[ii], game.players[i]);
     }
 };

@@ -15,6 +15,7 @@ this.GAME = {
     COLLIDERS: [],
     LOOPS: [],
     LAYER_DRAW_EVENTS: [],
+    ON_RESIZE_EVENTS: [],
     INIT: function(FPS) {
         //Setup logger
 
@@ -300,6 +301,20 @@ this.GAME = {
                 this.BUFFER[LAYER][i] = OBJECT;
                 return i;
             }
+    },
+    SWITCH_BUFFER_POSITION: function(OBJECT1, OBJECT2) {
+        if (OBJECT1.BUFFER_ID === -1 ||
+            OBJECT2.BUFFER_ID === -1 ||
+            OBJECT1.BUFFER_LAYER !== OBJECT2.BUFFER_LAYER)
+            return;
+        
+        let BUFFER_ID = OBJECT1.BUFFER_ID;  
+        
+        OBJECT1.BUFFER_ID = OBJECT2.BUFFER_ID;
+        OBJECT2.BUFFER_ID = BUFFER_ID;
+        
+        this.BUFFER[OBJECT1.BUFFER_LAYER][OBJECT1.BUFFER_ID] = OBJECT1;
+        this.BUFFER[OBJECT1.BUFFER_LAYER][OBJECT2.BUFFER_ID] = OBJECT2;
     },
     ADD_LOOPS: function(CALLBACK) {
         if (CALLBACK == undefined) 
@@ -597,6 +612,13 @@ this.GAME = {
                 return true;
         
         return false;
+    },
+    ADD_ON_RESIZE_EVENT: function(CALLBACK) {
+        for (let i = 0; i < this.ON_RESIZE_EVENTS.length+1; i++)
+            if (this.ON_RESIZE_EVENTS[i] == undefined) {
+                this.ON_RESIZE_EVENTS[i] = CALLBACK;
+                break;
+            }
     }
 };
 
@@ -643,12 +665,27 @@ this.Initialize = function(target) {
             height = self.innerHeight;
         }
 
+        let dx = width - lx.CONTEXT.CANVAS.width,
+            dy = height - lx.CONTEXT.CANVAS.height;
+        
+                
+        lx.GAME.ON_RESIZE_EVENTS.forEach(function(cb) {
+            cb({
+                dx: dx,
+                dy: dy,
+                oldWidth: lx.CONTEXT.CANVAS.width,
+                oldHeight: lx.CONTEXT.CANVAS.height,
+                width: width,
+                height: height
+            }); 
+        });
+        
         lx.CONTEXT.CANVAS.width = width;
         lx.CONTEXT.CANVAS.height = height;
     };
 
     window.onresize();
-
+    
     //Create standard controller
 
     if (this.CONTEXT.CONTROLLER == undefined)
@@ -953,6 +990,16 @@ this.ClearMouseMove = function() {
     lx.CONTEXT.CONTROLLER.MOUSE.ON_HOVER = undefined;
 
     return this;
+};
+
+this.OnResize = function(callback) {
+    this.GAME.ADD_ON_RESIZE_EVENT(callback);
+    
+    return this;
+};
+
+this.ClearResize = function() {
+    this.GAME.ON_RESIZE_EVENTS = [];
 };
 
 this.Loops = function(callback) {
@@ -1389,6 +1436,10 @@ this.Emitter = function(sprite, x, y, amount, duration) {
         X: x,
         Y: y
     };
+    this.OFFSET = {
+        X: x,
+        Y: y
+    };
     this.SIZE = {
         MIN: 8,
         MAX: 16
@@ -1446,36 +1497,32 @@ this.Emitter = function(sprite, x, y, amount, duration) {
     };
 
     this.Position = function(x, y) {
-        if (x != undefined && y != undefined) {
-            if (this.OFFSET == undefined) this.POS = {
+        if (x != undefined && y != undefined) 
+            this.POS = {
                 X: x,
                 Y: y
             };
-            else this.OFFSET = {
-                X: x,
-                Y: y
-            };
-        }
-        else return this.POS;
+        else 
+            return this.POS;
         
         return this;
     };
 
     this.Follows = function(target) {
-        if (target != undefined) {
+        if (target != undefined) 
             this.TARGET = target;
-            this.OFFSET = this.POS;
-        }
         else 
-        return this.TARGET;
+            return this.TARGET;
         
         return this;
     };
 
     this.StopFollowing = function() {
         this.TARGET = undefined; 
-        this.POS = this.OFFSET;
-        this.OFFSET = undefined;
+        this.POS = {
+            X: this.OFFSET.X,
+            Y: this.OFFSET.Y
+        };
         
         return this;
     };
@@ -1515,18 +1562,23 @@ this.Emitter = function(sprite, x, y, amount, duration) {
         for (let i = 0; i < this.PARTICLES.length; i++) {
             lx.CONTEXT.GRAPHICS.save();
             lx.CONTEXT.GRAPHICS.globalAlpha = this.PARTICLES[i].OPACITY;
-            lx.DrawSprite(this.SPRITE, this.PARTICLES[i].POS.X, this.PARTICLES[i].POS.Y, this.PARTICLES[i].SIZE, this.PARTICLES[i].SIZE);
+            lx.DrawSprite(
+                this.SPRITE, 
+                this.PARTICLES[i].POS.X, 
+                this.PARTICLES[i].POS.Y, 
+                this.PARTICLES[i].SIZE, 
+                this.PARTICLES[i].SIZE
+            );
             lx.CONTEXT.GRAPHICS.restore();
         }
     };
     
     this.UPDATE = function() {
-        if (this.TARGET != undefined) {
+        if (this.TARGET != undefined) 
             this.POS = {
                 X: this.TARGET.POS.X+this.OFFSET.X,
                 Y: this.TARGET.POS.Y+this.OFFSET.Y
             };
-        }
 
         let VX = this.MOVEMENT.MAX_VX/lx.GAME.PHYSICS.STEPS,
             VY = this.MOVEMENT.MAX_VY/lx.GAME.PHYSICS.STEPS;
@@ -1624,6 +1676,10 @@ this.GameObject = function (sprite, x, y, w, h) {
         X: x,
         Y: y
     };
+    this.OFFSET = {
+        X: x,
+        Y: y
+    };
     
     this.MOVEMENT = {
         VX: 0,
@@ -1716,13 +1772,13 @@ this.GameObject = function (sprite, x, y, w, h) {
     };
     
     this.Position = function(x, y) {
-        if (x == undefined || y == undefined) 
-            return this.POS;
-        else 
+        if (x != undefined && y != undefined) 
             this.POS = {
                 X: x,
                 Y: y
             };
+        else 
+            return this.POS;
         
         return this;
     };
@@ -1948,6 +2004,26 @@ this.GameObject = function (sprite, x, y, w, h) {
         return this;
     };
     
+    this.Follows = function(target) {
+        if (target != undefined) 
+            this.TARGET = target;
+        else 
+            return this.TARGET;
+        
+        return this;
+    };
+
+    this.StopFollowing = function() {
+        this.TARGET = undefined; 
+        this.POS = {
+            X: this.OFFSET.X,
+            Y: this.OFFSET.Y
+        };
+        
+        return this;
+    };
+
+    
     this.ShowColorOverlay = function(color, duration) {
         if (this.ANIMATION != undefined) 
             this.ANIMATION.GET_CURRENT_FRAME().ShowColorOverlay(color, duration);
@@ -2080,6 +2156,12 @@ this.GameObject = function (sprite, x, y, w, h) {
     };
     
     this.UPDATE = function() {
+        if (this.TARGET != undefined) 
+            this.POS = {
+                X: this.TARGET.POS.X+this.OFFSET.X,
+                Y: this.TARGET.POS.Y+this.OFFSET.Y
+            };
+        
         if (this.ANIMATION != undefined) 
             this.ANIMATION.UPDATE();
         if (this.LOOPS != undefined) 
@@ -2108,6 +2190,73 @@ this.GameObject = function (sprite, x, y, w, h) {
 
     else 
         console.log('GameObjectError: Created a GameObject without a specified size.');
+};
+
+/* Noise Object */
+
+this.Noise = function(seed) { 
+    if (seed == undefined) 
+        seed = Math.round(Math.random()*10000);
+
+    this.GRAD = [[1,1],[-1,1],[1,-1],[-1,-1], 
+                 [1,0],[-1,0],[1,0],[-1,0], 
+                 [0,1],[0,-1],[0,1],[0,-1]]; 
+
+    this.RANDOM = function() {
+        let x = Math.sin(seed++) * 10000;
+
+        return x - Math.floor(x);
+    };
+
+    this.P = [];
+    for (let i=0; i<256; i++) 
+        this.P[i] = Math.floor(this.RANDOM()*256);
+
+    this.PERM = []; 
+    for(var i=0; i<512; i++) 
+        this.PERM[i]=this.P[i & 255];
+
+    this.DOT = function(g, x, y) { 
+        return g[0]*x + g[1]*y; 
+    };
+
+    this.MIX = function(a, b, t) { 
+        return (1.0-t)*a + t*b; 
+    };
+
+    this.FADE = function(t) { 
+        return t*t*t*(t*(t*6.0-15.0)+10.0); 
+    };
+
+    this.Get = function(x, y) { 
+        let X = Math.floor(x),
+            Y = Math.floor(y); 
+  
+        x = x - X;
+        y = y - Y;
+  
+        X = X & 255; 
+        Y = Y & 255; 
+  
+        let gi00 = this.PERM[X+this.PERM[Y]] % 12,
+            gi01 = this.PERM[X+this.PERM[Y+1]] % 12,
+            gi10 = this.PERM[X+1+this.PERM[Y]] % 12,
+            gi11 = this.PERM[X+1+this.PERM[Y+1]] % 12; 
+
+        let n00 = this.DOT(this.GRAD[gi00], x, y),
+            n10 = this.DOT(this.GRAD[gi10], x-1, y),
+            n01 = this.DOT(this.GRAD[gi01], x, y-1),
+            n11 = this.DOT(this.GRAD[gi11], x-1, y-1);
+
+        let u = this.FADE(x),
+            v = this.FADE(y);
+ 
+        let nx0 = this.MIX(n00, n10, u),
+            nx1 = this.MIX(n01, n11, u), 
+            nxy = this.MIX(nx0, nx1, v);
+
+        return nxy; 
+    };
 };
 
 /* Ray Object */
@@ -2156,207 +2305,36 @@ this.Ray = function(x, y) {
         if (target.COLLIDER == undefined)
             return false;
 
-        return this.CHECK_INTERSECTION_BOX(target.COLLIDER, false);
+        return this.CHECK_INTERSECTION_BOX(target.COLLIDER);
     };
 
-    this.CastPoint = function(target) {
-        if (target.COLLIDER == undefined)
+    this.SAME_SIGN = function(N1, N2) {
+        return (N1 >= 0 && N2 >= 0 || N1 <= 0 && N2 <= 0);
+    };
+
+    this.CHECK_INTERSECTION_BOX = function(TARGET) {
+        let END = {
+                X: TARGET.POS.X+TARGET.SIZE.W,
+                Y: TARGET.POS.Y+TARGET.SIZE.H
+            },
+            DY = -this.POS.Y - TARGET.POS.Y;
+
+        if (!this.SAME_SIGN(DY, -this.DIR.Y))
             return false;
 
-        return this.CHECK_INTERSECTION_BOX(target.COLLIDER, true, true);
-    };
+        let T1 = (TARGET.POS.X - this.POS.X) * (1 / this.DIR.X),
+            T2 = (END.X - this.POS.X) * (1 / this.DIR.X),
+            T3 = (TARGET.POS.Y - this.POS.Y) * (1 / this.DIR.Y),
+            T4 = (END.Y - this.POS.Y) * (1 / this.DIR.Y);
 
-    this.CastPoints = function(target) {
-        if (target.COLLIDER == undefined)
+        let TMIN = Math.max(Math.min(T1, T2), Math.min(T3, T4)),
+            TMAX = Math.min(Math.max(T1, T2), Math.max(T3, T4));
+
+        if (TMAX < 0 || 
+            TMIN > TMAX)
             return false;
 
-        return this.CHECK_INTERSECTION_BOX(target.COLLIDER, true, false);
-    };
-
-    this.CastPointRadially = function(target, degrees) {
-        let old_dir = this.DIR,
-            points = [];
-        
-        for (let c = 0; c < 360; c+=degrees) {
-            this.DIR = {
-                X: Math.cos(c*Math.PI/180),
-                Y: Math.sin(c*Math.PI/180)
-            };
-            
-            let result = this.CHECK_INTERSECTION_BOX(target.COLLIDER, true, true);
-            
-            if (result)
-                points.push(result);
-        };
-        
-        this.DIR = old_dir;
-        
-        return points;
-    };
-
-    this.CastPointsRadially = function(target, degrees) {
-        let old_dir = this.DIR,
-            points = [];
-        
-        for (let c = 0; c < 360; c+=degrees) {
-            this.DIR = {
-                X: Math.cos(c*Math.PI/180),
-                Y: Math.sin(c*Math.PI/180)
-            };
-            
-            let result = this.CHECK_INTERSECTION_BOX(target.COLLIDER, true, false);
-            
-            if (result)
-                points.push.apply(points, result);
-        };
-        
-        this.DIR = old_dir;
-        
-        return points;
-    };
-
-    this.CastPointRadiallyMultiple = function(targets, degrees) {
-        let old_dir = this.DIR,
-            points = [];
-        
-        for (let c = 0; c < 360; c+=degrees) {
-            this.DIR = {
-                X: Math.cos(c*Math.PI/180),
-                Y: Math.sin(c*Math.PI/180)
-            };
-            
-            let results = [];
-            
-            for (let t = 0; t < targets.length; t++) {
-                let result = this.CHECK_INTERSECTION_BOX(targets[t].COLLIDER, true, true);
-
-                if (result)
-                    results.push(result);
-            }
-
-            let closest = Infinity,
-                closestPoint;
-
-            for (let r = 0; r < results.length; r++) {
-                let x = results[r].X-this.POS.X,
-                    y = results[r].Y-this.POS.Y;
-
-                let d = Math.sqrt(x*x + y*y);
-
-                if (d < closest) {
-                    closest = d;
-                    closestPoint = results[r];
-                }
-            }
-            
-            if (closestPoint != undefined)
-                points.push(closestPoint);
-        };
-        
-        this.DIR = old_dir;
-        
-        return points;
-    };
-
-    this.GET_VECTOR = function() {
-        return {
-            X: this.POS.X,
-            Y: this.POS.Y,
-            X1: this.POS.X + this.DIR.X,
-            Y1: this.POS.Y + this.DIR.Y
-        };
-    };
-
-    this.CHECK_INTERSECTION_BOX = function(TARGET, GET_POSITIONS, GET_FIRST_POSITION) {
-        let LINES = [],
-            RESULT = false;
-
-        if (TARGET.SIZE != undefined) {
-            let LXT = { X: TARGET.POS.X, Y: TARGET.POS.Y, X1: TARGET.POS.X+TARGET.SIZE.W, Y1: TARGET.POS.Y },
-                LYL = { X: TARGET.POS.X, Y: TARGET.POS.Y, X1: TARGET.POS.X, Y1: TARGET.POS.Y+TARGET.SIZE.H },
-                LXB = { X: TARGET.POS.X, Y: TARGET.POS.Y+TARGET.SIZE.H, X1: TARGET.POS.X+TARGET.SIZE.W, Y1: TARGET.POS.Y+TARGET.SIZE.H },
-                LYR = { X: TARGET.POS.X+TARGET.SIZE.W, Y: TARGET.POS.Y, X1: TARGET.POS.X+TARGET.SIZE.W, Y1: TARGET.POS.Y+TARGET.SIZE.H };
-            
-            if (this.POS.X < TARGET.POS.X) {
-                LINES.push(LYL);
-                LYL = undefined;
-            } else {
-                LINES.push(LYR);
-                LYR = undefined;
-            }
-            
-            if (this.POS.Y < TARGET.POS.Y) {
-                LINES.push(LXT);
-                LXT = undefined;
-            } else {
-                LINES.push(LXB);
-                LXB = undefined;
-            }
-            
-            if (LYL == undefined)
-                LINES.push(LYR);
-            else if (LYR == undefined)
-                LINES.push(LYL);
-            
-            if (LXB == undefined)
-                LINES.push(LXT);
-            else if (LXT == undefined)
-                LINES.push(LXB);
-        } else 
-            return RESULT;
-
-        for (let L = 0; L < LINES.length; L++) {
-            let LINE = LINES[L];
-
-            let LINE_RESULT = this.CHECK_INTERSECTION_LINE(LINE, GET_POSITIONS);
-            
-            if (LINE_RESULT) {
-                if (GET_POSITIONS && !RESULT)
-                    RESULT = [];
-                else if (!GET_POSITIONS) {
-                    RESULT = true;
-
-                    break;
-                }
-
-                if (GET_POSITIONS) 
-                    RESULT.push(LINE_RESULT);
-            }
-        }
-        
-        if (GET_POSITIONS && RESULT && GET_FIRST_POSITION)
-            RESULT = RESULT[0];
-
-        return RESULT;
-    };
-
-    this.CHECK_INTERSECTION_LINE = function(LINE, GET_POSITION) {
-        let VECTOR = this.GET_VECTOR();
-        
-        let RESULT = false,
-            DEN = (LINE.X-LINE.X1) * (VECTOR.Y-VECTOR.Y1) - (LINE.Y-LINE.Y1) * (VECTOR.X-VECTOR.X1);
-
-        if (DEN === 0)
-            return false;
-
-        let T = ((LINE.X-VECTOR.X) * (VECTOR.Y-VECTOR.Y1) - (LINE.Y-VECTOR.Y) * (VECTOR.X-VECTOR.X1)) / DEN,
-            U = -((LINE.X-LINE.X1) * (LINE.Y-VECTOR.Y) - (LINE.Y-LINE.Y1) * (LINE.X-VECTOR.X)) / DEN;
-
-        if (T > 0 && T < 1 && U > 0) {
-            if (GET_POSITION) {
-                RESULT = {
-                    X: LINE.X + T * (LINE.X1 - LINE.X),
-                    Y: LINE.Y + T * (LINE.Y1 - LINE.Y)
-                };
-
-                if (lx.GAME.FOCUS != undefined)
-                    RESULT = lx.GAME.TRANSLATE_FROM_FOCUS(RESULT);
-            }
-            else
-                RESULT = true;
-        }
-
-        return RESULT;
+        return true;
     };
 };
 

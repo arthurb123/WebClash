@@ -12,4 +12,8 @@ const gameScene = new lx.Scene(function() {
     //Attempt to join the game
     
     client.joinGame();
+
+    //Setup game update loop
+
+    lx.Loops(game.update);
 });
