@@ -2,17 +2,7 @@
  "admins": [
   "admin"
  ],
- "banned": [],
- "censoredWords": [
-  "<",
-  ">",
-  "nigger",
-  "cunt",
-  "fuck",
-  "bitch",
-  "asshole",
-  "faggot",
-  "dick",
-  "cock"
+ "banned": [
+     
  ]
 }

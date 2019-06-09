@@ -6,7 +6,7 @@ exports.filterText = function(text)
 {
     //Cycle through all censored words
 
-    permissions.censoredWords.forEach(function(word)
+    censored.forEach(function(word)
     {
         //While a word persists in the text, replace it
         //with the '*' character
