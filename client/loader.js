@@ -3,6 +3,8 @@
 const scripts = [
     'properties.js',
 
+    'lib/classes/uibox.js',
+
     'lib/geckos.io.js',
     'lib/sha256.js',
     'lib/lynx2d.js',

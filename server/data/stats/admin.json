@@ -3,7 +3,7 @@
  "char_name": "player_male",
  "pos": {
   "X": -32,
-  "Y": 272
+  "Y": 256
  },
  "moving": false,
  "direction": 0,

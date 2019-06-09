@@ -802,7 +802,7 @@ exports.tileToActualPosition = function(map, x, y)
         result.x = (x-tiled.maps[map].width/2)*tiled.maps[map].tilewidth;
 
     if (y != undefined)
-        result.y = (y-tiled.maps[map].height/2-.5)*tiled.maps[map].tileheight;
+        result.y = (y-tiled.maps[map].height/2-1)*tiled.maps[map].tileheight;
 
     //Return
 
