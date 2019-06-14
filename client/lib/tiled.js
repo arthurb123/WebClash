@@ -9,9 +9,9 @@ const tiled = {
 
         this.loading = true;
 
-        //Temporarily remove the Lynx2D controller target
+        //Let the player lose focus
 
-        lx.CONTEXT.CONTROLLER.TARGET = undefined;
+        player.loseFocus();
 
         //Start progress
 
@@ -43,10 +43,6 @@ const tiled = {
         //Clear all world items
 
         game.resetWorldItems();
-
-        //Make sure certain player stats are reset
-
-        game.resetPlayer();
 
         //Reset loot box
 
@@ -118,7 +114,8 @@ const tiled = {
 
                 //Prerender/cache layer for easier drawing
 
-                const cachedLayer = tiled.cacheLayer(map, l);
+                const cachedLayer = tiled.cacheLayer(map, l),
+                      cachedLayerSprite = new lx.Sprite(cachedLayer);
 
                 //Add drawing loop
 
@@ -127,23 +124,14 @@ const tiled = {
                         game.players[game.player] == undefined)
                         return;
 
-                    //Calculate screen clip
+                    //Draw cached layer sprite
 
-                    let clip = tiled.calculateScreenClip(
-                        cachedLayer.width,
-                        cachedLayer.height,
+                    lx.DrawSprite(
+                        cachedLayerSprite,
                         offset_width,
-                        offset_height
-                    );
-
-                    //Draw cached layer
-
-                    gfx.drawImage(
-                        cachedLayer,
-                        clip.CX, clip.CY,
-                        clip.CW, clip.CH,
-                        clip.X, clip.Y,
-                        clip.CW, clip.CH
+                        offset_height,
+                        cachedLayerSprite.Size().W,
+                        cachedLayerSprite.Size().H
                     );
                 });
 
@@ -158,12 +146,13 @@ const tiled = {
             if (map.showDayNight || map.alwaysDark) {
                 //Cache the shadow map of the map
 
-                let shadowMap = tiled.cacheShadowMap(map);
+                let shadowMap = tiled.cacheShadowMap(map),
+                    shadowMapSprite = new lx.Sprite(shadowMap);
 
                 //Setup rendering process on the
                 //highest layer
 
-                lx.OnLayerDraw(actualLayer+1, function(gfx) {
+                lx.OnLayerDraw(actualLayer+1, function() {
                     if (game.gameTime.current == undefined)
                         return;
 
@@ -192,27 +181,15 @@ const tiled = {
                     if (opacity <= 0)
                         return;
 
-                    //Calculate screen clip
+                    shadowMapSprite.Opacity(opacity);
 
-                    let clip = tiled.calculateScreenClip(
-                        shadowMap.width, 
-                        shadowMap.height,
+                    lx.DrawSprite(
+                        shadowMapSprite,
                         tiled.offset.width,
-                        tiled.offset.height
+                        tiled.offset.height,
+                        shadowMapSprite.Size().W,
+                        shadowMapSprite.Size().H
                     );
-
-                    //Render (clipped) shadow map
-
-                    gfx.save();
-                    gfx.globalAlpha = opacity;
-                    gfx.drawImage(
-                        shadowMap, 
-                        clip.CX, clip.CY,
-                        clip.CW, clip.CH,
-                        clip.X, clip.Y,
-                        clip.CW, clip.CH
-                    );
-                    gfx.restore();
                 });
             }
 
@@ -241,59 +218,6 @@ const tiled = {
             tiled.loading = false;
         });
     },
-    calculateScreenClip: function(mapWidth, mapHeight, offsetWidth, offsetHeight) 
-    {
-        if (game.player === -1 ||
-            game.players[game.player] == undefined)
-            return;
-
-        //Calculate clip position
-
-        let size = lx.GetDimensions();
-
-        let clip = {
-            X: Math.round(game.players[game.player].POS.X+game.players[game.player].SIZE.W/2-offsetWidth-size.width/2),
-            Y: Math.round(game.players[game.player].POS.Y+game.players[game.player].SIZE.H/2-offsetHeight-size.height/2)
-        };
-
-        //Declare size and pos
-
-        let pos = { X: 0, Y: 0 };
-
-        //Adjust clip to avoid an out-of-bounds clip
-        //Some browsers tend to handle an out-of-bounds clip poorly.
-
-        //Avoid negative X and Y clip
-
-        if (clip.X < 0) {
-            pos.X -= clip.X;
-            size.width += clip.X;
-
-            clip.X = 0;
-        }
-        if (clip.Y < 0) {
-            pos.Y -= clip.Y;
-            size.height += clip.Y;
-
-            clip.Y = 0;
-        }
-
-        //Avoid out-of-bounds size
-
-        if (clip.X+size.width > mapWidth)
-            size.width = mapWidth - clip.X;
-        if (clip.Y+size.height > mapHeight)
-            size.height = mapHeight - clip.Y;
-
-        return {
-            X: pos.X,
-            Y: pos.Y,
-            CX: clip.X,
-            CY: clip.Y,
-            CW: size.width,
-            CH: size.height
-        };
-    },
     cacheLayer: function(map, layer_id)
     {
         //Get layer
@@ -302,11 +226,10 @@ const tiled = {
 
         //Create canvas according to layer size
 
-        let c = document.createElement('canvas');
-        c.width = layer.width * map.tilewidth;
-        c.height = layer.height * map.tileheight;
-
-        let g = c.getContext('2d');
+        let c = new lx.Canvas(
+            layer.width * map.tilewidth, 
+            layer.height * map.tileheight
+        );
 
         //Render all tiles to canvas
 
@@ -388,9 +311,8 @@ const tiled = {
 
                 //Draw tile
 
-                g.drawImage(
-                    sprite.IMG,
-                    tc.x, tc.y, map.tilewidth, map.tileheight,
+                c.DrawSprite(
+                    sprite.Clip(tc.x, tc.y, map.tilewidth, map.tileheight),
                     tp.x, tp.y, map.tilewidth, map.tileheight
                 );
             }
@@ -820,50 +742,53 @@ const tiled = {
         if (map.alwaysDark)
             color = properties.darknessColor;
 
-        let c = document.createElement('canvas');
-        c.width = map.width*map.tilewidth;
-        c.height = map.height*map.tileheight;
+        let c = new lx.Canvas(
+            map.width*map.tilewidth,
+            map.height*map.tileheight
+        );
 
-        let g = c.getContext('2d');
+        //Draw shadow map
 
-        //Overall shading
+        c.Draw(function(g) {
+            //Overall shading
 
-        g.fillStyle = color;
-        g.globalCompositeOperation = 'source-over';
-        g.fillRect(0, 0, c.width, c.height);
+            g.fillStyle = color;
+            g.globalCompositeOperation = 'source-over';
+            g.fillRect(0, 0, c.Size().W, c.Size().H);
 
-        //Blurred map hotspots
+            //Blurred map hotspots
 
-        g.globalCompositeOperation = 'destination-out';
-        g.filter = 'blur(' + Math.ceil(map.tilewidth/3) + 'px)';
+            g.globalCompositeOperation = 'destination-out';
+            g.filter = 'blur(' + Math.ceil(map.tilewidth/3) + 'px)';
 
-        for (let lhs = 0; lhs < this.lightHotspots.length; lhs++) {
-            if (this.lightHotspots[lhs] == undefined)
-                continue;
+            for (let lhs = 0; lhs < tiled.lightHotspots.length; lhs++) {
+                if (tiled.lightHotspots[lhs] == undefined)
+                    continue;
 
-            //Actual light hotspot
+                //Actual light hotspot
 
-            g.globalAlpha = 1;
-            g.beginPath();
-            g.arc(
-                this.lightHotspots[lhs].x, 
-                this.lightHotspots[lhs].y, 
-                this.lightHotspots[lhs].size*map.tilewidth,
-                0, 
-                2 * Math.PI
-            );
-            g.closePath();
-            g.fill();
-
-            //Coloring, if specified
-
-            if (this.lightHotspots[lhs].color != undefined) {
-                g.globalAlpha = .5;
-                g.globalCompositeOperation = 'source-over';
-                g.fillStyle = this.lightHotspots[lhs].color;
+                g.globalAlpha = 1;
+                g.beginPath();
+                g.arc(
+                    tiled.lightHotspots[lhs].x, 
+                    tiled.lightHotspots[lhs].y, 
+                    tiled.lightHotspots[lhs].size*map.tilewidth,
+                    0, 
+                    2 * Math.PI
+                );
+                g.closePath();
                 g.fill();
+
+                //Coloring, if specified
+
+                if (tiled.lightHotspots[lhs].color != undefined) {
+                    g.globalAlpha = .5;
+                    g.globalCompositeOperation = 'source-over';
+                    g.fillStyle = tiled.lightHotspots[lhs].color;
+                    g.fill();
+                }
             }
-        }
+        });
 
         //Return cached shadow canvas
 

@@ -56,7 +56,7 @@ rl.on('line', (text) => {
 
 //Setup Express
 
-app.use(express.static(path.resolve(__dirname +  "/../client/")));
+app.use('/', express.static(path.resolve(__dirname +  "/../client/")));
 
 //Load all game data, and if successful start server
 

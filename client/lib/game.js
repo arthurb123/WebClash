@@ -292,17 +292,6 @@ const game = {
             if (i !== this.player)
                 this.removePlayer(i);
     },
-    resetPlayer: function()
-    {
-        //Check if the player exists
-
-        if (this.player == -1)
-            return;
-
-        //Reset movement
-
-        this.players[this.player].Movement(0, 0);
-    },
 
     instantiateNPC: function(id, name)
     {

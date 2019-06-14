@@ -22,7 +22,16 @@ const player = {
     },
     loseFocus: function()
     {
+        //Check if the player exists
+
+        if (game.player === -1)
+            return;
+
+        //Reset movement
+
         game.players[game.player].Movement(0, 0);
+
+        //Remove controller targeting
 
         lx.CONTEXT.CONTROLLER.TARGET = undefined;
     },
