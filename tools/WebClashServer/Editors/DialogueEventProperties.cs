@@ -44,6 +44,16 @@ namespace WebClashServer.Editors
 
                     loadShowQuestOptions();
                     break;
+                case "SetVariable":
+                    playerVariablePanel.Visible = true;
+
+                    loadPlayerVariableOptions(true);
+                    break;
+                case "GetVariable":
+                    playerVariablePanel.Visible = true;
+
+                    loadPlayerVariableOptions(false);
+                    break;
             }
 
             repeatable.Checked = current.repeatable;
@@ -285,6 +295,40 @@ namespace WebClashServer.Editors
         private void questList_SelectedIndexChanged(object sender, EventArgs e)
         {
             current.showQuestEvent.name = questList.SelectedItem.ToString();
+        }
+
+        //Player variable event
+
+        private void loadPlayerVariableOptions(bool set)
+        {
+            if (set)
+            {
+                playerVariableValue.Visible = true;
+
+                playerVariableName.Text = current.setVariableEvent.name;
+                playerVariableValue.Checked = current.setVariableEvent.value;
+            }
+            else
+            {
+                succesText.Text = "Next (True)";
+                occurredText.Text = "Next (False)";
+
+                playerVariableName.Text = current.getVariableEvent.name;
+                repeatable.Visible = false;
+            }
+        }
+
+        private void PlayerVariableName_TextChanged(object sender, EventArgs e)
+        {
+            if (current.setVariableEvent != null)
+                current.setVariableEvent.name = playerVariableName.Text;
+            else
+                current.getVariableEvent.name = playerVariableName.Text;
+        }
+
+        private void PlayerVariableValue_CheckedChanged(object sender, EventArgs e)
+        {
+            current.setVariableEvent.value = playerVariableValue.Checked;
         }
     }
 }

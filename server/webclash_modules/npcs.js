@@ -149,7 +149,11 @@ exports.createNPC = function(map, name, x, y, is_event)
         standard: this.randomNPCMovementTimeout()
     };
     npc.moving = false;
-    npc.direction = 0;
+
+    if (npc.data.movement === 'static')
+        npc.direction = npc.data.facing;
+    else
+        npc.direction = 0;
 
     //Setup NPC Combat
 

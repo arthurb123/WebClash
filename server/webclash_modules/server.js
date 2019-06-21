@@ -713,8 +713,7 @@ exports.handleChannel = function(channel)
 
             //Setup variables
 
-            let dialogEvent,
-                quest;
+            let dialogEvent;
 
             //Check if NPC or item dialog
 
@@ -762,168 +761,7 @@ exports.handleChannel = function(channel)
 
             //Handle events
 
-            //Load map event
-
-            if (dialogEvent.eventType === 'LoadMap') {
-                //Get map index
-
-                let new_map = tiled.getMapIndex(dialogEvent.loadMapEvent.map);
-
-                //Check if map is valid
-
-                if (new_map === -1)
-                    return;
-
-                //Load map
-
-                game.loadMap(channel, dialogEvent.loadMapEvent.map);
-
-                //Set position
-
-                game.setPlayerTilePosition(
-                    id,
-                    new_map,
-                    dialogEvent.loadMapEvent.positionX,
-                    dialogEvent.loadMapEvent.positionY
-                );
-            }
-
-            //Give item event
-
-            else if (dialogEvent.eventType === 'GiveItem') {
-                //Add item(s)
-
-                let done = false;
-
-                for (let a = 0; a < dialogEvent.giveItemEvent.amount; a++) {
-                    if (items.addPlayerItem(channel, id, dialogEvent.giveItemEvent.item))
-                        done = true;
-                }
-
-                if (!done)
-                    return;
-            }
-
-            //Affect player event
-
-            else if (dialogEvent.eventType === 'AffectPlayer') {
-                //Add differences
-
-                //Health
-
-                if (dialogEvent.affectPlayerEvent.healthDifference > 0)
-                    game.healPlayer(id, dialogEvent.affectPlayerEvent.healthDifference);
-                else if (dialogEvent.affectPlayerEvent.healthDifference < 0)
-                    game.damagePlayer(id, dialogEvent.affectPlayerEvent.healthDifference);
-
-                //Mana
-
-                game.deltaManaPlayer(id, dialogEvent.affectPlayerEvent.manaDifference);
-
-                //Gold
-
-                if (!game.deltaGoldPlayer(id, dialogEvent.affectPlayerEvent.goldDifference)) {
-                    channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: false, id: data.id });
-                    return;
-                }
-            }
-
-            //Spawn NPC event
-
-            else if (dialogEvent.eventType === 'SpawnNPC') {
-                //Spawn event NPCs for the specified amount
-
-                let pos = {
-                    x: game.players[id].pos.X+game.players[id].character.width/2,
-                    y: game.players[id].pos.Y+game.players[id].character.height,
-                };
-
-                for (let i = 0; i < dialogEvent.spawnNPCEvent.amount; i++)
-                    npcs.createEventNPC(
-                        map,
-                        dialogEvent.spawnNPCEvent.name,
-                        pos.x,
-                        pos.y,
-                        id,
-                        dialogEvent.spawnNPCEvent.hostile
-                    );
-            }
-
-            //Turn hostile event
-
-            else if (dialogEvent.eventType === 'TurnHostile') {
-                //Grab target NPC
-
-                let npc = npcs.onMap[map][data.npc];
-
-                //Kill original NPC
-
-                npcs.killNPC(map, data.npc);
-
-                //Create event NPC
-
-                npcs.createEventNPC(
-                    map,
-                    npc.name,
-                    npc.pos.X+npc.data.character.width/2,
-                    npc.pos.Y+npc.data.character.height,
-                    id,
-                    true,
-                    function() {
-                        //On reset, respawn original npc
-
-                        npcs.respawnNPC(map, data.npc);
-                    }
-                );
-
-                //Respond and return
-
-                channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: true, id: data.id });
-                return;
-            }
-
-            //Show quest event
-
-            else if (dialogEvent.eventType === 'ShowQuest') {
-                //Send quest information to player,
-                //if the quest has not been completed yet
-                //or the quest can be repeated
-
-                if (!quests.hasCompleted(id, dialogEvent.showQuestEvent.name) || dialogEvent.repeatable)
-                    quest = quests.getQuestDialog(dialogEvent.showQuestEvent.name);
-                else {
-                    channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: false, id: data.id });
-
-                    return;
-                }
-            }
-
-            //Show shop event
-
-            else if (dialogEvent.eventType === 'ShowShop') {
-                //Respond to make sure the dialog closes
-
-                channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: true, id: data.id });
-
-                //Open shop for the player
-
-                shop.openShop(id, data.npc, data.id, dialogEvent.showShopEvent);
-            }
-
-            //Check if event is repeatable,
-            //if not set a player global variable
-
-            if (!dialogEvent.repeatable && dialogEvent.eventType !== 'ShowQuest') {
-                game.setPlayerGlobalVariable(
-                    id,
-                    eventName,
-                    true
-                );
-            }
-
-            //Respond true (success)
-
-            channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: true, quest: quest, id: data.id });
+            dialog.handleEvents(id, channel, dialogEvent, data);
         }
         catch (err) {
             output.giveError('Could not handle dialog event: ', err);
@@ -1040,6 +878,12 @@ exports.handleChannel = function(channel)
 
             let map = game.players[id].map_id;
 
+            //Check if player is on the same
+            //map as the NPC, way too simple for now
+
+            if (npcs.onMap[map][data.npc] == undefined)
+                return;
+
             //Try to buy item
 
             let bought = shop.buyItem(
@@ -1082,7 +926,7 @@ exports.handleChannel = function(channel)
         if (npcs.inDialogRange(map, data, game.players[id].pos.X, game.players[id].pos.Y))
             channel.emit('CLIENT_REQUEST_DIALOG_RESPONSE', {
                 npc: data,
-                dialog: npcs.onMap[map][data].data.dialog
+                dialog: dialog.createUnique(id, npcs.onMap[map][data].data.dialog)
             });    
     });
 
@@ -1488,10 +1332,10 @@ exports.syncWorldItem = function(map, data, channel, broadcast)
 
 //Sync item dialog to client, which immediately opens up the dialog on the clientside
 
-exports.syncItemDialog = function(id, itemName, dialog)
+exports.syncItemDialog = function(id, itemName, dialogData)
 {
     let data = {
-        dialog: dialog,
+        dialog: dialog.createUnique(id, dialogData),
         name: itemName
     };
 

@@ -17,6 +17,7 @@ io.addServer(http);
 
 global.server = require('./webclash_modules/server');
 global.game = require('./webclash_modules/game');
+global.dialog = require('./webclash_modules/dialog');
 global.items = require('./webclash_modules/items');
 global.shop = require('./webclash_modules/shop');
 global.npcs = require('./webclash_modules/npcs');

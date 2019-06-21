@@ -3,6 +3,7 @@
   "showNameplate": true,
   "movement": "free",
   "range": 6,
+  "facing": 0,
   "type": "hostile",
   "character": "golem",
   "stats": {

@@ -41,12 +41,12 @@
             this.label7 = new System.Windows.Forms.Label();
             this.itemList = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.succesText = new System.Windows.Forms.Label();
             this.nextIndex = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
             this.repeatable = new System.Windows.Forms.CheckBox();
             this.nextIndex1 = new System.Windows.Forms.NumericUpDown();
-            this.label5 = new System.Windows.Forms.Label();
+            this.occurredText = new System.Windows.Forms.Label();
             this.affectPlayerPanel = new System.Windows.Forms.Panel();
             this.goldDifference = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
@@ -63,6 +63,10 @@
             this.showQuestPanel = new System.Windows.Forms.Panel();
             this.questList = new System.Windows.Forms.ComboBox();
             this.label15 = new System.Windows.Forms.Label();
+            this.playerVariablePanel = new System.Windows.Forms.Panel();
+            this.label14 = new System.Windows.Forms.Label();
+            this.playerVariableName = new System.Windows.Forms.TextBox();
+            this.playerVariableValue = new System.Windows.Forms.CheckBox();
             this.loadMapPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.positionY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.positionX)).BeginInit();
@@ -77,6 +81,7 @@
             this.spawnNPCPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.npcAmount)).BeginInit();
             this.showQuestPanel.SuspendLayout();
+            this.playerVariablePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // loadMapPanel
@@ -222,14 +227,14 @@
             this.label8.TabIndex = 0;
             this.label8.Text = "Item";
             // 
-            // label1
+            // succesText
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(130, 148);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Next (Success)";
+            this.succesText.AutoSize = true;
+            this.succesText.Location = new System.Drawing.Point(130, 148);
+            this.succesText.Name = "succesText";
+            this.succesText.Size = new System.Drawing.Size(79, 13);
+            this.succesText.TabIndex = 1;
+            this.succesText.Text = "Next (Success)";
             // 
             // nextIndex
             // 
@@ -300,14 +305,14 @@
             -2147483648});
             this.nextIndex1.ValueChanged += new System.EventHandler(this.nextIndex1_ValueChanged);
             // 
-            // label5
+            // occurredText
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(128, 172);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(82, 13);
-            this.label5.TabIndex = 37;
-            this.label5.Text = "Next (Occurred)";
+            this.occurredText.AutoSize = true;
+            this.occurredText.Location = new System.Drawing.Point(128, 172);
+            this.occurredText.Name = "occurredText";
+            this.occurredText.Size = new System.Drawing.Size(82, 13);
+            this.occurredText.TabIndex = 37;
+            this.occurredText.Text = "Next (Occurred)";
             // 
             // affectPlayerPanel
             // 
@@ -512,21 +517,62 @@
             this.label15.TabIndex = 0;
             this.label15.Text = "Quest";
             // 
+            // playerVariablePanel
+            // 
+            this.playerVariablePanel.Controls.Add(this.playerVariableValue);
+            this.playerVariablePanel.Controls.Add(this.playerVariableName);
+            this.playerVariablePanel.Controls.Add(this.label14);
+            this.playerVariablePanel.Location = new System.Drawing.Point(12, 12);
+            this.playerVariablePanel.Name = "playerVariablePanel";
+            this.playerVariablePanel.Size = new System.Drawing.Size(286, 126);
+            this.playerVariablePanel.TabIndex = 11;
+            this.playerVariablePanel.Visible = false;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(10, 41);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(76, 13);
+            this.label14.TabIndex = 0;
+            this.label14.Text = "Variable Name";
+            // 
+            // playerVariableName
+            // 
+            this.playerVariableName.Location = new System.Drawing.Point(111, 38);
+            this.playerVariableName.Name = "playerVariableName";
+            this.playerVariableName.Size = new System.Drawing.Size(164, 20);
+            this.playerVariableName.TabIndex = 1;
+            this.playerVariableName.TextChanged += new System.EventHandler(this.PlayerVariableName_TextChanged);
+            // 
+            // playerVariableValue
+            // 
+            this.playerVariableValue.AutoSize = true;
+            this.playerVariableValue.Location = new System.Drawing.Point(111, 77);
+            this.playerVariableValue.Name = "playerVariableValue";
+            this.playerVariableValue.Size = new System.Drawing.Size(53, 17);
+            this.playerVariableValue.TabIndex = 2;
+            this.playerVariableValue.Text = "Value";
+            this.playerVariableValue.UseVisualStyleBackColor = true;
+            this.playerVariableValue.Visible = false;
+            this.playerVariableValue.CheckedChanged += new System.EventHandler(this.PlayerVariableValue_CheckedChanged);
+            // 
             // DialogueEventProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(312, 215);
+            this.Controls.Add(this.playerVariablePanel);
             this.Controls.Add(this.showQuestPanel);
             this.Controls.Add(this.spawnNPCPanel);
             this.Controls.Add(this.affectPlayerPanel);
             this.Controls.Add(this.nextIndex1);
-            this.Controls.Add(this.label5);
+            this.Controls.Add(this.occurredText);
             this.Controls.Add(this.giveItemPanel);
             this.Controls.Add(this.repeatable);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.nextIndex);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.succesText);
             this.Controls.Add(this.loadMapPanel);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -555,6 +601,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.npcAmount)).EndInit();
             this.showQuestPanel.ResumeLayout(false);
             this.showQuestPanel.PerformLayout();
+            this.playerVariablePanel.ResumeLayout(false);
+            this.playerVariablePanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -563,7 +611,7 @@
         #endregion
 
         private System.Windows.Forms.Panel loadMapPanel;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label succesText;
         private System.Windows.Forms.NumericUpDown nextIndex;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox repeatable;
@@ -579,7 +627,7 @@
         private System.Windows.Forms.ComboBox itemList;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.NumericUpDown nextIndex1;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label occurredText;
         private System.Windows.Forms.Panel affectPlayerPanel;
         private System.Windows.Forms.NumericUpDown healthDifference;
         private System.Windows.Forms.Label label9;
@@ -596,5 +644,9 @@
         private System.Windows.Forms.Panel showQuestPanel;
         private System.Windows.Forms.ComboBox questList;
         private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Panel playerVariablePanel;
+        private System.Windows.Forms.TextBox playerVariableName;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.CheckBox playerVariableValue;
     }
 }

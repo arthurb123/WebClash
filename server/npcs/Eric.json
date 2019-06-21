@@ -3,6 +3,7 @@
   "showNameplate": true,
   "movement": "free",
   "range": 1,
+  "facing": 0,
   "type": "friendly",
   "character": "knight",
   "stats": {
@@ -37,7 +38,7 @@
           "next": 3
         },
         {
-          "text": "Sup bro.",
+          "text": "Sup bro",
           "next": 1
         }
       ],
@@ -48,7 +49,10 @@
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
-      "showQuestEvent": null
+      "showQuestEvent": null,
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
     },
     {
       "text": "Wow this got boring quickly.\nCan you move on now?",
@@ -76,7 +80,10 @@
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
-      "showQuestEvent": null
+      "showQuestEvent": null,
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
     },
     {
       "text": "You are currently in an example world of WebClash.\nWebClash is an ORPG suite for the browser!\n\nWhy don't you take a look around?",
@@ -100,7 +107,10 @@
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
-      "showQuestEvent": null
+      "showQuestEvent": null,
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
     },
     {
       "text": "",
@@ -126,7 +136,10 @@
       "turnHostileEvent": null,
       "showQuestEvent": {
         "name": "Eric's Cleanup"
-      }
+      },
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
     },
     {
       "text": "",
@@ -153,7 +166,10 @@
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
-      "showQuestEvent": null
+      "showQuestEvent": null,
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
     },
     {
       "text": "I already gave you something?!",
@@ -173,7 +189,10 @@
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
-      "showQuestEvent": null
+      "showQuestEvent": null,
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
     },
     {
       "text": "Ugh, here you go.\nNow leave!",
@@ -193,7 +212,10 @@
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
-      "showQuestEvent": null
+      "showQuestEvent": null,
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
     },
     {
       "text": "",
@@ -221,7 +243,10 @@
       },
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
-      "showQuestEvent": null
+      "showQuestEvent": null,
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
     },
     {
       "text": "I will slap you again if you don't leave right now!",
@@ -241,7 +266,10 @@
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
-      "showQuestEvent": null
+      "showQuestEvent": null,
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
     },
     {
       "text": "",
@@ -267,7 +295,10 @@
       "turnHostileEvent": null,
       "showQuestEvent": {
         "name": "Big Bastard"
-      }
+      },
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
     },
     {
       "text": "Thanks m8, you did great.",
@@ -287,8 +318,15 @@
       "affectPlayerEvent": null,
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
-      "showQuestEvent": null
-    }
+      "showQuestEvent": null,
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
+    },
+    null,
+    null,
+    null,
+    null
   ],
   "dialogElements": [
     {
@@ -304,7 +342,7 @@
       "size": "100, 80"
     },
     {
-      "p": "189, 237",
+      "p": "208, 241",
       "id": 2,
       "isEvent": false,
       "size": "100, 80"
@@ -356,6 +394,10 @@
       "id": 10,
       "isEvent": false,
       "size": "100, 80"
-    }
+    },
+    null,
+    null,
+    null,
+    null
   ]
 }
