@@ -43,7 +43,7 @@ exports.inspectItem = function(id, itemId, dialogData) {
         if (next.getVariableEvent != undefined) {
             dialogData[option.next] = undefined;
 
-            if (game.getPlayerGlobalVariable(id, "UPV_"+next.getVariableEvent.name))
+            if (game.getPlayerGlobalVariable(id, next.getVariableEvent.name))
                 option.next = next.options[0].next;
             else
                 option.next = next.options[1].next;
@@ -213,7 +213,7 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
 
         game.setPlayerGlobalVariable(
             id,
-            "UPV_" + dialogEvent.setVariableEvent.name,
+            dialogEvent.setVariableEvent.name,
             dialogEvent.setVariableEvent.value
         );
     }

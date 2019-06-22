@@ -830,7 +830,8 @@ exports.damageNPC = function(owner, map, id, delta)
 
     //Subtract toughness from damage
 
-    delta += this.onMap[map][id].data.stats.toughness-1;
+    if (this.onMap[map][id].data.stats.toughness > 0)
+        delta += this.onMap[map][id].data.stats.toughness-1;
 
     if (delta >= 0)
         delta = 0;

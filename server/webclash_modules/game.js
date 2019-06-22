@@ -386,7 +386,8 @@ exports.damagePlayer = function(id, damage, pvpDamager)
 {
     //Subtract toughness from damage
 
-    damage += this.players[id].attributes.toughness-1;
+    if (this.players[id].attributes.toughness > 0)
+        damage += this.players[id].attributes.toughness-1;
 
     if (damage >= 0)
         damage = 0;

@@ -913,11 +913,11 @@ const game = {
 
         for (let key in player.attributes)
             if (extra_attributes == undefined)
-                total += Math.round(scaling[key] * player.attributes[key] * 10);
+                total += scaling[key] * player.attributes[key] * 10;
             else
-                total += Math.round(scaling[key] * (player.attributes[key]+extra_attributes[key]) * 10);
+                total += scaling[key] * (player.attributes[key]+extra_attributes[key]) * 10;
 
-        return total;
+        return Math.round(total);
     },
 
     createBlood: function(target, count)
