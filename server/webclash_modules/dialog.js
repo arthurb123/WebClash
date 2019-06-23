@@ -34,6 +34,25 @@ exports.inspectItem = function(id, itemId, dialogData) {
     if (current == undefined)
         return;
 
+    if (current.getVariableEvent != undefined) {
+        dialogData[itemId] = undefined;
+
+        let next = -1;
+
+        if (game.getPlayerGlobalVariable(id, current.getVariableEvent.name))
+            next = current.options[0].next;
+        else
+            next = current.options[1].next;
+
+        if (next !== -1) {
+            dialogData[next].entry = current.entry;
+
+            dialog.inspectItem(id, next, dialogData);
+        }
+
+        return;
+    }
+
     current.options.forEach(function(option) {
         if (option.next === -1)
             return;
@@ -47,6 +66,8 @@ exports.inspectItem = function(id, itemId, dialogData) {
                 option.next = next.options[0].next;
             else
                 option.next = next.options[1].next;
+            
+            dialogData[option.next].entry = next.entry;
         }
 
         dialog.inspectItem(id, option.next, dialogData);

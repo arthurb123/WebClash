@@ -237,11 +237,11 @@ const ui = {
             let start = -1;
 
             for (let i = 0; i < dialog.length; i++)
-                    if (dialog[i].entry) {
-                        start = i;
+                if (dialog[i] != undefined && dialog[i].entry) {
+                    start = i;
 
-                        break;
-                    }
+                    break;
+                }
 
             if (start == -1)
                 return;

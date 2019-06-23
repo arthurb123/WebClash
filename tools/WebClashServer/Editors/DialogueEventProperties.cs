@@ -304,6 +304,7 @@ namespace WebClashServer.Editors
             if (set)
             {
                 playerVariableValue.Visible = true;
+                getVariableEntryPoint.Visible = false;
 
                 playerVariableName.Text = current.setVariableEvent.name;
                 playerVariableValue.Checked = current.setVariableEvent.value;
@@ -315,6 +316,8 @@ namespace WebClashServer.Editors
 
                 playerVariableName.Text = current.getVariableEvent.name;
                 repeatable.Visible = false;
+
+                getVariableEntryPoint.Checked = current.entry;
             }
         }
 
@@ -329,6 +332,11 @@ namespace WebClashServer.Editors
         private void PlayerVariableValue_CheckedChanged(object sender, EventArgs e)
         {
             current.setVariableEvent.value = playerVariableValue.Checked;
+        }
+
+        private void GetVariableEntryPoint_CheckedChanged(object sender, EventArgs e)
+        {
+            current.entry = getVariableEntryPoint.Checked;
         }
     }
 }

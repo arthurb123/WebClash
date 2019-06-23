@@ -148,6 +148,21 @@ namespace WebClashServer.Editors
                 {
                     dialogSystem.items[elements[item].id] = dep.current;
 
+                    //Check if entry point (Get Global Variable)
+
+                    if (dep.current.entry)
+                        for (int i = 0; i < dialogSystem.items.Count; i++)
+                            if (i != elements[item].id &&
+                                dialogSystem.items[i] != null &&
+                                dialogSystem.items[i].entry)
+                            {
+                                dep.current.entry = false;
+
+                                MessageBox.Show("The dialog event could not be set as the entry point, as an entry point already exists.", "WebClash Server - Error");
+
+                                break;
+                            }
+
                     canvas.Invalidate();
                 };
 

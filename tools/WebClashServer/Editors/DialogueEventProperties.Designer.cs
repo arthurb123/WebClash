@@ -64,9 +64,10 @@
             this.questList = new System.Windows.Forms.ComboBox();
             this.label15 = new System.Windows.Forms.Label();
             this.playerVariablePanel = new System.Windows.Forms.Panel();
-            this.label14 = new System.Windows.Forms.Label();
-            this.playerVariableName = new System.Windows.Forms.TextBox();
             this.playerVariableValue = new System.Windows.Forms.CheckBox();
+            this.playerVariableName = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.getVariableEntryPoint = new System.Windows.Forms.CheckBox();
             this.loadMapPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.positionY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.positionX)).BeginInit();
@@ -519,6 +520,7 @@
             // 
             // playerVariablePanel
             // 
+            this.playerVariablePanel.Controls.Add(this.getVariableEntryPoint);
             this.playerVariablePanel.Controls.Add(this.playerVariableValue);
             this.playerVariablePanel.Controls.Add(this.playerVariableName);
             this.playerVariablePanel.Controls.Add(this.label14);
@@ -527,23 +529,6 @@
             this.playerVariablePanel.Size = new System.Drawing.Size(286, 126);
             this.playerVariablePanel.TabIndex = 11;
             this.playerVariablePanel.Visible = false;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(10, 41);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(76, 13);
-            this.label14.TabIndex = 0;
-            this.label14.Text = "Variable Name";
-            // 
-            // playerVariableName
-            // 
-            this.playerVariableName.Location = new System.Drawing.Point(111, 38);
-            this.playerVariableName.Name = "playerVariableName";
-            this.playerVariableName.Size = new System.Drawing.Size(164, 20);
-            this.playerVariableName.TabIndex = 1;
-            this.playerVariableName.TextChanged += new System.EventHandler(this.PlayerVariableName_TextChanged);
             // 
             // playerVariableValue
             // 
@@ -556,6 +541,34 @@
             this.playerVariableValue.UseVisualStyleBackColor = true;
             this.playerVariableValue.Visible = false;
             this.playerVariableValue.CheckedChanged += new System.EventHandler(this.PlayerVariableValue_CheckedChanged);
+            // 
+            // playerVariableName
+            // 
+            this.playerVariableName.Location = new System.Drawing.Point(112, 46);
+            this.playerVariableName.Name = "playerVariableName";
+            this.playerVariableName.Size = new System.Drawing.Size(164, 20);
+            this.playerVariableName.TabIndex = 1;
+            this.playerVariableName.TextChanged += new System.EventHandler(this.PlayerVariableName_TextChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(8, 49);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(76, 13);
+            this.label14.TabIndex = 0;
+            this.label14.Text = "Variable Name";
+            // 
+            // getVariableEntryPoint
+            // 
+            this.getVariableEntryPoint.AutoSize = true;
+            this.getVariableEntryPoint.Location = new System.Drawing.Point(203, 7);
+            this.getVariableEntryPoint.Name = "getVariableEntryPoint";
+            this.getVariableEntryPoint.Size = new System.Drawing.Size(76, 17);
+            this.getVariableEntryPoint.TabIndex = 3;
+            this.getVariableEntryPoint.Text = "Entry point";
+            this.getVariableEntryPoint.UseVisualStyleBackColor = true;
+            this.getVariableEntryPoint.CheckedChanged += new System.EventHandler(this.GetVariableEntryPoint_CheckedChanged);
             // 
             // DialogueEventProperties
             // 
@@ -648,5 +661,6 @@
         private System.Windows.Forms.TextBox playerVariableName;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.CheckBox playerVariableValue;
+        private System.Windows.Forms.CheckBox getVariableEntryPoint;
     }
 }
