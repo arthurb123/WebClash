@@ -75,7 +75,8 @@ exports.inspectItem = function(id, itemId, dialogData) {
 };
 
 exports.handleEvents = function(id, channel, dialogEvent, clientData) {
-    let quest;
+    let quest,
+        map = game.players[id].map_id;
 
     //Handle events
 

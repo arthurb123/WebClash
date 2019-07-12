@@ -2,6 +2,9 @@
 
 This version of WebClash is work-in-progress,
 and thus may contain bugs and glitches.
+An example project already exists, to wipe
+the example project for a clean project use
+the reset tool provided with the Server binary.
 
 An account with administrator privileges should 
 already exist:
@@ -27,7 +30,7 @@ all other entities. (players, NPCs, items, etc.)
 
 Colliders are supported, however only in
 the rectangular form.
-Colliders can be created using object layers
+Colliders can be created using objects (object layers)
 or tile specific objects.
 
 The custom properties available for Tiled 
