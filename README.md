@@ -24,6 +24,6 @@ WebClash makes use of a simple game framework created by myself.<br>
 It can be found here: http://www.lynx2d.com
 
 ### Example<br>
-Try out an example WebClash server (EU) here: http://www.lythumn.com/arthurb/webclash<br><br>
+Try out an example WebClash server (EU) here: http://www.arthurb.nl/projects/webclash<br><br>
 ##### This example server does not get updated very often and might be running an older version.
 
