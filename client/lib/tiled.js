@@ -3,8 +3,14 @@ const tiled = {
     current: '',
     animations: [],
     lightHotspots: [],
-    convertAndLoadMap: function(map)
+    vars: {},
+    convertAndLoadMap: function(data)
     {
+        //Extract map and map specific variables
+
+        const map = data.map;
+        this.vars = data.vars;
+
         //Set loading
 
         this.loading = true;
@@ -63,11 +69,15 @@ const tiled = {
 
         this.lightHotspots = [];
 
-        //Setup map offset
+        //Setup map offset and size
 
+        this.size = {
+            width: map.width*map.tilewidth,
+            height: map.height*map.tileheight
+        };
         this.offset = {
-            width: -map.width*map.tilewidth/2,
-            height: -map.height*map.tileheight/2
+            width: -this.size.width/2,
+            height: -this.size.height/2
         };
 
         //Cache all tilesets
@@ -413,7 +423,25 @@ const tiled = {
                     if (properties != undefined) {
                         let isMapEvent = false;
 
-                        //First check if the properties contain a 
+                        //Get the checks if they exist
+
+                        const checks = this.getPropertyChecks(properties);
+
+                        //Check if the checks comply to
+                        //the variables that were send with
+                        //the map
+
+                        let valid = true;
+                        for (let c = 0; c < checks.length; c++) 
+                            if (this.vars[checks[c].name] !== checks[c].value) {
+                                valid = false;
+                                break;
+                            }
+
+                        if (!valid)
+                            continue;
+
+                        //Check if the properties contain a 
                         //load map event, this affects property handling
 
                         for (let p = 0; p < properties.length; p++) {
@@ -591,6 +619,24 @@ const tiled = {
 
                 let isMapEvent = false;
 
+                //Get the checks if they exist
+
+                const checks = this.getPropertyChecks(properties);
+
+                //Check if the checks comply to
+                //the variables that were send with
+                //the map
+
+                let valid = true;
+                for (let c = 0; c < checks.length; c++) 
+                    if (this.vars[checks[c].name] !== checks[c].value) {
+                        valid = false;
+                        break;
+                    }
+
+                if (!valid)
+                    continue;
+
                 //First check if the properties contain a 
                 //load map event, this affects property handling
 
@@ -656,8 +702,8 @@ const tiled = {
 
                 this.handleDesign(
                     properties, 
-                    tile_position.x, 
-                    tile_position.y
+                    tile_position.x+tileset.tilewidth/2, 
+                    tile_position.y+tileset.tileheight/2
                 );
             }
         }
@@ -725,6 +771,29 @@ const tiled = {
                     break;
             }
         }
+    },
+    getPropertyChecks: function(properties) {
+        let checks = [];
+
+        for (let p = 0; p < properties.length; p++)
+        {
+            let property = properties[p];
+
+            //Check for get variable checks
+
+            if (property.name === 'getVariableTrue')
+                checks.push({
+                    name: property.value,
+                    value: true
+                });
+            if (property.name === 'getVariableFalse')
+                checks.push({
+                    name: property.value,
+                    value: false
+                });
+        }
+
+        return checks;
     },
     createWorldBoundaries: function(map) {
         new lx.Collider(this.offset.width, this.offset.height-map.tileheight, map.width*map.tilewidth, map.tileheight, true);

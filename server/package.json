@@ -1,0 +1,33 @@
+{
+  "name": "webclash-server",
+  "version": "1.0.0",
+  "description": "WebClash NodeJS Server",
+  "main": "index.js",
+  "dependencies": {
+    "@geckos.io/server": "^1.1.6",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "http": "0.0.0",
+    "path": "^0.12.7",
+    "readline": "^1.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arthurb123/webclash.git"
+  },
+  "keywords": [
+    "orpg",
+    "webclash",
+    "server"
+  ],
+  "author": "Arthur Baars",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/arthurb123/webclash/issues"
+  },
+  "homepage": "https://github.com/arthurb123/webclash#readme"
+}

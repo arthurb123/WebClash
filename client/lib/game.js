@@ -47,10 +47,11 @@ const game = {
                 if (this._health != undefined)
                 {
                     if (this._healthbar === undefined) {
-                        this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W, 8).Follows(go);
-                        this._healthbar = new lx.UITexture('#FF4242', 0, -36, this._health.cur/this._health.max*this.SIZE.W, 8).Follows(go);
+                        this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W*lx.GAME.SCALE, 8).Follows(go);
+                        this._healthbar = new lx.UITexture('#FF4242', 0, -36, this._health.cur/this._health.max*(this.SIZE.W*lx.GAME.SCALE), 8).Follows(go);
                     } else {
-                        this._healthbar.SIZE.W = this._health.cur/this._health.max*this.SIZE.W;
+                        this._healthbarBack.SIZE.W = this.SIZE.W*lx.GAME.SCALE;
+                        this._healthbar.SIZE.W = (this._health.cur/this._health.max)*(this.SIZE.W*lx.GAME.SCALE);
     
                         if (this._health.cur == this._health.max || !tiled.pvp)
                         {
@@ -318,10 +319,11 @@ const game = {
                 if (this._health != undefined)
                 {
                     if (this._healthbar === undefined) {
-                        this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W, 8).Follows(go);
-                        this._healthbar = new lx.UITexture('#FF4242', 0, -36, this._health.cur/this._health.max*this.SIZE.W, 8).Follows(go);
+                        this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W*lx.GAME.SCALE, 8).Follows(go);
+                        this._healthbar = new lx.UITexture('#FF4242', 0, -36, (this._health.cur/this._health.max)*(this.SIZE.W*lx.GAME.SCALE), 8).Follows(go);
                     } else {
-                        this._healthbar.SIZE.W = this._health.cur/this._health.max*this.SIZE.W;
+                        this._healthbarBack.SIZE.W = this.SIZE.W*lx.GAME.SCALE;
+                        this._healthbar.SIZE.W = (this._health.cur/this._health.max)*(this.SIZE.W*lx.GAME.SCALE);
     
                         if (this._health.cur == this._health.max)
                         {
@@ -751,9 +753,9 @@ const game = {
             this.items[id] = undefined;
         }
     },
-    loadMap: function(map)
+    loadMap: function(data)
     {
-        tiled.convertAndLoadMap(map);
+        tiled.convertAndLoadMap(data);
 
         //...
     },

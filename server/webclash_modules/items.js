@@ -635,8 +635,11 @@ exports.updateMaps = function()
     }
 };
 
-exports.sendMap = function(map, channel)
+exports.sendMap = function(id)
 {
+    let map = game.players[id].map_id,
+        channel = game.players[id].channel;
+
     //Check if valid
 
     if (this.onMap[map] == undefined ||

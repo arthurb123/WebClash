@@ -112,6 +112,11 @@ const player = {
         //Request xp target
 
         player.requestExpTarget();
+
+        //Check if a camera should be created
+
+        if (properties.lockCamera)
+            camera.initialize(go);
     },
     setCollider: function(collider)
     {
@@ -241,8 +246,18 @@ const player = {
     },
     faceMouse: function()
     {
-        let dx = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-lx.GetDimensions().width/2,
-            dy = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-lx.GetDimensions().height/2;
+        let centerX = lx.GetDimensions().width/2,
+            centerY = lx.GetDimensions().height/2;
+
+        if (properties.lockCamera) {
+            let pos = lx.GAME.TRANSLATE_FROM_FOCUS(game.players[game.player].POS);
+
+            centerX = pos.X+game.players[game.player].SIZE.W/2;
+            centerY = pos.Y+game.players[game.player].SIZE.H/2;
+        }
+
+        let dx = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-centerX,
+            dy = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-centerY;
 
         if (Math.abs(dx) > Math.abs(dy))
             if (dx > 0) this.forceFrame.start(2);

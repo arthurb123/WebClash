@@ -869,7 +869,7 @@ exports.loadMap = function(channel, map)
     if (channel._roomId === game.players[id].map_id) {
         //Decrement map popularity
 
-        npcs.mapPopularity[game.players[id].map_id]--;
+        npcs.mapPopulation[game.players[id].map_id]--;
 
         //Leave old room
 
@@ -887,11 +887,11 @@ exports.loadMap = function(channel, map)
 
     //Increment map popularity
 
-    npcs.mapPopularity[map_id]++;
+    npcs.mapPopulation[map_id]++;
 
     //Send the corresponding map
 
-    channel.emit('GAME_MAP_UPDATE', tiled.maps[map_id]);
+    channel.emit('GAME_MAP_UPDATE', tiled.createPlayerMap(id, map_id));
 
     //Send player to all players in the same map
 
@@ -903,11 +903,11 @@ exports.loadMap = function(channel, map)
 
     //Send all NPCs in the same map
 
-    npcs.sendMap(map_id, channel);
+    npcs.sendMap(id);
 
     //Send all items in the same map
 
-    items.sendMap(map_id, channel);
+    items.sendMap(id);
 };
 
 exports.loadAllCharacters = function(cb)

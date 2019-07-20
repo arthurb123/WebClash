@@ -3,7 +3,7 @@ exports.handleChannel = function(channel)
     //Check if direct or external connection
 
     /*
-    Is this possible to check with gecko.io?
+    Is it possible to check this with geckos.io?
 
     if (channel.handshake.xdomain) {
 
@@ -930,26 +930,6 @@ exports.handleChannel = function(channel)
             });    
     });
 
-    channel.on('CLIENT_INCREMENT_ATTRIBUTE', function(data) {
-        //Check if valid player
-
-        if (channel.playing === undefined || !channel.playing)
-            return;
-
-        //Get player id
-
-        let id = game.getPlayerIndex(channel.name);
-
-        //Check if valid
-
-        if (id == -1)
-            return;
-
-        //Increment attribute
-
-        game.incrementPlayerAttribute(id, data);
-    });
-
     channel.on('CLIENT_REQUEST_EXP', function() {
          //Check if valid player
 
@@ -968,6 +948,26 @@ exports.handleChannel = function(channel)
         //Respond with current target xp
 
         channel.emit('CLIENT_REQUEST_EXP_RESPONSE', exptable[game.players[id].level-1]);
+    });
+
+    channel.on('CLIENT_INCREMENT_ATTRIBUTE', function(data) {
+        //Check if valid player
+
+        if (channel.playing === undefined || !channel.playing)
+            return;
+
+        //Get player id
+
+        let id = game.getPlayerIndex(channel.name);
+
+        //Check if valid
+
+        if (id == -1)
+            return;
+
+        //Increment attribute
+
+        game.incrementPlayerAttribute(id, data);
     });
 
     channel.on('CLIENT_USER_SETTINGS', function(settings) {
@@ -1102,7 +1102,7 @@ exports.syncPlayer = function(id, channel, broadcast)
 
 //Sync player remove function, will be broadcast by default
 
-exports.removePlayer = function(id, channel)
+exports.removePlayer = function(channel)
 {
     //Check if valid
 
@@ -1115,7 +1115,7 @@ exports.removePlayer = function(id, channel)
 
     //Leave room and decrement map popularity
 
-    npcs.mapPopularity[channel._roomId]--;
+    npcs.mapPopulation[channel._roomId]--;
 
     channel.leave();
 }

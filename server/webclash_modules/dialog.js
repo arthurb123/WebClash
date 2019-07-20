@@ -183,8 +183,8 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
         npcs.createEventNPC(
             map,
             npc.name,
-            npc.pos.X+npc.clientData.character.width/2,
-            npc.pos.Y+npc.clientData.character.height,
+            npc.pos.X+npc.data.character.width/2,
+            npc.pos.Y+npc.data.character.height,
             id,
             true,
             function() {

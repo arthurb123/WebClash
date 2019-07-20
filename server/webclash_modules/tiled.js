@@ -128,7 +128,13 @@ exports.cacheMap = function(map)
 
             //Check properties
 
-            if (tileset.tiles[i].properties !== undefined)
+            if (tileset.tiles[i].properties != undefined) {
+                //Get checks (if they exist)
+
+                let checks = this.getPropertyChecks(tileset.tiles[i].properties);
+
+                //Create properties
+
                 for (let p = 0; p < tileset.tiles[i].properties.length; p++)
                 {
                     let property = tileset.tiles[i].properties[p];
@@ -137,9 +143,11 @@ exports.cacheMap = function(map)
                         tile: tileset.tiles[i].id,
                         name: property.name,
                         value: property.value,
-                        rectangles: this.getMapTileRectangles(map, actual)
+                        rectangles: this.getMapTileRectangles(map, actual),
+                        checks: checks
                     });
                 }
+            }
 
             //Check colliders
 
@@ -183,7 +191,13 @@ exports.cacheMap = function(map)
 
             //Check properties
 
-            if (data.properties !== undefined)
+            if (data.properties != undefined) {
+                //Get checks (if they exist)
+
+                let checks = this.getPropertyChecks(data.properties);
+
+                //Create properties
+
                 for (let p = 0; p < data.properties.length; p++)
                 {
                     let property = data.properties[p];
@@ -192,9 +206,11 @@ exports.cacheMap = function(map)
                         object: o,
                         name: property.name,
                         value: property.value,
-                        rectangles: [coll]
+                        rectangles: [coll],
+                        checks: checks
                     });
                 }
+            }
 
             //Check if not a point
 
@@ -212,6 +228,30 @@ exports.cacheMap = function(map)
     //Load NPCs
 
     npcs.loadMap(id);
+};
+
+exports.getPropertyChecks = function(properties) {
+    let checks = [];
+
+    for (let p = 0; p < properties.length; p++)
+    {
+        let property = properties[p];
+
+        //Check for get variable checks
+
+        if (property.name === 'getVariableTrue')
+            checks.push({
+                name: property.value,
+                value: true
+            });
+        if (property.name === 'getVariableFalse')
+            checks.push({
+                name: property.value,
+                value: false
+            });
+    }
+
+    return checks;
 };
 
 exports.checkPropertyWithRectangle = function(map_name, property_name, rectangle)
@@ -346,4 +386,30 @@ exports.checkRectangularCollision = function(rect1, rect2)
         return true;
 
     return false;
+};
+
+exports.createPlayerMap = function(id, map_id) {
+    let vars = {};
+
+    //Get all needed global variables
+
+    for (let i = 0; i < this.maps_properties[map_id].length; i++)
+        for (let ii = 0; ii < this.maps_properties[map_id][i].checks.length; ii++) {
+            let check = this.maps_properties[map_id][i].checks[ii];
+
+            if (vars[check.name] == undefined) {
+                let result = game.getPlayerGlobalVariable(id, check.name);
+                if (result == undefined)
+                    result = false;
+
+                vars[check.name] = result;
+            }
+        }
+
+    //Return the map with the checks
+
+    return {
+        vars: vars,
+        map: this.maps[map_id]
+    };
 };

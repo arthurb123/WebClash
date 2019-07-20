@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using WebClashServer.Editors;
 
@@ -252,6 +253,16 @@ namespace WebClashServer
         public bool GetChanged()
         {
             return dataHasChanged;
+        }
+
+        private void Name_TextChanged(object sender, EventArgs e)
+        {
+            Regex rgx = new Regex("[^a-zA-Z0-9]");
+            string filteredText = name.Text.Replace(" ", "");
+
+            filteredText = rgx.Replace(filteredText, "");
+
+            globalVariableName.Text = "Variable Name: Quest" + filteredText;
         }
     }
 
