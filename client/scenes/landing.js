@@ -39,7 +39,7 @@ const landingScene = new lx.Scene(function() {
                 '<p class="info" style="font-size: 14px;">Password</p>' +
                 '<input id="windowPassword" autocomplete="current-password" type="password" style="width: 95%;"></input>' +
             '</form>' +
-            '<p id="windowErrorText" style="margin: 6px; height: 18px; color: #ff4d4d; font-size: 11px;"></p>' +
+            '<p id="windowErrorText" style="padding-top: 2px; padding-bottom: 2px; height: 18px; color: #ff4d4d; font-size: 11px;"></p>' +
             '<button id="windowLogin">Login</button>' +
             '<button id="windowRegister">Register</button>' +
         '</div>';

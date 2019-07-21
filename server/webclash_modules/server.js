@@ -190,9 +190,9 @@ exports.handleChannel = function(channel)
                 created: false,
                 settings: {
                     audio: {
-                      main: 50,
-                      music: 50,
-                      sound: 50
+                        main: 50,
+                        music: 50,
+                        sound: 50
                     }
                 }
             }, function() {
@@ -973,12 +973,14 @@ exports.handleChannel = function(channel)
     channel.on('CLIENT_USER_SETTINGS', function(settings) {
          //Check if valid player
 
-         if (channel.playing === undefined || !channel.playing)
+         if (channel.playing === undefined || 
+            !channel.playing)
              return;
 
         //Check if valid data
 
-        if (settings == undefined || settings.audio == undefined)
+        if (settings == undefined || 
+            settings.audio == undefined)
             return;
 
         //Check and/or format data to make sure

@@ -1,33 +1,89 @@
 const ui = {
+    editMode: false,
+    boxes: {},
+
+    //Main functions
+
     initialize: function()
     {
         cache.progress.create();
 
+        //Create UI boxes
+
         this.actionbar.create();
+        this.status.create();
         this.inventory.create();
         this.equipment.create();
-        this.status.create();
-        this.loot.create();
-        this.dialog.create();
-        this.settings.create();
-        this.profile.create();
         this.quests.create();
-        this.journal.create();
-        this.shop.create();
         this.chat.create();
 
+        this.loot.create();
+        this.dialog.create();
+        this.shop.create();
+        this.profile.create();
+        this.journal.create();
+        this.settings.create();
+
+        //Add floaties update loop
+
         lx.Loops(this.floaties.update);
+
+        //Make sure data is being saved
+
+        if (localStorage.getItem('ui_editMode') != undefined) {
+            this.editMode = JSON.parse(localStorage.getItem('ui_editMode'));
+
+            document.getElementById('settings_ui_editMode').checked = this.editMode;
+        }
+        if (localStorage.getItem('ui_boxes') != undefined) {
+            this.boxes = JSON.parse(localStorage.getItem('ui_boxes'));
+
+            this.loadBoxes();
+        }
     },
+
+    loadBoxes: function() {
+        //Load all boxes and create
+        //UI boxes
+
+        for (let box in this.boxes)
+            if (this[box] != undefined)
+                this[box].box.set(
+                    this.boxes[box].xoff,
+                    this.boxes[box].yoff,
+                    this.boxes[box].width,
+                    this.boxes[box].height,
+                    this.boxes[box].anchors
+                );
+    },
+    setBox: function(id, xoff, yoff, width, height, anchors) {
+        //Save UI box element to the
+        //local storage
+
+        this.boxes[id] = {
+            xoff: xoff,
+            yoff: yoff,
+            width: width,
+            height: height,
+            anchors: anchors
+        };
+
+        localStorage.setItem('ui_boxes', JSON.stringify(this.boxes));
+    },
+
+    //UI elements
+
     chat:
     {
         cache: [],
         create: function() {
-            view.dom.innerHTML +=
-                '<div id="chat_box" class="box" style="position: absolute; top: 100%; left: 30px; transform: translate(0, -100%); margin-top: -30px; width: 340px; height: 182px;">' +
-                    '<div id="chat_box_content" class="content" style="overflow-y: auto; height: 155px;"></div>' +
-                    '<input id="chat_box_message" type="text" style="width: 263px;"></input>' +
-                    '<button onclick="ui.chat.sendMessage()" style="height: 21px; width: 70px; padding-top: 2px; margin: 0px;">Send</button>' +
-                '</div>';
+            this.box = new UIBox('chat', 'chat_box', 30, lx.GetDimensions().height-222, 340, 182);
+            this.box.setMinimumSize(148, 25);
+            this.box.setContent(
+                '<div id="chat_box_content" class="content" style="overflow-y: auto; height: calc(100% - 26px);"></div>' +
+                '<input id="chat_box_message" type="text" style="width: calc(75% - 6px);"></input>' +
+                '<button onclick="ui.chat.sendMessage()" style="height: 21px; width: 25%; padding: 0px 1px 0px 1px; margin: 0px;">Send</button>'
+            );
 
             this.dom = {
                 box: document.getElementById('chat_box'),
@@ -93,12 +149,29 @@ const ui = {
         showing: false,
         create: function()
         {
-            view.dom.innerHTML +=
-                '<div id="dialog_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 70%; transform: translate(-50%, -50%); width: auto; min-width: 260px; max-width: 340px; height: auto; max-height: 380px; text-align: center; padding: 0px;">' +
-                    '<p id="dialog_box_content" style="position: relative; left: 5%; top: 2px; white-space: pre-wrap; overflow-y: auto; overflow-x: hidden; width: 90%; font-size: 14px; margin-bottom: 15px;"></p>' +
-                    '<hr style="position: relative; top: -5px; padding: 0px; border: 0; width: 90%; border-bottom: 1px solid whitesmoke;"/>' +
-                    '<div id="dialog_box_options" style="position: relative; left: 5%; top: -8px; width: 90%; white-space: normal;"></div>' +
-                '</div>';
+            let div = document.createElement('div');
+            div.id = 'dialog_box';
+            div.classList.add('box');
+
+            div.style.visibility = 'hidden';
+            div.style.position = 'absolute';
+            div.style.top = '50%';
+            div.style.left = '70%';
+            div.style.transform = 'translate(-50%, -50%)';
+            div.style.width = div.style.height = 'auto';
+            div.style.minWidth = '260px';
+            div.style.maxWidth = '340px';
+            div.style.maxHeight = '380px';
+            div.style.textAlign = 'center';
+            div.style.padding = '0px';
+
+            div.innerHTML = 
+                '<p id="dialog_box_content" style="position: relative; left: 5%; top: 2px; white-space: pre-wrap;' +
+                'overflow-y: auto; overflow-x: hidden; width: 90%; font-size: 14px; margin-bottom: 15px;"></p>' +
+                '<hr style="position: relative; top: -5px; padding: 0px; border: 0; width: 90%; border-bottom: 1px solid whitesmoke;"/>' +
+                '<div id="dialog_box_options" style="position: relative; left: 5%; top: -8px; width: 90%; white-space: normal;"></div>';
+
+            view.dom.appendChild(div);
         },
         startDialog: function(npc, name, dialog)
         {
@@ -239,7 +312,10 @@ const ui = {
         create: function() {
             this.slots = [];
 
-            let r = '<div id="actionbar_box" class="box" style="position: absolute; top: 100%; left: 50%; transform: translate(-50%, -100%); margin-top: -30px; width: 338px; height: 48px;">';
+            this.box = new UIBox('actionbar', 'actionbar_box', lx.GetDimensions().width/2-169, lx.GetDimensions().height-86, 338, 46);
+            this.box.setResizable(false);
+
+            let r = '';
 
             for (let i = 0; i < 7; i++)
             {
@@ -248,9 +324,7 @@ const ui = {
                 r += '<div class="slot" id="' + this.slots[i] + '" onmouseover="ui.actionbar.displayBox(' + i + ')" onmouseleave="ui.actionbar.removeBox()"></div>';
             }
 
-            r += '</div>';
-
-            view.dom.innerHTML += r;
+            this.box.setContent(r);
         },
         reload: function() {
             if (this.slots === undefined)
@@ -438,9 +512,9 @@ const ui = {
     equipment:
     {
         create: function() {
-            view.dom.innerHTML +=
-                '<div id="equipmentbar_box" class="box" style="position: absolute; top: 30px; left: 100%; margin-left: -30px; transform: translate(-100%, 0); width: 336px; height: 46px; text-align: center;">' +
-                '</div>';
+            this.box = new UIBox('equipment', 'equipmentbar_box', lx.GetDimensions().width-381, 30, 336, 46);
+            this.box.setTextAlign('center');
+            this.box.setResizable(false);
 
             this.slots = [
                 'equipmentbar_slot0',
@@ -455,7 +529,11 @@ const ui = {
             for (let i = 0; i < this.slots.length; i++) {
                 let equippable = this.getEquippableAtIndex(i);
 
-                document.getElementById('equipmentbar_box').innerHTML += '<div class="slot" id="' + this.slots[i] + '" onmouseover="ui.inventory.displayBox(\'' + equippable + '\', \'equipment\')" onclick="player.unequip(\'' + equippable + '\')" onmouseleave="ui.inventory.removeBox()"></div>';
+                this.box.content.innerHTML += 
+                    '<div class="slot" id="' + this.slots[i] + '"' +
+                    'onmouseover="ui.inventory.displayBox(\'' + equippable + '\', \'equipment\')"' +
+                    'onclick="player.unequip(\'' + equippable + '\')"' +
+                    'onmouseleave="ui.inventory.removeBox()"></div>';
             }
 
             this.reload();
@@ -543,23 +621,25 @@ const ui = {
         create: function() {
             this.slots = [];
 
-            view.dom.innerHTML +=
-                '<div id="inventory_box" class="box" style="position: absolute; top: 100%; left: 100%; margin-left: -30px; margin-top: -30px; transform: translate(-100%, -100%); width: 195px; height: 260px; text-align: center;">' +
-                '</div>';
+            this.box = new UIBox('inventory', 'inventory_box', lx.GetDimensions().width-240, lx.GetDimensions().height-300, 195, 260);
+            this.box.setResizable(false);
+            this.box.setTextAlign('center');
+
+            let r = '';
 
             for (let y = 0; y < this.size.height; y++)
                 for (let x = 0; x < this.size.width; x++) {
                     let i = (y*this.size.width+x);
 
-                    document.getElementById('inventory_box').innerHTML +=
-                        '<div class="slot" id="inventory_slot' + i + '" oncontextmenu="ui.inventory.displayContext(' + i + ')" onmouseover="ui.inventory.displayBox(' + i + ', \'inventory\')" onclick="ui.inventory.useItem(' + i + ')" onmouseleave="ui.inventory.removeBox();">' +
+                    r += '<div class="slot" id="inventory_slot' + i + '" oncontextmenu="ui.inventory.displayContext(' + i + ')" onmouseover="ui.inventory.displayBox(' + i + ', \'inventory\')" onclick="ui.inventory.useItem(' + i + ')" onmouseleave="ui.inventory.removeBox();">' +
                         '</div>';
 
                     this.slots[i] = 'inventory_slot' + i;
                 }
 
-            document.getElementById('inventory_box').innerHTML +=
-                '<font id="gold_label" class="info" style="font-size: 11px; color: yellow;">0 Gold</font>';
+           r += '<font id="gold_label" class="info" style="font-size: 11px; color: yellow;">0 Gold</font>';
+
+           this.box.setContent(r);
         },
         reload: function() {
             if (this.slots === undefined)
@@ -889,12 +969,28 @@ const ui = {
     {
         items: [],
         create: function() {
-            view.dom.innerHTML +=
-                '<div id="loot_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 25%; transform: translate(-50%, -50%); width: auto; max-width: 150px; height: auto; max-height: 195px; text-align: center;">' +
-                    '<p class="info" style="font-size: 14px; margin: 3px;">Loot</p>' +
-                    '<div id="loot_box_content" style="text-align: left; overflow-y: auto; width: 100%;  height: 100%; max-height: 150px; padding: 2px;"></div>' +
-                    '<p class="link" onclick="ui.loot.hide()" style="font-size: 12px; color: #ff3333;">Close</p>'
-                '</div>';
+            let div = document.createElement('div');
+
+            div.id = 'loot_box';
+            div.classList.add('box');
+
+            div.style.visibility = 'hidden';
+            div.style.position = 'absolute';
+            div.style.top = '50%';
+            div.style.left = '25%';
+            div.style.transform = 'translate(-50%, -50%)';
+            div.style.width = div.style.height = 'auto';
+            div.style.maxWidth = '150px';
+            div.style.maxHeight = '195px';
+            div.style.textAlign = 'center';
+
+            div.innerHTML = 
+                '<p class="info" style="font-size: 14px; margin: 3px;">Loot</p>' +
+                '<div id="loot_box_content" style="text-align: left; overflow-y: auto;' +
+                 'width: 100%;  height: 100%; max-height: 150px; padding: 2px;"></div>' +
+                '<p class="link" onclick="ui.loot.hide()" style="font-size: 12px; color: #ff3333;">Close</p>';
+
+            view.dom.appendChild(div);
         },
         reset: function() {
             //Reset loot items
@@ -1026,25 +1122,30 @@ const ui = {
     status:
     {
        create: function() {
-            view.dom.innerHTML +=
-                '<div id="status_box" class="box" style="position: absolute; top: 30px; left: 30px; width: 195px; height: auto; text-align: center; padding-bottom: 0px;">' +
-                    '<div id="status_health_box" class="bar" style="text-align: center;">' +
-                        '<div id="status_health" class="bar_content" style="background-color: #E87651; width: 100%;"></div>' +
-                        '<p id="status_health_text" class="info" style="transform: translate(0, -80%); margin: 0; font-size: 10px;"></p>' +
-                    '</div>' +
-                    '<div id="status_mana_box" class="bar" style="text-align: center;">' +
-                        '<div id="status_mana" class="bar_content" style="background-color: #2B92ED; width: 100%;"></div>' +
-                        '<p id="status_mana_text" class="info" style="transform: translate(0, -80%); margin: 0; font-size: 10px;"></p>' +
-                    '</div>' +
-                    '<div id="status_exp_box" class="bar" style="text-align: center; height: 9px;">' +
-                        '<div id="status_exp" class="bar_content" style="background-color: #BF4CE6; width: 100%;"></div>' +
-                        '<p id="status_exp_text" class="info" style="transform: translate(0, -75%); margin: 0; font-size: 7px;"></p>' +
-                    '</div>' +
-                    '<div style="padding: 4px;">' +
-                        '<a class="info link" id="status_profile_link" style="font-size: 11px; margin-right: 6px;" onclick="ui.profile.show();">Show Profile</a>' +
-                        '<a class="info link" id="status_journal_link" style="font-size: 11px; margin-left: 6px;" onclick="ui.journal.show();">Show Journal</a>' +
-                    '</div>' +
-                '</div>';
+           this.box = new UIBox('status', 'status_box', 30, 30, 200, 84);
+
+           this.box.setMinimumSize(195, 84);
+           this.box.setMaximumSize(Infinity, 84);
+           this.box.setTextAlign('center');
+
+           this.box.setContent(
+                '<div id="status_health_box" class="bar" style="text-align: center;">' +
+                    '<div id="status_health" class="bar_content" style="background-color: #E87651; width: 100%;"></div>' +
+                    '<p id="status_health_text" class="info" style="transform: translate(0, -80%); margin: 0; font-size: 10px;"></p>' +
+                '</div>' +
+                '<div id="status_mana_box" class="bar" style="text-align: center;">' +
+                    '<div id="status_mana" class="bar_content" style="background-color: #2B92ED; width: 100%;"></div>' +
+                    '<p id="status_mana_text" class="info" style="transform: translate(0, -80%); margin: 0; font-size: 10px;"></p>' +
+                '</div>' +
+                '<div id="status_exp_box" class="bar" style="text-align: center; height: 9px;">' +
+                    '<div id="status_exp" class="bar_content" style="background-color: #BF4CE6; width: 100%;"></div>' +
+                    '<p id="status_exp_text" class="info" style="transform: translate(0, -75%); margin: 0; font-size: 7px;"></p>' +
+                '</div>' +
+                '<div style="padding: 4px;">' +
+                    '<a class="info link" id="status_profile_link" style="font-size: 11px; margin-right: 6px;" onclick="ui.profile.show();">Show Profile</a>' +
+                    '<a class="info link" id="status_journal_link" style="font-size: 11px; margin-left: 6px;" onclick="ui.journal.show();">Show Journal</a>' +
+                '</div>'
+            );
         },
         setHealth: function(value, max) {
             let el = document.getElementById('status_health'),
@@ -1076,21 +1177,61 @@ const ui = {
         visible: false,
         hasChanged: false,
         create: function() {
-            view.dom.innerHTML +=
-                '<div id="settings_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; height: auto; text-align: center; padding: 0px;">' +
-                    '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Settings</b></p>' +
+            let div = document.createElement('div');
 
-                    '<p class="info" style="font-size: 13px;"><b>Audio</b></p>' +
+            div.id = 'settings_box';
+            div.classList.add('box');
 
-                    '<p class="info" style="font-size: 13px; margin: 0px;" id="settings_audio_mainVolume_text">Main </p>' +
-                    '<input type="range" min="0" max="100" id="settings_audio_mainVolume" onchange="ui.settings.changeAudioValue(event)"/>' +
-                    '<p class="info" style="font-size: 13px; margin: 0px;" id="settings_audio_musicVolume_text">Music </p>' +
-                    '<input type="range" min="0" max="100" id="settings_audio_musicVolume" onchange="ui.settings.changeAudioValue(event)"/>' +
-                    '<p class="info" style="font-size: 13px; margin: 0px;" id="settings_audio_soundVolume_text">Sound </p>' +
-                    '<input type="range" min="0" max="100" id="settings_audio_soundVolume" onchange="ui.settings.changeAudioValue(event)"/>' +
+            div.style.position = 'absolute';
+            div.style.visibility = 'hidden';
+            div.style.top = div.style.left = '50%';
+            div.style.transform = 'translate(-50%, -50%)';
+            div.style.width = div.style.height = 'auto';
+            div.style.textAlign = 'center';
+            div.style.padding = '3px';
 
-                    '<p class="link" onclick="ui.settings.hide()" style="font-size: 12px; color: #ff3333; padding-top: 4px;">Close</p>' +
-                '</div>';
+            div.innerHTML =
+                '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Settings</b></p>' +
+
+                '<p class="info" style="font-size: 13px;"><b>Audio</b></p>' +
+
+                '<p class="info" style="font-size: 13px; margin: 0px;" id="settings_audio_mainVolume_text">Main </p>' +
+                '<input type="range" min="0" max="100" id="settings_audio_mainVolume" onchange="ui.settings.changeAudioValue(event)"/>' +
+                '<p class="info" style="font-size: 13px; margin: 0px;" id="settings_audio_musicVolume_text">Music </p>' +
+                '<input type="range" min="0" max="100" id="settings_audio_musicVolume" onchange="ui.settings.changeAudioValue(event)"/>' +
+                '<p class="info" style="font-size: 13px; margin: 0px;" id="settings_audio_soundVolume_text">Sound </p>' +
+                '<input type="range" min="0" max="100" id="settings_audio_soundVolume" onchange="ui.settings.changeAudioValue(event)"/>' +
+
+                '<p class="info" style="font-size: 13px;"><b>UI</b></p>' +
+
+                '<input id="settings_ui_editMode" type="checkbox" style="margin-left: 2px;"/>' +
+                '<label style="position: relative; top: -2px; font-size: 13px; margin: 0px;">Edit Mode</label>' +
+                '<br>' +
+                '<button id="settings_ui_reset" style="font-size: 12px; height: 20px; margin-top: 2px; padding: 1px 6px 1px 6px;">Reset UI</button>' +
+
+                '<br>' +
+
+                '<p class="link" onclick="ui.settings.hide()" style="font-size: 12px; color: #ff3333; padding-top: 4px;">Close</p>';
+
+            view.dom.appendChild(div);
+
+            document.getElementById('settings_ui_editMode').addEventListener('click', function() {
+                ui.editMode = document.getElementById('settings_ui_editMode').checked;
+
+                localStorage.setItem("ui_editMode", JSON.stringify(ui.editMode));
+            });
+            document.getElementById('settings_ui_reset').addEventListener('click', function() {
+                ui.chat.box.reset();
+                ui.status.box.reset();
+                ui.inventory.box.reset();
+                ui.quests.box.reset();
+                ui.actionbar.box.reset();
+                ui.equipment.box.reset();
+
+                ui.boxes = {};
+
+                localStorage.setItem("ui_boxes", JSON.stringify(ui.boxes));
+            });
 
             lx.OnKey('escape', function() {
                 lx.StopKey('escape');
@@ -1185,6 +1326,10 @@ const ui = {
                         main: audio.actualMainVolume*100,
                         music: audio.actualBGMVolume*100,
                         sound: audio.actualSoundVolume*100
+                    },
+                    ui: {
+                        editMode: ui.editMode,
+                        boxes: ui.boxes
                     }
                 });
         }
@@ -1201,16 +1346,30 @@ const ui = {
         ],
         visible: false,
         create: function() {
+            let div = document.createElement('div');
+
+            div.id = 'profile_box';
+            div.classList.add('box');
+
+            div.style.position = 'absolute';
+            div.style.visibility = 'hidden';
+            div.style.top = div.style.left = '50%';
+            div.style.transform = 'translate(-50%, -50%)';
+            div.style.width = div.style.height = 'auto';
+            div.style.textAlign = 'center';
+            div.style.padding = '4px 12px 4px 12px';
+
             let html =
-                '<div id="profile_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; height: auto; text-align: center; padding: 4px 12px 4px 12px;">' +
-                    '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Profile</b></p>' +
-                    '<p class="info" id="profile_level" style="font-size: 14px;"></p>' +
-                    '<p class="info" id="profile_points" style="font-size: 12px; padding-bottom: 6px;"></p>';
+                '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Profile</b></p>' +
+                '<p class="info" id="profile_level" style="font-size: 14px;"></p>' +
+                '<p class="info" id="profile_points" style="font-size: 12px; padding-bottom: 6px;"></p>';
 
             for (let a = 0; a < this.attributes.length; a++)
                 html += '<p id="profile_stat_' + this.attributes[a].toLowerCase() + '" class="info"></p>';
 
-            view.dom.innerHTML += html + '<p class="link" onclick="ui.profile.hide()" style="font-size: 12px; color: #ff3333; padding-top: 4px;">Close</p></div>';
+            div.innerHTML = html + '<p class="link" onclick="ui.profile.hide()" style="font-size: 12px; color: #ff3333; padding-top: 4px;">Close</p></div>';
+
+            view.dom.appendChild(div);
         },
         reloadLevel: function(level) {
             document.getElementById('profile_level').innerHTML = 'Level ' + level;
@@ -1295,12 +1454,28 @@ const ui = {
         visible: false,
         emitted: false,
         create: function() {
-            view.dom.innerHTML +=
-                '<div id="shop_box" class="box" style="visibility: hidden; text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); min-width: 80px; max-width: 20%; min-height: 80px; max-height: 25%; padding: 4px;">' +
-                    '<p id="shop_name" class="info" style="font-size: 15px; padding-bottom: 2px;"><b>Shop</b></p>' +
-                    '<div id="shop_content" style="overflow-y: auto; padding: 1px;"></div>' +
-                    '<p class="link" onclick="ui.shop.hide()" style="font-size: 12px; color: #ff3333; padding-top: 2px;">Close</p></div>' +
-                '</div>'
+            let div = document.createElement('div');
+
+            div.id = 'shop_box';
+            div.classList.add('box');
+
+            div.style.position = 'absolute';
+            div.style.visibility = 'hidden';
+            div.style.top = div.style.left = '50%';
+            div.style.transform = 'translate(-50%, -50%)';
+            div.style.width = div.style.height = 'auto';
+            div.style.minWidth = '80px';
+            div.style.maxWidth = '20%';
+            div.style.minHeight = '80px';
+            div.style.maxHeight = '25%';
+            div.style.padding = '4px';
+
+            div.innerHTML = 
+                '<p id="shop_name" class="info" style="font-size: 15px; padding-bottom: 2px;"><b>Shop</b></p>' +
+                '<div id="shop_content" style="overflow-y: auto; padding: 1px;"></div>' +
+                '<p class="link" onclick="ui.shop.hide()" style="font-size: 12px; color: #ff3333; padding-top: 2px;">Close</p></div>';
+
+            view.dom.appendChild(div);
         },
         showShop: function(target, id, shop) {
             this.hide();
@@ -1399,9 +1574,21 @@ const ui = {
     journal:
     {
         create: function() {
-            view.dom.innerHTML +=
-                '<div id="journal_box" class="box" style="text-align: center; visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; height: auto; max-height: 260px; overflow-y: auto;">' +
-                '</div>';
+            let div = document.createElement('div');
+
+            div.id = 'journal_box';
+            div.classList.add('box');
+
+            div.style.position = 'absolute';
+            div.style.visibility = 'hidden';
+            div.style.top = div.style.left = '50%';
+            div.style.transform = 'translate(-50%, -50%)';
+            div.style.width = div.style.height = 'auto';
+            div.style.maxHeight = '260px';
+            div.style.overflowY = 'auto';
+            div.style.padding = '4px 12px 4px 12px';
+
+            view.dom.appendChild(div);
         },
         reload: function() {
             let done = false;
@@ -1476,9 +1663,11 @@ const ui = {
     {
         max_pinned: 3,
         create: function() {
-            view.dom.innerHTML +=
-                '<div id="quests_box" class="box" style="visibility: hidden; position: absolute; top: 50%; left: 30px; margin-top: -50px; transform: translate(0, -50%); width: auto; height: auto; text-align: center; padding: 4px;">' +
-                '</div>';
+            this.box = new UIBox('quests', 'quests_box', 30, lx.GetDimensions().height/2-80, undefined, undefined);
+            this.box.setResizable(false);
+            this.box.setTextAlign('center');
+
+            this.box.element.style.visibility = 'hidden';
         },
         generateQuestDom: function(name, quest, full) {
             let result = document.createElement('div'),
