@@ -2,9 +2,13 @@ const ui = {
     editMode: false,
     boxes: {},
 
+    //Main functions
+
     initialize: function()
     {
         cache.progress.create();
+
+        //Create UI boxes
 
         this.actionbar.create();
         this.status.create();
@@ -20,7 +24,11 @@ const ui = {
         this.journal.create();
         this.settings.create();
 
+        //Add floaties update loop
+
         lx.Loops(this.floaties.update);
+
+        //Make sure data is being saved
 
         if (localStorage.getItem('ui_editMode') != undefined) {
             this.editMode = JSON.parse(localStorage.getItem('ui_editMode'));
@@ -35,25 +43,35 @@ const ui = {
     },
 
     loadBoxes: function() {
+        //Load all boxes and create
+        //UI boxes
+
         for (let box in this.boxes)
             if (this[box] != undefined)
                 this[box].box.set(
-                    this.boxes[box].x,
-                    this.boxes[box].y,
+                    this.boxes[box].xoff,
+                    this.boxes[box].yoff,
                     this.boxes[box].width,
-                    this.boxes[box].height
+                    this.boxes[box].height,
+                    this.boxes[box].anchors
                 );
     },
-    setBox: function(id, x, y, width, height) {
+    setBox: function(id, xoff, yoff, width, height, anchors) {
+        //Save UI box element to the
+        //local storage
+
         this.boxes[id] = {
-            x: x,
-            y: y,
+            xoff: xoff,
+            yoff: yoff,
             width: width,
-            height: height
+            height: height,
+            anchors: anchors
         };
 
         localStorage.setItem('ui_boxes', JSON.stringify(this.boxes));
     },
+
+    //UI elements
 
     chat:
     {

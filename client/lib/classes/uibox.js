@@ -2,6 +2,10 @@ const UIBox = function(parent, id, x, y, width, height) {
     this.parent = parent;
     this.id = id;
 
+    //Set the position and size,
+    //and create the boundaries and
+    //resizable value
+
     this.position = { x: x, y: y };
     this.size = { width: width, height: height };
 
@@ -20,13 +24,9 @@ const UIBox = function(parent, id, x, y, width, height) {
     this.element.style.width = (width == undefined ? 'auto' : width + 'px');
     this.element.style.height = (height == undefined ? 'auto' : height + 'px');
 
-    this.startingPercentages = {
-        x: x/lx.GetDimensions().width,
-        y: y/lx.GetDimensions().height
-    };
-    this.startingSize = {
-        width: width,
-        height: height
+    this.startingPosition = {
+        x: x,
+        y: y
     };
 
     //Append box
@@ -66,24 +66,34 @@ const UIBox = function(parent, id, x, y, width, height) {
 
     this.reset = function() {
         this.set(
-            this.startingPercentages.x, 
-            this.startingPercentages.y,
+            (this.startingAnchors.right ? lx.GetDimensions().width-(this.startingPosition.x+this.startingSize.width) : this.startingPosition.x), 
+            (this.startingAnchors.bottom ? lx.GetDimensions().height-(this.startingPosition.y+this.startingSize.height) : this.startingPosition.y),
             this.startingSize.width,
-            this.startingSize.height
+            this.startingSize.height,
+            this.startingAnchors
         );
     };
 
-    this.set = function(xp, yp, width, height) {
-        this.position.x = xp*lx.GetDimensions().width;
-        this.position.y = yp*lx.GetDimensions().height;
+    //Set functions
+
+    this.set = function(xoff, yoff, width, height, anchors) {
+        //Set new position based on the
+        //provided anchors
+
+        this.position.x = (anchors.right ? lx.GetDimensions().width-(xoff+width) : xoff);
+        this.position.y = (anchors.bottom ? lx.GetDimensions().height-(yoff+height) : yoff);
 
         if (this.size.width != undefined)
             this.size.width = width;
         if (this.size.height != undefined)
             this.size.height = height;
 
+        //Reposition and resize
+
         this.reposition();
         this.resize();
+
+        //Save, just in case
 
         this.save();
     };
@@ -113,6 +123,8 @@ const UIBox = function(parent, id, x, y, width, height) {
     this.setTextAlign = function(alignment) {
         this.content.style.textAlign = alignment;
     };
+
+    //Event handlers
 
     this.mouseDown = function(e) {
         if (!ui.editMode || e.button !== 0)
@@ -198,6 +210,8 @@ const UIBox = function(parent, id, x, y, width, height) {
         oldMouse = mouse;
     };
 
+    //Box actions
+
     this.reposition = function(width, height) {
         if (width == undefined)
             width = lx.GetDimensions().width;
@@ -231,20 +245,27 @@ const UIBox = function(parent, id, x, y, width, height) {
         this.element.style.height = this.size.height + 'px';
     };
 
+    //Save functions
+
     this.save = function(width, height) {
         if (width == undefined)
             width = lx.GetDimensions().width;
         if (height == undefined)
             height = lx.GetDimensions().height;
 
+        let anchors = this.checkAnchors(width, height);
+
         ui.setBox(
             this.parent,
-            this.position.x/width,
-            this.position.y/height,
+            (anchors.right ? width-(this.position.x + this.size.width) : this.position.x),
+            (anchors.bottom ? height-(this.position.y + this.size.height) : this.position.y),
             this.size.width,
-            this.size.height
+            this.size.height,
+            anchors
         );
     };
+
+    //Getter functions 
 
     this.checkBorderVertical = function(x, y) {
         //Check if resizing is even possible
@@ -294,8 +315,8 @@ const UIBox = function(parent, id, x, y, width, height) {
         let anchors = {
             right: false,
             bottom: false,
-            rightCentered: false,
-            bottomCentered: false
+            horizontalCentered: false,
+            verticalCentered: false
         };
 
         let boxWidth = this.size.width,
@@ -323,6 +344,14 @@ const UIBox = function(parent, id, x, y, width, height) {
         return anchors;
     };
 
+    //Calculate starting values
+
+    this.startingAnchors = this.checkAnchors(lx.GetDimensions().width, lx.GetDimensions().height)
+    this.startingSize = {
+        width: width,
+        height: height
+    };
+
     //Setup Lynx2D on resize event
 
     lx.OnResize(function(data) {
@@ -336,6 +365,8 @@ const UIBox = function(parent, id, x, y, width, height) {
         if (boxHeight == undefined)
             boxHeight = box.element.offsetHeight;
 
+        //Normal box handling
+
         if (anchors.right) 
             box.position.x += data.dx;
         if (anchors.bottom) 
@@ -345,6 +376,18 @@ const UIBox = function(parent, id, x, y, width, height) {
             box.position.x = data.width/2-boxWidth/2;
         if (anchors.verticalCentered)
             box.position.y = data.height/2-boxHeight/2;
+
+        //Starting data box handling
+
+        if (box.startingAnchors.right)
+            box.startingPosition.x += data.dx;
+        if (box.startingAnchors.bottom)
+            box.startingPosition.y += data.dy;
+
+        if (box.startingAnchors.horizontalCentered)
+            box.startingPosition.x = data.width/2-box.startingSize.width/2;
+        if (box.startingAnchors.verticalCentered)
+            box.startingPosition.y = data.height/2-box.startingSize.height/2;
 
         box.reposition(data.width, data.height);
         box.save(data.width, data.height);
