@@ -10,7 +10,7 @@ exports.load = function(dir, name, cb)
                 fs.readFile('data/' + dir + '/' + name + '.json', 'utf8', function (err, data) {
                     try {
                         if (err) {
-                            output.give('Could not load JSON: '+ err);
+                            output.giveError('Could not load JSON: ', err);
 
                             return;
                         }
@@ -19,7 +19,7 @@ exports.load = function(dir, name, cb)
                     }
                     catch (err)
                     {
-                        output.give('Could not load JSON: '+ err);
+                        output.giveError('Could not load JSON: ', err);
                     }
                 });
             else
@@ -41,7 +41,7 @@ exports.exists = function(dir, name, cb)
             else if (err.code === 'ENOENT')
                 cb(false);
             else
-                output.give('Could not check if JSON exists: ' + err);
+                output.giveError('Could not check if JSON exists: ', err);
         });
     }
     catch (err)

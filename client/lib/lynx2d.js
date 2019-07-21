@@ -16,6 +16,7 @@ this.GAME = {
     LOOPS: [],
     LAYER_DRAW_EVENTS: [],
     ON_RESIZE_EVENTS: [],
+    SCALE: 1,
     INIT: function(FPS) {
         //Setup logger
 
@@ -130,8 +131,17 @@ this.GAME = {
                     for (let i = 0; i < obj.CALLBACK.length; i++) 
                         if (obj.CALLBACK[i] != undefined) 
                             try {
+                                let worldPosition = lx.CONTEXT.CONTROLLER.MOUSE.POS;
+                                
+                                if (lx.GAME.FOCUS != undefined)
+                                    worldPosition = lx.GAME.TRANSLATE_FROM_FOCUS({
+                                        X: lx.GAME.FOCUS.POS.X+worldPosition.X-lx.GetDimensions().width,
+                                        Y: lx.GAME.FOCUS.POS.Y+worldPosition.Y-lx.GetDimensions().height
+                                    });
+                                
                                 obj.CALLBACK[i]({ 
                                     mousePosition: lx.CONTEXT.CONTROLLER.MOUSE.POS, 
+                                    worldPosition: worldPosition,
                                     state: 1 
                                 });
                             } catch (err) {
@@ -271,8 +281,8 @@ this.GAME = {
                     lx.CONTEXT.GRAPHICS.strokeRect(
                         lx.GAME.TRANSLATE_FROM_FOCUS(obj.POS).X, 
                         lx.GAME.TRANSLATE_FROM_FOCUS(obj.POS).Y, 
-                        obj.SIZE.W, 
-                        obj.SIZE.H
+                        obj.SIZE.W*lx.GAME.SCALE, 
+                        obj.SIZE.H*lx.GAME.SCALE
                     ); 
             });
         
@@ -301,6 +311,20 @@ this.GAME = {
                 this.BUFFER[LAYER][i] = OBJECT;
                 return i;
             }
+    },
+    SWITCH_BUFFER_POSITION: function(OBJECT1, OBJECT2) {
+        if (OBJECT1.BUFFER_ID === -1 ||
+            OBJECT2.BUFFER_ID === -1 ||
+            OBJECT1.BUFFER_LAYER !== OBJECT2.BUFFER_LAYER)
+            return;
+        
+        let BUFFER_ID = OBJECT1.BUFFER_ID;  
+        
+        OBJECT1.BUFFER_ID = OBJECT2.BUFFER_ID;
+        OBJECT2.BUFFER_ID = BUFFER_ID;
+        
+        this.BUFFER[OBJECT1.BUFFER_LAYER][OBJECT1.BUFFER_ID] = OBJECT1;
+        this.BUFFER[OBJECT1.BUFFER_LAYER][OBJECT2.BUFFER_ID] = OBJECT2;
     },
     ADD_LOOPS: function(CALLBACK) {
         if (CALLBACK == undefined) 
@@ -341,11 +365,21 @@ this.GAME = {
                 this.EVENTS[i].TYPE == TYPE && 
                 this.EVENTS[i].EVENT == EVENT) 
                 for (let ii = 0; ii < this.EVENTS[i].CALLBACK.length; ii++)
-                    if (this.EVENTS[i].CALLBACK[ii] != undefined) 
+                    if (this.EVENTS[i].CALLBACK[ii] != undefined) {
+                        let worldPosition = lx.CONTEXT.CONTROLLER.MOUSE.POS;
+                                
+                        if (this.FOCUS != undefined)
+                            worldPosition = this.TRANSLATE_FROM_FOCUS({
+                                X: this.FOCUS.POS.X+worldPosition.X-lx.GetDimensions().width,
+                                Y: this.FOCUS.POS.Y+worldPosition.Y-lx.GetDimensions().height
+                            });
+                        
                         this.EVENTS[i].CALLBACK[ii]({
                             mousePosition: lx.CONTEXT.CONTROLLER.MOUSE.POS,
+                            worldPosition: worldPosition,
                             state: 0
                         });
+                    }
     },
     CLEAR_EVENT: function(TYPE, EVENT, CB_ID) {
         for (let i = 0; i < this.EVENTS.length; i++) {
@@ -393,8 +427,8 @@ this.GAME = {
             }
             
             return {
-                X: Math.floor(Math.round(POS.X)-Math.round(this.FOCUS.Position().X)+lx.GetDimensions().width/2-this.FOCUS.SIZE.W/2),
-                Y: Math.floor(Math.round(POS.Y)-Math.round(this.FOCUS.Position().Y)+lx.GetDimensions().height/2-this.FOCUS.SIZE.H/2)
+                X: Math.floor(Math.round(POS.X)-Math.round(this.FOCUS.Position().X)+lx.GetDimensions().width/(2*this.SCALE)-this.FOCUS.SIZE.W/2) * this.SCALE,
+                Y: Math.floor(Math.round(POS.Y)-Math.round(this.FOCUS.Position().Y)+lx.GetDimensions().height/(2*this.SCALE)-this.FOCUS.SIZE.H/2) * this.SCALE
             };
         }
     },
@@ -451,14 +485,16 @@ this.GAME = {
             this.CHANNELS[CHANNEL] = VOL;
         },
         GET_CHANNEL_VOLUME: function (CHANNEL) {
-            if (this.CHANNELS[CHANNEL] == undefined) this.SET_CHANNEL_VOLUME(CHANNEL, 1);
+            if (this.CHANNELS[CHANNEL] == undefined) 
+                this.SET_CHANNEL_VOLUME(CHANNEL, 1);
             
             return this.CHANNELS[CHANNEL];
         },
         ADD: function (SRC, CHANNEL, DELAY, LOOPS) {
             if (!this.CAN_PLAY || SRC == "") return;
             
-            if (this.CHANNELS[CHANNEL] == undefined) this.SET_CHANNEL_VOLUME(CHANNEL, 1);
+            if (this.CHANNELS[CHANNEL] == undefined) 
+                this.SET_CHANNEL_VOLUME(CHANNEL, 1);
             
             for (let i = 0; i <= this.SOUNDS.length; i++) {
                 if (this.SOUNDS[i] == undefined) {
@@ -479,7 +515,8 @@ this.GAME = {
         ADD_SPATIAL: function(POS, SRC, CHANNEL, DELAY, LOOPS) {
             if (!this.CAN_PLAY || SRC == "") return;
             
-            if (this.CHANNELS[CHANNEL] == undefined) this.SET_CHANNEL_VOLUME(CHANNEL, 1);
+            if (this.CHANNELS[CHANNEL] == undefined) 
+                this.SET_CHANNEL_VOLUME(CHANNEL, 1);
             
             for (let i = 0; i <= this.SOUNDS.length; i++) {
                 if (this.SOUNDS[i] == undefined) {
@@ -500,10 +537,23 @@ this.GAME = {
         },
         CALCULATE_SPATIAL: function(POS, CHANNEL) {
             POS = lx.GAME.TRANSLATE_FROM_FOCUS(POS);
-            let VOL = 1-(Math.abs(POS.X - lx.GetDimensions().width/2)/lx.GetDimensions().width + Math.abs(POS.Y - lx.GetDimensions().height/2)/lx.GetDimensions().height);
             
-            if (VOL < 0) VOL = 0;
-            else if (VOL > this.CHANNELS[CHANNEL]) VOL = this.CHANNELS[CHANNEL];
+            let DX = 1-Math.abs(POS.X - lx.GetDimensions().width/2)/(lx.GetDimensions().width/2),
+                DY = 1-Math.abs(POS.Y - lx.GetDimensions().height/2)/(lx.GetDimensions().height/2);
+            
+            let VOL = this.CHANNELS[CHANNEL];
+            
+            if (DX >= DY)
+                VOL *= DX;
+            else
+                VOL *= DY;
+            
+            if (VOL < 0 ||
+                POS.X < 0 || 
+                POS.Y < 0 ||
+                POS.X > lx.GetDimensions().width ||
+                POS.Y > lx.GetDimensions().height)
+                VOL = 0;
             
             return VOL;
         },
@@ -592,6 +642,11 @@ this.GAME = {
     GET_MOUSE_IN_BOX: function (POS, SIZE) {
         if (this.FOCUS != undefined) 
             POS = this.TRANSLATE_FROM_FOCUS(POS);
+        
+        SIZE = {
+            W: SIZE.W * this.SCALE,
+            H: SIZE.H * this.SCALE
+        };
         
         if (POS.X <= lx.CONTEXT.CONTROLLER.MOUSE.POS.X && POS.X+SIZE.W >= lx.CONTEXT.CONTROLLER.MOUSE.POS.X && 
             POS.Y <= lx.CONTEXT.CONTROLLER.MOUSE.POS.Y && POS.Y+SIZE.H >= lx.CONTEXT.CONTROLLER.MOUSE.POS.Y)
@@ -707,6 +762,13 @@ this.Background = function(color) {
     return this;
 };
 
+this.Scale = function(scale) {
+    if (scale == undefined)
+        return this.GAME.SCALE;
+    else
+        this.GAME.SCALE = scale;
+};
+
 this.GetDimensions = function() {
     if (this.CONTEXT.CANVAS == undefined) {
         console.log(this.GAME.LOG.TIMEFORMAT + 'Could not get canvas dimensions, Lynx2D is not initialized!')
@@ -820,7 +882,8 @@ this.CreateController = function() {
     this.CONTEXT.CANVAS.addEventListener('touchstart', function(EVENT) {
         lx.GAME.AUDIO.CAN_PLAY = true;
 
-        lx.CONTEXT.CONTROLLER.MOUSE.POS = { X: EVENT.pageX, Y: EVENT.pageY };
+        let TOUCH = EVENT.touches[0];
+        lx.CONTEXT.CONTROLLER.MOUSE.POS = { X: TOUCH.pageX, Y: TOUCH.pageY };
 
         if (lx.CONTEXT.CONTROLLER.MOUSE.STOPPED_BUTTONS[0]) return;
         lx.CONTEXT.CONTROLLER.MOUSE.BUTTONS[0] = true;
@@ -1083,6 +1146,32 @@ this.CreateVerticalTileSheet = function(sprite, cw, ch) {
     return result;
 };
 
+this.MoveToPosition = function(gameobject, x, y, time) {
+    if (gameobject.BEING_MOVED)
+        return;
+    else
+        gameobject.BEING_MOVED = true;
+    
+    let frames = time / 1000 * 60,
+        dx = x-gameobject.Position().X,
+        dy = y-gameobject.Position().Y,
+        speedX = dx / frames,
+        speedY = dy / frames;
+
+    let updateIdentifier = lx.GAME.ADD_LOOPS(function() {
+        gameobject.POS.X += speedX;
+        gameobject.POS.Y += speedY;
+
+        frames--;
+
+        if (frames <= 0) {
+            lx.GAME.LOOPS[updateIdentifier] = undefined;
+            
+            delete gameobject.BEING_MOVED;
+        }
+    });
+};
+
 /* Animation Object */
 
 this.Animation = function (sprite_collection, speed) {
@@ -1207,6 +1296,47 @@ this.Animation = function (sprite_collection, speed) {
             this.LOOPS();
     };
 };
+
+/* Canvas Object */
+
+ this.Canvas = function(width, height) {
+    this.CANVAS = document.createElement('canvas');
+    this.CANVAS.width = width;
+    this.CANVAS.height = height;
+
+    this.GRAPHICS = this.CANVAS.getContext('2d');
+
+    this.Size = function() {
+        return {
+            W: this.CANVAS.width,
+            H: this.CANVAS.height
+        };
+    };
+
+    this.DrawSprite = function(sprite, x, y, w, h) {
+        let SIZE = sprite.Size();
+
+        if (w != undefined && h != undefined)
+            SIZE = {
+                W: w,
+                H: h
+            };
+
+        sprite.RENDER(
+            {
+                X: x,
+                Y: y
+            },
+            SIZE,
+            sprite.Opacity(),
+            this.GRAPHICS
+        );
+    };
+    
+    this.Draw = function(cb) {
+        cb(this.GRAPHICS);
+    };
+ };
 
 /* Collider Object */
 
@@ -1422,6 +1552,10 @@ this.Emitter = function(sprite, x, y, amount, duration) {
         X: x,
         Y: y
     };
+    this.OFFSET = {
+        X: x,
+        Y: y
+    };
     this.SIZE = {
         MIN: 8,
         MAX: 16
@@ -1479,36 +1613,32 @@ this.Emitter = function(sprite, x, y, amount, duration) {
     };
 
     this.Position = function(x, y) {
-        if (x != undefined && y != undefined) {
-            if (this.OFFSET == undefined) this.POS = {
+        if (x != undefined && y != undefined) 
+            this.POS = {
                 X: x,
                 Y: y
             };
-            else this.OFFSET = {
-                X: x,
-                Y: y
-            };
-        }
-        else return this.POS;
+        else 
+            return this.POS;
         
         return this;
     };
 
     this.Follows = function(target) {
-        if (target != undefined) {
+        if (target != undefined) 
             this.TARGET = target;
-            this.OFFSET = this.POS;
-        }
         else 
-        return this.TARGET;
+            return this.TARGET;
         
         return this;
     };
 
     this.StopFollowing = function() {
         this.TARGET = undefined; 
-        this.POS = this.OFFSET;
-        this.OFFSET = undefined;
+        this.POS = {
+            X: this.OFFSET.X,
+            Y: this.OFFSET.Y
+        };
         
         return this;
     };
@@ -1548,18 +1678,23 @@ this.Emitter = function(sprite, x, y, amount, duration) {
         for (let i = 0; i < this.PARTICLES.length; i++) {
             lx.CONTEXT.GRAPHICS.save();
             lx.CONTEXT.GRAPHICS.globalAlpha = this.PARTICLES[i].OPACITY;
-            lx.DrawSprite(this.SPRITE, this.PARTICLES[i].POS.X, this.PARTICLES[i].POS.Y, this.PARTICLES[i].SIZE, this.PARTICLES[i].SIZE);
+            lx.DrawSprite(
+                this.SPRITE, 
+                this.PARTICLES[i].POS.X, 
+                this.PARTICLES[i].POS.Y, 
+                this.PARTICLES[i].SIZE, 
+                this.PARTICLES[i].SIZE
+            );
             lx.CONTEXT.GRAPHICS.restore();
         }
     };
     
     this.UPDATE = function() {
-        if (this.TARGET != undefined) {
+        if (this.TARGET != undefined) 
             this.POS = {
                 X: this.TARGET.POS.X+this.OFFSET.X,
                 Y: this.TARGET.POS.Y+this.OFFSET.Y
             };
-        }
 
         let VX = this.MOVEMENT.MAX_VX/lx.GAME.PHYSICS.STEPS,
             VY = this.MOVEMENT.MAX_VY/lx.GAME.PHYSICS.STEPS;
@@ -1657,6 +1792,10 @@ this.GameObject = function (sprite, x, y, w, h) {
         X: x,
         Y: y
     };
+    this.OFFSET = {
+        X: x,
+        Y: y
+    };
     
     this.MOVEMENT = {
         VX: 0,
@@ -1749,13 +1888,13 @@ this.GameObject = function (sprite, x, y, w, h) {
     };
     
     this.Position = function(x, y) {
-        if (x == undefined || y == undefined) 
-            return this.POS;
-        else 
+        if (x != undefined && y != undefined) 
             this.POS = {
                 X: x,
                 Y: y
             };
+        else 
+            return this.POS;
         
         return this;
     };
@@ -1981,6 +2120,26 @@ this.GameObject = function (sprite, x, y, w, h) {
         return this;
     };
     
+    this.Follows = function(target) {
+        if (target != undefined) 
+            this.TARGET = target;
+        else 
+            return this.TARGET;
+        
+        return this;
+    };
+
+    this.StopFollowing = function() {
+        this.TARGET = undefined; 
+        this.POS = {
+            X: this.OFFSET.X,
+            Y: this.OFFSET.Y
+        };
+        
+        return this;
+    };
+
+    
     this.ShowColorOverlay = function(color, duration) {
         if (this.ANIMATION != undefined) 
             this.ANIMATION.GET_CURRENT_FRAME().ShowColorOverlay(color, duration);
@@ -2113,6 +2272,12 @@ this.GameObject = function (sprite, x, y, w, h) {
     };
     
     this.UPDATE = function() {
+        if (this.TARGET != undefined) 
+            this.POS = {
+                X: this.TARGET.POS.X+this.OFFSET.X,
+                Y: this.TARGET.POS.Y+this.OFFSET.Y
+            };
+        
         if (this.ANIMATION != undefined) 
             this.ANIMATION.UPDATE();
         if (this.LOOPS != undefined) 
@@ -2141,6 +2306,73 @@ this.GameObject = function (sprite, x, y, w, h) {
 
     else 
         console.log('GameObjectError: Created a GameObject without a specified size.');
+};
+
+/* Noise Object */
+
+this.Noise = function(seed) { 
+    if (seed == undefined) 
+        seed = Math.round(Math.random()*10000);
+
+    this.GRAD = [[1,1],[-1,1],[1,-1],[-1,-1], 
+                 [1,0],[-1,0],[1,0],[-1,0], 
+                 [0,1],[0,-1],[0,1],[0,-1]]; 
+
+    this.RANDOM = function() {
+        let x = Math.sin(seed++) * 10000;
+
+        return x - Math.floor(x);
+    };
+
+    this.P = [];
+    for (let i=0; i<256; i++) 
+        this.P[i] = Math.floor(this.RANDOM()*256);
+
+    this.PERM = []; 
+    for(var i=0; i<512; i++) 
+        this.PERM[i]=this.P[i & 255];
+
+    this.DOT = function(g, x, y) { 
+        return g[0]*x + g[1]*y; 
+    };
+
+    this.MIX = function(a, b, t) { 
+        return (1.0-t)*a + t*b; 
+    };
+
+    this.FADE = function(t) { 
+        return t*t*t*(t*(t*6.0-15.0)+10.0); 
+    };
+
+    this.Get = function(x, y) { 
+        let X = Math.floor(x),
+            Y = Math.floor(y); 
+  
+        x = x - X;
+        y = y - Y;
+  
+        X = X & 255; 
+        Y = Y & 255; 
+  
+        let gi00 = this.PERM[X+this.PERM[Y]] % 12,
+            gi01 = this.PERM[X+this.PERM[Y+1]] % 12,
+            gi10 = this.PERM[X+1+this.PERM[Y]] % 12,
+            gi11 = this.PERM[X+1+this.PERM[Y+1]] % 12; 
+
+        let n00 = this.DOT(this.GRAD[gi00], x, y),
+            n10 = this.DOT(this.GRAD[gi10], x-1, y),
+            n01 = this.DOT(this.GRAD[gi01], x, y-1),
+            n11 = this.DOT(this.GRAD[gi11], x-1, y-1);
+
+        let u = this.FADE(x),
+            v = this.FADE(y);
+ 
+        let nx0 = this.MIX(n00, n10, u),
+            nx1 = this.MIX(n01, n11, u), 
+            nxy = this.MIX(nx0, nx1, v);
+
+        return nxy; 
+    };
 };
 
 /* Ray Object */
@@ -2242,6 +2474,8 @@ this.Scene = function(callback) {
         this.LOOPS = lx.GAME.LOOPS;
         this.GO_MOUSE_EVENTS = lx.GAME.GO_MOUSE_EVENTS;
         this.LAYER_DRAW_EVENTS = lx.GAME.LAYER_DRAW_EVENTS;
+        this.AUDIO_CHANNELS = lx.GAME.AUDIO.CHANNELS;
+        this.AUDIO_SOUNDS = lx.GAME.AUDIO.SOUNDS;
         
         this.SAVED_STATE_AVAILABLE = true;
     };
@@ -2249,8 +2483,11 @@ this.Scene = function(callback) {
     this.Restore = function() {
         if (!this.SAVED_STATE_AVAILABLE) {
             console.log(lx.GAME.LOG.TIMEFORMAT() + 'Scene could not be restored, there is no saved state available.');
+            
             return;
         }
+
+        lx.GAME.RESET();
         
         lx.GAME.BUFFER = this.BUFFER;
         lx.GAME.UI = this.UI;
@@ -2261,6 +2498,8 @@ this.Scene = function(callback) {
         lx.GAME.LOOPS = this.LOOPS;
         lx.GAME.GO_MOUSE_EVENTS = this.GO_MOUSE_EVENTS;
         lx.GAME.LAYER_DRAW_EVENTS = this.LAYER_DRAW_EVENTS;
+        lx.GAME.AUDIO.CHANNELS = this.AUDIO_CHANNELS;
+        lx.GAME.AUDIO.SOUNDS = this.AUDIO_SOUNDS;
     };
 };
 
@@ -2327,7 +2566,7 @@ this.Sound = function (src, channel) {
         if (this.PLAY_ID != undefined)
             lx.GAME.AUDIO.REMOVE(this.PLAY_ID);  
         
-        this.PLAY_ID = undefined;
+        this.PLAY_ID = [];
         
         return this;
     };
@@ -2396,9 +2635,11 @@ this.Sprite = function (source, c_x, c_y, c_w, c_h, cb) {
             return this.IMG.src;
         }
         else {
+            let typeOf = typeof src;
+
             //Load image if the source is a string
 
-            if (typeof src === 'string') {
+            if (typeOf === 'string') {
                 this.IMG = new Image();
                 
                 if (cb != undefined) {
@@ -2411,10 +2652,14 @@ this.Sprite = function (source, c_x, c_y, c_w, c_h, cb) {
                 this.IMG.src = src;
             } 
             
-            //Otherwise straight up accept it (for canvas usage)
+            //Otherwise check if it is a Lynx2D canvas
+            //or a HTML canvas or HTML image.
 
             else 
-                this.IMG = src;
+                if (src.CANVAS != undefined)
+                    this.IMG = src.CANVAS;
+                else
+                    this.IMG = src;
         }
         
         return this;
@@ -2479,14 +2724,28 @@ this.Sprite = function (source, c_x, c_y, c_w, c_h, cb) {
     };
     
     this.RENDER = function(POS, SIZE, OPACITY, TARGET) {
-        let CANVAS_SAVED = false;
+        let CANVAS_SAVED = false,
+            EXTERNAL_TARGET = false;
 
         //Check size and specified drawing target
         
         if (SIZE == undefined) 
             SIZE = this.Size();
-        if (TARGET == undefined)
+        if (TARGET == undefined) {
             TARGET = lx.CONTEXT.GRAPHICS;
+
+            //If the specified drawing target is the
+            //standard lynx2d context, scale respectively
+
+            SIZE = {
+                W: SIZE.W * lx.GAME.SCALE,
+                H: SIZE.H * lx.GAME.SCALE
+            };
+        } else {
+            TARGET.imageSmoothingEnabled = lx.GAME.SETTINGS.AA;
+
+            EXTERNAL_TARGET = true;
+        }
 
         //Check for opacity
 
@@ -2509,11 +2768,46 @@ this.Sprite = function (source, c_x, c_y, c_w, c_h, cb) {
 
         //Draw respectively
         
-        if (this.CLIP == undefined || this.SHOW_COLOR_OVERLAY) 
+        if (this.CLIP == undefined || this.SHOW_COLOR_OVERLAY) {
             //Full image (or color overlay)
 
-            if (this.ROTATION === 0) 
-                TARGET.drawImage(IMG, POS.X, POS.Y, SIZE.W, SIZE.H);
+            //Check if the image exceeds the viewport,
+            //this is only necessary when using the
+            //standard Lynx2D drawing context
+
+            let CLIP, VIEWPORT = lx.GetDimensions();
+
+            if (!EXTERNAL_TARGET &&
+                SIZE.W > VIEWPORT.width &&
+                SIZE.H > VIEWPORT.height) {
+                CLIP = { 
+                    X: 0, 
+                    Y: 0, 
+                    W: VIEWPORT.width/lx.GAME.SCALE, 
+                    H: VIEWPORT.height/lx.GAME.SCALE
+                };
+
+                if (POS.X < 0) {
+                    CLIP.X -= POS.X/lx.GAME.SCALE;
+                    POS.X = 0;
+                }
+                else if (POS.X > 0) 
+                    CLIP.W -= POS.X/lx.GAME.SCALE;
+
+                if (POS.Y < 0) {
+                    CLIP.Y -= POS.Y/lx.GAME.SCALE;
+                    POS.Y = 0;
+                }
+                else if (POS.Y > 0) 
+                    CLIP.H -= POS.Y/lx.GAME.SCALE;
+            }
+
+            if (this.ROTATION === 0) {
+                if (CLIP == undefined)
+                    TARGET.drawImage(IMG, POS.X, POS.Y, SIZE.W, SIZE.H);
+                else
+                    TARGET.drawImage(IMG, CLIP.X, CLIP.Y, CLIP.W, CLIP.H, POS.X, POS.Y, CLIP.W*lx.GAME.SCALE, CLIP.H*lx.GAME.SCALE);
+            }
             else {
                 if (!CANVAS_SAVED) {
                     TARGET.save();
@@ -2522,8 +2816,13 @@ this.Sprite = function (source, c_x, c_y, c_w, c_h, cb) {
                 
                 TARGET.translate(POS.X + SIZE.W/2, POS.Y + SIZE.H/2);
                 TARGET.rotate(this.ROTATION);
-                TARGET.drawImage(IMG, -SIZE.W/2, -SIZE.H/2, SIZE.W, SIZE.H);
+
+                if (CLIP == undefined)
+                    TARGET.drawImage(IMG, -SIZE.W/2, -SIZE.H/2, SIZE.W, SIZE.H);
+                else
+                    TARGET.drawImage(IMG, CLIP.X, CLIP.Y, CLIP.W, CLIP.H, -CLIP.W*lx.GAME.SCALE/2, -CLIP.H*lx.GAME.SCALE/2, CLIP.W*lx.GAME.SCALE, CLIP.H*lx.GAME.SCALE);
             }
+        }
         else 
             //Clipped image
 
@@ -2750,12 +3049,12 @@ this.UIRichText = function(text_array, x, y, size, color, font) {
     
     this.RENDER = function() {
         lx.CONTEXT.GRAPHICS.save();
-        lx.CONTEXT.GRAPHICS.font = this.SIZE + 'px ' + this.FONT;
+        lx.CONTEXT.GRAPHICS.font = this.SIZE*(lx.GAME.SCALE === 1 ? 1 : lx.GAME.SCALE*.75) + 'px ' + this.FONT;
         lx.CONTEXT.GRAPHICS.fillStyle = this.COLOR;
         lx.CONTEXT.GRAPHICS.textAlign = this.ALIGN;
         
         for (let i = 0; i < this.TEXT.length; i++) {
-            let offset = i*this.LINE_HEIGHT+i*this.SIZE;
+            let offset = i*this.LINE_HEIGHT+i*this.SIZE*(lx.GAME.SCALE === 1 ? 1 : lx.GAME.SCALE*.75);
             
             if (this.TARGET != undefined) {
                 if (lx.GAME.FOCUS != undefined) {
@@ -2906,7 +3205,7 @@ this.UIText = function(text, x, y, size, color, font) {
     
     this.RENDER = function() {
         lx.CONTEXT.GRAPHICS.save();
-        lx.CONTEXT.GRAPHICS.font = this.SIZE + 'px ' + this.FONT;
+        lx.CONTEXT.GRAPHICS.font = this.SIZE*(lx.GAME.SCALE === 1 ? 1 : lx.GAME.SCALE*.75) + 'px ' + this.FONT;
         lx.CONTEXT.GRAPHICS.fillStyle = this.COLOR;
         lx.CONTEXT.GRAPHICS.textAlign = this.ALIGN;
         

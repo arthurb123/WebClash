@@ -37,9 +37,12 @@
             this.affectPlayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.spawnNPCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showQuestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.turnHostileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.canvas = new System.Windows.Forms.PictureBox();
             this.showShopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.turnHostileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.playerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.getVariableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.canvas = new System.Windows.Forms.PictureBox();
+            this.setVariableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.SuspendLayout();
@@ -48,7 +51,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newItemToolStripMenuItem,
-            this.eventsToolStripMenuItem});
+            this.eventsToolStripMenuItem,
+            this.playerToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(649, 24);
@@ -65,6 +69,7 @@
             // eventsToolStripMenuItem
             // 
             this.eventsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.setVariableToolStripMenuItem,
             this.giveItemToolStripMenuItem,
             this.loadMapToolStripMenuItem,
             this.affectPlayerToolStripMenuItem,
@@ -111,6 +116,13 @@
             this.showQuestToolStripMenuItem.Text = "Show Quest";
             this.showQuestToolStripMenuItem.Click += new System.EventHandler(this.showQuestToolStripMenuItem_Click);
             // 
+            // showShopToolStripMenuItem
+            // 
+            this.showShopToolStripMenuItem.Name = "showShopToolStripMenuItem";
+            this.showShopToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showShopToolStripMenuItem.Text = "Show Shop";
+            this.showShopToolStripMenuItem.Click += new System.EventHandler(this.ShowShopToolStripMenuItem_Click);
+            // 
             // turnHostileToolStripMenuItem
             // 
             this.turnHostileToolStripMenuItem.Enabled = false;
@@ -118,6 +130,21 @@
             this.turnHostileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.turnHostileToolStripMenuItem.Text = "Turn Hostile";
             this.turnHostileToolStripMenuItem.Click += new System.EventHandler(this.TurnHostileToolStripMenuItem_Click);
+            // 
+            // playerToolStripMenuItem
+            // 
+            this.playerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.getVariableToolStripMenuItem});
+            this.playerToolStripMenuItem.Name = "playerToolStripMenuItem";
+            this.playerToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+            this.playerToolStripMenuItem.Text = "Checks";
+            // 
+            // getVariableToolStripMenuItem
+            // 
+            this.getVariableToolStripMenuItem.Name = "getVariableToolStripMenuItem";
+            this.getVariableToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.getVariableToolStripMenuItem.Text = "Get Variable";
+            this.getVariableToolStripMenuItem.Click += new System.EventHandler(this.GetVariableToolStripMenuItem_Click);
             // 
             // canvas
             // 
@@ -129,12 +156,12 @@
             this.canvas.TabIndex = 2;
             this.canvas.TabStop = false;
             // 
-            // showShopToolStripMenuItem
+            // setVariableToolStripMenuItem
             // 
-            this.showShopToolStripMenuItem.Name = "showShopToolStripMenuItem";
-            this.showShopToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.showShopToolStripMenuItem.Text = "Show Shop";
-            this.showShopToolStripMenuItem.Click += new System.EventHandler(this.ShowShopToolStripMenuItem_Click);
+            this.setVariableToolStripMenuItem.Name = "setVariableToolStripMenuItem";
+            this.setVariableToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setVariableToolStripMenuItem.Text = "Set Variable";
+            this.setVariableToolStripMenuItem.Click += new System.EventHandler(this.SetVariableToolStripMenuItem_Click);
             // 
             // Dialogue
             // 
@@ -170,5 +197,8 @@
         private System.Windows.Forms.ToolStripMenuItem showQuestToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem turnHostileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showShopToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem playerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem getVariableToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem setVariableToolStripMenuItem;
     }
 }

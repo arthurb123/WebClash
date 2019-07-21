@@ -17,6 +17,7 @@ io.addServer(http);
 
 global.server = require('./webclash_modules/server');
 global.game = require('./webclash_modules/game');
+global.dialog = require('./webclash_modules/dialog');
 global.items = require('./webclash_modules/items');
 global.shop = require('./webclash_modules/shop');
 global.npcs = require('./webclash_modules/npcs');
@@ -31,6 +32,7 @@ global.storage = require('./webclash_modules/storage');
 
 global.properties = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
 global.permissions = JSON.parse(fs.readFileSync('permissions.json', 'utf-8'));
+global.censored = JSON.parse(fs.readFileSync('censored.json', 'utf-8'));
 global.exptable = JSON.parse(fs.readFileSync('exptable.json', 'utf-8'));
 global.gameplay = JSON.parse(fs.readFileSync('gameplay.json', 'utf-8'));
 
@@ -55,7 +57,7 @@ rl.on('line', (text) => {
 
 //Setup Express
 
-app.use(express.static(path.resolve(__dirname +  "/../client/")));
+app.use('/', express.static(path.resolve(__dirname +  "/../client/")));
 
 //Load all game data, and if successful start server
 

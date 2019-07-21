@@ -75,6 +75,10 @@ namespace WebClashServer.Classes
         public ShowQuestEvent showQuestEvent = null;
 
         public ShowShopEvent showShopEvent = null;
+
+        public GetVariableEvent getVariableEvent = null;
+
+        public SetVariableEvent setVariableEvent = null;
     }
 
     public class DialogueOption
@@ -143,5 +147,17 @@ namespace WebClashServer.Classes
         public ShopItem[] items = new ShopItem[0];
 
         public bool acceptSell = true;
+    }
+
+    public class GetVariableEvent
+    {
+        public string name = "";
+    }
+
+    public class SetVariableEvent
+    {
+        public string name = "";
+
+        public bool value = false;
     }
 }

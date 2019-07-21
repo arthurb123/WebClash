@@ -8,27 +8,53 @@ exports.respawnTime = 15;
 
 //Properties
 
-exports.mapPopularity = [];
-
+exports.mapPopulation = [];
 exports.onMap = [];
 exports.onTimeOut = [];
 
-exports.sendMap = function(map, channel)
+exports.sendMap = function(id)
 {
+    let map = game.players[id].map_id,
+        channel = game.players[id].channel;
+
     //Check if valid
 
     if (this.onMap[map] === undefined)
         return;
 
     //Cycle through all NPCs and send to channel
-    //if the NPC is not on timeout
+    //if the NPC is not on timeout, also check
+    //if the NPC has checks that need to be met
 
     for (let i = 0; i < this.onMap[map].length; i++) {
         if (this.onMap[map][i] == undefined)
-          continue;
+            continue;
 
-        if (this.onTimeOut[map] == undefined ||
-            this.onTimeOut[map][i] == undefined)
+        //Check on timeout
+
+        if (this.onTimeOut[map] != undefined &&
+            this.onTimeOut[map][i] != undefined)
+            continue;
+
+        //Check if checks are met (if they exist)
+
+        let valid = true;
+        for (let ii = 0; ii < this.onMap[map][i].checks.length; ii++) {
+            let check = this.onMap[map][i].checks[ii],
+                result = game.getPlayerGlobalVariable(id, check.name);
+
+            if (result == undefined) 
+                result = false;
+
+            if (result !== check.value) {
+                valid = false;
+                break;
+            }
+        }
+        
+        //Send NPC
+
+        if (valid)
             server.syncNPC(map, i, channel, false);
     };
 }
@@ -40,10 +66,10 @@ exports.loadMap = function(map)
     if (this.onMap[map] === undefined)
         this.onMap[map] = [];
 
-    //Check if mapPopularity at map is undefined
+    //Check if population at map is undefined
 
-    if (this.mapPopularity[map] === undefined)
-        this.mapPopularity[map] = 0;
+    if (this.mapPopulation[map] == undefined)
+        this.mapPopulation[map] = 0;
 
     //Check if map has (NPC) properties
 
@@ -67,8 +93,8 @@ exports.updateMaps = function()
     //if so update the NPCs
 
     for (let i = 0; i < tiled.maps.length; i++)
-        if (this.mapPopularity[i] !== undefined &&
-            this.mapPopularity[i] > 0)
+        if (this.mapPopulation[i] !== undefined &&
+            this.mapPopulation[i] > 0)
             this.updateMap(i);
 };
 
@@ -92,17 +118,28 @@ exports.createNPCs = function(npc_property, map_id)
     //Cycle through all dimensions
 
     for (let i = 0; i < npc_property.rectangles.length; i++) {
+        //Calculate NPC position
+
         let pos = {
             x: npc_property.rectangles[i].x,
             y: npc_property.rectangles[i].y
         };
+
+        //Center NPC position if a width
+        //and height of the property exist
 
         if (npc_property.rectangles[i].w != undefined)
             pos.x += npc_property.rectangles[i].w/2;
         if (npc_property.rectangles[i].h != undefined)
             pos.y += npc_property.rectangles[i].h/2;
 
-        this.createNPC(map_id, npc_property.value, pos.x, pos.y, false);
+        //Create NPC
+
+        let npc = this.createNPC(map_id, npc_property.value, pos.x, pos.y, false);
+
+        //Set checks on the newly created NPC
+
+        this.onMap[map_id][npc].checks = npc_property.checks;
     }
 };
 
@@ -149,7 +186,11 @@ exports.createNPC = function(map, name, x, y, is_event)
         standard: this.randomNPCMovementTimeout()
     };
     npc.moving = false;
-    npc.direction = 0;
+
+    if (npc.data.movement === 'static')
+        npc.direction = npc.data.facing;
+    else
+        npc.direction = 0;
 
     //Setup NPC Combat
 
@@ -169,7 +210,9 @@ exports.createNPC = function(map, name, x, y, is_event)
 
     //Orden set actions from high to low range
 
-    npc.data.actions.sort((b, a) => (a.range > b.range) ? 1 : ((b.range > a.range) ? -1 : 0));
+    npc.data.actions.sort(
+        (b, a) => (a.range > b.range) ? 1 : ((b.range > a.range) ? -1 : 0)
+    );
 
     //Add NPC to map
 
@@ -826,7 +869,8 @@ exports.damageNPC = function(owner, map, id, delta)
 
     //Subtract toughness from damage
 
-    delta += this.onMap[map][id].data.stats.toughness-1;
+    if (this.onMap[map][id].data.stats.toughness > 0)
+        delta += this.onMap[map][id].data.stats.toughness-1;
 
     if (delta >= 0)
         delta = 0;

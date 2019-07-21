@@ -210,7 +210,7 @@
             // resetDataToolStripMenuItem
             // 
             this.resetDataToolStripMenuItem.Name = "resetDataToolStripMenuItem";
-            this.resetDataToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.resetDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.resetDataToolStripMenuItem.Text = "Reset Data";
             this.resetDataToolStripMenuItem.ToolTipText = "Allows for server data resetting";
             this.resetDataToolStripMenuItem.Click += new System.EventHandler(this.resetDataToolStripMenuItem_Click);

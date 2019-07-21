@@ -26,7 +26,7 @@ const audio = {
         if (this.actualMainVolume == 0)
             return;
 
-        this.currentBGM.Play(0, true);
+        this.currentBGM.Play(true);
     },
     setBGMVolume: function(volume, sets) {
         lx.ChannelVolume(0, volume);

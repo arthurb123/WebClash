@@ -3,6 +3,7 @@
   "showNameplate": false,
   "movement": "free",
   "range": 4,
+  "facing": 0,
   "type": "hostile",
   "character": "butterfly",
   "stats": {

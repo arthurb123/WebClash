@@ -4,6 +4,13 @@ const gameScene = new lx.Scene(function() {
     //Set background to the standard color
     
     lx.Background('');
+
+    //Set rendering scale
+
+    if (game.isMobile)
+        lx.Scale(properties.mobileRenderScale);
+    else
+        lx.Scale(properties.computerRenderScale);
     
     //Initialize UI
         
@@ -12,4 +19,8 @@ const gameScene = new lx.Scene(function() {
     //Attempt to join the game
     
     client.joinGame();
+
+    //Setup game update loop
+
+    lx.Loops(game.update);
 });

@@ -31,7 +31,7 @@ const game = {
 
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
             .Loops(function() {
-                animation.animateMoving(go);
+                animation.animateMoving(this);
 
                 if (this._nameplate.Position().X === 0)
                     this._nameplate.Position(this.Size().W/2, -Math.floor(this.Size().H/5));
@@ -47,10 +47,11 @@ const game = {
                 if (this._health != undefined)
                 {
                     if (this._healthbar === undefined) {
-                        this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W, 8).Follows(go);
-                        this._healthbar = new lx.UITexture('#FF4242', 0, -36, this._health.cur/this._health.max*this.SIZE.W, 8).Follows(go);
+                        this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W*lx.GAME.SCALE, 8).Follows(go);
+                        this._healthbar = new lx.UITexture('#FF4242', 0, -36, this._health.cur/this._health.max*(this.SIZE.W*lx.GAME.SCALE), 8).Follows(go);
                     } else {
-                        this._healthbar.SIZE.W = this._health.cur/this._health.max*this.SIZE.W;
+                        this._healthbarBack.SIZE.W = this.SIZE.W*lx.GAME.SCALE;
+                        this._healthbar.SIZE.W = (this._health.cur/this._health.max)*(this.SIZE.W*lx.GAME.SCALE);
     
                         if (this._health.cur == this._health.max || !tiled.pvp)
                         {
@@ -292,17 +293,6 @@ const game = {
             if (i !== this.player)
                 this.removePlayer(i);
     },
-    resetPlayer: function()
-    {
-        //Check if the player exists
-
-        if (this.player == -1)
-            return;
-
-        //Reset movement
-
-        this.players[this.player].Movement(0, 0);
-    },
 
     instantiateNPC: function(id, name)
     {
@@ -311,7 +301,7 @@ const game = {
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
             .Loops(function() {
                 animation.animateMoving(this);
-    
+
                 if (this._nameplate != undefined) {
                     if (this._nameplate.Position().X === 0)
                       this._nameplate.Position(this.Size().W/2, -12);
@@ -329,10 +319,11 @@ const game = {
                 if (this._health != undefined)
                 {
                     if (this._healthbar === undefined) {
-                        this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W, 8).Follows(go);
-                        this._healthbar = new lx.UITexture('#FF4242', 0, -36, this._health.cur/this._health.max*this.SIZE.W, 8).Follows(go);
+                        this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W*lx.GAME.SCALE, 8).Follows(go);
+                        this._healthbar = new lx.UITexture('#FF4242', 0, -36, (this._health.cur/this._health.max)*(this.SIZE.W*lx.GAME.SCALE), 8).Follows(go);
                     } else {
-                        this._healthbar.SIZE.W = this._health.cur/this._health.max*this.SIZE.W;
+                        this._healthbarBack.SIZE.W = this.SIZE.W*lx.GAME.SCALE;
+                        this._healthbar.SIZE.W = (this._health.cur/this._health.max)*(this.SIZE.W*lx.GAME.SCALE);
     
                         if (this._health.cur == this._health.max)
                         {
@@ -576,6 +567,25 @@ const game = {
         this.npcs = [];
     },
 
+    orderTargets: function(target1, target2) {
+        if (target1 == undefined || 
+            target2 == undefined)
+            return;
+
+        let onTop = false;
+
+        if (target1.Position().Y+target1.Size().H <
+            target2.Position().Y+target2.Size().H)
+            onTop = true;
+
+        if (onTop && target1.BUFFER_ID > target2.BUFFER_ID ||
+            !onTop && target1.BUFFER_ID < target2.BUFFER_ID)
+            lx.GAME.SWITCH_BUFFER_POSITION(
+                target1,
+                target2
+            );
+    },
+
     resetColliders: function()
     {
         if (this.players === undefined ||
@@ -743,9 +753,9 @@ const game = {
             this.items[id] = undefined;
         }
     },
-    loadMap: function(map)
+    loadMap: function(data)
     {
-        tiled.convertAndLoadMap(map);
+        tiled.convertAndLoadMap(data);
 
         //...
     },
@@ -905,11 +915,11 @@ const game = {
 
         for (let key in player.attributes)
             if (extra_attributes == undefined)
-                total += Math.round(scaling[key] * player.attributes[key] * 10);
+                total += scaling[key] * player.attributes[key] * 10;
             else
-                total += Math.round(scaling[key] * (player.attributes[key]+extra_attributes[key]) * 10);
+                total += scaling[key] * (player.attributes[key]+extra_attributes[key]) * 10;
 
-        return total;
+        return Math.round(total);
     },
 
     createBlood: function(target, count)
@@ -964,5 +974,30 @@ const game = {
 
         if (isMobile)
             ui.fullscreen.append();
+    },
+    update: function() {
+        //Order NPCs against NPCs
+
+        for (let i = 0; i < game.npcs.length; i++)
+            if (game.npcs[i] != undefined)
+                for (let ii = 0; ii < game.npcs.length; ii++)
+                    if (game.npcs[ii] != undefined && i !== ii)
+                        game.orderTargets(game.npcs[ii], game.npcs[i]);
+
+        //Order players against NPCs
+
+        for (let i = 0; i < game.players.length; i++)
+            if (game.players[i] != undefined)
+                for (let ii = 0; ii < game.npcs.length; ii++)
+                    if (game.npcs[ii] != undefined)
+                        game.orderTargets(game.npcs[ii], game.players[i]);
+
+        //Order players against players
+
+        for (let i = 0; i < game.players.length; i++)
+            if (game.players[i] != undefined)
+                for (let ii = 0; ii < game.players.length; ii++)
+                    if (game.players[ii] != undefined && i !== ii)
+                        game.orderTargets(game.players[ii], game.players[i]);
     }
 };

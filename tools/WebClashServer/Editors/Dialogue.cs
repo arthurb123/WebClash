@@ -148,6 +148,21 @@ namespace WebClashServer.Editors
                 {
                     dialogSystem.items[elements[item].id] = dep.current;
 
+                    //Check if entry point (Get Global Variable)
+
+                    if (dep.current.entry)
+                        for (int i = 0; i < dialogSystem.items.Count; i++)
+                            if (i != elements[item].id &&
+                                dialogSystem.items[i] != null &&
+                                dialogSystem.items[i].entry)
+                            {
+                                dep.current.entry = false;
+
+                                MessageBox.Show("The dialog event could not be set as the entry point, as an entry point already exists.", "WebClash Server - Error");
+
+                                break;
+                            }
+
                     canvas.Invalidate();
                 };
 
@@ -322,6 +337,8 @@ namespace WebClashServer.Editors
 
             switch (dialogSystem.items[cee.id].eventType)
             {
+                case "":
+                    break;
                 case "GiveItem":
                     dialogSystem.items[cee.id].giveItemEvent = new GiveItemEvent();
                     break;
@@ -345,6 +362,14 @@ namespace WebClashServer.Editors
                     dialogSystem.items[cee.id].showShopEvent = new ShowShopEvent();
                     dialogSystem.items[cee.id].repeatable = true;
                     break;
+                case "GetVariable":
+                    dialogSystem.items[cee.id].getVariableEvent = new GetVariableEvent();
+                    dialogSystem.items[cee.id].repeatable = true;
+                    break;
+                case "SetVariable":
+                    dialogSystem.items[cee.id].setVariableEvent = new SetVariableEvent();
+                    dialogSystem.items[cee.id].repeatable = true;
+                    break;
             }
 
             dialogSystem.items[cee.id].options.Add(new DialogueOption(-1));
@@ -365,6 +390,8 @@ namespace WebClashServer.Editors
 
             canvas.Invalidate();
         }
+
+        //General Events
 
         private void giveItemToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -414,6 +441,22 @@ namespace WebClashServer.Editors
 
             canvas.Invalidate();
         }
+
+        //Player Events
+
+        private void GetVariableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addCanvasEventElement(EventType.GetVariable);
+
+            canvas.Invalidate();
+        }
+
+        private void SetVariableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addCanvasEventElement(EventType.SetVariable);
+
+            canvas.Invalidate();
+        }
     }
 
     public class CanvasElement
@@ -452,6 +495,8 @@ namespace WebClashServer.Editors
         SpawnNPC,
         ShowQuest,
         TurnHostile,
-        ShowShop
+        ShowShop,
+        SetVariable,
+        GetVariable
     }
 }

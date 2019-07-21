@@ -97,6 +97,7 @@ namespace WebClashServer.Editors
             }
 
             range.Value = current.range;
+            facing.SelectedIndex = current.facing;
 
             switch (current.type)
             {
@@ -232,6 +233,7 @@ namespace WebClashServer.Editors
                 current.movement = "free";
 
                 range.Enabled = true;
+                facing.Enabled = false;
             }
         }
 
@@ -242,12 +244,18 @@ namespace WebClashServer.Editors
                 current.movement = "static";
 
                 range.Enabled = false;
+                facing.Enabled = true;
             }
         }
 
         private void range_ValueChanged(object sender, EventArgs e)
         {
             current.range = (int)range.Value;
+        }
+
+        private void facing_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            current.facing = facing.SelectedIndex;
         }
 
         private void level_ValueChanged(object sender, EventArgs e)
@@ -366,6 +374,8 @@ namespace WebClashServer.Editors
 
                 range = temp.range;
 
+                facing = temp.facing;
+
                 actions = temp.actions;
 
                 items = temp.items;
@@ -385,6 +395,7 @@ namespace WebClashServer.Editors
 
         public string movement = "free";
         public int range = 10;
+        public int facing = 0;
 
         public string type = "friendly";
 

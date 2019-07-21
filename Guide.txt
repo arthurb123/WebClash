@@ -2,6 +2,12 @@
 
 This version of WebClash is work-in-progress,
 and thus may contain bugs and glitches.
+Please report found bugs and glitches at;
+https://github.com/arthurb123/webclash/issues
+
+An example project already exists, to wipe
+the example project for a clean project use
+the reset tool provided with the Server binary.
 
 An account with administrator privileges should 
 already exist:
@@ -27,7 +33,7 @@ all other entities. (players, NPCs, items, etc.)
 
 Colliders are supported, however only in
 the rectangular form.
-Colliders can be created using object layers
+Colliders can be created using objects (object layers)
 or tile specific objects.
 
 The custom properties available for Tiled 
@@ -55,6 +61,18 @@ objects are as follows:
 * "positionY"         -> Set player position tile Y.
 		         (int value)
 
+[Checks]
+(Currently only supports design properties)
+
+* "getVariableTrue"   -> Checks if a player variable exists
+			 and is true. All other properties
+	                 are only used if this check is true.
+			 (string value)
+* "getVariableFalse"  -> Checks if a player variable does not
+			 exist or is false. All other properties
+	                 are only used if this check is true.
+			 (string value)
+
 
 	      -- Commands --
 
@@ -79,9 +97,10 @@ the range of ports 0-65535/upd on your server.
 	      -- Art usage --
 
 All provided graphics except UI and particle graphics
-are merely being used as example material. 
-These graphics should not be used for commercial 
-purposes as it is owned by Enterbrain.
+are not mine and are merely being used as example 
+material. 
+These graphics should not be distributed or used for 
+commercial purposes as it is owned by Enterbrain.
 
 
 	     -- Other Licenses --

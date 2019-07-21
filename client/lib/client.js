@@ -21,7 +21,7 @@ const client = {
                 url: (properties.address.length > 0 ? properties.address : window.location.protocol + '//' + window.location.hostname),
                 port: properties.port 
             });
-
+            
             //Set on connect callback
 
             channel.onConnect(function(err) {
@@ -163,8 +163,8 @@ const client = {
              if (data.pos !== undefined) {
                  game.players[id].POS = data.pos;
 
-                 if (data.isPlayer)
-                     game.players[id].Movement(0, 0);
+                 if (data.isPlayer) 
+                    game.players[id].Movement(0, 0);
              }
              if (data.moving !== undefined)
                  game.players[id]._moving = data.moving;

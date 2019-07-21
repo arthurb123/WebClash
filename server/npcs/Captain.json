@@ -3,6 +3,7 @@
   "showNameplate": true,
   "movement": "static",
   "range": 10,
+  "facing": 0,
   "type": "friendly",
   "character": "captain",
   "stats": {

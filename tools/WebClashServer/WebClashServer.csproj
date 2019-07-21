@@ -97,10 +97,10 @@
     <Compile Include="Editors\Quests.Designer.cs">
       <DependentUpon>Quests.cs</DependentUpon>
     </Compile>
-    <Compile Include="Editors\ResetData.cs">
+    <Compile Include="Tools\ResetData.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Editors\ResetData.Designer.cs">
+    <Compile Include="Tools\ResetData.Designer.cs">
       <DependentUpon>ResetData.cs</DependentUpon>
     </Compile>
     <Compile Include="Editors\SoundSelection.cs">
@@ -174,7 +174,7 @@
     <EmbeddedResource Include="Editors\Quests.resx">
       <DependentUpon>Quests.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Editors\ResetData.resx">
+    <EmbeddedResource Include="Tools\ResetData.resx">
       <DependentUpon>ResetData.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\SoundSelection.resx">

@@ -42,6 +42,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.save = new System.Windows.Forms.LinkLabel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.facing = new System.Windows.Forms.ComboBox();
+            this.label15 = new System.Windows.Forms.Label();
             this.range = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.movementFree = new System.Windows.Forms.RadioButton();
@@ -206,7 +208,7 @@
             this.save.AutoSize = true;
             this.save.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.save.LinkColor = System.Drawing.Color.Blue;
-            this.save.Location = new System.Drawing.Point(360, 449);
+            this.save.Location = new System.Drawing.Point(360, 464);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(32, 13);
             this.save.TabIndex = 7;
@@ -217,6 +219,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.facing);
+            this.groupBox2.Controls.Add(this.label15);
             this.groupBox2.Controls.Add(this.range);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.movementFree);
@@ -224,14 +228,40 @@
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(15, 156);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(373, 60);
+            this.groupBox2.Size = new System.Drawing.Size(373, 82);
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Movement";
             // 
+            // facing
+            // 
+            this.facing.DisplayMember = "Down";
+            this.facing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.facing.FormattingEnabled = true;
+            this.facing.Items.AddRange(new object[] {
+            "Down",
+            "Left",
+            "Right",
+            "Up"});
+            this.facing.Location = new System.Drawing.Point(278, 51);
+            this.facing.Name = "facing";
+            this.facing.Size = new System.Drawing.Size(75, 23);
+            this.facing.TabIndex = 5;
+            this.facing.ValueMember = "Down";
+            this.facing.SelectedIndexChanged += new System.EventHandler(this.facing_SelectedIndexChanged);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(176, 54);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(96, 15);
+            this.label15.TabIndex = 4;
+            this.label15.Text = "Facing Direction";
+            // 
             // range
             // 
-            this.range.Location = new System.Drawing.Point(286, 25);
+            this.range.Location = new System.Drawing.Point(102, 51);
             this.range.Name = "range";
             this.range.Size = new System.Drawing.Size(60, 21);
             this.range.TabIndex = 3;
@@ -246,17 +276,17 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(173, 27);
+            this.label4.Location = new System.Drawing.Point(22, 53);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(103, 15);
+            this.label4.Size = new System.Drawing.Size(74, 15);
             this.label4.TabIndex = 2;
-            this.label4.Text = "Maximum Range";
+            this.label4.Text = "Max. Range";
             // 
             // movementFree
             // 
             this.movementFree.AutoSize = true;
             this.movementFree.Checked = true;
-            this.movementFree.Location = new System.Drawing.Point(12, 25);
+            this.movementFree.Location = new System.Drawing.Point(115, 22);
             this.movementFree.Name = "movementFree";
             this.movementFree.Size = new System.Drawing.Size(50, 19);
             this.movementFree.TabIndex = 1;
@@ -268,7 +298,7 @@
             // movementStatic
             // 
             this.movementStatic.AutoSize = true;
-            this.movementStatic.Location = new System.Drawing.Point(90, 25);
+            this.movementStatic.Location = new System.Drawing.Point(193, 22);
             this.movementStatic.Name = "movementStatic";
             this.movementStatic.Size = new System.Drawing.Size(55, 19);
             this.movementStatic.TabIndex = 0;
@@ -299,7 +329,7 @@
             this.statistics.Controls.Add(this.level);
             this.statistics.Controls.Add(this.label5);
             this.statistics.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.statistics.Location = new System.Drawing.Point(15, 249);
+            this.statistics.Location = new System.Drawing.Point(15, 267);
             this.statistics.Name = "statistics";
             this.statistics.Size = new System.Drawing.Size(373, 194);
             this.statistics.TabIndex = 9;
@@ -527,7 +557,7 @@
             // 
             this.typeFriendly.AutoSize = true;
             this.typeFriendly.Checked = true;
-            this.typeFriendly.Location = new System.Drawing.Point(167, 226);
+            this.typeFriendly.Location = new System.Drawing.Point(165, 244);
             this.typeFriendly.Name = "typeFriendly";
             this.typeFriendly.Size = new System.Drawing.Size(61, 17);
             this.typeFriendly.TabIndex = 1;
@@ -539,7 +569,7 @@
             // typeHostile
             // 
             this.typeHostile.AutoSize = true;
-            this.typeHostile.Location = new System.Drawing.Point(234, 226);
+            this.typeHostile.Location = new System.Drawing.Point(232, 244);
             this.typeHostile.Name = "typeHostile";
             this.typeHostile.Size = new System.Drawing.Size(57, 17);
             this.typeHostile.TabIndex = 0;
@@ -550,7 +580,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(95, 228);
+            this.label6.Location = new System.Drawing.Point(93, 246);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(56, 13);
             this.label6.TabIndex = 10;
@@ -560,7 +590,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 471);
+            this.ClientSize = new System.Drawing.Size(404, 486);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.statistics);
             this.Controls.Add(this.groupBox2);
@@ -575,8 +605,8 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(420, 510);
-            this.MinimumSize = new System.Drawing.Size(420, 510);
+            this.MaximumSize = new System.Drawing.Size(420, 525);
+            this.MinimumSize = new System.Drawing.Size(420, 525);
             this.Name = "NPCs";
             this.Text = "WebClash Server - NPCs";
             this.Load += new System.EventHandler(this.NPCs_Load);
@@ -644,5 +674,7 @@
         private System.Windows.Forms.NumericUpDown exp;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.CheckBox showNameplate;
+        private System.Windows.Forms.ComboBox facing;
+        private System.Windows.Forms.Label label15;
     }
 }
