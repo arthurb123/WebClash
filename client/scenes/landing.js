@@ -29,20 +29,40 @@ const landingScene = new lx.Scene(function() {
         .Alignment('center')
         .Show();
 
-    //Set innerHTML
+    //Create a login/register box
+    //using an UIBox
 
-    view.dom.innerHTML =
-        '<div id="sceneWindow" class="box" style="text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 180px; height: auto; padding-bottom: 10px;">' +
-            '<form>' +
-                '<p class="info" style="font-size: 14px;">Username</p>' +
-                '<input id="windowName" autocomplete="username" maxlength="16" type="text" style="width: 95%;"></input><br>' +
-                '<p class="info" style="font-size: 14px;">Password</p>' +
-                '<input id="windowPassword" autocomplete="current-password" type="password" style="width: 95%;"></input>' +
-            '</form>' +
-            '<p id="windowErrorText" style="padding-top: 2px; padding-bottom: 2px; height: 18px; color: #ff4d4d; font-size: 11px;"></p>' +
-            '<button id="windowLogin">Login</button>' +
-            '<button id="windowRegister">Register</button>' +
-        '</div>';
+    let box = new UIBox(undefined, 'sceneWindow', lx.GetDimensions().width/2-96, lx.GetDimensions().height/2-72, 180, 144);
+    box.setTextAlign('center');
+    box.setMovable(false);
+    box.setResizable(false);
+    box.saves = false;
+
+    box.setContent(
+        '<form>' +
+            '<p class="info" style="font-size: 14px;">Username</p>' +
+            '<input id="windowName" autocomplete="username" maxlength="16" type="text" style="width: 95%;"></input><br>' +
+            '<p class="info" style="font-size: 14px;">Password</p>' +
+            '<input id="windowPassword" autocomplete="current-password" type="password" style="width: 95%;"></input>' +
+        '</form>' +
+        '<br>' +
+        '<button id="windowLogin">Login</button>' +
+        '<button id="windowRegister">Register</button>'
+    );
+
+    //Setup a output function that shows
+    //and hides the login/register box
+    //before and after every output
+
+    const giveMessage = function(content) {
+        box.hide();
+
+        //Use an OK dialog
+
+        ui.dialogs.ok(content, function() {
+            box.show();
+        });
+    };
 
     //Add login submission event
 
@@ -52,12 +72,12 @@ const landingScene = new lx.Scene(function() {
 
         if (name.length == 0)
         {
-            document.getElementById('windowErrorText').innerHTML = 'Enter a valid username';
+            giveMessage('Enter a valid username');
             return;
         }
         if (pass.length == 0)
         {
-            document.getElementById('windowErrorText').innerHTML = 'Enter a valid password';
+            giveMessage('Enter a valid password');
             return;
         }
 
@@ -70,16 +90,16 @@ const landingScene = new lx.Scene(function() {
             {
                 case 'none':
                 case 'wrong':
-                    document.getElementById('windowErrorText').innerHTML = 'Wrong username or password';
+                    giveMessage('Wrong username or password');
                     break;
                 case 'full':
-                    document.getElementById('windowErrorText').innerHTML = 'The server is full';
+                    giveMessage('The server is full');
                     break;
                 case 'loggedin':
-                    document.getElementById('windowErrorText').innerHTML = 'You are already logged in';
+                    giveMessage('You are already logged in');
                     break;
                 case 'banned':
-                    document.getElementById('windowErrorText').innerHTML = 'You have been banned';
+                    giveMessage('You have been banned');
                     break;
             }
         });
@@ -93,12 +113,12 @@ const landingScene = new lx.Scene(function() {
 
         if (name.length == 0)
         {
-            document.getElementById('windowErrorText').innerHTML = 'Enter a valid username';
+            giveMessage('Enter a valid username');
             return;
         }
         if (pass.length == 0)
         {
-            document.getElementById('windowErrorText').innerHTML = 'Enter a valid password';
+            giveMessage('Enter a valid password');
             return;
         }
 
@@ -110,13 +130,13 @@ const landingScene = new lx.Scene(function() {
             switch (data)
             {
                 case 'invalid':
-                    document.getElementById('windowErrorText').innerHTML = 'Username not allowed';
+                    giveMessage('Username not allowed');
                     break;
                 case 'taken':
-                    document.getElementById('windowErrorText').innerHTML = 'Username has been taken';
+                    giveMessage('Username has been taken');
                     break;
                 case 'full':
-                    document.getElementById('windowErrorText').innerHTML = 'The server is full';
+                    giveMessage('The server is full');
                     break;
             }
         });

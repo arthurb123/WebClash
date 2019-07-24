@@ -1,0 +1,6 @@
+Commands:<br>
+Invite player to party:<br>
+/invite <i>name</i><br>
+Send message to party:<br>
+/p <i>message</i><br>
+/party <i>message</i>

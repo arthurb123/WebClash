@@ -25,7 +25,7 @@ exports.combat = {
 };
 
 exports.updateCooldowns = function() {
-    for (let p = 0; p < game.players.length; p++)
+    for (let p in game.players)
         if (game.players[p] != undefined &&
             game.players[p].actions_cooldown != undefined)
             for (let action in game.players[p].actions_cooldown)
@@ -729,10 +729,21 @@ exports.damagePlayers = function(stats, actionData, action, onlyStatic, except)
                 onlyStatic)
                 continue;
 
-            for (let p = 0; p < game.players.length; p++)
+            //Except indicates a pvp action,
+            //if the except player is in a party
+            //the players who are also in that party
+            //will not be damaged
+
+            let members = {};
+
+            if (parties.inParty(except))
+                members = parties.getPartyMembers(except);
+
+            for (let p in game.players)
             {
                 if (game.players[p] == undefined ||
                     game.players[p].map_id != actionData.map ||
+                    members[p] === 'participant' ||
                     p === except)
                     continue;
 
@@ -779,7 +790,7 @@ exports.damagePlayers = function(stats, actionData, action, onlyStatic, except)
 exports.healPlayers = function(actionData, heal)
 {
     for (let e = 0; e < actionData.elements.length; e++)
-        for (let p = 0; p < game.players.length; p++)
+        for (let p in game.players)
         {
             if (game.players[p] == undefined ||
                 game.players[p].map_id != actionData.map)

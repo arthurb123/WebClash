@@ -18,6 +18,24 @@ pass: password
 All accounts can be found in the data folder
 located in the server directory.
 
+	     -- Customization --
+
+Alot of things in WebClash can be customized,
+the majority of the game creation/customization
+will take place in the server binary.
+However there are certain files that can be 
+useful/important for customization;
+
+* client/properties.js   -> Here client properties can
+			    be changed, such as graphical
+			    and connection settings.
+* server/properties.json -> Here server properties can
+			    be changed, such as server specific
+			    and player starting settings.
+* server/gameplay.json   -> Here gameplay properties can
+			    be changed, such as day/night
+			    and on player death settings.
+
 
 	        -- Maps --
 
@@ -79,12 +97,12 @@ objects are as follows:
 WebClash allows chat commands when the said
 player has admin priviliges.
 Admin priviliges can be granted by typing
-"op name" in the server (name is your player
-name), or by changing the permissions file 
-located in the server folder.
+"/op name" in the server or game chat (name 
+is your player name), or by changing the 
+permissions file located in the server folder.
 
 To see the list of available commands type
-/help in the chat.
+"/help" in the server or game chat.
 
 
 	      -- Deployment --
@@ -101,37 +119,3 @@ are not mine and are merely being used as example
 material. 
 These graphics should not be distributed or used for 
 commercial purposes as it is owned by Enterbrain.
-
-
-	     -- Other Licenses --
-
-	Geckos.io - BSD 3-Clause license
-
-Copyright (c) 2019, Yannick Deubel 
-(https://github.com/yandeu)
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-3. Neither the name of the copyright holder nor the names of its
-   contributors may be used to endorse or promote products derived from
-   this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

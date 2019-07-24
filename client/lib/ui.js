@@ -16,6 +16,7 @@ const ui = {
         this.equipment.create();
         this.quests.create();
         this.chat.create();
+        this.party.create();
 
         this.loot.create();
         this.dialog.create();
@@ -41,13 +42,19 @@ const ui = {
             this.loadBoxes();
         }
     },
-
+    show: function() {
+        view.dom.style.visibility = 'visible';
+    },
+    hide: function() {
+        view.dom.style.visibility = 'hidden';
+    },
     loadBoxes: function() {
         //Load all boxes and create
         //UI boxes
 
         for (let box in this.boxes)
-            if (this[box] != undefined)
+            if (this[box] != undefined &&
+                this[box].box != undefined)
                 this[box].box.set(
                     this.boxes[box].xoff,
                     this.boxes[box].yoff,
@@ -918,12 +925,8 @@ const ui = {
             contextBox.classList.add('box');
             contextBox.style = 'position: absolute; width: 70px; padding: 4px; height: auto; text-align: center;';
             contextBox.innerHTML =
-                    '<button style="width: 90%; height: 20px; font-size: 12px;" onclick="ui.inventory.useItem(' + slot + ')">' + (ui.shop.visible ? 'Sell' : 'Use') + '</button>' +
-                    '<button style="width: 90%; height: 20px; font-size: 12px; margin-top: 5px;" onclick="ui.inventory.dropItem(' + slot + ')">Drop</button>';
-
-            //Set on mouse leave event handler
-
-            contextBox.setAttribute('onmouseleave', 'ui.inventory.removeContext()');
+                    '<button id="contextBox_useItem" style="width: 90%; height: 20px; font-size: 12px;">' + (ui.shop.visible ? 'Sell' : 'Use') + '</button>' +
+                    '<button id="contextBox_dropItem" style="width: 90%; height: 20px; font-size: 12px; margin-top: 5px;">Drop</button>';
 
             //Append
 
@@ -933,6 +936,19 @@ const ui = {
 
             contextBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-contextBox.offsetWidth-8 + 'px';
             contextBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-contextBox.offsetHeight + 'px';
+
+            //Set event handlers
+
+            contextBox.addEventListener('mouseleave', function() {
+                ui.inventory.removeContext();
+            });
+
+            document.getElementById('contextBox_useItem').addEventListener('click', function() {
+                ui.inventory.useItem(slot);
+            });
+            document.getElementById('contextBox_dropItem').addEventListener('click', function() {
+                ui.inventory.dropItem(slot);
+            });
         },
         removeContext: function() {
             if (document.getElementById('contextBox') == null)
@@ -1191,9 +1207,9 @@ const ui = {
             div.style.padding = '3px';
 
             div.innerHTML =
-                '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Settings</b></p>' +
+                '<p class="info" style="font-size: 16px; padding-bottom: 6px;"><b>Settings</b></p>' +
 
-                '<p class="info" style="font-size: 13px;"><b>Audio</b></p>' +
+                '<p class="info" style="font-size: 14px;"><b>Audio</b></p>' +
 
                 '<p class="info" style="font-size: 13px; margin: 0px;" id="settings_audio_mainVolume_text">Main </p>' +
                 '<input type="range" min="0" max="100" id="settings_audio_mainVolume" onchange="ui.settings.changeAudioValue(event)"/>' +
@@ -1202,14 +1218,12 @@ const ui = {
                 '<p class="info" style="font-size: 13px; margin: 0px;" id="settings_audio_soundVolume_text">Sound </p>' +
                 '<input type="range" min="0" max="100" id="settings_audio_soundVolume" onchange="ui.settings.changeAudioValue(event)"/>' +
 
-                '<p class="info" style="font-size: 13px;"><b>UI</b></p>' +
+                '<p class="info" style="font-size: 14px;"><b>UI</b></p>' +
 
                 '<input id="settings_ui_editMode" type="checkbox" style="margin-left: 2px;"/>' +
                 '<label style="position: relative; top: -2px; font-size: 13px; margin: 0px;">Edit Mode</label>' +
                 '<br>' +
                 '<button id="settings_ui_reset" style="font-size: 12px; height: 20px; margin-top: 2px; padding: 1px 6px 1px 6px;">Reset UI</button>' +
-
-                '<br>' +
 
                 '<p class="link" onclick="ui.settings.hide()" style="font-size: 12px; color: #ff3333; padding-top: 4px;">Close</p>';
 
@@ -1227,6 +1241,7 @@ const ui = {
                 ui.quests.box.reset();
                 ui.actionbar.box.reset();
                 ui.equipment.box.reset();
+                ui.party.box.reset();
 
                 ui.boxes = {};
 
@@ -1469,6 +1484,7 @@ const ui = {
             div.style.minHeight = '80px';
             div.style.maxHeight = '25%';
             div.style.padding = '4px';
+            div.style.textAlign = 'center';
 
             div.innerHTML = 
                 '<p id="shop_name" class="info" style="font-size: 15px; padding-bottom: 2px;"><b>Shop</b></p>' +
@@ -1593,7 +1609,7 @@ const ui = {
         reload: function() {
             let done = false;
 
-            document.getElementById('journal_box').innerHTML = '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Journal</b></p>';
+            document.getElementById('journal_box').innerHTML = '<p class="info" style="font-size: 15px; padding-bottom: 6px; text-align: center;"><b>Journal</b></p>';
 
             for (let quest in player.quests) {
                 document.getElementById('journal_box').appendChild(ui.quests.generateQuestDom(quest, player.quests[quest], true));
@@ -1663,11 +1679,11 @@ const ui = {
     {
         max_pinned: 3,
         create: function() {
-            this.box = new UIBox('quests', 'quests_box', 30, lx.GetDimensions().height/2-80, undefined, undefined);
+            this.box = new UIBox('quests', 'quests_box', lx.GetDimensions().width-165, lx.GetDimensions().height/2-100, 120, undefined);
             this.box.setResizable(false);
             this.box.setTextAlign('center');
 
-            this.box.element.style.visibility = 'hidden';
+            this.box.hide();
         },
         generateQuestDom: function(name, quest, full) {
             let result = document.createElement('div'),
@@ -1768,6 +1784,129 @@ const ui = {
                 document.getElementById('quests_box').style.visibility = 'hidden';
             else
                 document.getElementById('quests_box').style.visibility = 'visible';
+        }
+    },
+    party: {
+        participants: {},
+        create: function() {
+            //Create box
+
+            this.box = new UIBox('party', 'party_box', 30, 140, 140, undefined);
+            this.box.setResizable(false);
+
+            this.box.element.style.textAlign = 'center';
+            this.box.setTextAlign('left');
+
+            this.box.hide();
+
+            //Add leave button
+
+            let leave = document.createElement('a');
+            leave.classList.add('link');
+            leave.classList.add('colorError');
+            leave.style.fontSize = '12px';
+            leave.style.paddingTop = '2px';
+
+            leave.innerHTML = 'Leave Party';
+
+            leave.addEventListener('click', function() {
+                channel.emit('CLIENT_LEAVE_PARTY', 'leave');
+
+                player.inParty = false;
+
+                ui.party.box.hide();
+            });
+
+            this.box.element.appendChild(leave);
+        },
+        load: function(data) {
+            if (data.participants[game.player] === 'invitee')
+                return;
+
+            this.host = data.host;
+            this.participants = data.participants;
+
+            delete this.participants[game.player];
+
+            this.box.clear();
+
+            //Load data from players
+
+            for (let p in this.participants)
+                this.loadPlayer(p);     
+
+            if (this.host !== game.player)
+                this.loadPlayer(this.host);
+
+            //Show box
+
+            this.box.show();
+        },  
+        loadPlayer: function(name) {
+            if (document.getElementById('party_' + name) != undefined)
+                document.getElementById('party_' + name).remove();
+
+            //Generate content
+
+            let content = '<p class="info">In different map</p>',
+                level = '';
+
+            if (this.participants[name] === 'invitee')
+                content = '<p class="info">Has been invited</p>';
+            else if (game.players[name] != undefined) {
+                content = 
+                    '<div id="party_' + name + '_health_box" class="smaller_bar" style="text-align: center; width: 100%">' +
+                        '<div id="party_' + name + '_health" class="bar_content" style="background-color: #E87651; width: 100%;"></div>' +
+                    '</div>' +
+                    '<div id="party_' + name + '_mana_box" class="smaller_bar" style="text-align: center; width: 100%;">' +
+                        '<div id="party_' + name + '_mana" class="bar_content" style="background-color: #2B92ED; width: 100%;"></div>' +
+                    '</div>';
+
+                level = ' (' + game.players[name]._level + ')';
+            }
+
+            this.box.addContent(
+                '<div id="party_' + name + '" class="content" style="padding-left: 8px; padding-right: 8px; padding-bottom: 8px;">' +
+                    '<p class="info" style="font-weight: bold; font-size: 13px;">' + name + level + '</p>' +
+                    content +
+                '</div>'
+            );
+
+            if (game.players[name] != undefined)
+                this.updatePlayer(name);
+        },
+        updatePlayer: function(name) {
+            if (game.players[name] == undefined) 
+                this.loadPlayer(name);
+            else if (name === this.host ||
+                    this.participants[name] === 'participant') {
+                if (document.getElementById('party_' + name + '_health') == undefined ||
+                    document.getElementById('party_' + name + '_mana') == undefined) {
+                    this.loadPlayer(name);
+
+                    return;
+                }
+
+                let health = game.players[name]._health,
+                    mana = game.players[name]._mana;
+
+                if (health != undefined)
+                    document.getElementById('party_' + name + '_health').style.width = (health.cur/health.max*100) + '%';
+                if (mana != undefined)
+                    document.getElementById('party_' + name + '_mana').style.width = (mana.cur/mana.max*100) + '%';
+            }
+        },
+        inParty: function(name) {
+            if (!player.inParty)
+                return false;
+
+            return (this.participants[name] === 'participant' || this.host === name && game.player !== name);
+        },  
+        hide: function() {
+            this.host = undefined;
+            this.participants = {}
+
+            this.box.hide();
         }
     },
     floaties:
@@ -1882,6 +2021,62 @@ const ui = {
             t.SHADOW = true;
 
             this.add(t, 32);
+        }
+    },
+
+    //UI dialogs
+
+    dialogs: {
+        yesNo: function(content, callback) {
+            if (document.getElementById('dialog_yesno_box') != undefined)
+                return;
+
+            let box = new UIBox('dialog_yesno', 'dialog_yesno_box', lx.GetDimensions().width/2-120, lx.GetDimensions().height/2-20, 240, undefined);
+            box.setResizable(false);
+            box.setMovable(false);
+            box.setTextAlign('center');
+            box.saves = false;
+
+            box.setContent(
+                '<p class="info" style="padding: 0px 3px 3px 3px;">' + content + '</p>' +
+                '<button id="dialog_yesno_button_yes" style="height: 22px;">Yes</button>' +
+                '<button id="dialog_yesno_button_no" style="height: 22px;">No</button>'
+            );
+
+            document.getElementById('dialog_yesno_button_yes').addEventListener('click', function() {
+                box.destroy();
+
+                if (callback != undefined)
+                    callback(true);
+            });
+            document.getElementById('dialog_yesno_button_no').addEventListener('click', function() {
+                box.destroy();
+
+                if (callback != undefined)
+                    callback(false);
+            });
+        },
+        ok: function(content, callback) {
+            if (document.getElementById('dialog_ok_box') != undefined)
+                return;
+
+            let box = new UIBox('dialog_ok', 'dialog_ok_box', lx.GetDimensions().width/2-120, lx.GetDimensions().height/2-20, 240, undefined);
+            box.setResizable(false);
+            box.setMovable(false);
+            box.setTextAlign('center');
+            box.saves = false;
+
+            box.setContent(
+                '<p class="info" style="padding: 0px 3px 3px 3px;">' + content + '</p>' +
+                '<button id="dialog_ok_button" style="height: 22px;">Ok</button>'
+            );
+
+            document.getElementById('dialog_ok_button').addEventListener('click', function() {
+                box.destroy();
+
+                if (callback != undefined)
+                    callback();
+            });
         }
     }
 };

@@ -4,8 +4,8 @@ const camera = {
 
         let go = new lx.GameObject(
             undefined,
-            target.Size().W/2,
-            target.Size().H/2,
+            -target.Size().W/2,
+            -target.Size().H/2,
             1, 1
         );
 

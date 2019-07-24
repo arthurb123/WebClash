@@ -6,11 +6,18 @@ const fs = require('fs');
 
 exports.respawnTime = 15;
 
+//Out of combat reset time in seconds
+
+exports.outOfCombatTime = 4;
+
 //Properties
 
 exports.mapPopulation = [];
+
 exports.onMap = [];
 exports.onTimeOut = [];
+
+exports.onMapChecks = [];
 
 exports.sendMap = function(id)
 {
@@ -39,18 +46,20 @@ exports.sendMap = function(id)
         //Check if checks are met (if they exist)
 
         let valid = true;
-        for (let ii = 0; ii < this.onMap[map][i].checks.length; ii++) {
-            let check = this.onMap[map][i].checks[ii],
-                result = game.getPlayerGlobalVariable(id, check.name);
 
-            if (result == undefined) 
-                result = false;
+        if (this.onMap[map][i].checks != undefined) 
+            for (let ii = 0; ii < this.onMap[map][i].checks.length; ii++) {
+                let check = this.onMap[map][i].checks[ii],
+                    result = game.getPlayerGlobalVariable(id, check.name);
 
-            if (result !== check.value) {
-                valid = false;
-                break;
+                if (result == undefined) 
+                    result = false;
+
+                if (result !== check.value) {
+                    valid = false;
+                    break;
+                }
             }
-        }
         
         //Send NPC
 
@@ -194,8 +203,9 @@ exports.createNPC = function(map, name, x, y, is_event)
 
     //Setup NPC Combat
 
-    npc.targets = [];
+    npc.targets = {};
     npc.target = -1;
+    npc.outOfCombatTime = 0;
 
     npc.combat_cooldown = {
         actual: [],
@@ -478,7 +488,6 @@ exports.updateNPCMovement = function(map, id)
                 this.onMap[map][id].movement.distance += Math.abs(this.onMap[map][id].movement.vel.y);
         }
 
-
         //Sync new position
 
         server.syncNPCPartially(map, id, 'position');
@@ -507,6 +516,19 @@ exports.updateNPCCombat = function(map, id)
 
     if (this.onMap[map][id].preventAttack)
         return;
+
+    //Check if out of combat for too long
+
+    if (this.onMap[map][id].outOfCombatTime >= this.outOfCombatTime*60) {
+        //Reset target and owner
+
+        this.onMap[map][id].target = -1;
+        this.onMap[map][id].owner = -1;
+
+        //Reset out of combat time
+
+        this.onMap[map][id].outOfCombatTime = 0;
+    }
 
     //Check if target exists
 
@@ -698,6 +720,10 @@ exports.updateNPCCombat = function(map, id)
 
     if (nextAction != -1)
     {
+        //Increment out of combat time
+
+        this.onMap[map][id].outOfCombatTime++;
+
         //Check if in range
 
         if (this.onMap[map][id].data.actions[nextAction].range != 0)
@@ -744,6 +770,10 @@ exports.updateNPCCombat = function(map, id)
         map,
         id
     );
+
+    //Reset out of combat time
+
+    this.onMap[map][id].outOfCombatTime = 0;
 };
 
 exports.checkNPCFacingCollision = function(map, id)
@@ -928,7 +958,7 @@ exports.setNPCTarget = function(map, id, owner)
     let newTarget = -1,
         highestDamage = 0;
 
-    for (let i = 0; i < this.onMap[map][id].targets.length; i++)
+    for (let i in this.onMap[map][id].targets)
     {
         if (this.onMap[map][id].targets[i] == undefined)
             continue;
@@ -950,8 +980,12 @@ exports.setNPCTarget = function(map, id, owner)
     this.onMap[map][id].target = newTarget;
 };
 
-exports.removeNPCTargets = function(map, target, splice)
+exports.removeNPCTargets = function(target, splice)
 {
+    //Get map
+
+    let map = game.players[target].map_id;
+
     //Check if NPCs exist on map
 
     if (this.onMap[map] == undefined)
@@ -974,7 +1008,7 @@ exports.removeNPCTargets = function(map, target, splice)
             //Set damage done to zero
 
             if (splice)
-                this.onMap[map][i].targets.splice(target, 1);
+                delete this.onMap[map][i].targets[target];
             else
                 this.onMap[map][i].targets[target] = 0;
 
@@ -1035,8 +1069,12 @@ exports.respawnNPC = function(map, id)
 
     //Reset possible targets and target
 
-    this.onMap[map][id].targets = [];
+    this.onMap[map][id].targets = {};
     this.onMap[map][id].target = -1;
+
+    //Reset out of combat time
+
+    this.onMap[map][id].outOfCombatTime = 0;
 
     //Sync NPC across server
 
@@ -1117,7 +1155,7 @@ exports.distributeExperience = function(map, id)
 {
     //Check if the NPC only had one target
 
-    if (this.onMap[map][id].targets.length === 1) {
+    if (Object.keys(this.onMap[map][id].targets).length === 1) {
         //If so add the total experience
 
         game.deltaExperiencePlayer(this.onMap[map][id].target, this.onMap[map][id].data.stats.exp);
@@ -1131,7 +1169,7 @@ exports.distributeExperience = function(map, id)
 
     //Cycle through all targets/participants
 
-    for (let p = 0; p < this.onMap[map][id].targets.length; p++) {
+    for (let p in this.onMap[map][id].targets) {
         if (this.onMap[map][id].targets[p] == undefined)
             continue;
 

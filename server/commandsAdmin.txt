@@ -1,4 +1,4 @@
-Available commands:<br>
+Admin commands:<br>
 /heal <br>
 /levelup <br>
 /op <i>player</i><br>

@@ -17,6 +17,7 @@ io.addServer(http);
 
 global.server = require('./webclash_modules/server');
 global.game = require('./webclash_modules/game');
+global.parties = require('./webclash_modules/parties');
 global.dialog = require('./webclash_modules/dialog');
 global.items = require('./webclash_modules/items');
 global.shop = require('./webclash_modules/shop');
@@ -35,6 +36,11 @@ global.permissions = JSON.parse(fs.readFileSync('permissions.json', 'utf-8'));
 global.censored = JSON.parse(fs.readFileSync('censored.json', 'utf-8'));
 global.exptable = JSON.parse(fs.readFileSync('exptable.json', 'utf-8'));
 global.gameplay = JSON.parse(fs.readFileSync('gameplay.json', 'utf-8'));
+
+//Load commands text files
+
+global.commandsAdmin = fs.readFileSync('commandsAdmin.txt', 'utf-8').toString();
+global.commandsUser = fs.readFileSync('commandsUser.txt', 'utf-8').toString();
 
 //Setup game time
 
@@ -120,7 +126,7 @@ function startServer() {
     //Listen on specified port
 
     http.listen(properties.port, function(){
-        output.give('WebClash Server is running on *:' + properties.port);
+        output.give('Server is running on *:' + properties.port);
     });
 
     //Start game loop
@@ -146,7 +152,7 @@ global.exitHandler = function() {
 
     //Check if there are players that need to be saved
 
-    if (game.players.length === 0) {
+    if (game.playerCount === 0) {
         hasSaved = true;
 
         process.exit();

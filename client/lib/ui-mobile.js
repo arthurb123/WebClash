@@ -1,4 +1,6 @@
 const ui = {
+    //Main functions
+
     initialize: function()
     {
         cache.progress.create();
@@ -19,6 +21,15 @@ const ui = {
 
         lx.Loops(this.floaties.update);
     },
+    show: function() {
+        view.dom.style.visibility = 'visible';
+    },
+    hide: function() {
+        view.dom.style.visibility = 'hidden';
+    },
+
+    //UI elements
+
     controller:
     {
         size: 120,
@@ -810,12 +821,8 @@ const ui = {
             contextBox.classList.add('box');
             contextBox.style = 'position: absolute; width: 70px; padding: 4px; height: auto; text-align: center;';
             contextBox.innerHTML =
-                    '<button style="width: 90%; height: 20px; font-size: 12px;" onclick="ui.inventory.useItem(' + slot + ')">Use</button>' +
-                    '<button style="width: 90%; height: 20px; font-size: 12px; margin-top: 5px;" onclick="ui.inventory.dropItem(' + slot + ')">Drop</button>';
-
-            //Set on mouse leave event handler
-
-            contextBox.setAttribute('onmouseleave', 'ui.inventory.removeContext()');
+                    '<button id="contextBox_useItem" style="width: 90%; height: 20px; font-size: 12px;" >Use</button>' +
+                    '<button id="contextBox_dropItem" style="width: 90%; height: 20px; font-size: 12px; margin-top: 5px;">Drop</button>';
 
             //Append
 
@@ -825,6 +832,19 @@ const ui = {
 
             contextBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-contextBox.offsetWidth/2 + 'px';
             contextBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y+8 + 'px';
+
+            //Set event handlers
+
+            contextBox.addEventListener('mouseleave', function() {
+                ui.inventory.removeContext();
+            });
+
+            document.getElementById('contextBox_useItem').addEventListener('click', function() {
+                ui.inventory.useItem(slot);
+            });
+            document.getElementById('contextBox_dropItem').addEventListener('click', function() {
+                ui.inventory.dropItem(slot);
+            });
         },
         removeContext: function() {
             if (document.getElementById('contextBox') == null)
@@ -1156,7 +1176,7 @@ const ui = {
                     '<p class="info" style="font-size: 13px; margin: 0px;" id="settings_audio_soundVolume_text">Sound </p>' +
                     '<input type="range" min="0" max="100" id="settings_audio_soundVolume" onchange="ui.settings.changeAudioValue(event)"/>' +
 
-                    '<p class="link" onclick="ui.settings.hide()" style="font-size: 12px; color: red; padding-top: 4px;">Close</p>' +
+                    '<p class="link" onclick="ui.settings.hide()" style="font-size: 12px; color: red; padding-top: 3px;">Close</p>' +
                 '</div>';
         },
         loadFromSettings: function(settings) {
@@ -1699,6 +1719,62 @@ const ui = {
             t.SHADOW = true;
 
             this.add(t, 32);
+        }
+    },
+
+    //UI dialogs
+
+    dialogs: {
+        yesNo: function(content, callback) {
+            if (document.getElementById('dialog_yesno_box') != undefined)
+                return;
+
+            let box = new UIBox('dialog_yesno', 'dialog_yesno_box', lx.GetDimensions().width/2-120, lx.GetDimensions().height/2-20, 240, undefined);
+            box.setResizable(false);
+            box.setMovable(false);
+            box.setTextAlign('center');
+            box.saves = false;
+
+            box.setContent(
+                '<p class="info" style="padding: 0px 3px 3px 3px;">' + content + '</p>' +
+                '<button id="dialog_yesno_button_yes" style="height: 22px;">Yes</button>' +
+                '<button id="dialog_yesno_button_no" style="height: 22px;">No</button>'
+            );
+
+            document.getElementById('dialog_yesno_button_yes').addEventListener('click', function() {
+                box.destroy();
+
+                if (callback != undefined)
+                    callback(true);
+            });
+            document.getElementById('dialog_yesno_button_no').addEventListener('click', function() {
+                box.destroy();
+
+                if (callback != undefined)
+                    callback(false);
+            });
+        },
+        ok: function(content, callback) {
+            if (document.getElementById('dialog_ok_box') != undefined)
+                return;
+
+            let box = new UIBox('dialog_ok', 'dialog_ok_box', lx.GetDimensions().width/2-120, lx.GetDimensions().height/2-20, 240, undefined);
+            box.setResizable(false);
+            box.setMovable(false);
+            box.setTextAlign('center');
+            box.saves = false;
+
+            box.setContent(
+                '<p class="info" style="padding: 0px 3px 3px 3px;">' + content + '</p>' +
+                '<button id="dialog_ok_button" style="height: 22px;">Ok</button>'
+            );
+
+            document.getElementById('dialog_ok_button').addEventListener('click', function() {
+                box.destroy();
+
+                if (callback != undefined)
+                    callback();
+            });
         }
     }
 };

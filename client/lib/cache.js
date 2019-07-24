@@ -2,13 +2,15 @@ const cache = {
     progress: {
         visible: false,
         create: function() {
-            view.dom.innerHTML += '<p id="progress_text" class="info" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); visibility: hidden;"></p>';
+            view.dom.innerHTML += 
+                '<p id="progress_text" class="info" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); visibility: hidden;"></p>';
         },
         update: function(text) {
             document.getElementById('progress_text').innerHTML = text;
         },
         start: function(text) {
             this.update(text);
+            ui.hide();
 
             document.getElementById('lynx-canvas').style.visibility = 'hidden';
             document.getElementById('progress_text').style.visibility = 'visible';
@@ -16,6 +18,8 @@ const cache = {
             this.visible = true;
         },
         hide: function() {
+            ui.show();
+
             document.getElementById('lynx-canvas').style.visibility = 'visible';
             document.getElementById('progress_text').style.visibility = 'hidden';
 
@@ -96,8 +100,6 @@ const cache = {
     audio: {},
     getAudio: function(src, channel)
     {
-        let canCallback = true;
-
         if (this.audio[src] === undefined)
             this.audio[src] = new lx.Sound(src, channel);
 

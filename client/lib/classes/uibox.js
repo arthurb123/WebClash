@@ -2,6 +2,8 @@ const UIBox = function(parent, id, x, y, width, height) {
     this.parent = parent;
     this.id = id;
 
+    this.saves = true;
+
     //Set the position and size,
     //and create the boundaries and
     //resizable value
@@ -12,6 +14,7 @@ const UIBox = function(parent, id, x, y, width, height) {
     this.minSize = { width: 1, height: 1 };
     this.maxSize = { width: Infinity, height: Infinity };
     this.resizable = true;
+    this.movable = true;
 
     //Setup box
 
@@ -23,6 +26,8 @@ const UIBox = function(parent, id, x, y, width, height) {
     this.element.style.top = y + 'px';
     this.element.style.width = (width == undefined ? 'auto' : width + 'px');
     this.element.style.height = (height == undefined ? 'auto' : height + 'px');
+
+    //Set starting values
 
     this.startingPosition = {
         x: x,
@@ -76,6 +81,22 @@ const UIBox = function(parent, id, x, y, width, height) {
 
     //Set functions
 
+    this.show = function() {
+        this.element.style.visibility = 'visible';
+    };
+
+    this.hide = function() {
+        this.element.style.visibility = 'hidden';
+    };
+
+    this.clear = function() {
+        this.content.innerHTML = '';
+    };
+
+    this.destroy = function() {
+        this.element.remove();
+    };
+
     this.set = function(xoff, yoff, width, height, anchors) {
         //Set new position based on the
         //provided anchors
@@ -102,8 +123,16 @@ const UIBox = function(parent, id, x, y, width, height) {
         this.content.innerHTML = innerHTML;
     };
 
+    this.addContent = function(html) {
+        this.content.innerHTML += html;
+    };
+
     this.setResizable = function(resizable) {
         this.resizable = resizable;
+    };
+
+    this.setMovable = function(movable) {
+        this.movable = movable;
     };
 
     this.setMinimumSize = function(width, height) {
@@ -127,7 +156,9 @@ const UIBox = function(parent, id, x, y, width, height) {
     //Event handlers
 
     this.mouseDown = function(e) {
-        if (!ui.editMode || e.button !== 0)
+        if (!ui.editMode || 
+            e.button !== 0 || 
+            !this.movable)
             return;
 
         mouseDown = true; 
@@ -245,9 +276,12 @@ const UIBox = function(parent, id, x, y, width, height) {
         this.element.style.height = this.size.height + 'px';
     };
 
-    //Save functions
+    //Save function
 
     this.save = function(width, height) {
+        if (!this.saves)
+            return;
+
         if (width == undefined)
             width = lx.GetDimensions().width;
         if (height == undefined)
@@ -361,9 +395,9 @@ const UIBox = function(parent, id, x, y, width, height) {
             boxHeight = box.size.height;
 
         if (boxWidth == undefined) 
-            boxWidth = box.element.offsetWidth;
+            boxWidth = parseInt(getComputedStyle(box.element).width);
         if (boxHeight == undefined)
-            boxHeight = box.element.offsetHeight;
+            boxHeight = parseInt(getComputedStyle(box.element).height);
 
         //Normal box handling
 

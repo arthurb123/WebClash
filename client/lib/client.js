@@ -139,31 +139,33 @@ const client = {
              let id;
 
              if (data.isPlayer)
-                 id = game.player;
+                id = game.player;
              else
-                 id = game.getPlayerIndex(data.name);
+                id = data.name;
 
              //If the player does not yet exist, create it
 
-             if (id == -1 && data.isPlayer) {
-                 game.instantiatePlayer(data.name);
+             if (game.players[id] == undefined) {
+                if (data.isPlayer) {
+                    game.instantiatePlayer(data.name);
 
-                 id = game.player;
-             }
-             else if (id == -1) {
-                 game.instantiateOther(data.name);
+                    id = game.player;
+                }
+                else {
+                    game.instantiateOther(data.name);
 
-                 id = game.players.length-1;
-             }
+                    id = data.name;
+                }
+            }
 
              //Check what data is present
 
-             if (data.remove)
-                 game.removePlayer(id);
+             if (data.remove) 
+                game.removePlayer(id);
              if (data.pos !== undefined) {
                  game.players[id].POS = data.pos;
 
-                 if (data.isPlayer) 
+                if (data.isPlayer) 
                     game.players[id].Movement(0, 0);
              }
              if (data.moving !== undefined)
@@ -417,6 +419,69 @@ const client = {
             //Open shop UI
 
             ui.shop.showShop(data.target, data.id, data.shop);
+        });
+        channel.on('GAME_PARTY_INVITE', function(data) {
+            //Check if the recieved data is valid
+
+            if (data === undefined)
+                return;
+
+            //Check if in-game
+
+            if (!client.inGame)
+                return;
+
+            //Check if player is in party
+
+            if (player.inParty) {
+                //Send back to server; already in party
+
+                channel.emit('CLIENT_LEAVE_PARTY', 'inparty');
+
+                return;
+            }
+
+            //Create invite dialog
+
+            ui.dialogs.yesNo('Do you want to join ' + data + '\'s party?', function(result) {
+                if (result) 
+                    channel.emit('CLIENT_JOIN_PARTY');
+                else 
+                    channel.emit('CLIENT_LEAVE_PARTY', 'declined');
+            });
+        });
+        channel.on('GAME_PARTY_UPDATE', function(data) {
+            //Check if the recieved data is valid
+
+            if (data === undefined)
+                return;
+
+            //Check if in-game
+
+            if (!client.inGame)
+                return;
+            
+            //Set in party
+
+            player.inParty = true;
+
+            //Handle data
+
+            ui.party.load(data);
+        });
+        channel.on('GAME_PARTY_DISBAND', function() {
+            //Check if in-game
+
+            if (!client.inGame)
+                return;
+
+            //Set in party to false
+
+            player.inParty = false;
+
+            //Reset party UI
+
+            ui.party.hide();
         });
 
         //Response events

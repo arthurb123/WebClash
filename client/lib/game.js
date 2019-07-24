@@ -1,6 +1,6 @@
 const game = {
     player: -1,
-    players: [],
+    players: {},
     npcs: [],
     items: [],
     tilesets: [],
@@ -8,22 +8,13 @@ const game = {
     gameTime: {},
     isMobile: false,
 
-    getPlayerIndex: function(name)
-    {
-        //Grab the player index by checking for the player name
-
-        for (let i = 0; i < this.players.length; i++)
-            if (this.players[i].name == name) return i;
-
-        return -1;
-    },
     instantiatePlayer: function(name)
     {
         //Instantiate Lynx2D GameObject for player
 
         player.instantiate(name);
 
-        this.player = this.players.length-1;
+        this.player = name;
     },
     instantiateOther: function(name)
     {
@@ -36,10 +27,14 @@ const game = {
                 if (this._nameplate.Position().X === 0)
                     this._nameplate.Position(this.Size().W/2, -Math.floor(this.Size().H/5));
 
-                if (!tiled.pvp)
-                    this._nameplate.Color('whitesmoke');
-                else
-                    this._nameplate.Color('#ce1010');
+                if (ui.party.inParty(name))
+                    this._nameplate.Color('#4099FF');
+                else {
+                    if ((!tiled.pvp))
+                        this._nameplate.Color('whitesmoke');
+                    else
+                        this._nameplate.Color('#ce1010');
+                }
 
                 if (this._level !== undefined)
                     this._nameplate.Text('lvl ' + this._level + ' - ' + this.name);
@@ -114,9 +109,57 @@ const game = {
 
         go._nameplate.SetShadow('rgba(0, 0, 0, .85)', 0, .85);
 
+        //Add context menu
+
+        let button = (this.isMobile ? 0 : 2);
+        go.OnMouse(button, function() {
+            lx.StopMouse(2);
+
+            //Check if already exists
+
+            if (document.getElementById('player_context_box') != undefined)
+                document.getElementById('player_context_box').remove();
+
+            //Show context menu
+
+            let contextBox = document.createElement('div');
+
+            contextBox.id = 'player_context_box';
+            contextBox.classList.add('box');
+            contextBox.style = 'position: absolute; width: 70px; padding: 4px; height: auto; text-align: center;';
+            contextBox.innerHTML =
+                    '<button id="player_context_invite" style="width: 90%; height: 20px; font-size: 12px;">Invite</button>';
+
+            //Append
+
+            view.dom.appendChild(contextBox);
+
+            //Set position
+
+            contextBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X + 'px';
+            contextBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y + 'px';
+
+            //Set on event handlers
+
+            const remove = function() {
+                contextBox.remove();
+                lx.CONTEXT.CONTROLLER.MOUSE.STOPPED_BUTTONS[button] = false;
+            };
+
+            contextBox.addEventListener('mouseleave', function() {
+                remove();
+            });
+
+            document.getElementById('player_context_invite').addEventListener('click', function() {
+                channel.emit('CLIENT_INVITE_TO_PARTY', name);
+
+                remove();
+            });
+        });
+
         //Add to players
 
-        this.players.push(go.Show(3));
+        this.players[name] = go.Show(3);
     },
     setPlayerHealth: function(id, health)
     {
@@ -190,6 +233,12 @@ const game = {
             if (this.player == id)
                 ui.status.setHealth(health.cur, health.max);
         }
+
+        //If this player is in the same party,
+        //update player
+
+        if (ui.party.inParty(id))
+            ui.party.updatePlayer(id);
     },
     setPlayerMana: function(id, mana)
     {
@@ -199,22 +248,28 @@ const game = {
 
         this.players[id]._mana = mana;
 
-        //If player set UI mana and
-        //show mana floaty
+        //If player set UI mana
 
-        if (this.player == id) {
+        if (this.player == id) 
             ui.status.setMana(mana.cur, mana.max);
 
-            if (delta > 0) {
-                //Mana floaty
+        //Create mana floaty
 
-                ui.floaties.manaFloaty(this.players[id], delta);
+        if (delta > 0) {
+            //Mana floaty
 
-                //Show heal color overlay
+            ui.floaties.manaFloaty(this.players[id], delta);
 
-                this.players[id].SPRITE.ShowColorOverlay('rgba(43, 146, 237, 0.46)', 5);
-            }
+            //Show mana color overlay
+
+            this.players[id].SPRITE.ShowColorOverlay('rgba(43, 146, 237, 0.46)', 5);
         }
+
+        //If this player is in the same party,
+        //update player
+
+        if (ui.party.inParty(id))
+            ui.party.updatePlayer(id);
     },
     setPlayerEquipment: function(id, equipment)
     {
@@ -255,11 +310,12 @@ const game = {
             ui.chat.addMessage('You are now level ' + level + '!');
         }
     },
-    removePlayer: function(id)
+    removePlayer: function(id, checkParty)
     {
         //Check if valid
 
-        if (id === undefined || this.players[id] == undefined)
+        if (id === undefined || 
+            this.players[id] == undefined)
             return;
 
         //Hide target GameObject
@@ -272,26 +328,23 @@ const game = {
         }
         this.players[id].Hide();
 
-        //Get player name
-
-        let name = game.players[game.player].name;
-
         //Remove target
 
-        this.players.splice(id, 1);
+        delete this.players[id];
 
-        //Reset player ID
+        //Check if party should be checked
 
-        this.player = this.getPlayerIndex(name);
+        if (ui.party.inParty(id))
+            ui.party.updatePlayer(id);
     },
     resetPlayers: function()
     {
         //Cycle through all online players and
         //remove all, except for the player itself
 
-        for (let i = this.players.length-1; i >= 0; i--)
-            if (i !== this.player)
-                this.removePlayer(i);
+        for (let p in game.players)
+            if (p !== this.player)
+                this.removePlayer(p);
     },
 
     instantiateNPC: function(id, name)
@@ -986,18 +1039,18 @@ const game = {
 
         //Order players against NPCs
 
-        for (let i = 0; i < game.players.length; i++)
-            if (game.players[i] != undefined)
-                for (let ii = 0; ii < game.npcs.length; ii++)
-                    if (game.npcs[ii] != undefined)
-                        game.orderTargets(game.npcs[ii], game.players[i]);
+        for (let p in game.players)
+            if (game.players[p] != undefined)
+                for (let i = 0; i < game.npcs.length; i++)
+                    if (game.npcs[i] != undefined)
+                        game.orderTargets(game.npcs[i], game.players[p]);
 
         //Order players against players
 
-        for (let i = 0; i < game.players.length; i++)
-            if (game.players[i] != undefined)
-                for (let ii = 0; ii < game.players.length; ii++)
-                    if (game.players[ii] != undefined && i !== ii)
-                        game.orderTargets(game.players[ii], game.players[i]);
+        for (let p in game.players)
+            if (game.players[p] != undefined)
+                for (let p2 in game.players)
+                    if (game.players[p2] != undefined && p !== p2)
+                        game.orderTargets(game.players[p2], game.players[p]);
     }
 };

@@ -23,14 +23,10 @@ exports.handleChannel = function(channel)
 
     const logOut = function() {
         if (channel.playing) {
-            //Grab id
-
-            let id = game.getPlayerIndex(channel.name);
-
             //Check if player is in-combat,
             //if so do not logout
 
-            if (actions.combat.in(id))
+            if (actions.combat.in(channel.name))
                 return;
 
             //Remove player
@@ -59,6 +55,8 @@ exports.handleChannel = function(channel)
 
     //channel event listeners
 
+    //Authentication events
+
     channel.on('CLIENT_LOGIN', function(data) {
         //Check if valid package
 
@@ -69,6 +67,13 @@ exports.handleChannel = function(channel)
         //Convert name to string
 
         let name = data.name.toString();
+
+        //Check if name is valid
+
+        if (!name.match("^[a-zA-Z0-9]*$")) {
+            channel.emit('CLIENT_LOGIN_RESPONSE', 'none');
+            return;
+        }
 
         //Grab entry with username
 
@@ -90,7 +95,7 @@ exports.handleChannel = function(channel)
             //Check if there is place available
 
             if (properties.maxPlayers != 0 &&
-                game.players.length >= properties.maxPlayers)
+                game.playerCount >= properties.maxPlayers)
             {
                 channel.emit('CLIENT_LOGIN_RESPONSE', 'full');
                 return;
@@ -106,8 +111,7 @@ exports.handleChannel = function(channel)
 
             //Check if already logged in
 
-            let p_id = game.getPlayerIndex(name);
-            if (p_id != -1)
+            if (game.players[name] != undefined)
             {
                 //If so, log other person out and login
                 //This can also be blocked using
@@ -115,7 +119,7 @@ exports.handleChannel = function(channel)
                 //However this is necessary to protect against
                 //account blocking when in-combat and logging out.
 
-                let ch = server.getChannelWithName(name);
+                let ch = game.players[name].channel;
                 ch.playing = false;
 
                 ch.leave();
@@ -157,9 +161,10 @@ exports.handleChannel = function(channel)
 
         let name = data.name.toString();
 
-        //Check profanity
+        //Check profanity and illegal characters
 
-        if (input.filterText(name).indexOf('*') != -1)
+        if (input.filterText(name).indexOf('*') != -1 ||
+            !name.match("^[a-zA-Z0-9]*$"))
         {
             channel.emit('CLIENT_REGISTER_RESPONSE', 'invalid');
             return;
@@ -177,7 +182,7 @@ exports.handleChannel = function(channel)
             //Check if there is place available
 
             if (properties.maxPlayers != 0 &&
-                game.players.length >= properties.maxPlayers)
+                game.playerCount >= properties.maxPlayers)
             {
                 channel.emit('CLIENT_REGISTER_RESPONSE', 'full');
                 return;
@@ -267,12 +272,10 @@ exports.handleChannel = function(channel)
         //does not exist yet, otherwise
         //refresh player
 
-        let p_id = game.getPlayerIndex(channel.name);
-
-        if (p_id === -1)
+        if (game.players[channel.name] == undefined)
             game.addPlayer(channel);
         else
-            game.refreshPlayer(channel, p_id);
+            game.refreshPlayer(channel, channel.name);
 
         //Send MOTD message
 
@@ -287,21 +290,19 @@ exports.handleChannel = function(channel)
         channel.playing = true;
     });
 
+    //Player interaction events
+
     channel.on('CLIENT_PLAYER_UPDATE', function(data) {
         try {
             //Check if valid player
 
-            if (channel.playing === undefined || !channel.playing)
+            if (channel.playing === undefined || 
+                !channel.playing)
                 return;
 
-            //Get player id
+            //Shorten channel name
 
-            let id = game.getPlayerIndex(channel.name);
-
-            //Check if valid player id
-
-            if (id == -1)
-                return;
+            let id = channel.name;
 
             //Check data
 
@@ -344,13 +345,13 @@ exports.handleChannel = function(channel)
          {
             //Check if valid
 
-            if (channel.name === undefined)
+            if (channel.name === undefined ||
+                !channel.playing)
                 return;
 
-            let id = game.getPlayerIndex(channel.name);
+            //Shorten channel name
 
-            if (id == -1)
-                 return;
+            let id = channel.name;
 
             //Try to create an action based
             //on the map conditions (PvP)
@@ -376,13 +377,18 @@ exports.handleChannel = function(channel)
     channel.on('CLIENT_REQUEST_MAP', function(data) {
         //Check if valid
 
-        if (channel.name === undefined || data === undefined)
+        if (channel.name === undefined || 
+            !channel.playing ||
+            data === undefined)
             return;
 
-        //Get player index
+        //Get next map
 
-        let id = game.getPlayerIndex(channel.name),
-            next_map = tiled.getMapIndex(data);
+        let next_map = tiled.getMapIndex(data);
+
+        //Shorten channel name
+
+        let id = channel.name;
 
         //Check if valid player and if
         //the player is on a different map
@@ -440,17 +446,15 @@ exports.handleChannel = function(channel)
         try {
             //Check if valid player
 
-            if (channel.playing === undefined || !channel.playing)
+            if (channel.name === undefined || 
+                !channel.playing)
                 return;
 
-            //Get player id
+            //Shorten channel name
 
-            let id = game.getPlayerIndex(channel.name);
+            let id = channel.name;
 
-            //Check if valid
-
-            if (id == -1)
-                return;
+            //Handle client input text
 
             let msg = '';
 
@@ -493,17 +497,13 @@ exports.handleChannel = function(channel)
         try {
             //Check if valid player
 
-            if (channel.playing === undefined || !channel.playing)
+            if (channel.name === undefined || 
+                !channel.playing)
                 return;
 
-            //Get player id
+            //Shorten channel name
 
-            let id = game.getPlayerIndex(channel.name);
-
-            //Check if valid
-
-            if (id == -1)
-                return;
+            let id = channel.name;
 
             //Check if player has item
 
@@ -530,17 +530,13 @@ exports.handleChannel = function(channel)
         try {
             //Check if valid player
 
-            if (channel.playing === undefined || !channel.playing)
+            if (channel.name === undefined || 
+                !channel.playing)
                 return;
 
-            //Get player id
+            //Shorten channel name
 
-            let id = game.getPlayerIndex(channel.name);
-
-            //Check if valid
-
-            if (id == -1)
-                return;
+            let id = channel.name;
 
             //Attempt to drop item
 
@@ -555,17 +551,15 @@ exports.handleChannel = function(channel)
         try {
             //Check if valid player
 
-            if (channel.playing === undefined || !channel.playing)
+            if (channel.name === undefined || 
+                !channel.playing)
                 return;
 
-            //Get player id
+            //Shorten channel name
 
-            let id = game.getPlayerIndex(channel.name);
+            let id = channel.name;
 
-            //Check if valid
-
-            if (id == -1)
-                return;
+            //Get sounds
 
             let sounds = items.unequipPlayerEquipment(id, data);
 
@@ -582,17 +576,13 @@ exports.handleChannel = function(channel)
         try {
             //Check if valid player
 
-            if (channel.playing === undefined || !channel.playing)
+            if (channel.name === undefined || 
+                !channel.playing)
                 return;
 
-            //Get player id
+            //Shorten channel name
 
-            let id = game.getPlayerIndex(channel.name);
-
-            //Check if valid
-
-            if (id == -1)
-                return;
+            let id = channel.name;
 
             //Pick up world item
 
@@ -610,17 +600,13 @@ exports.handleChannel = function(channel)
         try {
             //Check if valid player
 
-            if (channel.playing === undefined || !channel.playing)
+            if (channel.name === undefined || 
+                !channel.playing)
                 return;
 
-            //Get player id
+            //Shorten channel name
 
-            let id = game.getPlayerIndex(channel.name);
-
-            //Check if valid
-
-            if (id == -1)
-                return;
+            let id = channel.name;
 
             //Try to sell item
 
@@ -639,17 +625,13 @@ exports.handleChannel = function(channel)
         try {
             //Check if valid player
 
-            if (channel.playing === undefined || !channel.playing)
+            if (channel.name === undefined || 
+                !channel.playing)
                 return;
 
-            //Get player id
+            //Shorten channel name
 
-            let id = game.getPlayerIndex(channel.name);
-
-            //Check if valid
-
-            if (id == -1)
-                return;
+            let id = channel.name;
 
             //Get all properties that the player collided with
 
@@ -695,17 +677,13 @@ exports.handleChannel = function(channel)
         try {
             //Check if valid player
 
-            if (channel.playing === undefined || !channel.playing)
+            if (channel.name === undefined || 
+                !channel.playing)
                 return;
 
-            //Get player id
+            //Shorten channel name
 
-            let id = game.getPlayerIndex(channel.name);
-
-            //Check if valid
-
-            if (id == -1)
-                return;
+            let id = channel.name;
 
             //Get map index
 
@@ -772,21 +750,17 @@ exports.handleChannel = function(channel)
         try {
             //Check if valid player
 
-            if (channel.playing === undefined || !channel.playing)
+            if (channel.name === undefined || 
+                !channel.playing)
                return;
 
-            //Get player id
+            //Shorten channel name
 
-            let id = game.getPlayerIndex(channel.name);
-
-            //Check if valid
-
-            if (id == -1)
-               return;
-
-            let dialogEvent;
+            let id = channel.name;
 
             //Check if NPC or item dialog
+
+            let dialogEvent;
 
             if (isNaN(data.npc))
             {
@@ -828,17 +802,13 @@ exports.handleChannel = function(channel)
         try {
             //Check if valid player
 
-            if (channel.playing === undefined || !channel.playing)
+            if (channel.name === undefined || 
+                !channel.playing)
                return;
 
-            //Get player id
+            //Shorten channel name
 
-            let id = game.getPlayerIndex(channel.name);
-
-            //Check if valid
-
-            if (id == -1)
-               return;
+            let id = channel.name;
 
             //Check if quest name/data is valid
 
@@ -862,17 +832,13 @@ exports.handleChannel = function(channel)
         try {
             //Check if valid player
 
-            if (channel.playing === undefined || !channel.playing)
+            if (channel.name === undefined || 
+                !channel.playing)
                 return;
 
-            //Get player id
+            //Shorten channel name
 
-            let id = game.getPlayerIndex(channel.name);
-
-            //Check if valid
-
-            if (id == -1)
-               return;
+            let id = channel.name;
 
             //Get map index
 
@@ -905,17 +871,13 @@ exports.handleChannel = function(channel)
     channel.on('CLIENT_REQUEST_DIALOG', function(data) {
         //Check if valid player
 
-        if (channel.playing === undefined || !channel.playing)
+        if (channel.name === undefined || 
+            !channel.playing)
             return;
 
-        //Get player id
+        //Shorten channel name
 
-        let id = game.getPlayerIndex(channel.name);
-
-        //Check if valid
-
-        if (id == -1)
-            return;
+        let id = channel.name;
 
         //Get map index
 
@@ -933,17 +895,13 @@ exports.handleChannel = function(channel)
     channel.on('CLIENT_REQUEST_EXP', function() {
          //Check if valid player
 
-        if (channel.playing === undefined || !channel.playing)
+        if (channel.name === undefined || 
+            !channel.playing)
             return;
 
-        //Get player id
+        //Shorten channel name
 
-        let id = game.getPlayerIndex(channel.name);
-
-        //Check if valid
-
-        if (id == -1)
-            return;
+        let id = channel.name;
 
         //Respond with current target xp
 
@@ -953,17 +911,13 @@ exports.handleChannel = function(channel)
     channel.on('CLIENT_INCREMENT_ATTRIBUTE', function(data) {
         //Check if valid player
 
-        if (channel.playing === undefined || !channel.playing)
+        if (channel.name === undefined || 
+            !channel.playing)
             return;
 
-        //Get player id
+        //Shorten channel name
 
-        let id = game.getPlayerIndex(channel.name);
-
-        //Check if valid
-
-        if (id == -1)
-            return;
+        let id = channel.name;
 
         //Increment attribute
 
@@ -1003,6 +957,42 @@ exports.handleChannel = function(channel)
             }
         });
     });
+
+    channel.on('CLIENT_INVITE_TO_PARTY', function(participant_name) {
+        //Check if valid player
+
+        if (channel.name === undefined || 
+            !channel.playing)
+            return;
+
+        //Invite player to party
+
+        parties.invitePlayer(channel.name, participant_name);
+    });
+
+    channel.on('CLIENT_JOIN_PARTY', function() {
+        //Check if valid player
+
+        if (channel.name === undefined ||
+            !channel.playing)
+            return;
+
+        //Join party
+
+        parties.joinParty(channel.name);
+    });
+
+    channel.on('CLIENT_LEAVE_PARTY', function(reason) {
+        //Check if valid player
+
+        if (channel.name === undefined || 
+            !channel.playing)
+            return;
+
+        //Leave party
+
+        parties.leaveParty(channel.name, reason);
+    });
 };
 
 //Sync player partially function, if channel is undefined it will be globally emitted
@@ -1010,7 +1000,7 @@ exports.handleChannel = function(channel)
 exports.syncPlayerPartially = function(id, type, channel, broadcast)
 {
     let data = {
-        name: game.players[id].name
+        name: id
     };
 
     switch (type)
@@ -1080,7 +1070,7 @@ exports.syncPlayerPartially = function(id, type, channel, broadcast)
         io.room(game.players[id].map_id).emit('GAME_PLAYER_UPDATE', data);
     else {
         if (broadcast === undefined || !broadcast) {
-            if (channel.name == data.name)
+            if (channel.name === data.name)
                 data.isPlayer = true;
 
             channel.emit('GAME_PLAYER_UPDATE', data);
@@ -1100,6 +1090,8 @@ exports.syncPlayer = function(id, channel, broadcast)
     this.syncPlayerPartially(id, 'character', channel, broadcast);
     this.syncPlayerPartially(id, 'equipment', channel, broadcast);
     this.syncPlayerPartially(id, 'level', channel, broadcast);
+    this.syncPlayerPartially(id, 'health', channel, broadcast);
+    this.syncPlayerPartially(id, 'mana', channel, broadcast);
 };
 
 //Sync player remove function, will be broadcast by default
@@ -1108,7 +1100,9 @@ exports.removePlayer = function(channel)
 {
     //Check if valid
 
-    if (channel === undefined || channel.name === undefined)
+    if (channel === undefined || 
+        channel.name === undefined ||
+        !channel.playing)
         return;
 
     //Broadcast player removal
@@ -1358,19 +1352,4 @@ exports.syncGameTime = function(channel)
         io.emit('GAME_SERVER_TIME', time);
     else
         channel.emit('GAME_SERVER_TIME', time);
-};
-
-//Get channel with name function
-
-exports.getChannelWithName = function(name)
-{
-    //Loop through all players until channel
-    //with the same name is found
-
-    for (let i = 0; i < game.players.length; i++) {
-        let p = game.players[i];
-
-        if (p.name === name)
-            return p.channel;
-    };
 };

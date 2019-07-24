@@ -2,8 +2,10 @@
 
 const fs = require('fs');
 
-exports.players = [];
 exports.characters = {};
+exports.players = {};
+
+exports.playerCount = 0;
 
 //Game properties
 
@@ -61,7 +63,7 @@ exports.startLoop = function()
 };
 
 exports.updateInCombat = function() {
-    for (let p = 0; p < game.players.length; p++)
+    for (let p in game.players)
         if (game.players[p] != undefined &&
             game.players[p].combat.is)
             for (let action in game.players[p].actions_cooldown)
@@ -92,10 +94,10 @@ exports.refreshPlayer = function(channel, id)
 
     //Set name of channel
 
-    channel.name = game.players[id].name;
+    channel.name = id;
     
     try {
-        storage.load('accounts', channel.name, function(user_data) {
+        storage.load('accounts', id, function(user_data) {
             //Sync user settings if they exist
 
             if (user_data.settings != null)
@@ -162,9 +164,13 @@ exports.addPlayer = function(channel)
 
                 player.map_id = tiled.getMapIndex(player.map);
 
+                //Increment player count
+
+                game.playerCount++;
+
                 //Add player
 
-                let id = game.players.length;
+                let id = channel.name;
                 game.players[id] = player;
 
                 //Calculate stat attributes
@@ -188,8 +194,6 @@ exports.addPlayer = function(channel)
                 server.syncPlayerPartially(id, 'exp', channel, false);
                 server.syncPlayerPartially(id, 'points', channel, false);
                 server.syncPlayerPartially(id, 'attributes', channel, false);
-                server.syncPlayerPartially(id, 'health', channel, false);
-                server.syncPlayerPartially(id, 'mana', channel, false);
                 server.syncPlayerPartially(id, 'actions', channel, false);
                 server.syncPlayerPartially(id, 'quests', channel, false);
                 server.syncPlayerPartially(id, 'gold', channel, false);
@@ -223,37 +227,46 @@ exports.removePlayer = function(channel)
     try {
         //Check if channel is valid
 
-        if (channel === undefined || channel.name === undefined)
+        if (channel === undefined || 
+            channel.name === undefined)
             return;
 
          //Get player index
 
-        let id = game.getPlayerIndex(channel.name);
+        let id = channel.name;
 
         //Check if valid
 
-        if (id === -1)
+        if (!channel.playing)
             return;
+
+        //Decrement player count
+
+        this.playerCount--;
 
         //Remove NPC targets
 
-        npcs.removeNPCTargets(this.players[id].map_id, id, true);
+        npcs.removeNPCTargets(id, true);
+
+        //Leave existing party
+
+        parties.leaveParty(id, 'leave');
 
         //Remove from clients
 
-        server.removePlayer(id, channel);
+        server.removePlayer(channel);
 
         //Release owned world items
 
-        items.releaseWorldItemsFromOwner(this.players[id].map_id, this.players[id].name);
+        items.releaseWorldItemsFromOwner(this.players[id].map_id, id);
 
         //Save player
 
-        this.savePlayer(channel.name, this.players[id]);
+        this.savePlayer(id, this.players[id]);
 
         //Remove player entry
 
-        this.players.splice(id, 1);
+        delete this.players[id];
 
         //Set channel playing to false
 
@@ -268,7 +281,7 @@ exports.updatePlayers = function()
 {
     //Cycle through all players
 
-    for (let p = 0; p < this.players.length; p++) {
+    for (let p in this.players) {
         //Regenerate stats if on a protected map
 
         switch (tiled.getMapType(this.players[p].map)) {
@@ -286,12 +299,13 @@ exports.saveAllPlayers = function(callback)
 {
     //Save all players recursively
 
-    let id = -1;
+    let players = Object.keys(game.players),
+        id = -1;
 
     let cb = () => {
         id++;
 
-        if (id >= game.players.length) {
+        if (id >= players.length) {
             //Output
 
             if (id !== -1)
@@ -303,7 +317,7 @@ exports.saveAllPlayers = function(callback)
                 callback();
         }
         else
-            game.savePlayer(game.players[id].name, game.players[id], cb);
+            game.savePlayer(players[id], game.players[players[id]], cb);
     };
 
     cb();
@@ -447,7 +461,7 @@ exports.regeneratePlayer = function(id)
     if (this.players[id].mana.cur < this.players[id].mana.max) {
         this.players[id].mana.cur++;
 
-        server.syncPlayerPartially(id, 'mana', this.players[id].channel, false);
+        server.syncPlayerPartially(id, 'mana');
     };
 
     //Regenerate health if possible
@@ -469,7 +483,7 @@ exports.killPlayer = function(id, pvpKiller)
 
     //Reset all NPC targets on map from player
 
-    npcs.removeNPCTargets(this.players[id].map_id, id, false);
+    npcs.removeNPCTargets(id, false);
 
     //Reset stats and sync
 
@@ -477,7 +491,7 @@ exports.killPlayer = function(id, pvpKiller)
     this.players[id].mana.cur = this.players[id].mana.max;
 
     server.syncPlayerPartially(id, 'health');
-    server.syncPlayerPartially(id, 'mana', this.players[id].channel, false);
+    server.syncPlayerPartially(id, 'mana');
 
     //Load starting map if not on it
 
@@ -497,7 +511,7 @@ exports.killPlayer = function(id, pvpKiller)
 
     //Reset all NPC targets on map from player
 
-    npcs.removeNPCTargets(this.players[id].map_id, id, false);
+    npcs.removeNPCTargets(id, false);
 
     //Reset player quest objectives (if specified)
 
@@ -554,7 +568,7 @@ exports.deltaManaPlayer = function(id, delta)
 
     //Sync mana
 
-    server.syncPlayerPartially(id, 'mana', this.players[id].channel, false);
+    server.syncPlayerPartially(id, 'mana');
 };
 
 exports.deltaGoldPlayer = function(id, delta)
@@ -742,36 +756,21 @@ exports.calculatePlayerStats = function(id, sync)
         server.syncPlayerPartially(id, 'attributes', this.players[id].channel, false);
 };
 
-exports.getPlayerIndex = function(name)
-{
-    for (let i = 0; i < this.players.length; i++)
-        if (this.players[i].name == name)
-            return i;
-
-    return -1;
-};
-
 exports.sendPlayers = function(channel)
 {
     //Check if valid
 
-    if (channel === undefined || channel.name === undefined)
-        return;
-
-    //Get player id
-
-    let id = this.getPlayerIndex(channel.name);
-
-    //Check if valid player
-
-    if (id == -1)
+    if (channel === undefined || 
+        channel.name === undefined ||
+        !channel.playing)
         return;
 
     //Send all players in the same map
 
-    for (let i = 0; i < this.players.length; i++)
-            if (i != id && this.players[id].map === this.players[i].map)
-                server.syncPlayer(i, channel, false);
+    for (let p in game.players)
+        if (p != channel.name && 
+            this.players[channel.name].map === this.players[p].map)
+            server.syncPlayer(p, channel, false);
 }
 
 exports.setPlayerTilePosition = function(id, map, x, y)
@@ -828,7 +827,8 @@ exports.loadMap = function(channel, map)
 {
     //Check if valid
 
-    if (channel.name === undefined)
+    if (channel.name === undefined ||
+        !channel.playing)
         return;
 
     //Get map ID
@@ -843,14 +843,9 @@ exports.loadMap = function(channel, map)
         return;
     }
 
-    //Get player id
+    //Shorten player name
 
-    let id = this.getPlayerIndex(channel.name);
-
-    //Check if valid player
-
-    if (id == -1)
-        return;
+    let id = channel.name;
 
     //Check if map is different from current map
 
@@ -861,7 +856,7 @@ exports.loadMap = function(channel, map)
     //Remove player from others on the
     //same map
 
-    server.removePlayer(id, channel);
+    server.removePlayer(channel);
 
     //Decrement map popularity and leave old
     //room, if it is available

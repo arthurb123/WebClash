@@ -3,6 +3,7 @@ const player = {
     inventory: [],
     equipment: {},
     quests: {},
+    inParty: false,
     forceFrame:
     {
         start: function(dir) {
@@ -77,7 +78,7 @@ const player = {
         go._moving = false;
         go._facing = false;
 
-        game.players.push(go.Show(3));
+        game.players[name] = go.Show(3);
 
         //Add event handlers if not on mobile
 
