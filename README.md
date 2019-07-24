@@ -1,9 +1,10 @@
 # WebClash<br>
 WebClash uses NodeJS and Lynx2D to allow easy top-down ORPG game creation for the browser.<br>
-Everything in WebClash can be fully customized using the Server tool.
+Almost everything in WebClash can be fully customized using the Server binary tool.<br>
+To understand how to use WebClash, please refer to the guide.txt file.
 
 ### Development<br>
-Currently WebClash is still under development.<br>
+Currently WebClash is still under development<br>
 If you find a bug or glitch, please submit an issue on this GitHub page.<br>
 The development process can be followed on [Trello](https://trello.com/b/658XHkJU/webclash).
 
@@ -24,6 +25,6 @@ WebClash makes use of a simple game framework created by myself.<br>
 It can be found here: http://www.lynx2d.com
 
 ### Example<br>
-Try out an example WebClash server (EU) here: http://www.arthurb.nl/projects/webclash<br><br>
-##### This example server does not get updated very often and might be running an older version.
+Try out an example WebClash server (EU) here: http://www.arthurb.nl/projects/webclash<br>
+##### (This example server does not get updated very often and might be running an older version.)
 
