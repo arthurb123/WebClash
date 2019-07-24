@@ -94,8 +94,8 @@ objects are as follows:
 
 	      -- Commands --
 
-WebClash allows chat commands when the said
-player has admin priviliges.
+WebClash allows chat commands based on
+the player's privileges.
 Admin priviliges can be granted by typing
 "/op name" in the server or game chat (name 
 is your player name), or by changing the 
