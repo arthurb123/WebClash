@@ -15,6 +15,7 @@ const UIBox = function(parent, id, x, y, width, height) {
     this.maxSize = { width: Infinity, height: Infinity };
     this.resizable = true;
     this.movable = true;
+    this.visible = true;
 
     //Setup box
 
@@ -83,10 +84,14 @@ const UIBox = function(parent, id, x, y, width, height) {
 
     this.show = function() {
         this.element.style.visibility = 'visible';
+
+        this.visible = true;
     };
 
     this.hide = function() {
         this.element.style.visibility = 'hidden';
+
+        this.visible = false;
     };
 
     this.clear = function() {

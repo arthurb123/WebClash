@@ -19,6 +19,8 @@ const ui = {
         this.shop.create();
         this.chat.create();
 
+        this.party.create();
+
         lx.Loops(this.floaties.update);
     },
     show: function() {
@@ -983,7 +985,7 @@ const ui = {
     {
         create: function() {
             view.dom.innerHTML +=
-                '<div id="status_box" style="position: absolute; top: 100%; left: 100%; margin-top: -34px; margin-left: -' + (ui.controller.size+30) + 'px; transform: translate(-100%, -100%); width: 20%; height: auto;">' +
+                '<div id="status_box" style="position: absolute; top: 100%; left: 100%; margin-top: -56px; margin-left: -' + (ui.controller.size+30) + 'px; transform: translate(-100%, -100%); width: 20%; height: auto;">' +
                     '<div id="status_health_box" class="bar" style="text-align: center; height: 9px; margin-top: 0px;">' +
                         '<div id="status_health" class="bar_content" style="background-color: #E87651; width: 100%;"></div>' +
                         '<p id="status_health_text" class="info" style="transform: translate(0, -90%); margin: 0; font-size: 9px;"></p>' +
@@ -999,6 +1001,8 @@ const ui = {
                     '<div style="transform: translate(-50%, 0); position: absolute; left: 50%; pointer-events: auto;">' +
                         '<a class="link" onclick="ui.profile.show()" style="font-size: 10px; margin: 0px 7px 0px 7px;">Profile</a>' +
                         '<a class="link" onclick="ui.journal.show()" style="font-size: 10px; margin: 0px 7px 0px 7px;">Journal</a>' +
+                        '<br>' +
+                        '<a class="link" onclick="ui.party.show()" style="font-size: 10px; margin: 0px 7px 0px 7px;">Party</a>' +
                         '<a class="link" onclick="ui.settings.show()" style="font-size: 10px; margin: 0px 7px 0px 7px;">Settings</a>' +
                     '</div>' +
                 '</div>';
@@ -1228,6 +1232,7 @@ const ui = {
             ui.profile.hide();
             ui.journal.hide();
             ui.shop.hide();
+            ui.party.hide();
 
             lx.CONTEXT.CONTROLLER.TARGET = undefined;
 
@@ -1335,6 +1340,7 @@ const ui = {
             ui.settings.hide();
             ui.journal.hide();
             ui.shop.hide();
+            ui.party.hide();
 
             lx.CONTEXT.CONTROLLER.TARGET = undefined;
 
@@ -1442,6 +1448,7 @@ const ui = {
             ui.profile.hide();
             ui.settings.hide();
             ui.journal.hide();
+            ui.party.hide();
 
             player.loseFocus();
 
@@ -1507,6 +1514,7 @@ const ui = {
             ui.profile.hide();
             ui.settings.hide();
             ui.shop.hide();
+            ui.party.hide();
 
             lx.CONTEXT.CONTROLLER.TARGET = undefined;
 
@@ -1605,6 +1613,179 @@ const ui = {
         },
         reload: function() {
             //...
+        }
+    },
+    party: {
+        participants: {},
+        create: function() {
+            //Create box
+
+            this.box = new UIBox('party', 'party_box', lx.GetDimensions().width/2-70, lx.GetDimensions().height/2-70, 140, undefined);
+            this.box.setResizable(false);
+            this.box.setMovable(false);
+
+            this.box.element.style.textAlign = 'center';
+
+            this.box.content.style.maxHeight = '140px';
+            this.box.content.style.overflowY = 'auto';
+
+            this.box.setTextAlign('left');
+
+            this.box.saves = false;
+
+            this.box.hide();
+
+            //Add leave button
+
+            let leave = document.createElement('a');
+            leave.classList.add('link');
+            leave.classList.add('colorError');
+            leave.style.fontSize = '12px';
+            leave.style.top = '2px';
+
+            leave.innerHTML = 'Leave Party';
+
+            leave.addEventListener('click', function() {
+                channel.emit('CLIENT_LEAVE_PARTY', 'leave');
+
+                player.inParty = false;
+
+                ui.party.box.hide();
+            });
+
+            this.box.element.appendChild(leave);
+        },
+        load: function(data) {
+            if (data.participants[game.player] === 'invitee') 
+                return;
+
+            this.host = data.host;
+            this.participants = data.participants;
+
+            delete this.participants[game.player];
+
+            this.box.clear();
+
+            //Load data from players
+
+            for (let p in this.participants)
+                this.loadPlayer(p);     
+
+            if (this.host !== game.player)
+                this.loadPlayer(this.host);
+
+            //Reposition box
+
+            this.box.position = {
+                x: lx.GetDimensions().width/2-70,
+                y: lx.GetDimensions().height/2-parseInt(getComputedStyle(this.box.element).height)/2
+            };
+            this.box.reposition();
+
+            //Show box
+
+            this.show(true);
+        },  
+        loadPlayer: function(name) {
+            if (document.getElementById('party_' + name) != undefined)
+                document.getElementById('party_' + name).remove();
+
+            //Generate content
+
+            let content = '<p class="info">In different map</p>',
+                level = '';
+
+            if (this.participants[name] === 'invitee')
+                content = '<p class="info">Has been invited</p>';
+            else if (game.players[name] != undefined) {
+                content =
+                    '<div id="party_' + name + '_health_box" class="smaller_bar" style="text-align: center; width: 100%">' +
+                        '<div id="party_' + name + '_health" class="bar_content" style="background-color: #E87651; width: 100%;"></div>' +
+                    '</div>' +
+                    '<div id="party_' + name + '_mana_box" class="smaller_bar" style="text-align: center; width: 100%;">' +
+                        '<div id="party_' + name + '_mana" class="bar_content" style="background-color: #2B92ED; width: 100%;"></div>' +
+                    '</div>';
+
+                level = ' (' + game.players[name]._level + ')';
+            }
+
+            this.box.addContent(
+                '<div id="party_' + name + '" class="content" style="padding-left: 8px; padding-right: 8px; padding-bottom: 8px;">' +
+                    '<p class="info" style="font-weight: bold; font-size: 12px;">' + name + level + '</p>' +
+                    content +
+                '</div>'
+            );
+
+            if (game.players[name] != undefined)
+                this.updatePlayer(name);
+        },
+        updatePlayer: function(name) {
+            if (game.players[name] == undefined) 
+                this.loadPlayer(name);
+            else if (name === this.host ||
+                    this.participants[name] === 'participant') {
+                if (document.getElementById('party_' + name + '_health') == undefined ||
+                    document.getElementById('party_' + name + '_mana') == undefined) {
+                    this.loadPlayer(name);
+
+                    return;
+                }
+
+                let health = game.players[name]._health,
+                    mana = game.players[name]._mana;
+
+                if (health != undefined)
+                    document.getElementById('party_' + name + '_health').style.width = (health.cur/health.max*100) + '%';
+                if (mana != undefined)
+                    document.getElementById('party_' + name + '_mana').style.width = (mana.cur/mana.max*100) + '%';
+            }
+        },
+        inParty: function(name) {
+            if (!player.inParty)
+                return false;
+
+            return (this.participants[name] === 'participant' || this.host === name && game.player !== name);
+        },  
+        hide: function(dontReset) {
+            if (!dontReset) {
+                this.host = undefined;
+                this.participants = {}
+            }
+
+            this.box.hide();
+
+            lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
+            this.mouse = undefined;
+        },
+        show: function(forceShow) {
+            if (this.box.visible && !forceShow) {
+                this.hide(true);
+
+                return;
+            }
+
+            if (!player.inParty) {
+                ui.dialogs.ok("You are currently not in a party");
+
+                return;
+            }
+
+            ui.profile.hide();
+            ui.settings.hide();
+            ui.shop.hide();
+            ui.journal.hide();
+
+            if (this.mouse == undefined) 
+                this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
+                    if (data.state == 0)
+                        return;
+
+                    lx.StopMouse(0);
+
+                    ui.party.hide(true);
+                });
+
+            this.box.show();
         }
     },
     floaties:
