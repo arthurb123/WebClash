@@ -1142,7 +1142,8 @@ exports.evaluateLootTable = function(map, id)
             if (members[m] === 'participant' &&
                 game.players[m].map_id === map)
                 looters.push(m);
-    }
+    } else
+        looters[0] = this.onMap[map][id].target;
 
     //Loop through loot table
 
@@ -1186,7 +1187,8 @@ exports.distributeExperience = function(map, id)
             for (let m in members)
                 if (members[m] === 'participant')
                     gainers.push(m);
-        }
+        } else
+            gainers[0] = this.onMap[map][id].target;
 
         //Handle experience distribution and evaluation
         //of quest objectives accordingly
