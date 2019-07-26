@@ -13,5 +13,10 @@
         },
         "loseItems": true,
         "loseEquipment": false
+    },
+
+    "partyBenefits": {
+        "everyoneGetsLoot": true,
+        "evenlyShareExperience": true
     }
 }

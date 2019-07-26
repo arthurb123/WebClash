@@ -1126,29 +1126,48 @@ exports.evaluateLootTable = function(map, id)
     if (this.onMap[map][id].target == -1)
         return;
 
+    //Setup looters array
+
+    let looters = [];
+
+    //Check if target is in party
+    //and loot is enabled for all party
+    //members
+
+    if (gameplay.partyBenefits.everyoneGetsLoot &&
+        parties.inParty(this.onMap[map][id].target)) {
+        let members = parties.getPartyMembers(this.onMap[map][id].target);
+
+        for (let m in members)
+            if (members[m] === 'participant' &&
+                game.players[m].map_id === map)
+                looters.push(m);
+    }
+
     //Loop through loot table
 
-    for (let i = 0; i < this.onMap[map][id].data.items.length; i++)
-    {
-        //Create chance
-
-        let chance = Math.random();
-
-        //Evaluate chance against drop rate
-
-        if (chance <= 1/this.onMap[map][id].data.items[i].dropChance)
+    for (let l = 0; l < looters.length; l++) 
+        for (let i = 0; i < this.onMap[map][id].data.items.length; i++)
         {
-            //Create world item
+            //Create chance
 
-            items.createWorldItem(
-                this.onMap[map][id].target,
-                map,
-                this.onMap[map][id].pos.X+this.onMap[map][id].data.character.width/2,
-                this.onMap[map][id].pos.Y+this.onMap[map][id].data.character.height,
-                this.onMap[map][id].data.items[i].item
-            );
+            let chance = Math.random();
+
+            //Evaluate chance against drop rate
+
+            if (chance <= 1/this.onMap[map][id].data.items[i].dropChance)
+            {
+                //Create world item
+
+                items.createWorldItem(
+                    looters[l],
+                    map,
+                    this.onMap[map][id].pos.X+this.onMap[map][id].data.character.width/2,
+                    this.onMap[map][id].pos.Y+this.onMap[map][id].data.character.height,
+                    this.onMap[map][id].data.items[i].item
+                );
+            }
         }
-    }
 };
 
 exports.distributeExperience = function(map, id)
@@ -1156,18 +1175,39 @@ exports.distributeExperience = function(map, id)
     //Check if the NPC only had one target
 
     if (Object.keys(this.onMap[map][id].targets).length === 1) {
-        //If so add the total experience
+        let gainers = [];
 
-        game.deltaExperiencePlayer(this.onMap[map][id].target, this.onMap[map][id].data.stats.exp);
+        //If so check if player is in party
+        //and setup the gainers array
 
-        //Evaluate for kill quest objectives
+        if (parties.inParty(this.onMap[map][id].target)) {
+            let members = parties.getPartyMembers(this.onMap[map][id].target);
 
-        quests.evaluateQuestObjective(this.onMap[map][id].target, 'kill', this.onMap[map][id].name);
+            for (let m in members)
+                if (members[m] === 'participant')
+                    gainers.push(m);
+        }
+
+        //Handle experience distribution and evaluation
+        //of quest objectives accordingly
+
+        for (let g = 0; g < gainers.length; g++) { 
+            //Add experience
+
+            if (gameplay.partyBenefits.evenlyShareExperience || g === 0)
+                game.deltaExperiencePlayer(gainers[g], this.onMap[map][id].data.stats.exp);
+
+            //Evaluate kill quest objectives for all gainers
+
+            quests.evaluateQuestObjective(gainers[g], 'kill', this.onMap[map][id].name);
+        }
 
         return;
     }
 
     //Cycle through all targets/participants
+
+    let partiesToEvaluate = {};
 
     for (let p in this.onMap[map][id].targets) {
         if (this.onMap[map][id].targets[p] == undefined)
@@ -1181,10 +1221,74 @@ exports.distributeExperience = function(map, id)
         if (xp == null || xp < 0)
             xp = 0;
 
+        //Check if evenly sharing of experience is enabled
+        //and the player is in a party
+
+        if (gameplay.partyBenefits.evenlyShareExperience &&
+            parties.inParty(p)) {
+            //Check if on same map 
+
+            if (game.players[p].map_id !== map)
+                continue;
+
+            //Check if party entry exists
+
+            if (partiesToEvaluate[parties.nameMap[p]] == undefined)
+                partiesToEvaluate[parties.nameMap[p]] = 0;
+
+            //Add recieved exp
+
+            partiesToEvaluate[parties.nameMap[p]] += xp;
+
+            continue;
+        }
+
+        //Give amount of xp
+
         game.deltaExperiencePlayer(p, xp);
 
         //Evaluate for kill quest objectives
 
         quests.evaluateQuestObjective(p, 'kill', this.onMap[map][id].name);
+    }
+
+    //Check if proceeding is possible
+
+    if (!gameplay.partyBenefits.evenlyShareExperience)
+        return;
+
+    //Cycle through all parties that
+    //have to be evaluated, this is for
+    //evenly sharing of experience
+
+    for (let p in partiesToEvaluate) {
+        //Get members and amount of participants
+
+        let members = parties.getPartyMembers(p),
+            size = 1;
+
+        for (let m in members) 
+            if (members[m] === 'participant' &&
+                game.players[m].map_id === map)
+                size++;
+
+        //Calculate shared even amount of xp
+
+        let sharedXp = Math.ceil(partiesToEvaluate[p] / size);
+
+        //Distribute experience and evaluate
+        //kill quest objectives
+
+        for (let m in members) 
+            if (members[m] === 'participant' &&
+                game.players[m].map_id === map) {
+                //Give shared xp
+
+                game.deltaExperiencePlayer(m, sharedXp);
+
+                //Evaluate for kill quest objectives
+
+                quests.evaluateQuestObjective(p, 'kill', this.onMap[map][id].name);
+            }
     }
 };
