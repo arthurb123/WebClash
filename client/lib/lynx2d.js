@@ -68,6 +68,7 @@ this.GAME = {
     },
     SETTINGS: {
         FPS: 60,
+        VSYNC: false,
         AA: true,
         LIMITERS: {
             PARTICLES: 300   
@@ -94,29 +95,62 @@ this.GAME = {
         this.COLLIDERS = [];
         this.LAYER_DRAW_EVENTS = [];
         this.LOOPS = [];
-        this.FOCUS = undefined;
+        
+        delete this.FOCUS;
     },
     LOOP: function() {
+        //Only update and render if the
+        //game/framework is running
+
         if (lx.GAME.RUNNING) {
             lx.GAME.LOG.DATA.TIMESTAMP = lx.GAME.TIMESTAMP();
-            
-            lx.GAME.LOG.DATA.U_DT = 
-                lx.GAME.LOG.DATA.U_DT + Math.min(1, (lx.GAME.LOG.DATA.TIMESTAMP - lx.GAME.LOG.DATA.P_TIMESTAMP) / 1000);
-            lx.GAME.LOG.DATA.R_DT = 
-                lx.GAME.LOG.DATA.R_DT + Math.min(1, (lx.GAME.LOG.DATA.TIMESTAMP - lx.GAME.LOG.DATA.P_TIMESTAMP) / 1000);
 
-            while (lx.GAME.LOG.DATA.U_DT >= 1/60) {
-                lx.GAME.LOG.DATA.U_DT = lx.GAME.LOG.DATA.U_DT - 1/60;
+            //Check delay and add to
+            //the delta time
+
+            const DELAY = Math.min(1, (lx.GAME.LOG.DATA.TIMESTAMP - lx.GAME.LOG.DATA.P_TIMESTAMP) / 1000);
+            
+            lx.GAME.LOG.DATA.U_DT += DELAY;
+            lx.GAME.LOG.DATA.R_DT += DELAY;
+
+            //Handle update and rendering
+            //until the desired step is met
+
+            //Updating is handled with a while
+            //loop, because if update cycles are
+            //missed they need to be compensated
+            //for
+
+            let UPDATE_STEP = 1/60;
+
+            while (lx.GAME.LOG.DATA.U_DT >= UPDATE_STEP) {
+                lx.GAME.LOG.DATA.U_DT -= UPDATE_STEP;
+
                 lx.GAME.UPDATE();
             }
 
-            while (lx.GAME.LOG.DATA.R_DT >= 1/lx.GAME.SETTINGS.FPS) {
-                lx.GAME.LOG.DATA.R_DT = lx.GAME.LOG.DATA.R_DT - 1/lx.GAME.SETTINGS.FPS;
+            //Rendering is handled per loop iteration
+            //because it does not matter if render cycles
+            //are missed, this just impacts the current
+            //framerate
+
+            let RENDER_STEP = 1/lx.GAME.SETTINGS.FPS;
+            if (lx.GAME.SETTINGS.VSYNC)
+                RENDER_STEP = 0;
+
+            if (lx.GAME.LOG.DATA.R_DT >= RENDER_STEP) {
+                lx.GAME.LOG.DATA.R_DT -= RENDER_STEP;
+
                 lx.GAME.RENDER();
             }
 
+            //Set the previous timestamp
+            //to the current one
+
             lx.GAME.LOG.DATA.P_TIMESTAMP = lx.GAME.LOG.DATA.TIMESTAMP;
         }
+
+        //Request the next frame
 
         lx.GAME.REQUEST_FRAME();
     },
@@ -232,6 +266,11 @@ this.GAME = {
         //Audio
 
         this.AUDIO.UPDATE();
+
+        //Catch framerate boundary
+
+        if (lx.GAME.SETTINGS.FPS <= 0)
+            lx.GAME.SETTINGS.FPS = 1;
 
         //Update Log
         
@@ -927,6 +966,15 @@ this.Framerate = function(fps) {
     else 
         this.GAME.SETTINGS.FPS = fps;  
     
+    return this;
+};
+
+this.VerticalSync = function(vsync) {
+    if (vsync == undefined)
+        return this.GAME.SETTINGS.VSYNC;
+    else
+        this.GAME.SETTINGS.VSYNC = vsync;
+
     return this;
 };
 

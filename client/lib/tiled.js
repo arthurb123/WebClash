@@ -548,20 +548,20 @@ const tiled = {
 
                     if (sprite._tilewidth == undefined ||
                         sprite._tilewidth == 0) {
-                        sprite._tilewidth = sprite.Size().W/map.tilewidth;
+                        sprite._tilewidth = sprite.Size().W/tileset.tilewidth;
                     }
 
                     //Calc tile coordinates
 
                     let tc = {
-                        x: (frame.tileid % sprite._tilewidth - 1) * map.tilewidth,
-                        y: (Math.ceil(frame.tileid / sprite._tilewidth) -1) * map.tileheight
+                        x: (frame.tileid % sprite._tilewidth - 1) * tileset.tilewidth,
+                        y: (Math.ceil(frame.tileid / sprite._tilewidth) -1) * tileset.tileheight
                     };
 
                     //Tile clip coordinates artefact prevention
 
                     if (tc.x == -map.tilewidth)
-                        tc.x = sprite.Size().W - map.tilewidth;
+                        tc.x = sprite.Size().W - tileset.tilewidth;
 
                     //Add sprites and frames to end result
 
