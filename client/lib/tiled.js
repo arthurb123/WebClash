@@ -268,13 +268,16 @@ const tiled = {
                     let animation = new lx.Animation(map.animatedTiles[actual].sprites);
                     animation.TIMER.FRAMES = map.animatedTiles[actual].frames;
 
-                    animation.Show(
-                        layer_id,
-                        tp.x+this.offset.width,
-                        tp.y+this.offset.height,
-                        map.animatedTiles[actual].size.w,
-                        map.animatedTiles[actual].size.h
-                    );
+                    animation
+                        .Position(
+                            tp.x+this.offset.width,
+                            tp.y+this.offset.height
+                        )
+                        .Size(
+                            map.animatedTiles[actual].size.w,
+                            map.animatedTiles[actual].size.h
+                        )
+                        .Show(layer_id);
 
                     this.animations.push(animation);
 

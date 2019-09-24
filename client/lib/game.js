@@ -844,14 +844,15 @@ const game = {
                                     tiled.loading)
                                     this.Hide();
                              })
-                             .Show(
-                             4,
-                             data.pos.X+data.elements[i].x,
-                             data.pos.Y+data.elements[i].y,
-                             data.elements[i].w*data.elements[i].scale,
-                             data.elements[i].h*data.elements[i].scale,
-                             0
-                         );
+                             .Position(
+                                data.pos.X+data.elements[i].x,
+                                data.pos.Y+data.elements[i].y
+                             )
+                             .Size(
+                                data.elements[i].w*data.elements[i].scale,
+                                data.elements[i].h*data.elements[i].scale
+                             )
+                             .ShowAmount(4, 0);
 
                          action._map = tiled.current;
                  });
