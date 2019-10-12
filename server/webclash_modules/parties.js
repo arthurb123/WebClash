@@ -204,6 +204,19 @@ exports.disbandParty = function(host_name) {
 
 exports.invitePlayer = function(host_name, invitee_name) {
     try {
+        //Check if the host and invitee name is different
+
+        if (host_name === invitee_name)
+            return;
+
+        //Check if the invited player is online/exists
+
+        if (game.players[invitee_name] == undefined) {
+            game.players[host_name].channel.emit('GAME_CHAT_UPDATE', invitee_name + ' is not online.');
+
+            return;
+        }
+
         //Check if the player is eligible to invite players
         //(no party yet, or the owner of a party)
 

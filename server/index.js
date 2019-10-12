@@ -13,6 +13,10 @@ const fs = require('fs'),
 global.io = geckos();
 io.addServer(http);
 
+//Load deepcopy
+
+global.deepcopy = require('deepcopy');
+
 //Unique Modules
 
 global.server = require('./webclash_modules/server');
@@ -112,6 +116,8 @@ function checkProperties(cb) {
 
         return;
     }
+
+    //Callback
 
     cb();
 }

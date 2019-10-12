@@ -15,7 +15,7 @@ exports.createUnique = function(id, dialogData) {
             return [];
         }
 
-        let result = JSON.parse(JSON.stringify(dialogData));
+        let result = deepcopy(dialogData);
 
         this.inspectItem(id, start, result);
 

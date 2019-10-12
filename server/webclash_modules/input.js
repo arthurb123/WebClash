@@ -111,7 +111,7 @@ exports.handleCommand = function(text, channel)
                     return 'wrong';
 
                 if (args.length === 0)
-                    return;
+                    return 'wrong';
                 
                 parties.sendPartyMessage(p, '<b>' + p + '</b>: ' + this.filterText(args.join(' ')));
 
@@ -122,7 +122,7 @@ exports.handleCommand = function(text, channel)
                     return 'wrong';
 
                 if (args.length === 0)
-                    return;
+                    return 'wrong';
 
                 parties.invitePlayer(p, args[0]);
 

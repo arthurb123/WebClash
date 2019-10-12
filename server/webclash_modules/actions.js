@@ -464,7 +464,7 @@ exports.createPlayerAction = function(slot, id)
                 game.players[id].direction
             ),
             map: game.players[id].map_id,
-            elements: JSON.parse(JSON.stringify(this.collection[a_id].elements))
+            elements: deepcopy(this.collection[a_id].elements)
         },
         a_id,
         game.players[id].direction,
@@ -530,7 +530,7 @@ exports.createPvPAction = function(slot, id)
                 game.players[id].direction
             ),
             map: game.players[id].map_id,
-            elements: JSON.parse(JSON.stringify(this.collection[a_id].elements))
+            elements: deepcopy(this.collection[a_id].elements)
         },
         a_id,
         game.players[id].direction,
@@ -596,7 +596,7 @@ exports.createNPCAction = function(possibleAction, map, id)
                 npcs.onMap[map][id].direction
             ),
             map: map,
-            elements: JSON.parse(JSON.stringify(this.collection[a_id].elements))
+            elements: deepcopy(this.collection[a_id].elements)
         },
         a_id,
         npcs.onMap[map][id].direction,
@@ -771,7 +771,7 @@ exports.damagePlayers = function(stats, actionData, action, onlyStatic, except)
                     //Damage player
 
                     game.damagePlayer(p, this.calculateDamage(stats, action.scaling), except);
-                        //npcs.removeNPCTargets(map, p);
+                    //npcs.removeNPCTargets(map, p);
 
                     done = true;
                 }

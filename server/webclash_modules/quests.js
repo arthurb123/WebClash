@@ -62,7 +62,7 @@ exports.getQuestIndex = function(name)
 
 exports.getQuestDialog = function(name)
 {
-    let quest = JSON.parse(JSON.stringify(this.getQuest(name)));
+    let quest = deepcopy(this.getQuest(name));
 
     if (quest == undefined)
         return;
@@ -120,7 +120,7 @@ exports.acceptQuest = function(id, name)
     //Accept quest and stuff
 
     game.players[id].quests[name] = {
-        objectives: JSON.parse(JSON.stringify(quest.objectives)),
+        objectives: deepcopy(quest.objectives),
         id: 0,
         pinned: true
     };
