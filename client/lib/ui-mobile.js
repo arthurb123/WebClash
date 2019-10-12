@@ -1807,8 +1807,10 @@ const ui = {
         {
             for (let i = 0; i < ui.floaties.buffer.length; i++)
             {
-                ui.floaties.buffer[i].uitext.Position().X += ui.floaties.buffer[i].movement.x;
-                ui.floaties.buffer[i].uitext.Position().Y += ui.floaties.buffer[i].movement.y;
+                ui.floaties.buffer[i].uitext.Position(
+                    ui.floaties.buffer[i].uitext.Position().X+ui.floaties.buffer[i].movement.x,
+                    ui.floaties.buffer[i].uitext.Position().Y+ui.floaties.buffer[i].movement.y
+                );
 
                 ui.floaties.buffer[i].cur--;
                 ui.floaties.buffer[i].movement.y += ui.floaties.buffer[i].movement.dy;

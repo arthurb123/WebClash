@@ -257,7 +257,7 @@ const tiled = {
 
                 //Calculate tile position
 
-                tp = {
+                let tp = {
                     x: t % layer.width * map.tilewidth,
                     y: Math.floor(t / layer.width) * map.tileheight
                 };
@@ -268,16 +268,25 @@ const tiled = {
                     let animation = new lx.Animation(map.animatedTiles[actual].sprites);
                     animation.TIMER.FRAMES = map.animatedTiles[actual].frames;
 
+                    //Tiled uses a height offset for animations bigger
+                    //than the tile height, this needs to be compensated for
+
+                    let heightOffset = -(map.animatedTiles[actual].size.h-map.tileheight);
+
+                    //Set animation properties and show
+
                     animation
                         .Position(
                             tp.x+this.offset.width,
-                            tp.y+this.offset.height
+                            tp.y+this.offset.height+heightOffset
                         )
                         .Size(
                             map.animatedTiles[actual].size.w,
                             map.animatedTiles[actual].size.h
                         )
                         .Show(layer_id);
+
+                    //Add to animations
 
                     this.animations.push(animation);
 
