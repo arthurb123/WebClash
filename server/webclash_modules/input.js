@@ -260,8 +260,9 @@ exports.handleCommand = function(text, channel)
                         return 'wrong';
 
                     game.players[p].health.cur = game.players[p].health.max;
-
                     server.syncPlayerPartially(p, 'health');
+
+                    game.deltaManaPlayer(p, game.players[p].mana.max);
 
                     return 'success';
                 case 'levelup':

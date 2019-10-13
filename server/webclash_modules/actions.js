@@ -464,7 +464,9 @@ exports.createPlayerAction = function(slot, id)
                 game.players[id].direction
             ),
             map: game.players[id].map_id,
-            elements: deepcopy(this.collection[a_id].elements)
+            elements: deepcopy(this.collection[a_id].elements),
+            ownerType: 'player',
+            owner: id
         },
         a_id,
         game.players[id].direction,
@@ -530,7 +532,9 @@ exports.createPvPAction = function(slot, id)
                 game.players[id].direction
             ),
             map: game.players[id].map_id,
-            elements: deepcopy(this.collection[a_id].elements)
+            elements: deepcopy(this.collection[a_id].elements),
+            ownerType: 'player',
+            owner: id
         },
         a_id,
         game.players[id].direction,
@@ -596,7 +600,9 @@ exports.createNPCAction = function(possibleAction, map, id)
                 npcs.onMap[map][id].direction
             ),
             map: map,
-            elements: deepcopy(this.collection[a_id].elements)
+            elements: deepcopy(this.collection[a_id].elements),
+            ownerType: 'npc',
+            owner: id
         },
         a_id,
         npcs.onMap[map][id].direction,

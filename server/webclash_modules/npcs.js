@@ -152,14 +152,14 @@ exports.createNPCs = function(npc_property, map_id)
     }
 };
 
-exports.createNPC = function(map, name, x, y, is_event)
+exports.createNPC = function(map, name, x, y, isEvent)
 {
     //Get specified NPC
 
     let npc = {
         name: name,
         data: this.loadNPC(name),
-        is_event: is_event
+        isEvent: isEvent
     };
 
     if (npc.data === undefined)
@@ -290,6 +290,23 @@ exports.createEventNPC = function(map, name, x, y, owner, hostile, resetCallback
     //the movement callback
 
     npcs.randomNPCMovement(map, npc_id, cb);
+};
+
+exports.ownsEventNPC = function(map, name, player) {
+    //Go through all NPCs on map and
+    //check if the player owns event NPCs
+    //If this is the case, return true
+
+    for (let n = 0; n < this.onMap[map].length; n++)
+        if (this.onMap[map][n] != undefined &&
+            this.onMap[map][n].isEvent &&
+            this.onMap[map][n].name === name &&
+            this.onMap[map][n].owner === player)
+            return true;
+
+    //Otherwise return false
+
+    return false;
 };
 
 exports.loadNPC = function(name)
@@ -535,7 +552,7 @@ exports.updateNPCCombat = function(map, id)
     if (this.onMap[map][id].target == -1) {
         //If event NPC, despawn
 
-        if (this.onMap[map][id].is_event &&
+        if (this.onMap[map][id].isEvent &&
             this.onMap[map][id].owner != undefined) {
             //Check if it is the owner that died,
             //or if the owner changed maps
@@ -1040,7 +1057,7 @@ exports.killNPC = function(map, id)
 
     //Add to timeout (if the NPC is not an event)
 
-    if (!this.onMap[map][id].is_event) {
+    if (!this.onMap[map][id].isEvent) {
         //Give respawn time if hostile
 
         if (this.onMap[map][id].data.type === 'hostile')

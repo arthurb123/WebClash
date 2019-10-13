@@ -68,15 +68,15 @@ const ui = {
 
             if (Math.abs(delta.x) > Math.abs(delta.y)) {
                 if (delta.x < 0)
-                    player.forceFrame.start(1);
+                    player.forceDirection.start(1);
                 else if (delta.x > 0)
-                    player.forceFrame.start(2);
+                    player.forceDirection.start(2);
             }
             else {
                 if (delta.y < 0)
-                    player.forceFrame.start(3);
+                    player.forceDirection.start(3);
                 else if (delta.y > 0)
-                    player.forceFrame.start(0);
+                    player.forceDirection.start(0);
             }
 
             player.sync('direction');

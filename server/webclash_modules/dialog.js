@@ -149,7 +149,13 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
     //Spawn NPC event
 
     else if (dialogEvent.eventType === 'SpawnNPC') {
-        //Spawn event NPCs for the specified amount
+        //Check if the player already owns event NPC(s)
+        //with the same name as the NPC to be spawned
+
+        if (npcs.ownsEventNPC(map, dialogEvent.spawnNPCEvent.name, id))
+            return;
+
+        //(Otherwise) Spawn event NPCs for the specified amount
 
         let pos = {
             x: game.players[id].pos.X+game.players[id].character.width/2,

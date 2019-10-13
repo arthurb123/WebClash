@@ -4,7 +4,8 @@ const player = {
     equipment: {},
     quests: {},
     inParty: false,
-    forceFrame:
+
+    forceDirection:
     {
         start: function(dir) {
             let target = game.players[game.player];
@@ -21,6 +22,7 @@ const player = {
         cur: 0,
         standard: 12
     },
+
     loseFocus: function()
     {
         //Check if the player exists
@@ -261,11 +263,11 @@ const player = {
             dy = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-centerY;
 
         if (Math.abs(dx) > Math.abs(dy))
-            if (dx > 0) this.forceFrame.start(2);
-            else this.forceFrame.start(1);
+            if (dx > 0) this.forceDirection.start(2);
+            else this.forceDirection.start(1);
         else
-            if (dy > 0) this.forceFrame.start(0);
-            else this.forceFrame.start(3);
+            if (dy > 0) this.forceDirection.start(0);
+            else this.forceDirection.start(3);
 
         this.sync('direction');
     },
@@ -322,7 +324,7 @@ const player = {
         this.POS.Y = Math.round(this.POS.Y);
 
         if (this.MOVEMENT.VX != 0 || this.MOVEMENT.VY != 0) {
-            if (player.forceFrame.direction == -1) {
+            if (player.forceDirection.direction == -1) {
                 let oldDir = this._direction;
 
                 if (this.MOVEMENT.VX < 0)
@@ -337,10 +339,10 @@ const player = {
                 if (oldDir != this._direction)
                     player.sync('direction');
             } else {
-                player.forceFrame.cur++;
+                player.forceDirection.cur++;
 
-                if (player.forceFrame.cur >= player.forceFrame.standard)
-                    player.forceFrame.reset();
+                if (player.forceDirection.cur >= player.forceDirection.standard)
+                    player.forceDirection.reset();
             }
 
             if (!this._moving) {
@@ -351,7 +353,7 @@ const player = {
 
             player.sync('position');
         } else {
-            player.forceFrame.reset();
+            player.forceDirection.reset();
 
             if (this._moving) {
                 this._moving = false;

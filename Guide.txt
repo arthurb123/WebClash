@@ -18,6 +18,7 @@ pass: password
 All accounts can be found in the data folder
 located in the server directory.
 
+
 	     -- Customization --
 
 Alot of things in WebClash can be customized,
@@ -117,5 +118,5 @@ the range of ports 0-65535/upd on your server.
 All provided graphics except UI and particle graphics
 are not mine and are merely being used as example 
 material. 
-These graphics should not be distributed or used for 
-commercial purposes as it is owned by Enterbrain.
+These graphics should not be distributed and/or used for 
+commercial purposes, as it is owned by Enterbrain.

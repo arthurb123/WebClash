@@ -944,16 +944,23 @@ const game = {
                          projectile._map = tiled.current;
                  });
              }
-         }
+        }
 
-         //Play action sound if possible
+        //Force frame for owner
 
-         if (data.sounds == undefined)
+        if (data.ownerType === 'player') 
+            animation.forceFrame.start(game.players[data.owner]);
+        else 
+            animation.forceFrame.start(game.npcs[data.owner]);
+
+        //Play action sound if possible
+
+        if (data.sounds == undefined)
             return;
 
-         let sound = audio.getRandomSound(data.sounds);
+        let sound = audio.getRandomSound(data.sounds);
 
-         if (sound != undefined)
+        if (sound != undefined)
             audio.playSoundAtPosition(sound, data.centerPosition);
     },
     removeAction: function(id)
