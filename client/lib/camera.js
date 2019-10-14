@@ -12,20 +12,24 @@ const camera = {
         //Follow the target and focus
         
         go
-            .Follows(target)
             .Focus()
-            .Show(0);
-
+            .Show();
+            
         //Setup camera viewport retrieval
 
         go.GetViewport = () => {
+            //Calculate scaled screen size
+
+            let scaledWidth = lx.GetDimensions().width/lx.GAME.SCALE;
+            let scaledHeight =  lx.GetDimensions().height/lx.GAME.SCALE;
+
             //Create viewport object
 
             let viewport = {
-                X: target.Position().X-lx.GetDimensions().width/2/lx.GAME.SCALE,
-                Y: target.Position().Y-lx.GetDimensions().height/2/lx.GAME.SCALE,
-                W: lx.GetDimensions().width/lx.GAME.SCALE,
-                H: lx.GetDimensions().height/lx.GAME.SCALE,
+                X: target.Position().X-scaledWidth/2,
+                Y: target.Position().Y-scaledHeight/2,
+                W: scaledWidth,
+                H: scaledHeight,
                 safe: true,
                 undersizedX: false,
                 undersizedY: false
@@ -69,25 +73,17 @@ const camera = {
 
         //Setup gameobject update loop
 
-        go.Loops(function() {
+        go.Draws(function() {
             //Retrieve the current viewport
 
-            let viewport = this.GetViewport();
+            let viewport = go.GetViewport();
 
-            //Check if the viewport is safe
-            //and handle accordingly
+            //Set camera position according to viewport
             
-            if (!viewport.safe) {
-                if (go.TARGET != undefined)
-                    go.StopFollowing()
-
-                go.Position(
-                    viewport.X+viewport.W/2+this.OFFSET.X,
-                    viewport.Y+viewport.H/2+this.OFFSET.Y
-                );
-            }
-            else if (go.TARGET == undefined) 
-                go.Follows(target);
+            go.Position(
+                viewport.X+viewport.W/2,
+                viewport.Y+viewport.H/2
+            );
         });
     }
 };

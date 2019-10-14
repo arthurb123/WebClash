@@ -320,9 +320,6 @@ const player = {
     {
         player.propertyInteraction.cooldown.update();
 
-        this.POS.X = Math.round(this.POS.X);
-        this.POS.Y = Math.round(this.POS.Y);
-
         if (this.MOVEMENT.VX != 0 || this.MOVEMENT.VY != 0) {
             if (player.forceDirection.direction == -1) {
                 let oldDir = this._direction;
@@ -363,6 +360,7 @@ const player = {
         }
 
         animation.animateMoving(this);
+                
     },
     draws: function()
     {
