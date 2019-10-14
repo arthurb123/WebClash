@@ -120,3 +120,7 @@ are not mine and are merely being used as example
 material. 
 These graphics should not be distributed and/or used for 
 commercial purposes, as it is owned by Enterbrain.
+
+	      -- Licensing --
+
+For all licensing needs please check the LICENSE file.

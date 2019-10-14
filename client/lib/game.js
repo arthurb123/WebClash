@@ -396,6 +396,17 @@ const game = {
     
                 for (let cb = 0; cb < this._loops.length; cb++) 
                     this._loops[cb]();
+            })
+            .Draws(function() {
+                //Draw NPC gear if it exists
+
+                if (this._gear != undefined)
+                    for (let g = 0; g < this._gear.length; g++)
+                        lx.DrawSprite(
+                            this._gear[g].Clip(this.Clip().X, this.Clip().Y, this.Clip().W, this.Clip().H),
+                            this.Position().X,
+                            this.Position().Y
+                        );
             });
 
         go.name = name;
@@ -588,6 +599,12 @@ const game = {
         }
         else if (this.npcs[id] != undefined)
             this.npcs[id]._health = health;
+    },
+    setNPCGear: function(id, gear) {
+        this.npcs[id]._gear = [];
+
+        for (let g = 0; g < gear.length; g++)
+            this.npcs[id]._gear[g] = new lx.Sprite(gear[g]);
     },
     removeNPC: function(id)
     {

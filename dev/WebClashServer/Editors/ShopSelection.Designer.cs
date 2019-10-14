@@ -84,7 +84,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(120, 20);
+            this.label1.Location = new System.Drawing.Point(122, 45);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(27, 13);
             this.label1.TabIndex = 9;
@@ -94,7 +94,7 @@
             // 
             this.itemSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.itemSelect.FormattingEnabled = true;
-            this.itemSelect.Location = new System.Drawing.Point(175, 17);
+            this.itemSelect.Location = new System.Drawing.Point(175, 42);
             this.itemSelect.Name = "itemSelect";
             this.itemSelect.Size = new System.Drawing.Size(112, 21);
             this.itemSelect.TabIndex = 10;
@@ -103,7 +103,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(120, 62);
+            this.label2.Location = new System.Drawing.Point(122, 74);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(31, 13);
             this.label2.TabIndex = 11;
@@ -111,7 +111,7 @@
             // 
             // itemPrice
             // 
-            this.itemPrice.Location = new System.Drawing.Point(175, 60);
+            this.itemPrice.Location = new System.Drawing.Point(175, 72);
             this.itemPrice.Maximum = new decimal(new int[] {
             -1530494977,
             232830,

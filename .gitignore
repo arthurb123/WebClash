@@ -1,1 +1,4 @@
 .DS_Store
+dev/WebClashServer/bin/
+dev/WebClashServer/obj/
+dev/WebClashServer/.vs/

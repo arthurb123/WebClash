@@ -8,7 +8,7 @@ exports.respawnTime = 15;
 
 //Out of combat reset time in seconds
 
-exports.outOfCombatTime = 4;
+exports.outOfCombatTime = 8;
 
 //Properties
 
@@ -313,10 +313,7 @@ exports.loadNPC = function(name)
 {
     try
     {
-        let location = 'npcs';
-
-        let npc = JSON.parse(fs.readFileSync(location + '/' + name + '.json', 'utf-8'));
-
+        let npc = JSON.parse(fs.readFileSync('npcs/' + name + '.json', 'utf-8'));
         npc.character = game.characters[npc.character];
 
         return npc;
@@ -549,7 +546,7 @@ exports.updateNPCCombat = function(map, id)
 
     //Check if target exists
 
-    if (this.onMap[map][id].target == -1) {
+    if (this.onMap[map][id].target === -1) {
         //If event NPC, despawn
 
         if (this.onMap[map][id].isEvent &&
@@ -939,6 +936,12 @@ exports.damageNPC = function(owner, map, id, delta)
     //Set prevent attack to false
 
     this.onMap[map][id].preventAttack = false;
+
+    //If damage was done, reset out of combat time
+    //if NPC is an event NPC
+
+    if (this.onMap[map][id].isEvent && delta < 0) 
+        this.onMap[map][id].outOfCombatTime = 0;
 
     //Make sure we update the target
 

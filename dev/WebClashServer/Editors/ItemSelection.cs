@@ -4,45 +4,52 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using WebClashServer.Classes;
 
 namespace WebClashServer.Editors
 {
-    public partial class ShopSelection : Form
+    public partial class ItemSelection : Form
     {
-        //private List<ShopItem> items = new List<ShopItem>();
-        private ShowShopEvent sse = new ShowShopEvent();
+        private List<PossibleItem> items = new List<PossibleItem>();
         private int current = -1;
 
-        public ShopSelection(string title, ShowShopEvent sse)
+        public ItemSelection(string title, PossibleItem[] items)
         {
             InitializeComponent();
 
             Text = title;
 
-            this.sse = sse;
-
-            shopName.Text = sse.name;
+            this.items = new List<PossibleItem>(items);
         }
 
         private void ItemSelection_Load(object sender, EventArgs e)
         {
             Reloaditems();
 
-            ReloadItemList(sse.items);
+            ReloadItemList();
         }
 
-        private void ReloadItemList(ShopItem[] items)
+        private void ReloadItemList()
         {
             itemList.Items.Clear();
 
             try
             {
-                for (int i = 0; i < items.Length; i++)
+                if (items.Count == 0)
+                {
+                    itemSelect.Enabled = false;
+                    dropChance.Enabled = false;
+                }
+                else
+                {
+                    itemSelect.Enabled = true;
+                    dropChance.Enabled = true;
+                }
+
+                for (int i = 0; i < items.Count; i++)
                 {
                     string it = items[i].item;
 
-                    itemList.Items.Add(i + ". " + items[i].item + " (" + items[i].price + "G)");
+                    itemList.Items.Add((i + 1) + ". " + items[i].item + " (" + items[i].dropChance + ")");
                 }
             }
             catch (Exception exc)
@@ -51,10 +58,10 @@ namespace WebClashServer.Editors
             }
 
             if (current == -1 &&
-                items.Length > 0)
+                items.Count > 0)
                 itemList.SelectedItem = itemList.Items[0];
-            else if (items.Length > 0 &&
-                     current < sse.items.Length)
+            else if (items.Count > 0 &&
+                     current < items.Count)
                 itemList.SelectedItem = itemList.Items[current];
         }
 
@@ -84,47 +91,45 @@ namespace WebClashServer.Editors
         private void itemList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (itemList.SelectedIndex == -1 ||
-                sse.items.Length <= itemList.SelectedIndex)
+                items.Count <= itemList.SelectedIndex)
                 return;
 
             current = itemList.SelectedIndex;
 
-            itemSelect.SelectedItem = sse.items[current].item;
-            itemPrice.Value = sse.items[current].price;
+            if (items[current].item == "")
+                itemSelect.SelectedItem = null;
+            else
+                itemSelect.SelectedItem = items[current].item;
+
+            dropChance.Value = items[current].dropChance;
         }
 
         private void itemSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (current == -1)
+            if (current == -1 || itemSelect.SelectedItem == null)
                 return;
 
-            sse.items[current].item = itemSelect.SelectedItem.ToString();
+            items[current].item = itemSelect.SelectedItem.ToString();
 
-            ReloadItemList(sse.items.ToArray());
+            ReloadItemList();
         }
 
-        private void price_ValueChanged(object sender, EventArgs e)
+        private void dropChance_ValueChanged(object sender, EventArgs e)
         {
             if (current == -1)
                 return;
 
-            sse.items[current].price = (int)itemPrice.Value;
+            items[current].dropChance = (int)dropChance.Value;
 
-            ReloadItemList(sse.items);
+            ReloadItemList();
         }
 
         private void newLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string i = itemList.Items.Count + ". " + string.Empty;
+            items.Add(new PossibleItem());
 
-            List<ShopItem> items = new List<ShopItem>(sse.items);
-
-            items.Add(new ShopItem());
-
-            sse.items = items.ToArray();
-
-            itemList.Items.Add(i);
-            itemList.SelectedItem = i;
+            ReloadItemList();
+            itemList.SelectedIndex = items.Count - 1;
         }
 
         private void delete_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -132,29 +137,21 @@ namespace WebClashServer.Editors
             if (current == -1)
                 return;
 
-            List<ShopItem> items = new List<ShopItem>(sse.items);
-
             items.RemoveAt(current);
+            current = -1;
 
-            sse.items = items.ToArray();
-
-            ReloadItemList(sse.items.ToArray());
+            ReloadItemList();
         }
 
-        private void ShopName_TextChanged(object sender, EventArgs e)
+        public PossibleItem[] GetSelection()
         {
-            sse.name = shopName.Text;
-        }
-
-        public ShowShopEvent GetResult()
-        {
-            return sse;
+            return items.ToArray();
         }
     }
 
-    public class ShopItem
+    public class PossibleItem
     {
         public string item = "";
-        public int price = 1;
+        public int dropChance = 1;
     }
 }

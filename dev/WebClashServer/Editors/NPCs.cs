@@ -314,7 +314,7 @@ namespace WebClashServer.Editors
             actionSelection.ShowDialog();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void editLootTable_Click(object sender, EventArgs e)
         {
             ItemSelection itemSelection = new ItemSelection("Set items for '" + current.name + "'", current.items);
 
@@ -339,6 +339,21 @@ namespace WebClashServer.Editors
             npcDialogue.ShowDialog();
         }
 
+        private void gearButton_Click(object sender, EventArgs e)
+        {
+            NPCGear npcGear = new NPCGear(
+                "Edit gear for '" + current.name + "'", 
+                current.character, 
+                current.gear
+            );
+
+            npcGear.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                current.gear = npcGear.GetSelection();
+            };
+
+            npcGear.ShowDialog();
+        }
+
         public bool GetChanged()
         {
             return dataHasChanged;
@@ -347,10 +362,7 @@ namespace WebClashServer.Editors
 
     public class NPC
     {
-        public NPC()
-        {
-
-        }
+        public NPC() { }
 
         public NPC(string source)
         {
@@ -380,6 +392,8 @@ namespace WebClashServer.Editors
 
                 items = temp.items;
 
+                gear = temp.gear;
+
                 dialog = temp.dialog;
 
                 dialogElements = temp.dialogElements;
@@ -408,6 +422,8 @@ namespace WebClashServer.Editors
         public PossibleAction[] actions = new PossibleAction[0];
 
         public PossibleItem[] items = new PossibleItem[0];
+
+        public string[] gear = new string[0];
 
         public DialogueItem[] dialog = new DialogueItem[0];
 

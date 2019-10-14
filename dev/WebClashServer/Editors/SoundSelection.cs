@@ -22,16 +22,21 @@ namespace WebClashServer.Editors
 
         private void SoundSelection_Load(object sender, EventArgs e)
         {
-            ReloadSoundList(sounds.ToArray());
+            ReloadSoundList();
         }
 
-        private void ReloadSoundList(PossibleSound[] sounds)
+        private void ReloadSoundList()
         {
             soundList.Items.Clear();
 
             try
             {
-                for (int i = 0; i < sounds.Length; i++)
+                if (sounds.Count == 0)
+                    soundSource.Enabled = false;
+                else
+                    soundSource.Enabled = true;
+
+                for (int i = 0; i < sounds.Count; i++)
                 {
                     int ls = sounds[i].src.LastIndexOf('/');
                     string src = sounds[i].src;
@@ -39,7 +44,7 @@ namespace WebClashServer.Editors
                     if (ls != -1)
                         src = "..." + sounds[i].src.Substring(ls, sounds[i].src.Length-ls);
 
-                    soundList.Items.Add(i + ". " + src);
+                    soundList.Items.Add((i + 1) + ". " + src);
                 }
             }
             catch (Exception exc)
@@ -48,10 +53,10 @@ namespace WebClashServer.Editors
             }
             
             if (current == -1 &&
-                sounds.Length > 0)
+                sounds.Count > 0)
                 soundList.SelectedItem = soundList.Items[0];
-            else if (sounds.Length > 0 &&
-                     current < sounds.Length)
+            else if (sounds.Count > 0 &&
+                     current < sounds.Count)
                 soundList.SelectedItem = soundList.Items[current];
         }
 
@@ -68,14 +73,10 @@ namespace WebClashServer.Editors
 
         private void newLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string i = soundList.Items.Count + ". " + string.Empty;
-
             sounds.Add(new PossibleSound());
 
-            soundList.Items.Add(i);
-            soundList.SelectedItem = i;
-
-            soundSource.Text = "";
+            ReloadSoundList();
+            soundList.SelectedIndex = sounds.Count - 1;
         }
 
         private void delete_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -84,8 +85,9 @@ namespace WebClashServer.Editors
                 return;
 
             sounds.RemoveAt(current);
+            current = -1;
 
-            ReloadSoundList(sounds.ToArray());
+            ReloadSoundList();
         }
 
         private void soundSource_TextChanged(object sender, EventArgs e)
@@ -95,7 +97,7 @@ namespace WebClashServer.Editors
 
             sounds[current].src = soundSource.Text;
 
-            ReloadSoundList(sounds.ToArray());
+            ReloadSoundList();
         }
 
         private void button1_Click(object sender, EventArgs e)

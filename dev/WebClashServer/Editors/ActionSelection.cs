@@ -25,20 +25,32 @@ namespace WebClashServer.Editors
         {
             ReloadActions();
 
-            ReloadActionList(actions.ToArray());
+            ReloadActionList();
         }
 
-        private void ReloadActionList(PossibleAction[] actions)
+        private void ReloadActionList()
         {
             actionList.Items.Clear();
 
             try
             {
-                for (int i = 0; i < actions.Length; i++)
+                if (actions.Count == 0)
+                {
+                    actionSelect.Enabled = false;
+                    range.Enabled = false;
+                    extraCooldown.Enabled = false;
+                } else
+                {
+                    actionSelect.Enabled = true;
+                    range.Enabled = true;
+                    extraCooldown.Enabled = true;
+                }
+
+                for (int i = 0; i < actions.Count; i++)
                 {
                     string it = actions[i].action;
 
-                    actionList.Items.Add(i + ". " + actions[i].action + " (" + actions[i].range + ")");
+                    actionList.Items.Add((i + 1) + ". " + actions[i].action + " (" + actions[i].range + ")");
                 }
             }
             catch (Exception exc)
@@ -47,10 +59,10 @@ namespace WebClashServer.Editors
             }
 
             if (current == -1 &&
-                actions.Length > 0)
+                actions.Count > 0)
                 actionList.SelectedItem = actionList.Items[0];
-            else if (actions.Length > 0 &&
-                     current < actions.Length)
+            else if (actions.Count > 0 &&
+                     current < actions.Count)
                 actionList.SelectedItem = actionList.Items[current];
         }
 
@@ -85,19 +97,23 @@ namespace WebClashServer.Editors
 
             current = actionList.SelectedIndex;
 
-            actionSelect.SelectedItem = actions[current].action;
+            if (actions[current].action == "")
+                actionSelect.SelectedItem = null;
+            else
+                actionSelect.SelectedItem = actions[current].action;
+
             range.Value = actions[current].range;
             extraCooldown.Value = actions[current].extraCooldown*16;
         }
 
         private void actionSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (current == -1)
+            if (current == -1 || actionSelect.SelectedItem == null)
                 return;
 
             actions[current].action = actionSelect.SelectedItem.ToString();
 
-            ReloadActionList(actions.ToArray());
+            ReloadActionList();
         }
 
         private void range_ValueChanged(object sender, EventArgs e)
@@ -107,17 +123,15 @@ namespace WebClashServer.Editors
 
             actions[current].range = (int)range.Value;
 
-            ReloadActionList(actions.ToArray());
+            ReloadActionList();
         }
 
         private void newLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string i = actionList.Items.Count + ". " + string.Empty;
-
             actions.Add(new PossibleAction());
 
-            actionList.Items.Add(i);
-            actionList.SelectedItem = i;
+            ReloadActionList();
+            actionList.SelectedIndex = actions.Count - 1;
         }
 
         private void delete_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -126,8 +140,9 @@ namespace WebClashServer.Editors
                 return;
 
             actions.RemoveAt(current);
+            current = -1;
 
-            ReloadActionList(actions.ToArray());
+            ReloadActionList();
         }
 
         private void extraCooldown_ValueChanged(object sender, EventArgs e)

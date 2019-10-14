@@ -22,6 +22,7 @@
   },
   "actions": [],
   "items": [],
+  "gear": [],
   "dialog": [
     {
       "text": "Hello there adventurer.\nHow can I help you?",
