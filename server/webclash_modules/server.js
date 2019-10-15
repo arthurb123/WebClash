@@ -1158,8 +1158,8 @@ exports.syncNPCPartially = function(map, id, type, channel, broadcast)
         case 'health':
             data.health = npcs.onMap[map][id].data.health;
             break;
-        case 'gear':
-            data.gear = npcs.onMap[map][id].data.gear;
+        case 'equipment':
+            data.equipment = npcs.onMap[map][id].data.equipment;
             break;
     }
 
@@ -1181,7 +1181,7 @@ exports.syncNPC = function(map, id, channel, broadcast)
     this.syncNPCPartially(map, id, 'position', channel, broadcast);
     this.syncNPCPartially(map, id, 'direction', channel, broadcast);
     this.syncNPCPartially(map, id, 'character', channel, broadcast);
-    this.syncNPCPartially(map, id, 'gear', channel, broadcast);
+    this.syncNPCPartially(map, id, 'equipment', channel, broadcast);
     this.syncNPCPartially(map, id, 'type', channel, broadcast);
 
     //Some NPCs don't have stats, so we dont send it if

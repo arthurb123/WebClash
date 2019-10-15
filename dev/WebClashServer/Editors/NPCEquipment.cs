@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace WebClashServer.Editors
 {
-    public partial class NPCGear : Form
+    public partial class NPCEquipment : Form
     {
         //Character and animation
 
@@ -19,18 +19,18 @@ namespace WebClashServer.Editors
 
         //Gear
 
-        private List<string> gear = new List<string>();
-        private List<GearImage> gearImages = new List<GearImage>();
+        private List<string> equipment = new List<string>();
+        private List<EquipmentImage> equipmentImages = new List<EquipmentImage>();
         private int current = -1;
 
-        public NPCGear(string title, string charName, string[] gear)
+        public NPCEquipment(string title, string charName, string[] equipment)
         {
             InitializeComponent();
 
             Text = title;
 
             this.charName = charName;
-            this.gear = gear.ToList();
+            this.equipment = equipment.ToList();
         }
 
         private void NPCGear_Load(object sender, EventArgs e)
@@ -44,31 +44,31 @@ namespace WebClashServer.Editors
 
         private void ReloadGearList()
         {
-            gearList.Items.Clear();
+            equipmentList.Items.Clear();
 
             try
             {
-                if (gear.Count == 0)
+                if (equipment.Count == 0)
                 {
                     moveDown.Enabled = false;
                     moveUp.Enabled = false;
-                    gearSource.Enabled = false;
+                    equipmentSource.Enabled = false;
                 } else
                 {
                     moveDown.Enabled = true;
                     moveUp.Enabled = true;
-                    gearSource.Enabled = true;
+                    equipmentSource.Enabled = true;
                 }
 
-                for (int i = 0; i < gear.Count; i++)
+                for (int i = 0; i < equipment.Count; i++)
                 {
-                    int ls = gear[i].LastIndexOf('/');
-                    string src = gear[i];
+                    int ls = equipment[i].LastIndexOf('/');
+                    string src = equipment[i];
 
                     if (ls != -1)
-                        src = "..." + gear[i].Substring(ls, gear[i].Length - ls);
+                        src = "..." + equipment[i].Substring(ls, equipment[i].Length - ls);
 
-                    gearList.Items.Add((i+1) + ". " + src);
+                    equipmentList.Items.Add((i+1) + ". " + src);
                 }
 
                 LoadGearImages();
@@ -79,26 +79,26 @@ namespace WebClashServer.Editors
             }
 
             if (current == -1 &&
-                gear.Count > 0)
-                gearList.SelectedIndex = 0;
-            else if (gear.Count > 0 &&
-                     current < gear.Count)
-                gearList.SelectedIndex = current;
+                equipment.Count > 0)
+                equipmentList.SelectedIndex = 0;
+            else if (equipment.Count > 0 &&
+                     current < equipment.Count)
+                equipmentList.SelectedIndex = current;
         }
 
         private void LoadGearImages()
         {
-            for (int i = 0; i < gear.Count; i++)
+            for (int i = 0; i < equipment.Count; i++)
             {
-                string location = Program.main.location + "/../client/" + gear[i];
+                string location = Program.main.location + "/../client/" + equipment[i];
 
                 if (!File.Exists(location))
                     continue;
 
-                if (i >= gearImages.Count)
-                    gearImages.Add(new GearImage(location));
-                else if (gearImages[i].source != gear[i])
-                    gearImages[i] = new GearImage(location);
+                if (i >= equipmentImages.Count)
+                    equipmentImages.Add(new EquipmentImage(location));
+                else if (equipmentImages[i].source != equipment[i])
+                    equipmentImages[i] = new EquipmentImage(location);
             }
         }
 
@@ -145,12 +145,12 @@ namespace WebClashServer.Editors
                     GraphicsUnit.Pixel
                 );
 
-            //Draw gear
+            //Draw equipment
 
-            for (int i = 0; i < gearImages.Count; i++)
-                if (gearImages[i] != null && gearImages[i].image != null)
+            for (int i = 0; i < equipmentImages.Count; i++)
+                if (equipmentImages[i] != null && equipmentImages[i].image != null)
                     g.DrawImage(
-                        gearImages[i].image,
+                        equipmentImages[i].image,
                         new Rectangle(sp.X, sp.Y, character.width, character.height),
                         animFrame * character.width,
                         0,
@@ -202,23 +202,23 @@ namespace WebClashServer.Editors
             canvas.Invalidate();
         }
 
-        private void gearList_SelectedIndexChanged(object sender, EventArgs e)
+        private void equipmentList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (gearList.SelectedIndex == -1 ||
-                gear.Count <= gearList.SelectedIndex)
+            if (equipmentList.SelectedIndex == -1 ||
+                equipment.Count <= equipmentList.SelectedIndex)
                 return;
 
-            current = gearList.SelectedIndex;
+            current = equipmentList.SelectedIndex;
 
-            gearSource.Text = gear[current];
+            equipmentSource.Text = equipment[current];
         }
 
         private void newLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            gear.Add("");
+            equipment.Add("");
 
             ReloadGearList();
-            gearList.SelectedIndex = gear.Count - 1;
+            equipmentList.SelectedIndex = equipment.Count - 1;
         }
 
         private void delete_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -226,37 +226,37 @@ namespace WebClashServer.Editors
             if (current == -1)
                 return;
 
-            gear.RemoveAt(current);
-            if (current < gearImages.Count)
-                gearImages.RemoveAt(current);
+            equipment.RemoveAt(current);
+            if (current < equipmentImages.Count)
+                equipmentImages.RemoveAt(current);
 
             current = -1;
 
             ReloadGearList();
         }
 
-        private void gearSource_TextChanged(object sender, EventArgs e)
+        private void equipmentSource_TextChanged(object sender, EventArgs e)
         {
             if (current == -1)
                 return;
 
-            gear[current] = gearSource.Text;
+            equipment[current] = equipmentSource.Text;
 
             ReloadGearList();
         }
 
-        private void swapGear(int indexA, int indexB)
+        private void swapEquipment(int indexA, int indexB)
         {
-            string tmpGear = gear[indexA];
-            gear[indexA] = gear[indexB];
-            gear[indexB] = tmpGear;
+            string tmpGear = equipment[indexA];
+            equipment[indexA] = equipment[indexB];
+            equipment[indexB] = tmpGear;
 
-            if (indexA < gearImages.Count &&
-                indexB < gearImages.Count)
+            if (indexA < equipmentImages.Count &&
+                indexB < equipmentImages.Count)
             {
-                GearImage tmpGearImage = gearImages[indexA];
-                gearImages[indexA] = gearImages[indexB];
-                gearImages[indexB] = tmpGearImage;
+                EquipmentImage tmpGearImage = equipmentImages[indexA];
+                equipmentImages[indexA] = equipmentImages[indexB];
+                equipmentImages[indexB] = tmpGearImage;
             }
 
             ReloadGearList();
@@ -264,47 +264,47 @@ namespace WebClashServer.Editors
 
         private void moveDown_Click(object sender, EventArgs e)
         {
-            if (current == -1 || gear.Count == 1)
+            if (current == -1 || equipment.Count == 1)
                 return;
 
-            if (current == gear.Count - 1)
+            if (current == equipment.Count - 1)
             {
-                swapGear(current, 0);
-                gearList.SelectedIndex = 0;
+                swapEquipment(current, 0);
+                equipmentList.SelectedIndex = 0;
             }
             else
             {
-                swapGear(current, current + 1);
-                gearList.SelectedIndex = current + 1;
+                swapEquipment(current, current + 1);
+                equipmentList.SelectedIndex = current + 1;
             }
         }
 
         private void moveUp_Click(object sender, EventArgs e)
         {
-            if (current == -1 || gear.Count == 1)
+            if (current == -1 || equipment.Count == 1)
                 return;
 
             if (current == 0)
             {
-                swapGear(current, gear.Count-1);
-                gearList.SelectedIndex = gear.Count-1;
+                swapEquipment(current, equipment.Count-1);
+                equipmentList.SelectedIndex = equipment.Count-1;
             }
             else
             {
-                swapGear(current, current - 1);
-                gearList.SelectedIndex = current - 1;
+                swapEquipment(current, current - 1);
+                equipmentList.SelectedIndex = current - 1;
             }
         }
 
         public string[] GetSelection()
         {
-            return gear.ToArray();
+            return equipment.ToArray();
         }
     }
 
-    public class GearImage
+    public class EquipmentImage
     {
-        public GearImage(string source)
+        public EquipmentImage(string source)
         {
             this.source = source;
             image = Image.FromFile(source);

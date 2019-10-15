@@ -1,6 +1,6 @@
 ﻿namespace WebClashServer.Editors
 {
-    partial class NPCGear
+    partial class NPCEquipment
     {
         /// <summary>
         /// Required designer variable.
@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NPCGear));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NPCEquipment));
             this.canvas = new System.Windows.Forms.PictureBox();
             this.animation = new System.Windows.Forms.Timer(this.components);
-            this.gearSource = new System.Windows.Forms.TextBox();
+            this.equipmentSource = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.delete = new System.Windows.Forms.LinkLabel();
             this.newLink = new System.Windows.Forms.LinkLabel();
-            this.gearList = new System.Windows.Forms.ListBox();
+            this.equipmentList = new System.Windows.Forms.ListBox();
             this.moveUp = new System.Windows.Forms.Button();
             this.moveDown = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -62,22 +62,22 @@
             this.animation.Interval = 1000;
             this.animation.Tick += new System.EventHandler(this.animation_Tick);
             // 
-            // gearSource
+            // equipmentSource
             // 
-            this.gearSource.Location = new System.Drawing.Point(126, 52);
-            this.gearSource.Name = "gearSource";
-            this.gearSource.Size = new System.Drawing.Size(168, 20);
-            this.gearSource.TabIndex = 15;
-            this.gearSource.TextChanged += new System.EventHandler(this.gearSource_TextChanged);
+            this.equipmentSource.Location = new System.Drawing.Point(126, 52);
+            this.equipmentSource.Name = "equipmentSource";
+            this.equipmentSource.Size = new System.Drawing.Size(168, 20);
+            this.equipmentSource.TabIndex = 15;
+            this.equipmentSource.TextChanged += new System.EventHandler(this.equipmentSource_TextChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(123, 36);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(67, 13);
+            this.label1.Size = new System.Drawing.Size(94, 13);
             this.label1.TabIndex = 14;
-            this.label1.Text = "Gear Source";
+            this.label1.Text = "Equipment Source";
             // 
             // delete
             // 
@@ -108,14 +108,14 @@
             this.newLink.VisitedLinkColor = System.Drawing.Color.Blue;
             this.newLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.newLink_LinkClicked);
             // 
-            // gearList
+            // equipmentList
             // 
-            this.gearList.FormattingEnabled = true;
-            this.gearList.Location = new System.Drawing.Point(11, 18);
-            this.gearList.Name = "gearList";
-            this.gearList.Size = new System.Drawing.Size(109, 147);
-            this.gearList.TabIndex = 11;
-            this.gearList.SelectedIndexChanged += new System.EventHandler(this.gearList_SelectedIndexChanged);
+            this.equipmentList.FormattingEnabled = true;
+            this.equipmentList.Location = new System.Drawing.Point(11, 18);
+            this.equipmentList.Name = "equipmentList";
+            this.equipmentList.Size = new System.Drawing.Size(109, 147);
+            this.equipmentList.TabIndex = 11;
+            this.equipmentList.SelectedIndexChanged += new System.EventHandler(this.equipmentList_SelectedIndexChanged);
             // 
             // moveUp
             // 
@@ -149,21 +149,21 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.gearList);
+            this.groupBox2.Controls.Add(this.equipmentList);
             this.groupBox2.Controls.Add(this.newLink);
             this.groupBox2.Controls.Add(this.moveDown);
             this.groupBox2.Controls.Add(this.delete);
             this.groupBox2.Controls.Add(this.moveUp);
             this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.gearSource);
+            this.groupBox2.Controls.Add(this.equipmentSource);
             this.groupBox2.Location = new System.Drawing.Point(12, 8);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(300, 192);
             this.groupBox2.TabIndex = 19;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Gear Setup";
+            this.groupBox2.Text = "Equipment Setup";
             // 
-            // NPCGear
+            // NPCEquipment
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -175,8 +175,8 @@
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(340, 495);
             this.MinimumSize = new System.Drawing.Size(340, 495);
-            this.Name = "NPCGear";
-            this.Text = "WebClash Server - NPC Gear";
+            this.Name = "NPCEquipment";
+            this.Text = "WebClash Server - NPC Equipment";
             this.Load += new System.EventHandler(this.NPCGear_Load);
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
             this.groupBox1.ResumeLayout(false);
@@ -189,11 +189,11 @@
         #endregion
         private System.Windows.Forms.PictureBox canvas;
         private System.Windows.Forms.Timer animation;
-        private System.Windows.Forms.TextBox gearSource;
+        private System.Windows.Forms.TextBox equipmentSource;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.LinkLabel delete;
         private System.Windows.Forms.LinkLabel newLink;
-        private System.Windows.Forms.ListBox gearList;
+        private System.Windows.Forms.ListBox equipmentList;
         private System.Windows.Forms.Button moveUp;
         private System.Windows.Forms.Button moveDown;
         private System.Windows.Forms.GroupBox groupBox1;

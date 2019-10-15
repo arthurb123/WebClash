@@ -398,15 +398,18 @@ const game = {
                     this._loops[cb]();
             })
             .Draws(function() {
-                //Draw NPC gear if it exists
+                //Draw NPC equipment if it exists
 
-                if (this._gear != undefined)
-                    for (let g = 0; g < this._gear.length; g++)
+                if (this._equipment != undefined) {
+                    const clip = this.Clip();
+
+                    for (let e = 0; e < this._equipment.length; e++)
                         lx.DrawSprite(
-                            this._gear[g].Clip(this.Clip().X, this.Clip().Y, this.Clip().W, this.Clip().H),
+                            this._equipment[e].Clip(clip.X, clip.Y, clip.W, clip.H),
                             this.Position().X,
                             this.Position().Y
                         );
+                }
             });
 
         go.name = name;
@@ -600,11 +603,11 @@ const game = {
         else if (this.npcs[id] != undefined)
             this.npcs[id]._health = health;
     },
-    setNPCGear: function(id, gear) {
-        this.npcs[id]._gear = [];
+    setNPCEquipment: function(id, equipment) {
+        this.npcs[id]._equipment = [];
 
-        for (let g = 0; g < gear.length; g++)
-            this.npcs[id]._gear[g] = new lx.Sprite(gear[g]);
+        for (let e = 0; e < equipment.length; e++)
+            this.npcs[id]._equipment[e] = new lx.Sprite(equipment[e]);
     },
     removeNPC: function(id)
     {

@@ -259,8 +259,8 @@ const client = {
                  game.npcs[data.id]._direction = data.direction;
              if (data.stats !== undefined)
                  game.npcs[data.id]._stats = data.stats;
-             if (data.gear !== undefined)
-                 game.setNPCGear(data.id, data.gear);
+             if (data.equipment !== undefined)
+                 game.setNPCEquipment(data.id, data.equipment);
              if (data.health !== undefined)
                  game.setNPCHealth(data.id, data.health);
              if (data.character !== undefined) {

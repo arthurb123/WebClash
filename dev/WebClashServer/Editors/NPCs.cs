@@ -339,19 +339,19 @@ namespace WebClashServer.Editors
             npcDialogue.ShowDialog();
         }
 
-        private void gearButton_Click(object sender, EventArgs e)
+        private void equipmentButton_Click(object sender, EventArgs e)
         {
-            NPCGear npcGear = new NPCGear(
-                "Edit gear for '" + current.name + "'", 
+            NPCEquipment npcEquipment = new NPCEquipment(
+                "Edit equipment for '" + current.name + "'", 
                 current.character, 
-                current.gear
+                current.equipment
             );
 
-            npcGear.FormClosed += (object s, FormClosedEventArgs fcea) => {
-                current.gear = npcGear.GetSelection();
+            npcEquipment.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                current.equipment = npcEquipment.GetSelection();
             };
 
-            npcGear.ShowDialog();
+            npcEquipment.ShowDialog();
         }
 
         public bool GetChanged()
@@ -392,7 +392,7 @@ namespace WebClashServer.Editors
 
                 items = temp.items;
 
-                gear = temp.gear;
+                equipment = temp.equipment;
 
                 dialog = temp.dialog;
 
@@ -423,7 +423,7 @@ namespace WebClashServer.Editors
 
         public PossibleItem[] items = new PossibleItem[0];
 
-        public string[] gear = new string[0];
+        public string[] equipment = new string[0];
 
         public DialogueItem[] dialog = new DialogueItem[0];
 

@@ -34,7 +34,7 @@
             this.add = new System.Windows.Forms.Button();
             this.delete = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.gearButton = new System.Windows.Forms.Button();
+            this.equipmentButton = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.showNameplate = new System.Windows.Forms.CheckBox();
             this.typeFriendly = new System.Windows.Forms.RadioButton();
@@ -130,7 +130,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.gearButton);
+            this.groupBox1.Controls.Add(this.equipmentButton);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.showNameplate);
             this.groupBox1.Controls.Add(this.typeFriendly);
@@ -148,15 +148,15 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "General";
             // 
-            // gearButton
+            // equipmentButton
             // 
-            this.gearButton.Location = new System.Drawing.Point(13, 82);
-            this.gearButton.Name = "gearButton";
-            this.gearButton.Size = new System.Drawing.Size(367, 23);
-            this.gearButton.TabIndex = 17;
-            this.gearButton.Text = "Edit Gear";
-            this.gearButton.UseVisualStyleBackColor = true;
-            this.gearButton.Click += new System.EventHandler(this.gearButton_Click);
+            this.equipmentButton.Location = new System.Drawing.Point(13, 82);
+            this.equipmentButton.Name = "equipmentButton";
+            this.equipmentButton.Size = new System.Drawing.Size(367, 23);
+            this.equipmentButton.TabIndex = 17;
+            this.equipmentButton.Text = "Edit Equipment";
+            this.equipmentButton.UseVisualStyleBackColor = true;
+            this.equipmentButton.Click += new System.EventHandler(this.equipmentButton_Click);
             // 
             // label6
             // 
@@ -689,6 +689,6 @@
         private System.Windows.Forms.CheckBox showNameplate;
         private System.Windows.Forms.ComboBox facing;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.Button gearButton;
+        private System.Windows.Forms.Button equipmentButton;
     }
 }
