@@ -70,8 +70,11 @@ const player = {
     {
         let go = new lx.GameObject(undefined, 0, 0, 0, 0);
 
+        //Set player properties
+
         go.Loops(player.update)
           .Draws(player.draws)
+          .PreDraws(player.preDraws)
           .MovementDecelerates(false)
           .Focus();
 
@@ -79,6 +82,8 @@ const player = {
         go._direction = 0;
         go._moving = false;
         go._facing = false;
+
+        //Set player
 
         game.players[name] = go.Show(3);
 
@@ -362,23 +367,56 @@ const player = {
         animation.animateMoving(this);
                 
     },
-    draws: function()
+    //This gets called before rendering the player
+    preDraws: function() 
     {
+        //Set and render equipment based on direction
+
         let equipment = [];
 
-        equipment.push(player.getEquipmentSprite('torso'));
-        equipment.push(player.getEquipmentSprite('hands'));
-        equipment.push(player.getEquipmentSprite('head'));
-        equipment.push(player.getEquipmentSprite('legs'));
-        equipment.push(player.getEquipmentSprite('feet'));
-
-        if (this._direction == 1 || this._direction == 0) {
-            equipment.push(player.getEquipmentSprite('main'));
-            equipment.push(player.getEquipmentSprite('offhand'));
+        switch (this._direction) {
+            case 1:
+                equipment.push(player.getEquipmentSprite('main'));
+                break;
+            case 2:
+                equipment.push(player.getEquipmentSprite('offhand'));
+                break;
         }
-        else if (this._direction == 2 || this._direction == 3) {
-            equipment.push(player.getEquipmentSprite('offhand'));
-            equipment.push(player.getEquipmentSprite('main'));
+
+        for (let i = 0; i < equipment.length; i++) {
+            if (equipment[i] == undefined)
+                continue;
+
+            equipment[i].CLIP = this.SPRITE.CLIP;
+            
+            lx.DrawSprite(equipment[i], this.POS.X, this.POS.Y);
+        }
+    },
+    //This gets called after rendering the player
+    draws: function()
+    {
+        //Set and render equipment based on direction
+
+        let equipment = [];
+
+        for (let i = 0; i < this._equipment.length-2; i++)
+            equipment.push(this._equipment[i]);
+
+        switch (this._direction) {
+            case 0:
+                equipment.push(player.getEquipmentSprite('main'));
+                equipment.push(player.getEquipmentSprite('offhand'));
+                break;
+            case 1:
+                equipment.push(player.getEquipmentSprite('offhand'));
+                break;
+            case 2:
+                equipment.push(player.getEquipmentSprite('main'));
+                break;
+            case 3:
+                equipment.push(player.getEquipmentSprite('offhand'));
+                equipment.push(player.getEquipmentSprite('main'));
+                break;
         }
 
         for (let i = 0; i < equipment.length; i++) {
@@ -387,7 +425,7 @@ const player = {
 
             equipment[i].CLIP = this.SPRITE.CLIP;
 
-            lx.DrawSprite(equipment[i], this.POS.X, this.POS.Y, this.POS.W, this.POS.H);
+            lx.DrawSprite(equipment[i], this.POS.X, this.POS.Y);
         }
     },
     sync: function(type) {

@@ -61,35 +61,71 @@ const game = {
                     }
                 }
             })
+            .PreDraws(function() {
+                //Constants for easier readability
+
+                const main = this._equipment.length-1,
+                      offhand = this._equipment.length-2;
+
+                //Set and render equipment based on direction
+
+                let equipment = [];
+
+                switch (this._direction) {
+                    case 1:
+                        equipment.push(this._equipment[main]);
+                        break;
+                    case 2:
+                        equipment.push(this._equipment[offhand]);
+                        break;
+                }
+
+                for (let i = 0; i < equipment.length; i++) {
+                    if (equipment[i] == undefined)
+                        continue;
+
+                    equipment[i].CLIP = this.SPRITE.CLIP;
+                    
+                    lx.DrawSprite(equipment[i], this.POS.X, this.POS.Y);
+                }
+            })
             .Draws(function() {
+                //Constants for easier readability
+
+                const main = this._equipment.length-1,
+                      offhand = this._equipment.length-2;
+
+                //Set and render equipment based on direction
+
                 let equipment = [];
 
                 for (let i = 0; i < this._equipment.length-2; i++)
                     equipment.push(this._equipment[i]);
 
-                if (this._direction == 1 || this._direction == 0) {
-                    equipment.push(this._equipment[this._equipment.length-1]);
-                    equipment.push(this._equipment[this._equipment.length-2]);
-                }
-                else if (this._direction == 2 || this._direction == 3) {
-                    equipment.push(this._equipment[this._equipment.length-2]);
-                    equipment.push(this._equipment[this._equipment.length-1]);
+                switch (this._direction) {
+                    case 0:
+                        equipment.push(this._equipment[main]);
+                        equipment.push(this._equipment[offhand]);
+                        break;
+                    case 1:
+                        equipment.push(this._equipment[offhand]);
+                        break;
+                    case 2:
+                        equipment.push(this._equipment[main]);
+                        break;
+                    case 3:
+                        equipment.push(this._equipment[offhand]);
+                        equipment.push(this._equipment[main]);
+                        break;
                 }
 
-                for (let i = 0; i < equipment.length; i++)
-                {
-                    if (equipment[i] === undefined)
-                        continue
+                for (let i = 0; i < equipment.length; i++) {
+                    if (equipment[i] == undefined)
+                        continue;
 
                     equipment[i].CLIP = this.SPRITE.CLIP;
 
-                    lx.DrawSprite(
-                        equipment[i], 
-                        this.Position().X, 
-                        this.Position().Y, 
-                        this.Size().W, 
-                        this.Size().H
-                    );
+                    lx.DrawSprite(equipment[i], this.POS.X, this.POS.Y);
                 }
             });
 
