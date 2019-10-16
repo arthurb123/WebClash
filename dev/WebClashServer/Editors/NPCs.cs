@@ -423,7 +423,7 @@ namespace WebClashServer.Editors
 
         public PossibleItem[] items = new PossibleItem[0];
 
-        public string[] equipment = new string[0];
+        public Equipment[] equipment = new Equipment[0];
 
         public DialogueItem[] dialog = new DialogueItem[0];
 

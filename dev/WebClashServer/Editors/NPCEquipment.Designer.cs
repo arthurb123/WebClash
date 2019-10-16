@@ -41,6 +41,9 @@
             this.moveDown = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.isOffHand = new System.Windows.Forms.RadioButton();
+            this.isMainHand = new System.Windows.Forms.RadioButton();
+            this.isGeneric = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -64,7 +67,7 @@
             // 
             // equipmentSource
             // 
-            this.equipmentSource.Location = new System.Drawing.Point(126, 52);
+            this.equipmentSource.Location = new System.Drawing.Point(126, 42);
             this.equipmentSource.Name = "equipmentSource";
             this.equipmentSource.Size = new System.Drawing.Size(168, 20);
             this.equipmentSource.TabIndex = 15;
@@ -73,7 +76,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(123, 36);
+            this.label1.Location = new System.Drawing.Point(123, 26);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(94, 13);
             this.label1.TabIndex = 14;
@@ -119,7 +122,7 @@
             // 
             // moveUp
             // 
-            this.moveUp.Location = new System.Drawing.Point(171, 87);
+            this.moveUp.Location = new System.Drawing.Point(131, 142);
             this.moveUp.Name = "moveUp";
             this.moveUp.Size = new System.Drawing.Size(75, 23);
             this.moveUp.TabIndex = 16;
@@ -129,7 +132,7 @@
             // 
             // moveDown
             // 
-            this.moveDown.Location = new System.Drawing.Point(171, 116);
+            this.moveDown.Location = new System.Drawing.Point(212, 142);
             this.moveDown.Name = "moveDown";
             this.moveDown.Size = new System.Drawing.Size(75, 23);
             this.moveDown.TabIndex = 17;
@@ -149,6 +152,9 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.isOffHand);
+            this.groupBox2.Controls.Add(this.isMainHand);
+            this.groupBox2.Controls.Add(this.isGeneric);
             this.groupBox2.Controls.Add(this.equipmentList);
             this.groupBox2.Controls.Add(this.newLink);
             this.groupBox2.Controls.Add(this.moveDown);
@@ -162,6 +168,42 @@
             this.groupBox2.TabIndex = 19;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Equipment Setup";
+            // 
+            // isOffHand
+            // 
+            this.isOffHand.AutoSize = true;
+            this.isOffHand.Location = new System.Drawing.Point(170, 109);
+            this.isOffHand.Name = "isOffHand";
+            this.isOffHand.Size = new System.Drawing.Size(68, 17);
+            this.isOffHand.TabIndex = 20;
+            this.isOffHand.TabStop = true;
+            this.isOffHand.Text = "Off Hand";
+            this.isOffHand.UseVisualStyleBackColor = true;
+            this.isOffHand.CheckedChanged += new System.EventHandler(this.isOffHand_CheckedChanged);
+            // 
+            // isMainHand
+            // 
+            this.isMainHand.AutoSize = true;
+            this.isMainHand.Location = new System.Drawing.Point(170, 88);
+            this.isMainHand.Name = "isMainHand";
+            this.isMainHand.Size = new System.Drawing.Size(77, 17);
+            this.isMainHand.TabIndex = 19;
+            this.isMainHand.TabStop = true;
+            this.isMainHand.Text = "Main Hand";
+            this.isMainHand.UseVisualStyleBackColor = true;
+            this.isMainHand.CheckedChanged += new System.EventHandler(this.isMainHand_CheckedChanged);
+            // 
+            // isGeneric
+            // 
+            this.isGeneric.AutoSize = true;
+            this.isGeneric.Location = new System.Drawing.Point(170, 68);
+            this.isGeneric.Name = "isGeneric";
+            this.isGeneric.Size = new System.Drawing.Size(62, 17);
+            this.isGeneric.TabIndex = 18;
+            this.isGeneric.TabStop = true;
+            this.isGeneric.Text = "Generic";
+            this.isGeneric.UseVisualStyleBackColor = true;
+            this.isGeneric.CheckedChanged += new System.EventHandler(this.isGeneric_CheckedChanged);
             // 
             // NPCEquipment
             // 
@@ -198,5 +240,8 @@
         private System.Windows.Forms.Button moveDown;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.RadioButton isGeneric;
+        private System.Windows.Forms.RadioButton isOffHand;
+        private System.Windows.Forms.RadioButton isMainHand;
     }
 }

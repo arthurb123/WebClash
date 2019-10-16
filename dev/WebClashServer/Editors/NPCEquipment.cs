@@ -19,11 +19,11 @@ namespace WebClashServer.Editors
 
         //Gear
 
-        private List<string> equipment = new List<string>();
+        private List<Equipment> equipment = new List<Equipment>();
         private List<EquipmentImage> equipmentImages = new List<EquipmentImage>();
         private int current = -1;
 
-        public NPCEquipment(string title, string charName, string[] equipment)
+        public NPCEquipment(string title, string charName, Equipment[] equipment)
         {
             InitializeComponent();
 
@@ -53,20 +53,33 @@ namespace WebClashServer.Editors
                     moveDown.Enabled = false;
                     moveUp.Enabled = false;
                     equipmentSource.Enabled = false;
+                    isGeneric.Enabled = false;
+                    isMainHand.Enabled = false;
+                    isOffHand.Enabled = false;
                 } else
                 {
                     moveDown.Enabled = true;
                     moveUp.Enabled = true;
                     equipmentSource.Enabled = true;
+                    isGeneric.Enabled = true;
+                    isMainHand.Enabled = true;
+                    isOffHand.Enabled = true;
                 }
 
                 for (int i = 0; i < equipment.Count; i++)
                 {
-                    int ls = equipment[i].LastIndexOf('/');
-                    string src = equipment[i];
+                    int ls = equipment[i].source.LastIndexOf('/');
+                    string src = equipment[i].source;
 
                     if (ls != -1)
-                        src = "..." + equipment[i].Substring(ls, equipment[i].Length - ls);
+                    {
+                        src = "..." + src.Substring(ls, src.Length - ls);
+
+                        if (equipment[i].type == "main")
+                            src += " (MH)";
+                        else if (equipment[i].type == "offhand")
+                            src += " (OH)";
+                    }
 
                     equipmentList.Items.Add((i+1) + ". " + src);
                 }
@@ -90,14 +103,14 @@ namespace WebClashServer.Editors
         {
             for (int i = 0; i < equipment.Count; i++)
             {
-                string location = Program.main.location + "/../client/" + equipment[i];
+                string location = Program.main.location + "/../client/" + equipment[i].source;
 
                 if (!File.Exists(location))
                     continue;
 
                 if (i >= equipmentImages.Count)
                     equipmentImages.Add(new EquipmentImage(location));
-                else if (equipmentImages[i].source != equipment[i])
+                else if (equipmentImages[i].source != equipment[i].source)
                     equipmentImages[i] = new EquipmentImage(location);
             }
         }
@@ -145,10 +158,29 @@ namespace WebClashServer.Editors
                     GraphicsUnit.Pixel
                 );
 
-            //Draw equipment
+            //Draw all equipment besides main and offhand
 
-            for (int i = 0; i < equipmentImages.Count; i++)
+            List<EquipmentImage> possibleMains = new List<EquipmentImage>();
+            List<EquipmentImage> possibleOffhands = new List<EquipmentImage>();
+
+            for (int i = 0; i < equipmentImages.Count; i++) 
                 if (equipmentImages[i] != null && equipmentImages[i].image != null)
+                {
+                    //Skip main and offhand
+
+                    if (equipment[i].type == "main")
+                    {
+                        possibleMains.Add(equipmentImages[i]);
+                        continue;
+                    }
+                    else if (equipment[i].type == "offhand")
+                    {
+                        possibleOffhands.Add(equipmentImages[i]);
+                        continue;
+                    }
+
+                    //Draw equipment image
+
                     g.DrawImage(
                         equipmentImages[i].image,
                         new Rectangle(sp.X, sp.Y, character.width, character.height),
@@ -158,6 +190,33 @@ namespace WebClashServer.Editors
                         character.height,
                         GraphicsUnit.Pixel
                     );
+                }
+
+            //Draw main if it exists
+
+            for (int i = 0; i < possibleMains.Count; i++)
+                g.DrawImage(
+                    possibleMains[i].image,
+                    new Rectangle(sp.X, sp.Y, character.width, character.height),
+                    animFrame * character.width,
+                    0,
+                    character.width,
+                    character.height,
+                    GraphicsUnit.Pixel
+                );
+
+            //Draw offhand if it exists
+
+            for (int i = 0; i < possibleOffhands.Count; i++)
+                g.DrawImage(
+                    possibleOffhands[i].image,
+                    new Rectangle(sp.X, sp.Y, character.width, character.height),
+                    animFrame * character.width,
+                    0,
+                    character.width,
+                    character.height,
+                    GraphicsUnit.Pixel
+                );
         }
 
         private void AttemptSetCharImage(string src)
@@ -210,12 +269,25 @@ namespace WebClashServer.Editors
 
             current = equipmentList.SelectedIndex;
 
-            equipmentSource.Text = equipment[current];
+            equipmentSource.Text = equipment[current].source;
+
+            switch (equipment[current].type)
+            {
+                case "generic":
+                    isGeneric.Checked = true;
+                    break;
+                case "main":
+                    isMainHand.Checked = true;
+                    break;
+                case "offhand":
+                    isOffHand.Checked = true;
+                    break;
+            }
         }
 
         private void newLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            equipment.Add("");
+            equipment.Add(new Equipment());
 
             ReloadGearList();
             equipmentList.SelectedIndex = equipment.Count - 1;
@@ -240,14 +312,44 @@ namespace WebClashServer.Editors
             if (current == -1)
                 return;
 
-            equipment[current] = equipmentSource.Text;
+            equipment[current].source = equipmentSource.Text;
+
+            ReloadGearList();
+        }
+
+        private void isGeneric_CheckedChanged(object sender, EventArgs e)
+        {
+            if (current == -1 || !isGeneric.Checked)
+                return;
+
+            equipment[current].type = "generic";
+
+            ReloadGearList();
+        }
+
+        private void isMainHand_CheckedChanged(object sender, EventArgs e)
+        {
+            if (current == -1 || !isMainHand.Checked)
+                return;
+
+            equipment[current].type = "main";
+
+            ReloadGearList();
+        }
+
+        private void isOffHand_CheckedChanged(object sender, EventArgs e)
+        {
+            if (current == -1 || !isOffHand.Checked)
+                return;
+
+            equipment[current].type = "offhand";
 
             ReloadGearList();
         }
 
         private void swapEquipment(int indexA, int indexB)
         {
-            string tmpGear = equipment[indexA];
+            Equipment tmpGear = equipment[indexA];
             equipment[indexA] = equipment[indexB];
             equipment[indexB] = tmpGear;
 
@@ -296,10 +398,16 @@ namespace WebClashServer.Editors
             }
         }
 
-        public string[] GetSelection()
+        public Equipment[] GetSelection()
         {
             return equipment.ToArray();
         }
+    }
+
+    public class Equipment
+    {
+        public string source = "";
+        public string type = "generic";
     }
 
     public class EquipmentImage

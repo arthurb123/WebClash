@@ -433,18 +433,92 @@ const game = {
                 for (let cb = 0; cb < this._loops.length; cb++) 
                     this._loops[cb]();
             })
+            .PreDraws(function() {
+                //Draw specific NPC equipment if it exists
+
+                if (this._equipment != undefined) {
+                    //Draw mains and offhands if necessary
+
+                    if (this._mainHands.length === 0 && this._offHands.length === 0)
+                        return;
+
+                    //Set weapons based on NPC direction
+
+                    let weapons = [];
+
+                    switch (this._direction) {
+                        case 1:
+                            weapons = this._mainHands;
+                            break;
+                        case 2:
+                            weapons = this._offHands;
+                            break;
+                    }
+
+                    //Draw weapons array
+
+                    for (let w = 0; w < weapons.length; w++) {
+                        weapons[w].CLIP = this.Clip();
+
+                        lx.DrawSprite(
+                            weapons[w],
+                            this.Position().X,
+                            this.Position().Y
+                        );
+                    }
+                }
+            })
             .Draws(function() {
                 //Draw NPC equipment if it exists
 
                 if (this._equipment != undefined) {
-                    const clip = this.Clip();
+                    //Draw all generic equipment
 
-                    for (let e = 0; e < this._equipment.length; e++)
+                    for (let e = 0; e < this._equipment.length; e++) {
+                        this._equipment[e].CLIP = this.Clip();
+
                         lx.DrawSprite(
-                            this._equipment[e].Clip(clip.X, clip.Y, clip.W, clip.H),
+                            this._equipment[e],
                             this.Position().X,
                             this.Position().Y
                         );
+                    };
+
+                    //Draw mains and offhands if necessary
+
+                    if (this._mainHands.length === 0 && this._offHands.length === 0)
+                        return;
+
+                    //Set weapons based on the NPC direction
+
+                    let weapons = [];
+
+                    switch (this._direction) {
+                        case 0:
+                            weapons = this._mainHands.concat(this._offHands);
+                            break;
+                        case 1:
+                            weapons = this._offHands;
+                            break;
+                        case 2:
+                            weapons = this._mainHands;
+                            break;
+                        case 3:
+                            weapons = this._offHands.concat(this._mainHands);
+                            break;
+                    }
+
+                    //Draw weapons array
+
+                    for (let w = 0; w < weapons.length; w++) {
+                        weapons[w].CLIP = this.Clip();
+
+                        lx.DrawSprite(
+                            weapons[w],
+                            this.Position().X,
+                            this.Position().Y
+                        );
+                    }
                 }
             });
 
@@ -641,9 +715,17 @@ const game = {
     },
     setNPCEquipment: function(id, equipment) {
         this.npcs[id]._equipment = [];
+        this.npcs[id]._mainHands = [];
+        this.npcs[id]._offHands = [];
 
-        for (let e = 0; e < equipment.length; e++)
-            this.npcs[id]._equipment[e] = new lx.Sprite(equipment[e]);
+        for (let e = 0; e < equipment.length; e++) {
+            if (equipment[e].type === 'generic')
+                this.npcs[id]._equipment.push(new lx.Sprite(equipment[e].source));
+            else if (equipment[e].type === 'main')
+                this.npcs[id]._mainHands.push(new lx.Sprite(equipment[e].source));
+            else if (equipment[e].type === 'offhand')
+                this.npcs[id]._offHands.push(new lx.Sprite(equipment[e].source));
+        }
     },
     removeNPC: function(id)
     {

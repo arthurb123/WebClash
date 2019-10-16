@@ -22,7 +22,16 @@
   },
   "actions": [],
   "items": [],
-  "equipment": [],
+  "equipment": [
+    {
+      "source": "res/equipment/main/2.png",
+      "type": "main"
+    },
+    {
+      "source": "res/equipment/offhand/2.png",
+      "type": "offhand"
+    }
+  ],
   "dialog": [
     {
       "text": "Hello there adventurer.\nHow can I help you?",
