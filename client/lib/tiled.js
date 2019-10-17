@@ -21,7 +21,7 @@ const tiled = {
 
         //Start progress
 
-        cache.progress.start('Loading map...');
+        cache.progress.start('Building map...');
 
         //Change map name
 
@@ -218,6 +218,10 @@ const tiled = {
             //Start BGM
 
             audio.playBGM(map.bgmSource);
+
+            //Send map content request
+
+            channel.emit('CLIENT_REQUEST_MAP_CONTENT');
 
             //Hide progress
 

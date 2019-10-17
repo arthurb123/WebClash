@@ -177,48 +177,60 @@ exports.addPlayer = function(channel)
 
                 game.calculatePlayerStats(id);
 
+                //Set requires setup for player
+
+                game.players[id].setup = false;
+
                 //Load current world
 
                 game.loadMap(channel, player.map);
-
-                //Sync across server
-
-                server.syncPlayer(id, channel, true);
-
-                //Sync to player
-
-                server.syncPlayer(id, channel, false);
-
-                //Sync partial stats
-
-                server.syncPlayerPartially(id, 'exp', channel, false);
-                server.syncPlayerPartially(id, 'points', channel, false);
-                server.syncPlayerPartially(id, 'attributes', channel, false);
-                server.syncPlayerPartially(id, 'actions', channel, false);
-                server.syncPlayerPartially(id, 'quests', channel, false);
-                server.syncPlayerPartially(id, 'gold', channel, false);
-
-                //Sync inventory
-
-                for (let i = 0; i < game.players[id].inventory.length; i++)
-                    if (game.players[id].inventory[i] != undefined)
-                        server.syncInventoryItem(i, id, channel, false);
-
-                //Sync equipment
-
-                for (let equipment in game.players[id].equipment) {
-                    if (equipment != undefined)
-                        server.syncEquipmentItem(equipment, id, channel, false);
-                };
-
-                //Sync equipment to others
-
-                server.syncPlayerPartially(id, 'equipment', channel, true);
             });
         });
     }
     catch (err) {
         output.giveError('Could not add player: ', err);
+    }
+};
+
+exports.setupPlayer = function(channel)
+{
+    try {
+        //Shorten name
+
+        let id = channel.name;
+
+        //Sync player to itself
+
+        server.syncPlayer(id, channel, false);
+
+        //Sync partial stats
+
+        server.syncPlayerPartially(id, 'exp', channel, false);
+        server.syncPlayerPartially(id, 'points', channel, false);
+        server.syncPlayerPartially(id, 'attributes', channel, false);
+        server.syncPlayerPartially(id, 'actions', channel, false);
+        server.syncPlayerPartially(id, 'quests', channel, false);
+        server.syncPlayerPartially(id, 'gold', channel, false);
+
+        //Sync inventory
+
+        for (let i = 0; i < game.players[id].inventory.length; i++)
+            if (game.players[id].inventory[i] != undefined)
+                server.syncInventoryItem(i, id, channel, false);
+
+        //Sync equipment
+
+        for (let equipment in game.players[id].equipment) {
+            if (equipment != undefined)
+                server.syncEquipmentItem(equipment, id, channel, false);
+        };
+
+        //Sync equipment to others
+
+        server.syncPlayerPartially(id, 'equipment', channel, true);
+    }
+    catch (err) {
+        output.giveError('Could not setup player: ', err);
     }
 };
 
@@ -884,25 +896,9 @@ exports.loadMap = function(channel, map)
 
     npcs.mapPopulation[map_id]++;
 
-    //Send the corresponding map
+    //Send the map update package
 
-    channel.emit('GAME_MAP_UPDATE', tiled.createPlayerMap(id, map_id));
-
-    //Send player to all players in the same map
-
-    server.syncPlayer(id, channel, true);
-
-    //Send all players in the same map
-
-    this.sendPlayers(channel);
-
-    //Send all NPCs in the same map
-
-    npcs.sendMap(id);
-
-    //Send all items in the same map
-
-    items.sendMap(id);
+    channel.emit('GAME_MAP_UPDATE', tiled.generateRequestIdentifier(map_id, id));
 };
 
 exports.loadAllCharacters = function(cb)

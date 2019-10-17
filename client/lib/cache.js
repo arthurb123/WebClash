@@ -32,14 +32,14 @@ const cache = {
     {
         let t = 0;
 
-        this.progress.start('Loading map - 0%');
+        this.progress.start('Building map - 0%');
 
         let cacheTileset = function() {
             cache.getTileset(tilesets[t].image, function() {
                 t++;
 
                 if (t < tilesets.length) {
-                    cache.progress.update('Loading map - ' + ((t/(tilesets.length-1))*100).toFixed(0) + '%');
+                    cache.progress.update('Building map - ' + ((t/(tilesets.length-1))*100).toFixed(0) + '%');
 
                     cacheTileset();
                 }

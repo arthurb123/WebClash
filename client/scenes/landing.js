@@ -21,9 +21,9 @@ const landingScene = new lx.Scene(function() {
     //add a loop thats keeps updating
     //the text in case of new package
 
-    new lx.UIText('Connected to: -', lx.GetDimensions().width/2, lx.GetDimensions().height-20, 11, '#3d3d3d')
+    new lx.UIText('Connected to -', lx.GetDimensions().width/2, lx.GetDimensions().height-20, 11, '#3d3d3d')
         .Loops(function() {
-            this.Text('Connected to: ' + client.serverName);
+            this.Text('Connected to ' + client.serverName);
             this.Position(lx.GetDimensions().width/2, lx.GetDimensions().height-20);
         })
         .Alignment('center')

@@ -6,9 +6,16 @@ exports.maps = [];
 exports.maps_properties = [];
 exports.maps_colliders = [];
 
+exports.map_requests = {};
+
 exports.loadAllMaps = function(cb)
 {
     fs.readdir('maps', (err, files) => {
+        if (err) {
+            output.giveError('Could not load maps: ', err);
+            return;
+        }
+
         let count = 0;
 
         files.forEach(file => {
@@ -386,6 +393,58 @@ exports.checkRectangularCollision = function(rect1, rect2)
         return true;
 
     return false;
+};
+
+exports.generateRequestIdentifier = function(map_id, player_id) {
+    //Generate a valid identifier
+
+    let request_id = tools.randomString();
+
+    while (this.map_requests[request_id] != undefined)
+        request_id = tools.randomString();
+
+    //Set player id at request id
+
+    this.map_requests[request_id] = {
+        player_id: player_id,
+        map_id: map_id
+    }
+
+    //Return the generated request id
+
+    return request_id;
+};
+
+exports.requestMap = function(req, res) {
+    try {
+        let request_id = req.params.request_id;
+
+        //Check if paramaters are valid
+
+        if (request_id == undefined ||
+            tiled.map_requests[request_id] == undefined) {
+            res.send('error');
+            return;
+        }
+
+        //Get player id and map id and delete entry
+
+        let player_id = tiled.map_requests[request_id].player_id,
+            map_id    = tiled.map_requests[request_id].map_id;
+
+        delete tiled.map_requests[request_id];
+
+        //Send custom tailored map for player
+
+        res.send(tiled.createPlayerMap(player_id, map_id));
+    }
+    catch (err) {
+        //Give error and respond to client with error
+
+        output.giveError('Could not handle map request: ', err);
+
+        res.send('error');
+    }
 };
 
 exports.createPlayerMap = function(id, map_id) {

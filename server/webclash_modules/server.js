@@ -375,70 +375,114 @@ exports.handleChannel = function(channel)
     });
 
     channel.on('CLIENT_REQUEST_MAP', function(data) {
-        //Check if valid
+        try {
+            //Check if valid
 
-        if (channel.name === undefined || 
-            !channel.playing ||
-            data === undefined)
-            return;
+            if (channel.name === undefined || 
+                !channel.playing ||
+                data === undefined)
+                return;
 
-        //Get next map
+            //Get next map
 
-        let next_map = tiled.getMapIndex(data);
+            let next_map = tiled.getMapIndex(data);
 
-        //Shorten channel name
+            //Shorten channel name
 
-        let id = channel.name;
+            let id = channel.name;
 
-        //Check if valid player and if
-        //the player is on a different map
+            //Check if valid player and if
+            //the player is on a different map
 
-        if (id == -1 || next_map == -1 || game.players[id].map == data)
-            return;
+            if (id == -1 || next_map == -1 || game.players[id].map == data)
+                return;
 
-        //Check if player is near to a loadMap property
+            //Check if player is near to a loadMap property
 
-        let result = tiled.checkPropertyWithRectangle(game.players[id].map, 'loadMap', {
-            x: game.players[id].pos.X,
-            y: game.players[id].pos.Y,
-            w: game.players[id].character.width,
-            h: game.players[id].character.height
-        });
+            let result = tiled.checkPropertyWithRectangle(game.players[id].map, 'loadMap', {
+                x: game.players[id].pos.X,
+                y: game.players[id].pos.Y,
+                w: game.players[id].character.width,
+                h: game.players[id].character.height
+            });
 
-        if (!result.near)
-            return;
+            if (!result.near)
+                return;
 
-        //Send map to player
+            //Send map to player
 
-        game.loadMap(channel, data);
+            game.loadMap(channel, data);
 
-        //Check if positioning properties exist
+            //Check if positioning properties exist
 
-        let properties,
-            done = false;
+            let properties;
 
-        if (result.tile != undefined)
-            properties = tiled.getPropertiesFromTile(result.map, result.tile);
-        else if (result.object != undefined)
-            properties = tiled.getPropertiesFromObject(result.map, result.object);
+            if (result.tile != undefined)
+                properties = tiled.getPropertiesFromTile(result.map, result.tile);
+            else if (result.object != undefined)
+                properties = tiled.getPropertiesFromObject(result.map, result.object);
 
-        if (properties != undefined) {
-            for (let p = 0; p < properties.length; p++)
-            {
-                if (properties[p].name === 'positionX') {
-                    game.players[id].pos.X = (properties[p].value-tiled.maps[next_map].width/2+.5)*tiled.maps[next_map].tilewidth-game.players[id].character.width/2;
+            if (properties != undefined) {
+                for (let p = 0; p < properties.length; p++)
+                {
+                    //Set position value if property exists
 
-                    done = true;
-                }
-                if (properties[p].name === 'positionY') {
-                    game.players[id].pos.Y = (properties[p].value-tiled.maps[next_map].height/2)*tiled.maps[next_map].tileheight-game.players[id].character.height/2;
-
-                    done = true;
+                    if (properties[p].name === 'positionX')
+                        game.players[id].pos.X = (properties[p].value-tiled.maps[next_map].width/2+.5)*tiled.maps[next_map].tilewidth-game.players[id].character.width/2;
+                    if (properties[p].name === 'positionY') 
+                        game.players[id].pos.Y = (properties[p].value-tiled.maps[next_map].height/2)*tiled.maps[next_map].tileheight-game.players[id].character.height/2;
                 }
             }
+        } catch (err) {
+            output.giveError('Could not handle map request: ', err);
+        }
+    });
 
-            if (done)
-                server.syncPlayerPartially(id, 'position');
+    channel.on('CLIENT_REQUEST_MAP_CONTENT', function() {
+        try {
+            //Check if valid
+
+            if (channel.name == undefined || 
+                !channel.playing)
+                return;
+
+            //Shorten channel name
+
+            let id = channel.name;
+
+            //Check if player requires setup
+
+            //TODO: Move this to a more suitable
+            //      method for increased cohesion
+
+            if (!game.players[id].setup) {
+                game.setupPlayer(channel);
+
+                game.players[id].setup = true;
+            }
+
+            //Send player position to itself
+
+            server.syncPlayerPartially(id, 'position', channel, false);
+
+            //Send player to all players in the same map
+
+            server.syncPlayer(id, channel, true);
+
+            //Send all players in the same map
+
+            game.sendPlayers(channel);
+
+            //Send all NPCs in the same map
+
+            npcs.sendMap(id);
+
+            //Send all items in the same map
+
+            items.sendMap(id);
+        }
+        catch (err) {
+            output.giveError('Could not handle map content request: ', err);
         }
     });
 

@@ -6,7 +6,6 @@ const scripts = [
     'lib/classes/uibox.js',
 
     'lib/geckos.io.js',
-    'lib/sha256.js',
     'lib/lynx2d.js',
     'lib/tiled.js',
     'lib/camera.js',
@@ -18,6 +17,8 @@ const scripts = [
     'lib/view.js',
     'lib/animation.js',
 
+    'misc/tools.js',
+    'misc/sha256.js',
     'misc/prototypes.js',
 
     'scenes/landing.js',

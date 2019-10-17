@@ -944,11 +944,23 @@ const game = {
             this.items[id] = undefined;
         }
     },
-    loadMap: function(data)
+    loadMap: function(request_id)
     {
-        tiled.convertAndLoadMap(data);
+        //Load map via a GET request
 
-        //...
+        httpGetAsync('map/' + request_id, function(data) {
+            //Check if an error occured
+
+            if (data === 'error') {
+                //...
+
+                return;
+            }
+
+            //Convert and load map
+
+            tiled.convertAndLoadMap(JSON.parse(data));
+        });
     },
 
     createAction: function(data)

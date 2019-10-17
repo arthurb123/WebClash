@@ -62,7 +62,20 @@ const client = {
             game.tilesets = [];
         }
 
+        //Set in-game to true
+
         this.inGame = true;
+
+        //Set tiled loading to true to
+        //prevent unwanted incoming syncs
+
+        tiled.loading = true;
+
+        //Show progress view
+
+        cache.progress.start('Joining game...');
+
+        //Send join game package
 
         channel.emit('CLIENT_JOIN_GAME');
     },
@@ -129,9 +142,9 @@ const client = {
              if (data === undefined || data.name === undefined)
                  return;
 
-             //Check if in-game
+             //Check if in-game or loading map
 
-             if (!client.inGame)
+             if (!client.inGame || tiled.loading)
                  return;
 
              //Get the id of the player's data
@@ -235,9 +248,9 @@ const client = {
              if (data === undefined)
                  return;
 
-             //Check if in-game
+             //Check if in-game or loading map
 
-             if (!client.inGame)
+             if (!client.inGame || tiled.loading)
                  return;
 
              //Check if NPC exists, if not instantiate
