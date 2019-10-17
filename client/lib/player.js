@@ -399,8 +399,11 @@ const player = {
 
         let equipment = [];
 
-        for (let i = 0; i < this._equipment.length-2; i++)
-            equipment.push(this._equipment[i]);
+        equipment.push(player.getEquipmentSprite('torso'));
+        equipment.push(player.getEquipmentSprite('hands'));
+        equipment.push(player.getEquipmentSprite('head'));
+        equipment.push(player.getEquipmentSprite('legs'));
+        equipment.push(player.getEquipmentSprite('feet'));
 
         switch (this._direction) {
             case 0:
