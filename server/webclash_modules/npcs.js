@@ -827,7 +827,7 @@ exports.checkNPCFacingCollision = function(map, id)
 
     //Check collision inside map
 
-    if (tiled.checkCollisionWithRectangle(tiled.maps[map].name, rect))
+    if (tiled.checkCollisionWithRectangle(map, rect))
         return true;
 
     return false;

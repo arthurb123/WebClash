@@ -293,17 +293,17 @@ exports.checkPropertyWithRectangle = function(map_name, property_name, rectangle
     return data;
 };
 
-exports.getPropertiesWithRectangle = function(id, rectangle)
+exports.getPropertiesWithRectangle = function(map, rectangle)
 {
-    if (id == -1 ||
-        this.maps_properties[id] === undefined ||
-        this.maps_properties[id].length == 0)
+    if (map == -1 ||
+        this.maps_properties[map] === undefined ||
+        this.maps_properties[map].length == 0)
         return [];
 
-    for (let p = 0; p < this.maps_properties[id].length; p++)
-        for (let r = 0; r < this.maps_properties[id][p].rectangles.length; r++)
-            if (this.checkRectangularCollision(this.maps_properties[id][p].rectangles[r], rectangle))
-                return this.maps_properties[id];
+    for (let p = 0; p < this.maps_properties[map].length; p++)
+        for (let r = 0; r < this.maps_properties[map][p].rectangles.length; r++)
+            if (this.checkRectangularCollision(this.maps_properties[map][p].rectangles[r], rectangle))
+                return this.maps_properties[map];
 
     return [];
 }
@@ -344,40 +344,40 @@ exports.getPropertiesFromObject = function(map, object)
     return result;
 };
 
-exports.checkCollisionWithRectangle = function(map_name, rectangle)
+exports.checkCollisionWithRectangle = function(map, rectangle)
 {
-    let id = this.getMapIndex(map_name);
-
-    if (id == -1 ||
-        this.maps_colliders[id] === undefined)
+    if (map === -1 ||
+        this.maps_colliders[map] == undefined)
         return false;
 
-    for (let c = 0; c < this.maps_colliders[id].length; c++) {
-        if (this.maps_colliders[id][c] === undefined)
+    for (let c = 0; c < this.maps_colliders[map].length; c++) {
+        if (this.maps_colliders[map][c] == undefined)
             continue;
 
-        for (let r = 0; r < this.maps_colliders[id][c].length; r++)
-            if (this.checkRectangularCollision(this.maps_colliders[id][c][r], rectangle))
+        for (let r = 0; r < this.maps_colliders[map][c].length; r++)
+            if (this.checkRectangularCollision(this.maps_colliders[map][c][r], rectangle))
                     return true;
     }
 
     return false;
 };
 
-exports.checkRectangleInMap = function(id, rect)
+exports.checkRectangleInMap = function(map, rect)
 {
-    for (let l = 0; l < this.maps[id].layers.length; l++) {
-        let map = {
-            x: -this.maps[id].width*this.maps[id].tilewidth/2,
-            y: -this.maps[id].height*this.maps[id].tileheight/2,
-            w: this.maps[id].width*this.maps[id].tilewidth,
-            h: this.maps[id].height*this.maps[id].tileheight
+    for (let l = 0; l < this.maps[map].layers.length; l++) {
+        let boundaries = {
+            x: -this.maps[map].width*this.maps[map].tilewidth/2,
+            y: -this.maps[map].height*this.maps[map].tileheight/2,
+            w: this.maps[map].width*this.maps[map].tilewidth,
+            h: this.maps[map].height*this.maps[map].tileheight
         };
 
-        if (this.maps[id].layers[l].offsetx !== undefined) map.x += this.maps[id].layers[l].offsetx;
-        if (this.maps[id].layers[l].offsety !== undefined) map.y += this.maps[id].layers[l].offsety;
+        if (this.maps[map].layers[l].offsetx != undefined) 
+            boundaries.x += this.maps[map].layers[l].offsetx;
+        if (this.maps[map].layers[l].offsety != undefined) 
+            boundaries.y += this.maps[map].layers[l].offsety;
 
-        if (!this.checkRectangularCollision(map, rect))
+        if (!this.checkRectangularCollision(boundaries, rect))
             return false;
     }
 

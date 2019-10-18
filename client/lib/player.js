@@ -395,7 +395,7 @@ const player = {
     //This gets called after rendering the player
     draws: function()
     {
-        //Set and render equipment based on direction
+        //Draw all generic equipment
 
         let equipment = [];
 
@@ -404,6 +404,8 @@ const player = {
         equipment.push(player.getEquipmentSprite('head'));
         equipment.push(player.getEquipmentSprite('legs'));
         equipment.push(player.getEquipmentSprite('feet'));
+
+        //Set main and offhand equipment based on direction
 
         switch (this._direction) {
             case 0:
@@ -421,6 +423,8 @@ const player = {
                 equipment.push(player.getEquipmentSprite('main'));
                 break;
         }
+
+        //Render all equipment
 
         for (let i = 0; i < equipment.length; i++) {
             if (equipment[i] == undefined)

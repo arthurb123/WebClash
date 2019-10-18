@@ -19,6 +19,14 @@ exports.handleChannel = function(channel)
     }
     */
 
+    //Create custom check functions
+
+    const isInGame = function() {
+        return (channel.playing != undefined &&
+                channel.playing &&
+                game.players[channel.name] != undefined);
+    };
+
     //Disconnect and logout event listener
 
     const logOut = function() {
@@ -125,6 +133,10 @@ exports.handleChannel = function(channel)
                 ch.leave();
                 ch.emit('disconnected');
 
+                //Also make sure to set the need for a new setup.
+
+                game.players[name].setup = false;
+
                 //Output
 
                 output.give('User \'' + name + '\' has relogged.');
@@ -154,7 +166,8 @@ exports.handleChannel = function(channel)
     channel.on('CLIENT_REGISTER', function(data) {
         //Check if valid package
 
-        if (data === undefined || data.name === undefined)
+        if (data === undefined || 
+            data.name === undefined)
             return;
 
         //Convert name to string
@@ -221,9 +234,9 @@ exports.handleChannel = function(channel)
     });
 
     channel.on('CLIENT_CREATE_CHARACTER', function(data) {
-        //Check if client is already playing
+        //Check if client is already in-game
 
-        if (channel.playing != undefined && channel.playing)
+        if (isInGame())
             return;
 
         //Check if player is allowed to
@@ -263,9 +276,9 @@ exports.handleChannel = function(channel)
     });
 
     channel.on('CLIENT_JOIN_GAME', function() {
-        //Check if client is already playing
+        //Check if client is already in-game
 
-        if (channel.playing != undefined && channel.playing)
+        if (isInGame())
             return;
 
         //Add client as player if the player
@@ -294,10 +307,9 @@ exports.handleChannel = function(channel)
 
     channel.on('CLIENT_PLAYER_UPDATE', function(data) {
         try {
-            //Check if valid player
+            //Check if in-game
 
-            if (channel.playing === undefined || 
-                !channel.playing)
+            if (!isInGame())
                 return;
 
             //Shorten channel name
@@ -319,8 +331,40 @@ exports.handleChannel = function(channel)
             if (data.pos !== undefined) {
                 //Check if valid movement
 
-                if (Math.abs(game.players[id].pos.X-data.pos.X) <= game.players[id].character.movement.max*2 &&
-                    Math.abs(game.players[id].pos.Y-data.pos.Y) <= game.players[id].character.movement.max*2) {
+                let valid = true;
+
+                //Check if position delta is within limit
+
+                if (Math.abs(game.players[id].pos.X-data.pos.X) > game.players[id].character.movement.max*2 ||
+                    Math.abs(game.players[id].pos.Y-data.pos.Y) > game.players[id].character.movement.max*2)
+                    valid = false;
+
+                //Check for collider violation if enabled
+
+                if (properties.serverCheckColliders) {
+                    //Specify a factor for the violation margin,
+                    //keeping this under 1 makes sure to provide
+                    //a smoother experience for players; especially
+                    //with a slower internet connection
+
+                    let factor = .75;
+
+                    //Check player collider against all colliders on map
+
+                    let collider = game.players[id].character.collider;
+
+                    if (tiled.checkCollisionWithRectangle(game.players[id].map_id, {
+                        x: data.pos.X + collider.x + (1-factor) * collider.width,
+                        y: data.pos.Y + collider.y + (1-factor) * collider.height,
+                        w: collider.width  * factor,
+                        h: collider.height * factor
+                    }))
+                        valid = false;
+                }
+
+                //Handle accordingly
+                    
+                if (valid) {
                     game.players[id].pos.X = Math.round(data.pos.X);
                     game.players[id].pos.Y = Math.round(data.pos.Y);
 
@@ -343,10 +387,9 @@ exports.handleChannel = function(channel)
     channel.on('CLIENT_PLAYER_ACTION', function(data) {
          try
          {
-            //Check if valid
+            //Check if in-game
 
-            if (channel.name === undefined ||
-                !channel.playing)
+            if (!isInGame())
                 return;
 
             //Shorten channel name
@@ -376,11 +419,9 @@ exports.handleChannel = function(channel)
 
     channel.on('CLIENT_REQUEST_MAP', function(data) {
         try {
-            //Check if valid
+            //Check if in-game and if data is valid
 
-            if (channel.name === undefined || 
-                !channel.playing ||
-                data === undefined)
+            if (!isInGame() || data == undefined)
                 return;
 
             //Get next map
@@ -440,10 +481,9 @@ exports.handleChannel = function(channel)
 
     channel.on('CLIENT_REQUEST_MAP_CONTENT', function() {
         try {
-            //Check if valid
+            //Check if in-game
 
-            if (channel.name == undefined || 
-                !channel.playing)
+            if (!isInGame())
                 return;
 
             //Shorten channel name
@@ -488,10 +528,9 @@ exports.handleChannel = function(channel)
 
     channel.on('CLIENT_NEW_CHAT', function(data) {
         try {
-            //Check if valid player
+            //Check if in-game and data is valid
 
-            if (channel.name === undefined || 
-                !channel.playing)
+            if (!isInGame() || data == undefined)
                 return;
 
             //Shorten channel name
@@ -502,9 +541,8 @@ exports.handleChannel = function(channel)
 
             let msg = '';
 
-            //TODO:
-            //Check correct length
-            //Check if spamming
+            //TODO: Check correct length
+            //TODO: Check if spamming
 
             //Check if command
 
@@ -539,10 +577,9 @@ exports.handleChannel = function(channel)
 
     channel.on('CLIENT_USE_ITEM', function(data) {
         try {
-            //Check if valid player
+            //Check if in-game and data is valid
 
-            if (channel.name === undefined || 
-                !channel.playing)
+            if (!isInGame() || data == undefined)
                 return;
 
             //Shorten channel name
@@ -572,10 +609,9 @@ exports.handleChannel = function(channel)
 
     channel.on('CLIENT_DROP_ITEM', function(data) {
         try {
-            //Check if valid player
+            //Check if in-game and data is valid
 
-            if (channel.name === undefined || 
-                !channel.playing)
+            if (!isInGame() || data == undefined)
                 return;
 
             //Shorten channel name
@@ -593,10 +629,9 @@ exports.handleChannel = function(channel)
 
     channel.on('CLIENT_UNEQUIP_ITEM', function(data) {
         try {
-            //Check if valid player
+            //Check if in-game and data is valid
 
-            if (channel.name === undefined || 
-                !channel.playing)
+            if (!isInGame() || data == undefined)
                 return;
 
             //Shorten channel name
@@ -618,10 +653,9 @@ exports.handleChannel = function(channel)
 
     channel.on('CLIENT_PICKUP_ITEM', function(data) {
         try {
-            //Check if valid player
+            //Check if in-game and data is valid
 
-            if (channel.name === undefined || 
-                !channel.playing)
+            if (!isInGame() || data == undefined)
                 return;
 
             //Shorten channel name
@@ -642,10 +676,9 @@ exports.handleChannel = function(channel)
 
     channel.on('CLIENT_SELL_ITEM', function(data) {
         try {
-            //Check if valid player
+            //Check if in-game and data is valid
 
-            if (channel.name === undefined || 
-                !channel.playing)
+            if (!isInGame() || data == undefined)
                 return;
 
             //Shorten channel name
@@ -667,10 +700,9 @@ exports.handleChannel = function(channel)
 
     channel.on('CLIENT_INTERACT_PROPERTIES', function() {
         try {
-            //Check if valid player
+            //Check if in-game
 
-            if (channel.name === undefined || 
-                !channel.playing)
+            if (!isInGame())
                 return;
 
             //Shorten channel name
@@ -719,10 +751,9 @@ exports.handleChannel = function(channel)
 
     channel.on('CLIENT_DIALOG_EVENT', function(data) {
         try {
-            //Check if valid player
+            //Check if in-game and data is valid
 
-            if (channel.name === undefined || 
-                !channel.playing)
+            if (!isInGame() || data == undefined)
                 return;
 
             //Shorten channel name
@@ -792,11 +823,10 @@ exports.handleChannel = function(channel)
 
     channel.on('CLIENT_ACCEPT_QUEST', function(data) {
         try {
-            //Check if valid player
+            //Check if in-game and data is valid
 
-            if (channel.name === undefined || 
-                !channel.playing)
-               return;
+            if (!isInGame() || data == undefined)
+                return;
 
             //Shorten channel name
 
@@ -844,20 +874,14 @@ exports.handleChannel = function(channel)
 
     channel.on('CLIENT_ABANDON_QUEST', function(data) {
         try {
-            //Check if valid player
+            //Check if in-game and data is valid
 
-            if (channel.name === undefined || 
-                !channel.playing)
-               return;
+            if (!isInGame() || data == undefined || !isNaN(data))
+                return;
 
             //Shorten channel name
 
             let id = channel.name;
-
-            //Check if quest name/data is valid
-
-            if (data == undefined || !isNaN(data))
-                return;
 
             //Remove quest from player quests
 
@@ -874,10 +898,9 @@ exports.handleChannel = function(channel)
 
     channel.on('CLIENT_BUY_ITEM', function(data) {
         try {
-            //Check if valid player
+            //Check if in-game and data is valid
 
-            if (channel.name === undefined || 
-                !channel.playing)
+            if (!isInGame() || data == undefined)
                 return;
 
             //Shorten channel name
@@ -913,10 +936,9 @@ exports.handleChannel = function(channel)
     });
 
     channel.on('CLIENT_REQUEST_DIALOG', function(data) {
-        //Check if valid player
+        //Check if in-game and data is valid
 
-        if (channel.name === undefined || 
-            !channel.playing)
+        if (!isInGame() || data == undefined)
             return;
 
         //Shorten channel name
@@ -937,10 +959,9 @@ exports.handleChannel = function(channel)
     });
 
     channel.on('CLIENT_REQUEST_EXP', function() {
-         //Check if valid player
+        //Check if in-game
 
-        if (channel.name === undefined || 
-            !channel.playing)
+        if (!isInGame())
             return;
 
         //Shorten channel name
@@ -953,10 +974,9 @@ exports.handleChannel = function(channel)
     });
 
     channel.on('CLIENT_INCREMENT_ATTRIBUTE', function(data) {
-        //Check if valid player
+        //Check if in-game and data is valid
 
-        if (channel.name === undefined || 
-            !channel.playing)
+        if (!isInGame() || data == undefined)
             return;
 
         //Shorten channel name
@@ -969,16 +989,9 @@ exports.handleChannel = function(channel)
     });
 
     channel.on('CLIENT_USER_SETTINGS', function(settings) {
-         //Check if valid player
+        //Check if in-game and data is valid
 
-         if (channel.playing === undefined || 
-            !channel.playing)
-             return;
-
-        //Check if valid data
-
-        if (settings == undefined || 
-            settings.audio == undefined)
+        if (!isInGame() || settings == undefined || settings.audio == undefined)
             return;
 
         //Check and/or format data to make sure
@@ -1003,10 +1016,9 @@ exports.handleChannel = function(channel)
     });
 
     channel.on('CLIENT_INVITE_TO_PARTY', function(participant_name) {
-        //Check if valid player
+        //Check if in-game and data is valid
 
-        if (channel.name === undefined || 
-            !channel.playing)
+        if (!isInGame() || participant_name == undefined)
             return;
 
         //Invite player to party
@@ -1015,10 +1027,9 @@ exports.handleChannel = function(channel)
     });
 
     channel.on('CLIENT_JOIN_PARTY', function() {
-        //Check if valid player
+        //Check if in-game
 
-        if (channel.name === undefined ||
-            !channel.playing)
+        if (!isInGame())
             return;
 
         //Join party
@@ -1027,10 +1038,9 @@ exports.handleChannel = function(channel)
     });
 
     channel.on('CLIENT_LEAVE_PARTY', function(reason) {
-        //Check if valid player
+        //Check if in-game and data is valid
 
-        if (channel.name === undefined || 
-            !channel.playing)
+        if (!isInGame() || reason == undefined)
             return;
 
         //Leave party

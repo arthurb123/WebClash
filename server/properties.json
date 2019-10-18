@@ -6,6 +6,8 @@
     "serverName": "WebClash Server",
     "clientName": "WebClash Client",
     "welcomeMessage": "<b>Welcome to WebClash!</b>",
+    
+    "serverCheckColliders": true,
 
     "startingMap": "1",
     "startingTile": {
