@@ -127,15 +127,7 @@ exports.handleChannel = function(channel)
                 //However this is necessary to protect against
                 //account blocking when in-combat and logging out.
 
-                let ch = game.players[name].channel;
-                ch.playing = false;
-
-                ch.leave();
-                ch.emit('disconnected');
-
-                //Also make sure to set the need for a new setup.
-
-                game.players[name].setup = false;
+                game.disconnectPlayer(name, false);
 
                 //Output
 

@@ -141,6 +141,30 @@ exports.refreshPlayer = function(channel, id)
     }
 };
 
+exports.disconnectPlayer = function(name, remove)
+{
+    //Grab respective channel and set playing to false
+
+    let ch = game.players[name].channel;
+
+    //Remove player from game if necessary
+
+    if (remove)
+        this.removePlayer(ch);
+
+    //Leave room and send disconnect package
+
+    ch.leave();
+    ch.emit('disconnected');
+
+    //Also make sure to set the need for a new setup.
+
+    if (!remove) {
+        game.players[name].setup = false;
+        ch.playing = false;
+    }
+};
+
 exports.addPlayer = function(channel)
 {
     //Check if channel is valid
@@ -243,7 +267,7 @@ exports.removePlayer = function(channel)
             channel.name === undefined)
             return;
 
-         //Get player index
+        //Get player index
 
         let id = channel.name;
 

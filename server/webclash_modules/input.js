@@ -175,6 +175,8 @@ exports.handleCommand = function(text, channel)
                     permissions.banned.push(args[0]);
                     game.savePermissions();
 
+                    game.disconnectPlayer(args[0], true);
+
                     output.give('Banned \'' + args[0] + '\'.');
 
                     return 'success';
