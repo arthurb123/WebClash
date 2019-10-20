@@ -546,15 +546,12 @@ exports.createPvPAction = function(slot, id)
     this.damagePlayers(game.players[id].attributes, actionData, this.collection[a_id], true, id);
     this.damageNPCs(id, game.players[id].attributes, actionData, this.collection[a_id], true);
 
-    //Check for healing. 
-    //For now only heal the caster itself.
-    //This might switch to all collided players
-    //in case of large/group battles, when
-    //there is a party system in place.
+    //Check for healing.
 
-    if (this.collection[a_id].heal > 0)
+    if (this.collection[a_id].heal > 0) {
         game.healPlayer(id, this.collection[a_id].heal);
-        //this.healPlayers(actionData, this.collection[a_id].heal);
+        this.healPartyPlayers(actionData, this.collection[a_id].heal, id);
+    }
     else if (this.collection[a_id].heal < 0)
         game.damagePlayer(id, this.collection[a_id].heal);
 
@@ -795,19 +792,19 @@ exports.damagePlayers = function(stats, actionData, action, onlyStatic, except)
 
 exports.healPlayers = function(actionData, heal)
 {
-    for (let e = 0; e < actionData.elements.length; e++)
+    for (let e = 0; e < actionData.elements.length; e++) {
+        let actionRect = {
+            x: actionData.pos.X+actionData.elements[e].x,
+            y: actionData.pos.Y+actionData.elements[e].y,
+            w: actionData.elements[e].w*actionData.elements[e].scale,
+            h: actionData.elements[e].h*actionData.elements[e].scale
+        };
+
         for (let p in game.players)
         {
             if (game.players[p] == undefined ||
                 game.players[p].map_id != actionData.map)
                 continue;
-
-            let actionRect = {
-                x: actionData.pos.X+actionData.elements[e].x,
-                y: actionData.pos.Y+actionData.elements[e].y,
-                w: actionData.elements[e].w*actionData.elements[e].scale,
-                h: actionData.elements[e].h*actionData.elements[e].scale
-            };
 
             let playerRect = {
                 x: game.players[p].pos.X,
@@ -819,6 +816,39 @@ exports.healPlayers = function(actionData, heal)
             if (tiled.checkRectangularCollision(actionRect, playerRect))
                 game.healPlayer(p, heal);
         }
+    }
+};
+
+exports.healPartyPlayers = function(actionData, heal, owner) 
+{
+    if (!parties.inParty(owner))
+        return;
+
+    for (let e = 0; e < actionData.elements.length; e++) {
+        let actionRect = {
+            x: actionData.pos.X+actionData.elements[e].x,
+            y: actionData.pos.Y+actionData.elements[e].y,
+            w: actionData.elements[e].w*actionData.elements[e].scale,
+            h: actionData.elements[e].h*actionData.elements[e].scale
+        };
+
+        for (let p in parties.getPartyMembers(owner))
+        {
+            if (game.players[p] == undefined ||
+                game.players[p].map_id != actionData.map)
+                continue;
+
+            let playerRect = {
+                x: game.players[p].pos.X,
+                y: game.players[p].pos.Y,
+                w: game.players[p].character.width,
+                h: game.players[p].character.height
+            };
+
+            if (tiled.checkRectangularCollision(actionRect, playerRect))
+                game.healPlayer(p, heal);
+        }
+    }
 };
 
 exports.createProjectile = function(type, id, actionData, e_id, a_id)
