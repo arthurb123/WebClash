@@ -118,7 +118,8 @@ exports.updateMap = function(map)
     //accordingly
 
     for (let i = 0; i < this.onMap[map].length; i++)
-        if (this.onMap[map][i] !== undefined)
+        if (this.onMap[map][i] != undefined &&
+            this.onMap[map][i].data != undefined)
             this.updateNPC(map, i);
 };
 
@@ -337,9 +338,12 @@ exports.updateNPC = function(map, id)
 
                 this.respawnNPC(map, id);
             }
-            else
-                return;
         }
+
+        //Check if NPC is killed
+
+        if (this.onMap[map][id].killed)
+            return;
 
         //Update NPC movement
 
@@ -519,13 +523,6 @@ exports.updateNPCMovement = function(map, id)
 
 exports.updateNPCCombat = function(map, id)
 {
-    //Check if valid
-
-    if (this.onMap[map] === undefined ||
-        this.onMap[map][id] === undefined ||
-        this.isTimedOut(map, id))
-        return;
-
     //Check if attacking should be prevented
 
     if (this.onMap[map][id].preventAttack)
@@ -1041,22 +1038,31 @@ exports.removeNPCTargets = function(target, splice)
 
 exports.killNPC = function(map, id)
 {
-    //Check if valid
+    //Check if map has time outs to prevent
+    //errors from occuring
 
     if (this.onTimeOut[map] === undefined)
         this.onTimeOut[map] = [];
 
-    //Evaluate loot table
+    //Evaluate rewards (exp and loot) if hostile
 
-    this.evaluateLootTable(map, id);
+    if (this.onMap[map][id].data.type === 'hostile') {
+        //Evaluate loot table
 
-    //Distribute exp
+        this.evaluateLootTable(map, id);
 
-    this.distributeExperience(map, id);
+        //Distribute exp
+
+        this.distributeExperience(map, id);
+    }
 
     //Sync remove NPC
 
     server.removeNPC(map, id);
+
+    //Set NPC to killed
+
+    this.onMap[map][id].killed = true;
 
     //Add to timeout (if the NPC is not an event)
 
@@ -1095,6 +1101,10 @@ exports.respawnNPC = function(map, id)
     //Reset out of combat time
 
     this.onMap[map][id].outOfCombatTime = 0;
+
+    //Set NPC to not killed
+
+    this.onMap[map][id].killed = false;
 
     //Sync NPC across server
 
