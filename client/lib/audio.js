@@ -13,8 +13,12 @@ const audio = {
     //BGM
 
     playBGM: function(src) {
-        if (this.currentBGM != undefined)
+        if (this.currentBGM != undefined) {
+            if (this.currentBGM.SRC === src)
+                return;
+                
             this.currentBGM.Stop();
+        }
 
         if (src == undefined || src === '') {
             this.currentBGM = undefined;
