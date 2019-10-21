@@ -6,8 +6,10 @@ exports.load = function(dir, name, cb)
 {
     this.exists(dir, name, function(is) {
         try {
-            if (is)
-                fs.readFile('data/' + dir + '/' + name + '.json', 'utf8', function (err, data) {
+            if (is) {
+                let location = 'data/' + dir + '/' + name + '.json';
+
+                fs.readFile(location, 'utf-8', function (err, data) {
                     try {
                         if (err) {
                             output.giveError('Could not load JSON: ', err);
@@ -22,8 +24,12 @@ exports.load = function(dir, name, cb)
                         output.giveError('Could not load JSON: ', err);
                     }
                 });
-            else
+            }
+            else {
+                output.give('File "' + name + '" does not exist.');
+
                 cb(undefined);
+            }
         }
         catch (err)
         {
@@ -54,7 +60,7 @@ exports.save = function(dir, name, data, cb)
 {
     try
     {
-        fs.writeFile('data/' + dir + '/' + name + '.json', JSON.stringify(data, null, 1), 'utf8', function(err) {
+        fs.writeFile('data/' + dir + '/' + name + '.json', JSON.stringify(data, null, 1), 'utf-8', function(err) {
             if (err)
                 throw err;
             else if (cb !== undefined)
@@ -75,7 +81,7 @@ exports.saveAttributes = function(dir, name, attributes, cb)
             for (let key in attributes)
                 data[key] = attributes[key];
 
-            fs.writeFile('data/' + dir + '/' + name + '.json', JSON.stringify(data, null, 1), 'utf8', function(err) {
+            fs.writeFile('data/' + dir + '/' + name + '.json', JSON.stringify(data, null, 1), 'utf-8', function(err) {
                 if (err)
                     throw err;
                 else if (cb !== undefined)

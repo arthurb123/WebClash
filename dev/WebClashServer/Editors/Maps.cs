@@ -12,8 +12,7 @@ namespace WebClashServer.Editors
     public partial class Maps : Form
     {
         Map current;
-
-        Dictionary<int, string> mapBGMSaveRequests = new Dictionary<int, string>();
+        MapMetadata currentMetadata;
 
         private bool dataHasChanged = false;
 
@@ -24,17 +23,10 @@ namespace WebClashServer.Editors
 
         private void Maps_Load(object sender, EventArgs e)
         {
-            FormClosing += Maps_FormClosing;
-
             LoadMapsList();
 
             if (mapList.Items.Count > 0)
                 mapList.SelectedIndex = 0;
-        }
-
-        private void Maps_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            SaveBGMRequests();
         }
 
         private void LoadMapsList()
@@ -48,11 +40,11 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] characters = Directory.GetFiles(Program.main.location + "/maps", "*.*", SearchOption.AllDirectories)
-                    .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
+                string[] maps = Directory.GetFiles(Program.main.location + "/maps", "*.*", SearchOption.AllDirectories)
+                    .Where(s => ext.Contains(Path.GetExtension(s)) && !s.Contains(".metadata")).ToArray();
 
-                foreach (string c in characters)
-                    mapList.Items.Add(c.Substring(c.LastIndexOf('\\') + 1, c.LastIndexOf('.') - c.LastIndexOf('\\') - 1));
+                foreach (string m in maps)
+                    mapList.Items.Add(m.Substring(m.LastIndexOf('\\') + 1, m.LastIndexOf('.') - m.LastIndexOf('\\') - 1));
             }
             catch (Exception exc)
             {
@@ -66,25 +58,31 @@ namespace WebClashServer.Editors
                 return;
            
             current = new Map(Program.main.location + "/maps/" + mapName + ".json");
+            currentMetadata = new MapMetadata(Program.main.location + "/maps/" + mapName + ".metadata.json");
             
             mapSize.Text = current.width + "x" + current.height;
             mapTilesets.Text = current.tilesets.Length.ToString();
 
             CheckTilesets();
 
-            if (current.mapType != null &&
-                current.mapType != string.Empty)
-                mapType.SelectedItem = current.mapType[0].ToString().ToUpper() + current.mapType.Substring(1, current.mapType.Length - 1);
+            if (currentMetadata.mapType != null &&
+                currentMetadata.mapType != string.Empty)
+            {
+                if (currentMetadata.mapType == "protected")
+                    mapType.SelectedItem = "Protected";
+                else if (currentMetadata.mapType == "neutral")
+                    mapType.SelectedItem = "Neutral";
+            }
             else
                 mapType.SelectedItem = string.Empty;
 
-            pvp.Checked = current.pvp;
+            pvp.Checked = currentMetadata.pvp;
 
-            if (current.bgmSource != null)
-                bgmSource.Text = current.bgmSource;
+            if (currentMetadata.bgmSource != null)
+                bgmSource.Text = currentMetadata.bgmSource;
 
-            dayNight.Checked = current.showDayNight;
-            alwaysDark.Checked = current.alwaysDark;
+            dayNight.Checked = currentMetadata.showDayNight;
+            alwaysDark.Checked = currentMetadata.alwaysDark;
         }
 
         private void CheckTilesets()
@@ -96,7 +94,7 @@ namespace WebClashServer.Editors
                 if (!CheckTileset(ts))
                 {
                     mapTilesetStatus.Text = "Not all Tilesets are present.";
-                    mapTilesetStatus.ForeColor = System.Drawing.Color.Red;
+                    mapTilesetStatus.ForeColor = Color.Red;
 
                     fixTilesets.Visible = true;
 
@@ -104,7 +102,7 @@ namespace WebClashServer.Editors
                 }
 
             mapTilesetStatus.Text = "All Tilesets are present.";
-            mapTilesetStatus.ForeColor = System.Drawing.Color.Green;
+            mapTilesetStatus.ForeColor = Color.Green;
 
             fixTilesets.Visible = false;
         }
@@ -140,10 +138,8 @@ namespace WebClashServer.Editors
 
                     ImportTilesets();
 
-                    SaveBGMRequests();
-
-                    SetMapType("Protected");
-
+                    SaveBGMSource("");
+                    SaveMapType("Protected");
                     SaveMapAlwaysDark(false);
                     SaveMapDayNight(false);
 
@@ -167,19 +163,13 @@ namespace WebClashServer.Editors
             if (dr != DialogResult.Yes)
                 return;
 
-            string path = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".json";
-
-            /*
-            if (mapList.Items.Count == 1)
-            {
-                MessageBox.Show("This map cannot be removed as there must always be one map present.", "WebClash Server - Error");
-
-                return;
-            }
-            */
+            string path = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".json",
+                   pathMetadata = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".metadata.json";
 
             if (File.Exists(path))
                 File.Delete(path);
+            if (File.Exists(pathMetadata))
+                File.Delete(pathMetadata);
 
             LoadMapsList();
 
@@ -194,9 +184,23 @@ namespace WebClashServer.Editors
         private void mapList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (mapList.SelectedItem == null)
+            {
+                mapType.Enabled = false;
+                bgmSource.Enabled = false;
+                pvp.Enabled = false;
+                dayNight.Enabled = false;
+                alwaysDark.Enabled = false;
                 return;
-            
-            SaveBGMRequests();
+            } else
+            {
+                mapType.Enabled = true;
+                bgmSource.Enabled = true;
+                pvp.Enabled = true;
+                if (!alwaysDark.Enabled)
+                    dayNight.Enabled = true;
+                if (!dayNight.Enabled)
+                    alwaysDark.Enabled = true;
+            }
 
             LoadMap(mapList.SelectedItem.ToString());
         }
@@ -266,34 +270,27 @@ namespace WebClashServer.Editors
             }
         }
 
-        private void mapType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SetMapType(mapType.SelectedItem.ToString());
-        }
-
         private void mapTypeHelp_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Map types determine the behaviour of the map.\nPossible map types are as follows:\n\nProtected -> Regenerate all stats\nNeutral -> No regeneration\nHostile -> No regeneration, NPCs attack players (not implemented yet)", "WebClash Server - Map Types");
+            MessageBox.Show("Map types determine the behaviour of the map.\nPossible map types are as follows:\n\nProtected -> Regenerate all stats when out of combat\nNeutral -> No regeneration of stats", "WebClash Server - Map Types");
         }
 
-        private void SetMapType(string mapTypeString)
+        private void mapType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (mapTypeString == null ||
-                mapTypeString == string.Empty)
+            if (mapList.SelectedIndex == -1 || mapType.SelectedItem == null)
                 return;
 
-            string map = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".json";
+            SaveMapType(mapType.SelectedItem.ToString().ToLower());
+        }
 
-            JObject mjo = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(map));
+        private void SaveMapType(string mapType)
+        {
+            if (mapType == currentMetadata.mapType)
+                return;
 
-            if (mjo.Property("mapType") != null)
-                mjo.Remove("mapType");
+            currentMetadata.mapType = mapType;
 
-            mjo.Add("mapType", mapTypeString.ToLower());
-
-            File.WriteAllText(map, JsonConvert.SerializeObject(mjo));
-
-            dataHasChanged = true;
+            SaveMetadata();
         }
 
         private void bgmSourceHelp_Click(object sender, EventArgs e)
@@ -303,49 +300,20 @@ namespace WebClashServer.Editors
 
         private void bgmSource_TextChanged(object sender, EventArgs e)
         {
-            if (mapList.SelectedIndex == -1)
+            if (mapList.SelectedIndex == -1 || bgmSource.Text.Length == 0)
                 return;
 
-            if (mapBGMSaveRequests.ContainsKey(mapList.SelectedIndex))
-                mapBGMSaveRequests.Remove(mapList.SelectedIndex);
-
-            mapBGMSaveRequests.Add(mapList.SelectedIndex, bgmSource.Text);
-
-            current.bgmSource = bgmSource.Text;
+            SaveBGMSource(bgmSource.Text);
         }
 
-        private void SaveBGMRequests()
+        private void SaveBGMSource(string bgmSourceString)
         {
-            //Check if BGMs exist, if so save
-
-            if (mapBGMSaveRequests.Count == 0)
+            if (bgmSourceString == currentMetadata.bgmSource)
                 return;
 
-            foreach (KeyValuePair<int, string> entry in mapBGMSaveRequests)
-                if (File.Exists(Program.main.location + "/../client/" + entry.Value))
-                    SetMapBGMSource(entry.Key, entry.Value);
+            currentMetadata.bgmSource = bgmSourceString;
 
-            mapBGMSaveRequests = new Dictionary<int, string>();
-        }
-
-        private void SetMapBGMSource(int index, string bgmSourceString)
-        {
-            if (bgmSourceString == null ||
-                bgmSourceString == string.Empty)
-                return;
-
-            string map = Program.main.location + "/maps/" + mapList.Items[index].ToString() + ".json";
-
-            JObject mjo = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(map));
-
-            if (mjo.Property("bgmSource") != null)
-                mjo.Remove("bgmSource");
-
-            mjo.Add("bgmSource", bgmSourceString);
-
-            File.WriteAllText(map, JsonConvert.SerializeObject(mjo, Formatting.Indented));
-
-            dataHasChanged = true;
+            SaveMetadata();
         }
 
         private void DayNight_CheckedChanged(object sender, EventArgs e)
@@ -353,31 +321,25 @@ namespace WebClashServer.Editors
             if (mapList.SelectedIndex == -1)
                 return;
 
-            current.showDayNight = dayNight.Checked;
-            current.alwaysDark = !current.showDayNight;
-
-            if (current.showDayNight)
+            if (dayNight.Checked)
+            {
+                alwaysDark.Enabled = false;
                 alwaysDark.Checked = false;
+            }
+            else
+                alwaysDark.Enabled = true;
 
-            alwaysDark.Enabled = !current.showDayNight;
-
-            SaveMapDayNight(current.showDayNight);
+            SaveMapDayNight(dayNight.Checked);
         }
 
         private void SaveMapDayNight(bool dayNight)
         {
-            string map = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".json";
+            if (dayNight == currentMetadata.showDayNight)
+                return;
 
-            JObject mjo = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(map));
+            currentMetadata.showDayNight = dayNight;
 
-            if (mjo.Property("showDayNight") != null)
-                mjo.Remove("showDayNight");
-
-            mjo.Add("showDayNight", dayNight);
-
-            File.WriteAllText(map, JsonConvert.SerializeObject(mjo));
-
-            dataHasChanged = true;
+            SaveMetadata();
         }
 
         private void AlwaysDark_CheckedChanged(object sender, EventArgs e)
@@ -385,32 +347,25 @@ namespace WebClashServer.Editors
             if (mapList.SelectedIndex == -1)
                 return;
 
-            current.alwaysDark = alwaysDark.Checked;
-            current.showDayNight = !current.alwaysDark;
-
-            if (current.alwaysDark)
+            if (alwaysDark.Checked)
+            {
+                dayNight.Enabled = false;
                 dayNight.Checked = false;
+            }
+            else
+                dayNight.Enabled = true;
 
-            dayNight.Enabled = !current.alwaysDark;
-
-            SaveMapDayNight(current.showDayNight);
-            SaveMapAlwaysDark(current.alwaysDark);
+            SaveMapAlwaysDark(alwaysDark.Checked);
         }
 
         private void SaveMapAlwaysDark(bool alwaysDark)
         {
-            string map = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".json";
+            if (alwaysDark == currentMetadata.alwaysDark)
+                return;
 
-            JObject mjo = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(map));
+            currentMetadata.alwaysDark = alwaysDark;
 
-            if (mjo.Property("alwaysDark") != null)
-                mjo.Remove("alwaysDark");
-
-            mjo.Add("alwaysDark", alwaysDark);
-
-            File.WriteAllText(map, JsonConvert.SerializeObject(mjo));
-
-            dataHasChanged = true;
+            SaveMetadata();
         }
 
         private void Pvp_CheckedChanged(object sender, EventArgs e)
@@ -418,23 +373,25 @@ namespace WebClashServer.Editors
             if (mapList.SelectedIndex == -1)
                 return;
 
-            current.pvp = pvp.Checked;
-
-            SaveMapPvP(current.pvp);
+            SaveMapPvP(pvp.Checked);
         }
 
         private void SaveMapPvP(bool pvp)
         {
-            string map = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".json";
+            if (pvp == currentMetadata.pvp)
+                return;
 
-            JObject mjo = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(map));
+            currentMetadata.pvp = pvp;
 
-            if (mjo.Property("pvp") != null)
-                mjo.Remove("pvp");
+            SaveMetadata();
+        }
 
-            mjo.Add("pvp", pvp);
-
-            File.WriteAllText(map, JsonConvert.SerializeObject(mjo));
+        private void SaveMetadata()
+        {
+            File.WriteAllText(
+                Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".metadata.json", 
+                JsonConvert.SerializeObject(currentMetadata)
+            );
 
             dataHasChanged = true;
         }
@@ -460,6 +417,29 @@ namespace WebClashServer.Editors
                 height = temp.height;
 
                 tilesets = temp.tilesets;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "WebClash Server - Error");
+            }
+        }
+
+        public int width = 0,
+                   height = 0;
+
+        public Tileset[] tilesets = new Tileset[0];
+    }
+
+    public class MapMetadata
+    {
+        public MapMetadata(string src)
+        {
+            try
+            {
+                if (!File.Exists(src))
+                    return;
+
+                MapMetadata temp = JsonConvert.DeserializeObject<MapMetadata>(File.ReadAllText(src));
 
                 mapType = temp.mapType;
                 bgmSource = temp.bgmSource;
@@ -472,11 +452,6 @@ namespace WebClashServer.Editors
                 MessageBox.Show(e.Message, "WebClash Server - Error");
             }
         }
-
-        public int width = 0,
-                   height = 0;
-
-        public Tileset[] tilesets = new Tileset[0];
 
         public string mapType = string.Empty;
         public string bgmSource = string.Empty;

@@ -19,6 +19,13 @@ exports.loadAllMaps = function(cb)
         let count = 0;
 
         files.forEach(file => {
+            //Skip metadata files
+
+            if (file.indexOf('.metadata') !== -1)
+                return;
+
+            //Load map
+
             tiled.loadMap(file);
 
             count++;
@@ -35,12 +42,31 @@ exports.loadMap = function(name)
 {
     try
     {
-        let location = 'maps/' + name;
+        let location = 'maps/' + name,
+            locationMetadata = 'maps/' + name.substr(0, name.lastIndexOf('.')) + '.metadata.json';
+
+        //Load actual map
 
         let map = JSON.parse(fs.readFileSync(location, 'utf-8'))
         map.name = name.substr(0, name.lastIndexOf('.'));
 
+        //Load map metadata if possible
+
+        if (fs.existsSync(locationMetadata)) {
+            let metadata = JSON.parse(fs.readFileSync(locationMetadata, 'utf-8'));
+
+            //Copy metadata attributes to map
+
+            for (let attr in metadata)
+                map[attr] = metadata[attr];
+        } else 
+            output.give('No metadata found for map "' + name + '".');
+
+        //Add map to map collection
+
         this.maps.push(map);
+
+        //Cache the map
 
         this.cacheMap(map);
     }
@@ -433,6 +459,14 @@ exports.requestMap = function(req, res) {
             map_id    = tiled.map_requests[request_id].map_id;
 
         delete tiled.map_requests[request_id];
+
+        //If external clients are allowed, make sure
+        //to allow CORS access across the domain.
+        //Otherwise map loading won't be possible
+        //for external clients.
+
+        if (properties.allowExternalClients)
+            res.header('Access-Control-Allow-Origin', '*');
 
         //Send custom tailored map for player
 

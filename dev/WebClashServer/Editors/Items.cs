@@ -53,7 +53,7 @@ namespace WebClashServer
                 {
                     string it = items[i];
 
-                    itemList.Items.Add(i + ". " + it.Substring(it.LastIndexOf('\\') + 1, it.LastIndexOf('.') - it.LastIndexOf('\\') - 1));
+                    itemList.Items.Add((i+1) + ". " + it.Substring(it.LastIndexOf('\\') + 1, it.LastIndexOf('.') - it.LastIndexOf('\\') - 1));
                 }
             }
             catch (Exception exc)

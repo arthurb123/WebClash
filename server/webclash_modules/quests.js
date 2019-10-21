@@ -9,6 +9,11 @@ exports.loadAllQuests = function(cb)
     let location = 'quests';
 
     fs.readdir(location, (err, files) => {
+        if (err) {
+            output.giveError('Could not load quests: ', err);
+            return;
+        }
+
         let count = 0;
 
         files.forEach(file => {

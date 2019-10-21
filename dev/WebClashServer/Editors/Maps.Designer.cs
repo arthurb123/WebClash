@@ -33,6 +33,7 @@
             this.import = new System.Windows.Forms.Button();
             this.delete = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.pvp = new System.Windows.Forms.CheckBox();
             this.alwaysDark = new System.Windows.Forms.CheckBox();
             this.dayNight = new System.Windows.Forms.CheckBox();
             this.bgmSourceHelp = new System.Windows.Forms.Button();
@@ -40,16 +41,15 @@
             this.label4 = new System.Windows.Forms.Label();
             this.mapTypeHelp = new System.Windows.Forms.Button();
             this.mapType = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.fixTilesets = new System.Windows.Forms.LinkLabel();
             this.mapTilesets = new System.Windows.Forms.Label();
             this.mapSize = new System.Windows.Forms.Label();
             this.mapTilesetStatus = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.help = new System.Windows.Forms.Button();
-            this.pvp = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -107,10 +107,21 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Map Properties";
             // 
+            // pvp
+            // 
+            this.pvp.AutoSize = true;
+            this.pvp.Location = new System.Drawing.Point(200, 22);
+            this.pvp.Name = "pvp";
+            this.pvp.Size = new System.Drawing.Size(47, 19);
+            this.pvp.TabIndex = 18;
+            this.pvp.Text = "PvP";
+            this.pvp.UseVisualStyleBackColor = true;
+            this.pvp.CheckedChanged += new System.EventHandler(this.Pvp_CheckedChanged);
+            // 
             // alwaysDark
             // 
             this.alwaysDark.AutoSize = true;
-            this.alwaysDark.Location = new System.Drawing.Point(88, 102);
+            this.alwaysDark.Location = new System.Drawing.Point(88, 100);
             this.alwaysDark.Name = "alwaysDark";
             this.alwaysDark.Size = new System.Drawing.Size(92, 19);
             this.alwaysDark.TabIndex = 17;
@@ -172,13 +183,29 @@
             this.mapType.FormattingEnabled = true;
             this.mapType.Items.AddRange(new object[] {
             "Protected",
-            "Neutral",
-            "Hostile"});
+            "Neutral"});
             this.mapType.Location = new System.Drawing.Point(51, 20);
             this.mapType.Name = "mapType";
             this.mapType.Size = new System.Drawing.Size(98, 23);
             this.mapType.TabIndex = 11;
             this.mapType.SelectedIndexChanged += new System.EventHandler(this.mapType_SelectedIndexChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(11, 24);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(33, 15);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Type";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 28);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(0, 15);
+            this.label1.TabIndex = 0;
             // 
             // fixTilesets
             // 
@@ -241,23 +268,6 @@
             this.label3.TabIndex = 2;
             this.label3.Text = "Size";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(11, 24);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(33, 15);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Type";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 28);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 15);
-            this.label1.TabIndex = 0;
-            // 
             // help
             // 
             this.help.Location = new System.Drawing.Point(374, 230);
@@ -267,17 +277,6 @@
             this.help.Text = "Help";
             this.help.UseVisualStyleBackColor = true;
             this.help.Click += new System.EventHandler(this.help_Click);
-            // 
-            // pvp
-            // 
-            this.pvp.AutoSize = true;
-            this.pvp.Location = new System.Drawing.Point(200, 22);
-            this.pvp.Name = "pvp";
-            this.pvp.Size = new System.Drawing.Size(47, 19);
-            this.pvp.TabIndex = 18;
-            this.pvp.Text = "PvP";
-            this.pvp.UseVisualStyleBackColor = true;
-            this.pvp.CheckedChanged += new System.EventHandler(this.Pvp_CheckedChanged);
             // 
             // groupBox2
             // 
