@@ -883,6 +883,10 @@ exports.loadMap = function(channel, map)
         channel._roomId === map_id)
         return;
 
+    //Remove NPC targets
+
+    npcs.removeNPCTargets(id, true);
+
     //Remove player from others on the
     //same map
 

@@ -625,7 +625,7 @@ exports.updateNPCCombat = function(map, id)
                 let dx = Math.abs((ppos.X-npos.X)/tiled.maps[map].tilewidth),
                     dy = Math.abs((ppos.Y-npos.Y)/tiled.maps[map].tileheight);
 
-                if (dx <= this.onMap[map][id].data.attackRange ||
+                if (dx <= this.onMap[map][id].data.attackRange &&
                     dy <= this.onMap[map][id].data.attackRange) {
                         //Set target to that player and break
 
@@ -1043,7 +1043,7 @@ exports.setNPCTarget = function(map, id, owner)
 
     //Check if target has changed
 
-    if (newTarget == this.onMap[map][id].target)
+    if (newTarget === this.onMap[map][id].target)
         return;
 
     //Set new target

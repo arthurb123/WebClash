@@ -2,12 +2,16 @@ exports.createUnique = function(id, dialogData) {
     try {
         let start = -1;
 
-        for (let i = 0; i < dialogData.length; i++)
+        for (let i = 0; i < dialogData.length; i++) {
+            if (dialogData[i] == undefined)
+                continue;
+                
             if (dialogData[i].entry) {
                 start = i;
 
                 break;
             }
+        }
 
         if (start === -1) {
             output.give("Could not create unique dialog, dialog has no entry.");
