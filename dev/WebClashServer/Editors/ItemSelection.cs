@@ -12,13 +12,23 @@ namespace WebClashServer.Editors
         private List<PossibleItem> items = new List<PossibleItem>();
         private int current = -1;
 
-        public ItemSelection(string title, PossibleItem[] items)
+        private bool showDropFactor = true;
+
+        public ItemSelection(string title, PossibleItem[] items, bool showDropFactor = true)
         {
             InitializeComponent();
 
             Text = title;
 
             this.items = new List<PossibleItem>(items);
+            this.showDropFactor = showDropFactor;
+
+            if (!showDropFactor)
+            {
+                dropChance.Visible = false;
+                dropChanceText.Visible = false;
+                dropFactorText.Visible = false;
+            }
         }
 
         private void ItemSelection_Load(object sender, EventArgs e)
@@ -49,7 +59,7 @@ namespace WebClashServer.Editors
                 {
                     string it = items[i].item;
 
-                    itemList.Items.Add((i + 1) + ". " + items[i].item + " (" + items[i].dropChance + ")");
+                    itemList.Items.Add((i + 1) + ". " + items[i].item + (showDropFactor ? " (" + items[i].dropChance + ")" : ""));
                 }
             }
             catch (Exception exc)

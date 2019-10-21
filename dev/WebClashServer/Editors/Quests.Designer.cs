@@ -53,6 +53,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.experienceReward = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
+            this.editItemRewards = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minLevel)).BeginInit();
             this.groupBox3.SuspendLayout();
@@ -67,7 +68,7 @@
             this.questList.FormattingEnabled = true;
             this.questList.Location = new System.Drawing.Point(2, 2);
             this.questList.Name = "questList";
-            this.questList.Size = new System.Drawing.Size(120, 407);
+            this.questList.Size = new System.Drawing.Size(120, 420);
             this.questList.TabIndex = 0;
             this.questList.SelectedIndexChanged += new System.EventHandler(this.itemList_SelectedIndexChanged);
             // 
@@ -140,7 +141,7 @@
             this.newLink.ActiveLinkColor = System.Drawing.Color.Blue;
             this.newLink.AutoSize = true;
             this.newLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.newLink.Location = new System.Drawing.Point(4, 413);
+            this.newLink.Location = new System.Drawing.Point(-1, 429);
             this.newLink.Name = "newLink";
             this.newLink.Size = new System.Drawing.Size(29, 13);
             this.newLink.TabIndex = 2;
@@ -154,7 +155,7 @@
             this.saveLink.ActiveLinkColor = System.Drawing.Color.Blue;
             this.saveLink.AutoSize = true;
             this.saveLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.saveLink.Location = new System.Drawing.Point(47, 413);
+            this.saveLink.Location = new System.Drawing.Point(51, 429);
             this.saveLink.Name = "saveLink";
             this.saveLink.Size = new System.Drawing.Size(32, 13);
             this.saveLink.TabIndex = 3;
@@ -190,7 +191,7 @@
             this.delete.AutoSize = true;
             this.delete.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.delete.LinkColor = System.Drawing.Color.Red;
-            this.delete.Location = new System.Drawing.Point(97, 413);
+            this.delete.Location = new System.Drawing.Point(103, 429);
             this.delete.Name = "delete";
             this.delete.Size = new System.Drawing.Size(23, 13);
             this.delete.TabIndex = 6;
@@ -281,13 +282,14 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.editItemRewards);
             this.groupBox4.Controls.Add(this.goldReward);
             this.groupBox4.Controls.Add(this.label3);
             this.groupBox4.Controls.Add(this.experienceReward);
             this.groupBox4.Controls.Add(this.label2);
-            this.groupBox4.Location = new System.Drawing.Point(126, 347);
+            this.groupBox4.Location = new System.Drawing.Point(126, 344);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(222, 72);
+            this.groupBox4.Size = new System.Drawing.Size(222, 98);
             this.groupBox4.TabIndex = 25;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Rewards";
@@ -338,11 +340,21 @@
             this.label2.TabIndex = 20;
             this.label2.Text = "Experience";
             // 
+            // editItemRewards
+            // 
+            this.editItemRewards.Location = new System.Drawing.Point(11, 69);
+            this.editItemRewards.Name = "editItemRewards";
+            this.editItemRewards.Size = new System.Drawing.Size(204, 22);
+            this.editItemRewards.TabIndex = 24;
+            this.editItemRewards.Text = "Edit Item Rewards";
+            this.editItemRewards.UseVisualStyleBackColor = true;
+            this.editItemRewards.Click += new System.EventHandler(this.editItemRewards_Click);
+            // 
             // Quests
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(353, 431);
+            this.ClientSize = new System.Drawing.Size(353, 447);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.dialogPanel);
@@ -357,8 +369,8 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(369, 470);
-            this.MinimumSize = new System.Drawing.Size(369, 470);
+            this.MaximumSize = new System.Drawing.Size(369, 486);
+            this.MinimumSize = new System.Drawing.Size(369, 486);
             this.Name = "Quests";
             this.Text = "WebClash Server - Quests";
             this.Load += new System.EventHandler(this.Quests_Load);
@@ -403,5 +415,6 @@
         private System.Windows.Forms.NumericUpDown experienceReward;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label globalVariableName;
+        private System.Windows.Forms.Button editItemRewards;
     }
 }

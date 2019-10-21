@@ -30,15 +30,11 @@
   "items": [
     {
       "item": "Iron Helm",
-      "dropChance": 2
-    },
-    {
-      "item": "Magic Axe",
       "dropChance": 3
     },
     {
       "item": "Healing Slab",
-      "dropChance": 3
+      "dropChance": 2
     }
   ],
   "equipment": [],

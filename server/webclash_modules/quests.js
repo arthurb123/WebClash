@@ -87,7 +87,17 @@ exports.getQuestDialog = function(name)
             quest.text += 'Gather ' + quest.objectives[o].gatherObjective.amount + ' ' + quest.objectives[o].gatherObjective.item + (quest.objectives[o].gatherObjective.amount === 1 ? '' : 's') + '.';
     }
 
+    //Experience and gold rewards
+
     quest.text += '</i><br><br>Rewards: ' + quest.rewards.experience + ' Exp, ' + quest.rewards.gold + ' Gold';
+
+    //Convert item rewards and set as data to be send
+
+    quest.items = [];
+    
+    if (quest.rewards.items != undefined)
+        for (let i = 0; i < quest.rewards.items.length; i++) 
+            quest.items[i] = items.getConvertedItem(quest.rewards.items[i].item);
 
     //Remove unnecessary properties
 
@@ -122,7 +132,8 @@ exports.acceptQuest = function(id, name)
     game.players[id].quests[name] = {
         objectives: deepcopy(quest.objectives),
         id: 0,
-        pinned: true
+        pinned: true,
+        finished: false
     };
 
     //Check if conditions can be met
@@ -244,13 +255,13 @@ exports.advanceQuest = function(id, name)
         return;
 
     //Go to next objective if available,
-    //otherwise finish quest
+    //otherwise set quest to finished
 
     let objectives = this.getQuest(name).objectives,
         o_id = game.players[id].quests[name].id+1;
 
     if (objectives[o_id] == undefined)
-        this.finishQuest(id, name);
+        game.players[id].quests[name].finished = true;
     else
         game.players[id].quests[name].id = o_id;
 };
@@ -262,9 +273,39 @@ exports.finishQuest = function(id, name)
     if (game.players[id].quests[name] == undefined)
         return;
 
+    //Check if player finished quest
+
+    if (!game.players[id].quests[name].finished)
+        return;
+
     //Get quest rewards
 
     let rewards = this.getQuest(name).rewards;
+
+    //Check if quest rewards feature items
+
+    if (rewards.items != undefined && rewards.items.length > 0) {
+        //Check if the player has enough inventory space available
+
+        let neededSlots = rewards.items.length - items.getPlayerFreeSlots(id);
+
+        if (neededSlots > 0) {
+            //Send chat message that there is not enough inventory space
+
+            game.players[id].channel.emit(
+                'GAME_CHAT_UPDATE', 
+                'You need ' + neededSlots + ' more free inventory slots to finish the quest.'
+            );
+
+            return;
+        }
+
+        //Give the item rewards to the player
+
+        for (let i = 0; i < rewards.items.length; i++) 
+            if (!items.addPlayerItem(id, rewards.items[i].item))
+                return;
+    }
 
     //Redeem quest rewards
 
@@ -278,6 +319,10 @@ exports.finishQuest = function(id, name)
     //Remove quest from player
 
     delete game.players[id].quests[name];
+
+    //Sync quest(s) to player if necessary
+
+    server.syncPlayerPartially(id, 'quests', game.players[id].channel, false);
 };
 
 exports.formatQuestName = function(name)

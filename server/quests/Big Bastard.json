@@ -24,6 +24,12 @@
   ],
   "rewards": {
     "gold": 50,
-    "experience": 35
+    "experience": 35,
+    "items": [
+      {
+        "item": "Ring of Arrows",
+        "dropChance": 1
+      }
+    ]
   }
 }

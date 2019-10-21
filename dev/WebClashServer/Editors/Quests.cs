@@ -49,7 +49,7 @@ namespace WebClashServer
                 {
                     string q = quests[i];
 
-                    questList.Items.Add(i + ". " + q.Substring(q.LastIndexOf('\\') + 1, q.LastIndexOf('.') - q.LastIndexOf('\\') - 1));
+                    questList.Items.Add((i+1) + ". " + q.Substring(q.LastIndexOf('\\') + 1, q.LastIndexOf('.') - q.LastIndexOf('\\') - 1));
                 }
             }
             catch (Exception exc)
@@ -83,7 +83,7 @@ namespace WebClashServer
 
             for (int i = 0; i < current.objectives.Length; i++)
             {
-                string name = i + ". ";
+                string name = (i+1) + ". ";
 
                 if (current.objectives[i].type == "kill")
                     name += "Kill " + current.objectives[i].killObjective.amount + " " + current.objectives[i].killObjective.npc + "(s)";
@@ -250,11 +250,6 @@ namespace WebClashServer
             current.rewards.experience = (int)experienceReward.Value;
         }
 
-        public bool GetChanged()
-        {
-            return dataHasChanged;
-        }
-
         private void Name_TextChanged(object sender, EventArgs e)
         {
             Regex rgx = new Regex("[^a-zA-Z0-9]");
@@ -263,6 +258,21 @@ namespace WebClashServer
             filteredText = rgx.Replace(filteredText, "");
 
             globalVariableName.Text = "Variable Name: Quest" + filteredText;
+        }
+
+        private void editItemRewards_Click(object sender, EventArgs e)
+        {
+            ItemSelection itemSelection = new ItemSelection("Set rewards for '" + name.Text + "'", current.rewards.items, false);
+
+            itemSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                current.rewards.items = itemSelection.GetSelection();
+            };
+
+            itemSelection.ShowDialog();
+        }
+        public bool GetChanged()
+        {
+            return dataHasChanged;
         }
     }
 
@@ -307,6 +317,8 @@ namespace WebClashServer
         public int gold = 0;
 
         public int experience = 0;
+
+        public PossibleItem[] items = new PossibleItem[0];
     }
     
     public class QuestObjective

@@ -169,7 +169,7 @@
       "eventType": "GiveItem",
       "repeatable": false,
       "giveItemEvent": {
-        "item": "Ring of Arrows",
+        "item": "Magic Axe",
         "amount": 1
       },
       "loadMapEvent": null,

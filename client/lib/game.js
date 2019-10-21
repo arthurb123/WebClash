@@ -236,7 +236,7 @@ const game = {
 
                //Show damage color overlay
 
-               this.players[id].SPRITE.ShowColorOverlay('rgba(228, 63, 63, 0.46)', 5);
+               this.players[id].ShowColorOverlay('rgba(228, 63, 63, 0.46)', 5);
 
                //Blood particles
 
@@ -258,7 +258,7 @@ const game = {
 
                 //Show heal color overlay
 
-                this.players[id].SPRITE.ShowColorOverlay('rgba(128, 239, 59, 0.46)', 5);
+                this.players[id].ShowColorOverlay('rgba(128, 239, 59, 0.46)', 5);
             }
         }
         else {
@@ -298,7 +298,7 @@ const game = {
 
             //Show mana color overlay
 
-            this.players[id].SPRITE.ShowColorOverlay('rgba(43, 146, 237, 0.46)', 5);
+            this.players[id].ShowColorOverlay('rgba(43, 146, 237, 0.46)', 5);
         }
 
         //If this player is in the same party,
@@ -672,7 +672,7 @@ const game = {
 
                 //Show heal color overlay
 
-                this.npcs[id].SPRITE.ShowColorOverlay('rgba(128, 239, 59, 0.46)', 5);
+                this.npcs[id].ShowColorOverlay('rgba(128, 239, 59, 0.46)', 5);
 
                 return;
             }
@@ -695,7 +695,7 @@ const game = {
 
             //Show damage color overlay
 
-            this.npcs[id].SPRITE.ShowColorOverlay('rgba(228, 63, 63, 0.46)', 5);
+            this.npcs[id].ShowColorOverlay('rgba(228, 63, 63, 0.46)', 5);
 
             //Check if valid
 
@@ -1056,6 +1056,10 @@ const game = {
 
                                  for (let s = 0; s < sprites.length; s++) {
                                     sprites[s].Rotation(angle);
+                                     
+                                    if (sprites[s].SIZE == undefined)
+                                        sprites[s].SIZE = sprites[s].Size();
+                                     
                                     sprites[s].SIZE.W *= data.elements[i].scale;
                                     sprites[s].SIZE.H *= data.elements[i].scale;
                                  }

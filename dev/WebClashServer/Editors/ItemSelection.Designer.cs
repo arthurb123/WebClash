@@ -34,9 +34,9 @@
             this.newLink = new System.Windows.Forms.LinkLabel();
             this.label1 = new System.Windows.Forms.Label();
             this.itemSelect = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.dropFactorText = new System.Windows.Forms.Label();
             this.dropChance = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
+            this.dropChanceText = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dropChance)).BeginInit();
             this.SuspendLayout();
             // 
@@ -97,14 +97,14 @@
             this.itemSelect.TabIndex = 10;
             this.itemSelect.SelectedIndexChanged += new System.EventHandler(this.itemSelect_SelectedIndexChanged);
             // 
-            // label2
+            // dropFactorText
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(120, 43);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(37, 26);
-            this.label2.TabIndex = 11;
-            this.label2.Text = "Drop\r\nFactor";
+            this.dropFactorText.AutoSize = true;
+            this.dropFactorText.Location = new System.Drawing.Point(120, 43);
+            this.dropFactorText.Name = "dropFactorText";
+            this.dropFactorText.Size = new System.Drawing.Size(37, 26);
+            this.dropFactorText.TabIndex = 11;
+            this.dropFactorText.Text = "Drop\r\nFactor";
             // 
             // dropChance
             // 
@@ -129,24 +129,24 @@
             0});
             this.dropChance.ValueChanged += new System.EventHandler(this.dropChance_ValueChanged);
             // 
-            // label3
+            // dropChanceText
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(118, 78);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(175, 26);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Drop chance = 1/x - where x is the \r\nspecified drop factor (higher is rarer)";
+            this.dropChanceText.AutoSize = true;
+            this.dropChanceText.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dropChanceText.Location = new System.Drawing.Point(118, 78);
+            this.dropChanceText.Name = "dropChanceText";
+            this.dropChanceText.Size = new System.Drawing.Size(175, 26);
+            this.dropChanceText.TabIndex = 13;
+            this.dropChanceText.Text = "Drop chance = 1/x - where x is the \r\nspecified drop factor (higher is rarer)";
             // 
             // ItemSelection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(301, 158);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.dropChanceText);
             this.Controls.Add(this.dropChance);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.dropFactorText);
             this.Controls.Add(this.itemSelect);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.delete);
@@ -173,8 +173,8 @@
         private System.Windows.Forms.LinkLabel newLink;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox itemSelect;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label dropFactorText;
         private System.Windows.Forms.NumericUpDown dropChance;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label dropChanceText;
     }
 }

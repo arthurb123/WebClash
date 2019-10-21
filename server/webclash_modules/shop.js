@@ -68,7 +68,7 @@ exports.buyItem = function(player, item, owner, dialogId) {
 
     //Add item to the player inventory
 
-    if (items.addPlayerItem(game.players[player].channel, player, shop[item].item.name)) {
+    if (items.addPlayerItem(player, shop[item].item.name)) {
         //Subtract gold from player, because item
         //has been added successfully!
 

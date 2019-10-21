@@ -262,6 +262,7 @@ const ui = {
             this.cur = dialog;
             this.npc = npc;
             this.name = name;
+            this.items = [];
 
             this.setDialog(start);
 
@@ -269,6 +270,8 @@ const ui = {
         },
         setDialog: function(id, name_override)
         {
+            //Check if event and handle accordingly
+
             if (this.cur[id].isEvent)
             {
                 channel.emit('CLIENT_DIALOG_EVENT', {
@@ -279,18 +282,28 @@ const ui = {
                 return;
             }
 
+            //Grab element references
+
             let contentEl = document.getElementById('dialog_box_content'),
                 optionsEl = document.getElementById('dialog_box_options');
 
+            //Set title/name
+
             contentEl.innerHTML = '<b>' + (name_override == undefined ? this.name : name_override) + '</b><br>';
+
+            //Set portrait
 
             if (this.cur[id].portrait != undefined)
                 contentEl.innerHTML += '<img src="' + this.cur[id].portrait + '" class="portrait"/><br>';
             else
                 contentEl.innerHTML += '<br>';
 
+            //Set content and clear options
+
             contentEl.innerHTML += this.cur[id].text;
             optionsEl.innerHTML = '';
+
+            //Handle options
 
             this.cur[id].options.forEach(function(option) {
                 let cb = '';
@@ -317,7 +330,12 @@ const ui = {
                 optionsEl.innerHTML += '<button class="link_button" style="margin-left: 0px;" onclick="' + cb + '">[ ' + option.text + ' ]</button>';
             });
 
+            //Set dialog box visibility to visible
+
             document.getElementById('dialog_box').style.visibility = 'visible';
+
+            //Add mouse handler that removes the dialog box
+            //if a click/touch is detected outside of the box
 
             if (this.mouse == undefined && !isNaN(this.npc))
                 this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
@@ -341,6 +359,8 @@ const ui = {
         },
         handleDialogEvent: function(data) {
             if (data.quest == undefined) {
+                //Not a quest, generic event
+
                 let next = (data.result ? 0 : 1);
 
                 if (ui.dialog.cur[data.id].options[next].next == -1)
@@ -348,28 +368,73 @@ const ui = {
                 else
                     ui.dialog.setDialog(ui.dialog.cur[data.id].options[next].next);
             } else {
+                //Quest event dialog
+
                 if (data.quest.minLevel <= game.players[game.player]._level) {
+                    //Accept and decline options if the level req. is met
+
                     if (player.quests[data.quest.name] == undefined)
                         data.quest.options = [
                             { text: 'Accept', next: 'accept', actual_next: ui.dialog.cur[data.id].options[0].next },
                             { text: 'Decline', next: -1 }
                         ];
-                    else {
+                    
+                    //If the quest has already been accepted and next
+                    //(quest) dialog is available, advance to that dialog
+
+                    else if (ui.dialog.cur[data.id].options[0].next !== -1) {
                         ui.dialog.setDialog(ui.dialog.cur[data.id].options[0].next)
 
                         return;
                     }
-                } else {
+
+                    //Otherwise add exit option to the quest dialog as
+                    //no further action is possible
+
+                    else 
+                        data.quest.options = [
+                            { text: 'Exit', next: -1 }
+                        ];
+                } else 
                     data.quest.options = [
                         { text: 'Exit', next: -1 }
                     ];
-                }
+
+                //Set current dialog to the recieved quest dialog
 
                 ui.dialog.cur[data.id] = data.quest;
+
+                //Create a custom title for the current dialog
 
                 let minLevel = '';
                 if (data.quest.minLevel > 0)
                     minLevel = ' (Lv. ' + data.quest.minLevel + ')';
+
+                //If item rewards are available, convert and add
+                //to the dialog text
+
+                if (data.quest.items.length > 0) {
+                    //Append a break to the dialog text
+
+                    ui.dialog.cur[data.id].text += '<br>';
+
+                    //Set dialog items
+
+                    this.items = data.quest.items;
+
+                    //Convert and add each item
+
+                    for (let i = 0; i < this.items.length; i++) {
+                        let item = this.items[i];
+
+                        ui.dialog.cur[data.id].text +=
+                            '<div class="slot" id="dialog_slot' + i + '" style="margin-top: 6px; margin-bottom: 0px; border: 1px solid ' + ui.inventory.getItemColor(item.rarity) + ';">' +
+                                '<img src="' + item.source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' +
+                            '</div>';
+                    }
+                }
+
+                //Set dialog
 
                 ui.dialog.setDialog(data.id, data.quest.name + minLevel);
             }
@@ -1553,47 +1618,99 @@ const ui = {
     quests:
     {
         generateQuestDom: function(name, quest, full) {
+            //Get references and setup variables
+
             let result = document.createElement('div'),
                 progress = '',
                 objectives = quest.objectives;
 
-            for (let i = 0; i <= quest.id; i++) {
-                let objective = objectives[i],
-                    objective_result = '';
+            //If quest is not finished, get (completed) objectives
 
-                switch (objective.type) {
-                    case 'kill':
-                        objective = objective.killObjective;
-                        objective_result = objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's');
-                        break;
-                    case 'gather':
-                        objective = objective.gatherObjective;
-                        objective_result = objective.cur + '/' + objective.amount + ' ' + objective.item + (objective.amount === 1 ? '' : 's');
-                        break;
+            if (!quest.finished)
+                for (let i = 0; i <= quest.id; i++) {
+                    let objective = objectives[i],
+                        objective_result = '';
+
+                    switch (objective.type) {
+                        case 'kill':
+                            objective = objective.killObjective;
+                            objective_result = objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's');
+                            break;
+                        case 'gather':
+                            objective = objective.gatherObjective;
+                            objective_result = objective.cur + '/' + objective.amount + ' ' + objective.item + (objective.amount === 1 ? '' : 's');
+                            break;
+                    }
+
+                    if (i != quest.id)
+                        objective_result = '<del>' + objective_result + '</del><br>';
+
+                    progress += objective_result;
                 }
 
-                if (i != quest.id)
-                    objective_result = '<del>' + objective_result + '</del><br>';
-
-                progress += objective_result;
-            }
+            //Dynamically determine necessary padding
 
             let padding = '2px 6px 2px 6px;';
 
             if (full)
                 padding = '2px 14px 2px 14px;';
 
+            //Setup result DOM
+
             result.id = 'quests_content';
             result.classList.add('content');
             result.style = 'width: auto; height: auto; padding: ' + padding;
 
+            //Add name
+
             result.innerHTML +=
-                    '<p class="info"><b>' + name + '</b></p>' +
+                    '<p class="info"><b>' + name + '</b></p>';
+
+            //Add progress if it exists
+
+            if (progress.length > 0)
+                result.innerHTML += 
                     '<p class="info" style="font-size: 11px;">' + progress + '</p>';
+
+            //If quest is finished, add complete button
+
+            if (quest.finished) {
+                let complete_button = document.createElement('button');
+                complete_button.style = 'font-size: 12px; width: 90%; height: 20px; margin-bottom: 4px;';
+                complete_button.innerHTML = 'Finish';
+
+                complete_button.addEventListener('click', function() {
+                    channel.emit('CLIENT_FINISH_QUEST', name);
+                });
+
+                result.appendChild(complete_button);
+            }
+
+            //If quest is journal entry (full), act accordingly
 
             if (full) {
                 result.innerHTML +=
                     '<hr style="padding: 0px; border: 0; width: 90%; border-bottom: 1px solid whitesmoke; margin: 2px;"/>';
+
+                //Tracking option
+
+                let tracking_option_name = 'Track';
+
+                if (quest.pinned)
+                    tracking_option_name = 'Untrack';
+
+                let tracking_option = document.createElement('a');
+                tracking_option.style = 'font-size: 11px; color: #4dff4d; padding: 2px;';
+                tracking_option.classList.add('link');
+
+                tracking_option.innerHTML = tracking_option_name;
+
+                tracking_option.addEventListener('click', function() {
+                    ui.journal.track(name);
+                });
+
+                if (this.pinned < this.max_pinned || quest.pinned)
+                    result.appendChild(tracking_option);
 
                 //Abandon option
 

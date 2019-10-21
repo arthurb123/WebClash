@@ -1,8 +1,8 @@
 {
   "name": "Captain",
   "showNameplate": true,
-  "movement": "static",
-  "range": 10,
+  "movement": "free",
+  "range": 1,
   "facing": 0,
   "type": "friendly",
   "character": "captain",

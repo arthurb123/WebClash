@@ -585,7 +585,7 @@ exports.handleChannel = function(channel)
 
             //Use item
 
-            let result = items.usePlayerItem(channel, id, data);
+            let result = items.usePlayerItem(id, data);
 
             //Respond with result
 
@@ -659,6 +659,11 @@ exports.handleChannel = function(channel)
             if (!items.pickupWorldItem(game.players[id].map_id, id, data))
             {
                 //Failure, notify user
+
+                channel.emit(
+                    'GAME_CHAT_UPDATE', 
+                    'You do not have enough inventory space.'
+                );
             }
         }
         catch (err) {
@@ -885,6 +890,22 @@ exports.handleChannel = function(channel)
         }
         catch (err) {
             output.giveError('Could not abandon quest: ', err);
+        }
+    });
+
+    channel.on('CLIENT_FINISH_QUEST', function(data) {
+        try {
+            //Check if in-game and data is valid
+
+            if (!isInGame() || data == undefined || !isNaN(data))
+                return;
+
+            //Try to finish quest
+
+            quests.finishQuest(channel.name, data);
+        }
+        catch (err) {
+            output.giveError('Could not finish quest: ', err);
         }
     });
 

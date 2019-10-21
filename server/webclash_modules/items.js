@@ -134,7 +134,7 @@ exports.loadItem = function(location)
     }
 };
 
-exports.addPlayerItem = function(channel, id, name)
+exports.addPlayerItem = function(id, name)
 {
     //Get free slot
 
@@ -162,7 +162,7 @@ exports.addPlayerItem = function(channel, id, name)
 
     //Sync player item
 
-    server.syncInventoryItem(slot, id, channel);
+    server.syncInventoryItem(slot, id, game.players[id].channel);
 
     return true;
 };
@@ -180,16 +180,20 @@ exports.hasPlayerItem = function(id, name)
 
 exports.getPlayerItemAmount = function(id, name)
 {
-    let result = 0;
+    //See how many items player has with name
+
+    let amount = 0;
 
     for (let i = 0; i < game.players[id].inventory.length; i++)
         if (game.players[id].inventory[i] === name)
-            result++;
+            amount++;
 
-    return result;
+    //Return amount
+
+    return amount;
 };
 
-exports.usePlayerItem = function(channel, id, name)
+exports.usePlayerItem = function(id, name)
 {
     //Get item
 
@@ -218,7 +222,7 @@ exports.usePlayerItem = function(channel, id, name)
 
         //Set equipment and if it is not possible return
 
-        if (!this.setPlayerEquipment(channel, id, item))
+        if (!this.setPlayerEquipment(id, item))
             return false;
 
         //Remove player item
@@ -288,7 +292,7 @@ exports.removePlayerItem = function(id, name)
         }
 };
 
-exports.setPlayerEquipment = function(channel, id, item)
+exports.setPlayerEquipment = function(id, item)
 {
     //Get equippable
 
@@ -299,7 +303,7 @@ exports.setPlayerEquipment = function(channel, id, item)
     //If this is not possible return.
 
     if (game.players[id].equipment[equippable] !== undefined)
-        if (!this.addPlayerItem(channel, id, game.players[id].equipment[equippable]))
+        if (!this.addPlayerItem(id, game.players[id].equipment[equippable]))
             return false;
 
     //Set equipment equippable of player
@@ -312,12 +316,12 @@ exports.setPlayerEquipment = function(channel, id, item)
         //Set action at 0 if main
 
         if (equippable === 'main')
-            actions.setPlayerAction(channel, item.equippableAction, 0, id);
+            actions.setPlayerAction(item.equippableAction, 0, id);
 
         //Set action at 1 if offhand
 
         if (equippable === 'offhand')
-            actions.setPlayerAction(channel, item.equippableAction, 1, id);
+            actions.setPlayerAction(item.equippableAction, 1, id);
     }
 
     //Calculate new attributes
@@ -326,11 +330,11 @@ exports.setPlayerEquipment = function(channel, id, item)
 
     //Sync to others
 
-    server.syncPlayerPartially(id, 'equipment', channel, true);
+    server.syncPlayerPartially(id, 'equipment', game.players[id].channel, true);
 
     //Sync equipment to player
 
-    server.syncEquipmentItem(equippable, id, channel, false);
+    server.syncEquipmentItem(equippable, id, game.players[id].channel, false);
 
     //Return true
 
@@ -354,7 +358,7 @@ exports.unequipPlayerEquipment = function(id, slot) {
 
     //Add item
 
-    if (!items.addPlayerItem(game.players[id].channel, id, game.players[id].equipment[slot]))
+    if (!items.addPlayerItem(id, game.players[id].equipment[slot]))
         return;
 
     //Check if equipment has action
@@ -407,6 +411,21 @@ exports.getPlayerFreeSlot = function(id)
     //Otherwise return an invalid slot
 
     return -1;
+};
+
+exports.getPlayerFreeSlots = function(id)
+{
+    //Return the amount of undefined/non-existing slots
+
+    let amount = 0;
+
+    for (let i = 0; i < game.playerConstraints.inventorySize; i++)
+        if (game.players[id].inventory[i] == null)
+            amount++;
+
+    //Return the amount
+
+    return amount;
 };
 
 exports.dropPlayerItem = function(id, slot, ownerOverride) {
@@ -566,7 +585,7 @@ exports.pickupWorldItem = function(map, id, item)
 
     //Attempt to add item
 
-    if (!this.addPlayerItem(game.players[id].channel, id, this.onMap[map][item].item.name))
+    if (!this.addPlayerItem(id, this.onMap[map][item].item.name))
         return false;
 
     //Remove world item

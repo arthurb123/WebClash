@@ -343,16 +343,20 @@ exports.addPlayerAction = function(name, id, uses)
     return done;
 };
 
-exports.setPlayerAction = function(channel, name, position, id)
+exports.setPlayerAction = function(name, position, id)
 {
     if (game.players[id] == undefined)
         return false;
+
+    //Set action at position
 
     game.players[id].actions[position] = {
         name: name
     };
 
-    server.syncPlayerPartially(id, 'actions', channel, false);
+    //Sync to player
+
+    server.syncPlayerPartially(id, 'actions', game.players[id].channel, false);
 
     return true;
 };
@@ -774,7 +778,6 @@ exports.damagePlayers = function(stats, actionData, action, onlyStatic, except)
                     //Damage player
 
                     game.damagePlayer(p, this.calculateDamage(stats, action.scaling), except);
-                    //npcs.removeNPCTargets(map, p);
 
                     done = true;
                 }

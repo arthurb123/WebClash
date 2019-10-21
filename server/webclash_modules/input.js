@@ -291,7 +291,7 @@ exports.handleCommand = function(text, channel)
                         item += args[i];
                     }
 
-                    items.addPlayerItem(game.players[p].channel, p, item);
+                    items.addPlayerItem(p, item);
 
                     return 'success';
                 //Give gold command

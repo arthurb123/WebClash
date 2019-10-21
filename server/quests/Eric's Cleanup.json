@@ -7,12 +7,15 @@
       "killObjective": {
         "npc": "Ghoul",
         "amount": 5,
-        "cur": 0
-      }
+        "cur": 0,
+        "resetOnDeath": false
+      },
+      "gatherObjective": null
     }
   ],
   "rewards": {
     "gold": 20,
-    "experience": 20
+    "experience": 20,
+    "items": []
   }
 }

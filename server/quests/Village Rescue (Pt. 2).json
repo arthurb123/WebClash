@@ -15,6 +15,7 @@
   ],
   "rewards": {
     "gold": 50,
-    "experience": 45
+    "experience": 45,
+    "items": []
   }
 }

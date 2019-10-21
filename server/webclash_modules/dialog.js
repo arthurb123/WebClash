@@ -114,7 +114,7 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
         let done = false;
 
         for (let a = 0; a < dialogEvent.giveItemEvent.amount; a++) {
-            if (items.addPlayerItem(channel, id, dialogEvent.giveItemEvent.item))
+            if (items.addPlayerItem(id, dialogEvent.giveItemEvent.item))
                 done = true;
         }
 
@@ -203,6 +203,7 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
         //Respond and return
 
         channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: true, id: clientData.id });
+        
         return;
     }
 
