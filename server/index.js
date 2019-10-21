@@ -181,3 +181,8 @@ global.exitHandler = function() {
 
 process.on('exit', exitHandler);
 process.on('SIGINT', exitHandler);
+process.on('uncaughtException', function(err) {
+    output.giveError('', err);
+
+    exitHandler();
+});
