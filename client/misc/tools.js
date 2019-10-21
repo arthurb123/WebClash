@@ -7,6 +7,6 @@ function httpGetAsync(url, callback)
             callback(xmlHttp.responseText);
     };
 
-    xmlHttp.open("GET", location.href+url, true);
+    xmlHttp.open("GET", client.fullAddress+url, true);
     xmlHttp.send(null);
 }

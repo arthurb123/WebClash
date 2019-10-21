@@ -15,10 +15,23 @@ const client = {
                 document.getElementById('status_text').innerHTML = 'Server is not available';
             }, 8000);
 
+            //Generate address and full address
+
+            let protocol = window.location.protocol;
+            if (protocol === 'file:')
+                protocol = 'http:';
+
+            let hostname = window.location.hostname;
+            if (hostname === '')
+                hostname = 'localhost';
+
+            this.address = (properties.address.length > 0 ? properties.address : protocol + '//' + hostname);
+            this.fullAddress = this.address + ':' + properties.port + '/';
+
             //Try to make a connection
 
             window['channel'] = geckos({
-                url: (properties.address.length > 0 ? properties.address : window.location.protocol + '//' + window.location.hostname),
+                url: this.address,
                 port: properties.port 
             });
             

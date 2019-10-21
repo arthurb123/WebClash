@@ -69,7 +69,10 @@ rl.on('line', (text) => {
 //Setup Express
 
 app.use('/', express.static(path.resolve(__dirname +  "/../client/")));
-app.get('/map/:request_id', tiled.requestMap);
+app.get('/map/:request_id', function(req, res) {
+    res.header("Access-Control-Allow-Origin", "*");
+    tiled.requestMap(req, res);
+});
 
 //Load all game data, and if successful start server
 
