@@ -109,6 +109,10 @@ namespace WebClashServer.Editors
                     break;
             }
 
+            aggressive.Checked = current.aggressive;
+            attackRange.Value = current.attackRange;
+            attackRange.Enabled = current.aggressive;
+
             if (current.stats == null)
                 current.stats = new Stats();
 
@@ -126,7 +130,7 @@ namespace WebClashServer.Editors
             if (current.health != null)
                 health.Value = current.health.max;
 
-            checkStatisticsEnabled();
+            checkTypeEnabled();
 
             charSelect.SelectedItem = current.character;
         }
@@ -188,15 +192,17 @@ namespace WebClashServer.Editors
                 npcSelect.SelectedItem = npcSelect.Items[0];
         }
 
-        private void checkStatisticsEnabled()
+        private void checkTypeEnabled()
         {
             if (current.type != "friendly")
             {
                 dialogButton.Enabled = false;
+                aggressive.Enabled = true;
             }
             else
             {
                 dialogButton.Enabled = true;
+                aggressive.Enabled = false;
             }
         }
 
@@ -205,7 +211,7 @@ namespace WebClashServer.Editors
             if (typeFriendly.Checked)
                 current.type = "friendly";
 
-            checkStatisticsEnabled();
+            checkTypeEnabled();
         }
 
         private void typeHostile_CheckedChanged(object sender, EventArgs e)
@@ -213,7 +219,19 @@ namespace WebClashServer.Editors
             if (typeHostile.Checked)
                 current.type = "hostile";
 
-            checkStatisticsEnabled();
+            checkTypeEnabled();
+        }
+
+        private void aggressive_CheckedChanged(object sender, EventArgs e)
+        {
+            attackRange.Enabled = aggressive.Checked;
+
+            current.aggressive = aggressive.Checked;
+        }
+
+        private void attackRange_ValueChanged(object sender, EventArgs e)
+        {
+            current.attackRange = (int)attackRange.Value;
         }
 
         private void name_TextChanged(object sender, EventArgs e)
@@ -382,6 +400,10 @@ namespace WebClashServer.Editors
 
                 character = temp.character;
 
+                aggressive = temp.aggressive;
+
+                attackRange = temp.attackRange;
+
                 stats = temp.stats;
 
                 range = temp.range;
@@ -412,6 +434,8 @@ namespace WebClashServer.Editors
         public int facing = 0;
 
         public string type = "friendly";
+        public bool aggressive = false;
+        public int attackRange = 1;
 
         public string character = "player";
 

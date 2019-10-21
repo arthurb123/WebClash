@@ -5,6 +5,8 @@
   "range": 6,
   "facing": 0,
   "type": "hostile",
+  "aggressive": false,
+  "attackRange": 1,
   "character": "golem",
   "stats": {
     "level": 8,

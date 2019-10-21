@@ -519,7 +519,7 @@ exports.killPlayer = function(id, pvpKiller)
 
     //Reset all NPC targets on map from player
 
-    npcs.removeNPCTargets(id, false);
+    npcs.removeNPCTargets(id, true);
 
     //Reset stats and sync
 
@@ -543,13 +543,7 @@ exports.killPlayer = function(id, pvpKiller)
         properties.startingTile.y
     );
 
-    //Check for quest objectives reset
-
-    //Reset all NPC targets on map from player
-
-    npcs.removeNPCTargets(id, false);
-
-    //Reset player quest objectives (if specified)
+    //Reset player's respective quest objectives
 
     quests.resetQuestObjectives(id);
 };

@@ -5,7 +5,6 @@ const fs = require('fs');
 exports.maps = [];
 exports.maps_properties = [];
 exports.maps_colliders = [];
-
 exports.map_requests = {};
 
 exports.loadAllMaps = function(cb)

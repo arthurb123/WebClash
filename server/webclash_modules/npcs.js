@@ -531,10 +531,15 @@ exports.updateNPCCombat = function(map, id)
     //Check if out of combat for too long
 
     if (this.onMap[map][id].outOfCombatTime >= this.outOfCombatTime*60) {
-        //Reset target and owner
+        //Reset target and owner if event
 
-        this.onMap[map][id].target = -1;
-        this.onMap[map][id].owner = -1;
+        if (this.onMap[map][id].isEvent) {
+            this.onMap[map][id].target = -1;
+            this.onMap[map][id].owner = -1;
+        } else
+            //Set new NPC target except
+
+            this.setNPCTargetExcept(map, id, this.onMap[map][id].target);
 
         //Reset out of combat time
 
@@ -580,17 +585,67 @@ exports.updateNPCCombat = function(map, id)
 
         this.regenerateNPC(map, id);
 
+        //Reset all targets
+
+        this.onMap[map][id].targets = [];
+
+        //If aggressive, check if a player is in range
+
+        if (this.onMap[map][id].data.aggressive) {
+            //TODO: Create a data structure or method
+            //      that keeps track of all the players
+            //      on a map, this should be done as
+            //      efficiently as possible!
+            //      As this will greatly reduce the amount
+            //      of load per agressive NPC.
+
+            for (let p in game.players) {
+                //Check if on same map
+
+                if (game.players[p].map_id !== map)
+                    continue;
+
+                //Check if in attack range
+
+                //TODO: Create a generic method
+                //      that calculates the tile
+                //      distance between a player
+                //      and NPC (or two characters?)
+
+                let ppos = {
+                    X: game.players[p].pos.X+game.players[p].character.width/2,
+                    Y: game.players[p].pos.Y+game.players[p].character.height/2
+                };
+            
+                let npos = {
+                    X: this.onMap[map][id].pos.X+this.onMap[map][id].data.character.width/2,
+                    Y: this.onMap[map][id].pos.Y+this.onMap[map][id].data.character.height/2
+                };
+
+                let dx = Math.abs((ppos.X-npos.X)/tiled.maps[map].tilewidth),
+                    dy = Math.abs((ppos.Y-npos.Y)/tiled.maps[map].tileheight);
+
+                if (dx <= this.onMap[map][id].data.attackRange ||
+                    dy <= this.onMap[map][id].data.attackRange) {
+                        //Set target to that player and break
+
+                        this.onMap[map][id].target = p;
+                        break;
+                    }
+            }
+        }
+
         return;
     }
 
     //Check if target is still on the same map.
 
     if (game.players[this.onMap[map][id].target] == undefined ||
-        game.players[this.onMap[map][id].target].map !== tiled.maps[map].name)
+        game.players[this.onMap[map][id].target].map_id !== map)
     {
-        //Reset target
+        //Set new target except
 
-        this.onMap[map][id].target = -1;
+        this.setNPCTargetExcept(map, id, this.onMap[map][id].target);
 
         return;
     }
@@ -935,9 +990,8 @@ exports.damageNPC = function(owner, map, id, delta)
     this.onMap[map][id].preventAttack = false;
 
     //If damage was done, reset out of combat time
-    //if NPC is an event NPC
 
-    if (this.onMap[map][id].isEvent && delta < 0) 
+    if (delta < 0) 
         this.onMap[map][id].outOfCombatTime = 0;
 
     //Make sure we update the target
@@ -995,6 +1049,23 @@ exports.setNPCTarget = function(map, id, owner)
     //Set new target
 
     this.onMap[map][id].target = newTarget;
+};
+
+exports.setNPCTargetExcept = function(map, id, except) {
+    //Check if valid
+
+    if (this.onMap[map] === undefined ||
+        this.onMap[map][id] === undefined ||
+        this.isTimedOut(map, id))
+        return;
+
+    //Remove the except target from the NPCs target list
+
+    delete this.onMap[map][id].targets[except];
+
+    //Set new NPC target
+
+    this.setNPCTarget(map, id);
 };
 
 exports.removeNPCTargets = function(target, splice)

@@ -25,11 +25,8 @@ exports.load = function(dir, name, cb)
                     }
                 });
             }
-            else {
-                output.give('File "' + name + '" does not exist.');
-
+            else 
                 cb(undefined);
-            }
         }
         catch (err)
         {
