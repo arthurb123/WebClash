@@ -14,9 +14,11 @@ const audio = {
 
     playBGM: function(src) {
         if (this.currentBGM != undefined) {
-            if (this.currentBGM.SRC === src)
+            if (this.currentBGM.SRC === src &&
+                this.currentBGM._mainVolume === this.actualMainVolume &&
+                this.currentBGM._bgmVolume === this.actualBGMVolume)
                 return;
-                
+
             this.currentBGM.Stop();
         }
 
@@ -26,6 +28,8 @@ const audio = {
         }
 
         this.currentBGM = cache.getAudio(src, 0);
+        this.currentBGM._mainVolume = this.actualMainVolume;
+        this.currentBGM._bgmVolume = this.actualBGMVolume;
 
         if (this.actualMainVolume == 0)
             return;
