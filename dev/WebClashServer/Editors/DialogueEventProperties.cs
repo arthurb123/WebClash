@@ -105,11 +105,11 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] characters = Directory.GetFiles(Program.main.location + "/maps", "*.*", SearchOption.AllDirectories)
-                    .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
+                string[] maps = Directory.GetFiles(Program.main.location + "/maps", "*.*", SearchOption.AllDirectories)
+                    .Where(s => ext.Contains(Path.GetExtension(s)) && !s.Contains(".metadata")).ToArray();
 
-                foreach (string c in characters)
-                    mapList.Items.Add(c.Substring(c.LastIndexOf('\\') + 1, c.LastIndexOf('.') - c.LastIndexOf('\\') - 1));
+                foreach (string m in maps)
+                    mapList.Items.Add(m.Substring(m.LastIndexOf('\\') + 1, m.LastIndexOf('.') - m.LastIndexOf('\\') - 1));
             }
             catch (Exception exc)
             {
