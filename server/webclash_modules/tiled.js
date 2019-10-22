@@ -485,7 +485,7 @@ exports.createPlayerMap = function(id, map_id) {
 
     //Get all needed global variables
 
-    for (let i = 0; i < this.maps_properties[map_id].length; i++)
+    for (let i = 0; i < this.maps_properties[map_id].length; i++) 
         for (let ii = 0; ii < this.maps_properties[map_id][i].checks.length; ii++) {
             let check = this.maps_properties[map_id][i].checks[ii];
 

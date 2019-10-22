@@ -17,7 +17,7 @@ exports.mapPopulation = [];
 exports.onMap = [];
 exports.onTimeOut = [];
 
-exports.onMapChecks = [];
+exports.playerInvisibleNPCs = {};
 
 exports.sendMap = function(id)
 {
@@ -29,21 +29,21 @@ exports.sendMap = function(id)
     if (this.onMap[map] === undefined)
         return;
 
+    //(Re)set player invisible NPC collection
+
+    this.playerInvisibleNPCs[id] = {};
+
     //Cycle through all NPCs and send to channel
-    //if the NPC is not on timeout, also check
-    //if the NPC has checks that need to be met
+    //if the NPC is not on timeout
+    //Also create invisible NPC collection for the
+    //respective player based on their checks
 
     for (let i = 0; i < this.onMap[map].length; i++) {
         if (this.onMap[map][i] == undefined)
             continue;
 
-        //Check on timeout
-
-        if (this.onTimeOut[map] != undefined &&
-            this.onTimeOut[map][i] != undefined)
-            continue;
-
         //Check if checks are met (if they exist)
+        //and add to invisible NPC collection
 
         let valid = true;
 
@@ -60,13 +60,24 @@ exports.sendMap = function(id)
                     break;
                 }
             }
+
+        if (!valid) {
+            this.playerInvisibleNPCs[id][i] = true;
+
+            continue;
+        }
+
+        //Check on timeout
+
+        if (this.onTimeOut[map] != undefined &&
+            this.onTimeOut[map][i] != undefined)
+            continue;
         
         //Send NPC
 
-        if (valid)
-            server.syncNPC(map, i, channel, false);
+        server.syncNPC(map, i, channel);
     };
-}
+};
 
 exports.loadMap = function(map)
 {
@@ -1212,6 +1223,14 @@ exports.inDialogRange = function(map, id, x, y)
     //Return proximity result
 
     return (dx <= tiled.maps[map].tilewidth*proximity && dy <= tiled.maps[map].tileheight*proximity);
+};
+
+exports.isInvisible = function(player, npc) {
+    if (this.playerInvisibleNPCs[player] == undefined ||
+        !this.playerInvisibleNPCs[player][npc])
+        return false;
+
+    return true;
 };
 
 exports.evaluateLootTable = function(map, id)

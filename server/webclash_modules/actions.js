@@ -672,7 +672,8 @@ exports.damageNPCs = function(owner, stats, actionData, action, onlyStatic)
                 h: npcs.onMap[actionData.map][n].data.character.height
             };
 
-            if (tiled.checkRectangularCollision(actionRect, npcRect)) {
+            if (tiled.checkRectangularCollision(actionRect, npcRect) &&
+                !npcs.isInvisible(owner, n)) {
                 npcs.damageNPC(owner, actionData.map, n, this.calculateDamage(stats, action.scaling));
 
                 result = true;

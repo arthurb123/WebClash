@@ -1,3 +1,5 @@
+//Main channel handler
+
 exports.handleChannel = function(channel)
 {
     //Check if direct or external connection
@@ -1180,15 +1182,25 @@ exports.removePlayer = function(channel)
 
     npcs.mapPopulation[channel._roomId]--;
 
-    channel.leave();
+    rooms.leave(channel);
 }
 
 //Sync NPC partially function, if channel is undefined it will be globally emitted
 
-exports.syncNPCPartially = function(map, id, type, channel, broadcast)
+exports.syncNPCPartially = function(map, id, type, channel)
 {
+    //Check if NPC is valid
+
     if (npcs.onMap[map] === undefined || npcs.onMap[map][id] === undefined)
         return;
+
+    //If channel is specified, check if the 
+    //NPC is invisible for this player
+
+    if (channel != undefined && npcs.isInvisible(channel.name, id))
+        return;
+
+    //Setup data
 
     let data = {
         id: id,
@@ -1197,6 +1209,8 @@ exports.syncNPCPartially = function(map, id, type, channel, broadcast)
 
     if (!npcs.onMap[map][id].data.showNameplate)
         data.name = '';
+
+    //Get specific data type
 
     switch (type)
     {
@@ -1230,41 +1244,50 @@ exports.syncNPCPartially = function(map, id, type, channel, broadcast)
             break;
     }
 
-    if (channel === undefined)
-        io.room(map).emit('GAME_NPC_UPDATE', data);
-    else {
-        if (broadcast === undefined || !broadcast)
-            channel.emit('GAME_NPC_UPDATE', data);
-        else
-            channel.broadcast.emit('GAME_NPC_UPDATE', data);
+    //Emit
+
+    if (channel === undefined) {
+        //Custom room emission method,
+        //make sure players that have the
+        //NPC set to invisible - don't
+        //recieve any packages
+
+        const room = rooms.get(map);
+
+        for (let player in room) {
+            if (!npcs.isInvisible(player, id))
+                room[player].emit('GAME_NPC_UPDATE', data);
+        }
     }
+    else 
+        channel.emit('GAME_NPC_UPDATE', data);
 }
 
 //Sync whole NPC function, if channel is undefined it will be globally emitted
 
-exports.syncNPC = function(map, id, channel, broadcast)
+exports.syncNPC = function(map, id, channel)
 {
-    this.syncNPCPartially(map, id, 'moving', channel, broadcast);
-    this.syncNPCPartially(map, id, 'position', channel, broadcast);
-    this.syncNPCPartially(map, id, 'direction', channel, broadcast);
-    this.syncNPCPartially(map, id, 'character', channel, broadcast);
-    this.syncNPCPartially(map, id, 'equipment', channel, broadcast);
-    this.syncNPCPartially(map, id, 'type', channel, broadcast);
+    this.syncNPCPartially(map, id, 'moving', channel);
+    this.syncNPCPartially(map, id, 'position', channel);
+    this.syncNPCPartially(map, id, 'direction', channel);
+    this.syncNPCPartially(map, id, 'character', channel);
+    this.syncNPCPartially(map, id, 'equipment', channel);
+    this.syncNPCPartially(map, id, 'type', channel);
 
     //Some NPCs don't have stats, so we dont send it if
     //it is empty
 
     if (npcs.onMap[map][id].data.stats !== undefined &&
         npcs.onMap[map][id].data.stats !== null) {
-        this.syncNPCPartially(map, id, 'stats', channel, broadcast);
+        this.syncNPCPartially(map, id, 'stats', channel);
 
-        this.syncNPCPartially(map, id, 'health', channel, broadcast);
+        this.syncNPCPartially(map, id, 'health', channel);
     }
 };
 
 //Remove NPC function, if channel is undefined it will be globally emitted
 
-exports.removeNPC = function(map, id, channel, broadcast)
+exports.removeNPC = function(map, id, channel)
 {
     let data = {
         id: id,
@@ -1273,12 +1296,8 @@ exports.removeNPC = function(map, id, channel, broadcast)
 
     if (channel === undefined)
         io.room(map).emit('GAME_NPC_UPDATE', data);
-    else {
-        if (broadcast === undefined || !broadcast)
-            channel.emit('GAME_NPC_UPDATE', data);
-        else
-            channel.broadcast.emit('GAME_NPC_UPDATE', data);
-    }
+    else 
+        channel.emit('GAME_NPC_UPDATE', data);
 };
 
 //Sync whole action function, if channel is undefined it will be globally emitted

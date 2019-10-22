@@ -902,7 +902,7 @@ exports.loadMap = function(channel, map)
 
         //Leave old room
 
-        channel.leave();
+        rooms.leave(channel);
     }
 
     //Set new map
@@ -912,7 +912,7 @@ exports.loadMap = function(channel, map)
 
     //Join map specific room
 
-    channel.join(map_id);
+    rooms.join(map_id, channel);
 
     //Increment map popularity
 
