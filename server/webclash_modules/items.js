@@ -245,7 +245,8 @@ exports.usePlayerItem = function(id, name)
 
         //Add action
 
-        if (!actions.addPlayerAction(item.consumableAction, id, item.consumableActionUses))
+        if (item.consumableAction.length > 0 &&
+            !actions.addPlayerAction(item.consumableAction, id, item.consumableActionUses))
             return false;
 
         //Remove player item

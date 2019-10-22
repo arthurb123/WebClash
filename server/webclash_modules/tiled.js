@@ -489,6 +489,12 @@ exports.createPlayerMap = function(id, map_id) {
         for (let ii = 0; ii < this.maps_properties[map_id][i].checks.length; ii++) {
             let check = this.maps_properties[map_id][i].checks[ii];
 
+            //TODO: For some reason all variable checks are
+            //      duplicated, this probably is caused by
+            //      the Tiled caching process somewhere
+            //      in the property caching process.
+            //      Reproduce with: console.log(check);
+
             if (vars[check.name] == undefined) {
                 let result = game.getPlayerGlobalVariable(id, check.name);
                 if (result == undefined)
