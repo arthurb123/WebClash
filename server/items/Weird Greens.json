@@ -54,7 +54,9 @@
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
       "showQuestEvent": null,
-      "showShopEvent": null
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
     },
     {
       "text": "",
@@ -83,7 +85,9 @@
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
       "showQuestEvent": null,
-      "showShopEvent": null
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
     },
     {
       "text": "That was really bad..",
@@ -104,7 +108,9 @@
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
       "showQuestEvent": null,
-      "showShopEvent": null
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
     },
     {
       "text": "I'm not gonna eat that again!",
@@ -125,7 +131,9 @@
       "spawnNPCEvent": null,
       "turnHostileEvent": null,
       "showQuestEvent": null,
-      "showShopEvent": null
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
     },
     {
       "text": "",
@@ -154,8 +162,11 @@
       },
       "turnHostileEvent": null,
       "showQuestEvent": null,
-      "showShopEvent": null
-    }
+      "showShopEvent": null,
+      "getVariableEvent": null,
+      "setVariableEvent": null
+    },
+    null
   ],
   "dialogElements": [
     {
@@ -187,7 +198,8 @@
       "id": 4,
       "isEvent": true,
       "size": "80, 20"
-    }
+    },
+    null
   ],
   "consumableDialog": true
 }

@@ -242,6 +242,12 @@ const ui = {
 
             //Handle options
 
+            //TODO: Move from creating a button via a string
+            //      to actual DOM element creation with
+            //      an event listener, this is more stable
+            //      and better for in the future if we ever
+            //      want to obfuscate our client code!
+
             this.cur[id].options.forEach(function(option) {
                 let cb = '';
 
@@ -255,8 +261,13 @@ const ui = {
                 } else {
                     //Quest/unique dialog option
 
-                    if (option.next == 'accept')
-                        cb = 'player.acceptQuest(' + ui.dialog.npc + ', ' + id + ');';
+                    if (option.next == 'accept') {
+                        let owner = ui.dialog.owner;
+                        if (isNaN(owner))
+                            owner = '\'' + owner + '\'';
+
+                        cb = 'player.acceptQuest(' + owner + ', \'' + ui.dialog.type + '\', ' + id + ');';
+                    }
 
                     if (option.actual_next == -1)
                         cb += 'ui.dialog.hideDialog()';

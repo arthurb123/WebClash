@@ -242,11 +242,15 @@ const player = {
 
         ui.quests.reload();
     },
-    acceptQuest: function(target, id)
+    acceptQuest: function(target, type, id)
     {
         //Send request
 
-        channel.emit('CLIENT_ACCEPT_QUEST', { npc: target, id: id });
+        channel.emit('CLIENT_ACCEPT_QUEST', { 
+            owner: target, 
+            type: type, 
+            id: id 
+        });
     },
     requestExpTarget: function()
     {

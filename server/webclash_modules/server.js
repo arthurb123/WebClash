@@ -844,7 +844,10 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game and data is valid
 
-            if (!isInGame() || data == undefined)
+            if (!isInGame() 
+                || data == undefined 
+                || data.owner == undefined
+                || data.type == undefined)
                 return;
 
             //Shorten channel name
@@ -855,17 +858,17 @@ exports.handleChannel = function(channel)
 
             let dialogEvent;
 
-            if (isNaN(data.npc))
+            switch (data.type)
             {
-               //Item
-
-               dialogEvent = items.getItem(data.npc).dialog[data.id];
-            }
-            else
-            {
-               //NPC
-
-               dialogEvent = npcs.onMap[game.players[id].map_id][data.npc].data.dialog[data.id];
+                case 'item':
+                    dialogEvent = items.getItem(data.owner).dialog[data.id];
+                    break;
+                case 'npc':
+                    dialogEvent = npcs.onMap[game.players[id].map_id][data.owner].data.dialog[data.id];
+                    break;
+                case 'map':
+                    dialogEvent = tiled.map_dialogs[map][data.owner][data.id];
+                    break;
             }
 
             //Check if valid
