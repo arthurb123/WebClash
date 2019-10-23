@@ -19,37 +19,38 @@ global.deepcopy = require('deepcopy');
 
 //Unique Modules
 
-global.server = require('./webclash_modules/server');
-global.game = require('./webclash_modules/game');
-global.parties = require('./webclash_modules/parties');
-global.dialog = require('./webclash_modules/dialog');
-global.items = require('./webclash_modules/items');
-global.shop = require('./webclash_modules/shop');
-global.npcs = require('./webclash_modules/npcs');
-global.actions = require('./webclash_modules/actions');
-global.quests = require('./webclash_modules/quests');
-global.tiled = require('./webclash_modules/tiled');
-global.output = require('./webclash_modules/output');
-global.input = require('./webclash_modules/input');
-global.storage = require('./webclash_modules/storage');
-global.tools = require('./webclash_modules/tools');
+global.server   = require('./webclash_modules/server');
+global.game     = require('./webclash_modules/game');
+global.rooms    = require('./webclash_modules/rooms');
+global.parties  = require('./webclash_modules/parties');
+global.dialog   = require('./webclash_modules/dialog');
+global.items    = require('./webclash_modules/items');
+global.shop     = require('./webclash_modules/shop');
+global.npcs     = require('./webclash_modules/npcs');
+global.actions  = require('./webclash_modules/actions');
+global.quests   = require('./webclash_modules/quests');
+global.tiled    = require('./webclash_modules/tiled');
+global.output   = require('./webclash_modules/output');
+global.input    = require('./webclash_modules/input');
+global.storage  = require('./webclash_modules/storage');
+global.tools    = require('./webclash_modules/tools');
 
 //Load server settings
 
-global.properties = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
-global.permissions = JSON.parse(fs.readFileSync('permissions.json', 'utf-8'));
-global.censored = JSON.parse(fs.readFileSync('censored.json', 'utf-8'));
-global.exptable = JSON.parse(fs.readFileSync('exptable.json', 'utf-8'));
-global.gameplay = JSON.parse(fs.readFileSync('gameplay.json', 'utf-8'));
+global.properties   = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
+global.permissions  = JSON.parse(fs.readFileSync('permissions.json', 'utf-8'));
+global.censored     = JSON.parse(fs.readFileSync('censored.json', 'utf-8'));
+global.exptable     = JSON.parse(fs.readFileSync('exptable.json', 'utf-8'));
+global.gameplay     = JSON.parse(fs.readFileSync('gameplay.json', 'utf-8'));
 
 //Load commands text files
 
 global.commandsAdmin = fs.readFileSync('commandsAdmin.txt', 'utf-8').toString();
-global.commandsUser = fs.readFileSync('commandsUser.txt', 'utf-8').toString();
+global.commandsUser  = fs.readFileSync('commandsUser.txt', 'utf-8').toString();
 
 //Setup game time
 
-gameplay.dayLength *= 60;
+gameplay.dayLength   *= 60;
 gameplay.nightLength *= 60;
 
 //Setup readline and setup line input

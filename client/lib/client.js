@@ -258,48 +258,48 @@ const client = {
         channel.on('GAME_NPC_UPDATE', function (data) {
             //Check if the recieved data is valid
 
-             if (data === undefined)
-                 return;
+            if (data === undefined)
+                return;
 
-             //Check if in-game or loading map
+            //Check if in-game or loading map
 
-             if (!client.inGame || tiled.loading)
-                 return;
+            if (!client.inGame || tiled.loading)
+                return;
 
-             //Check if NPC exists, if not instantiate
+            //Check if NPC exists, if not instantiate
 
-             if (game.npcs[data.id] === undefined && data.name !== undefined)
-                 game.instantiateNPC(data.id, data.name);
+            if (game.npcs[data.id] === undefined && data.name !== undefined)
+                game.instantiateNPC(data.id, data.name);
 
-             //Handle data
+            //Handle data
 
-             if (data.remove !== undefined)
-                 game.removeNPC(data.id);
-             if (data.pos !== undefined)
-                 game.npcs[data.id].POS = data.pos;
-             if (data.type !== undefined)
-                 game.setNPCType(data.id, data.type, data.hasDialog);
-             if (data.moving !== undefined)
-                 game.npcs[data.id]._moving = data.moving;
-             if (data.direction !== undefined)
-                 game.npcs[data.id]._direction = data.direction;
-             if (data.stats !== undefined)
-                 game.npcs[data.id]._stats = data.stats;
-             if (data.equipment !== undefined)
-                 game.setNPCEquipment(data.id, data.equipment);
-             if (data.health !== undefined)
-                 game.setNPCHealth(data.id, data.health);
-             if (data.character !== undefined) {
-                 game.npcs[data.id].SPRITE = new lx.Sprite(data.character.src);
-                 game.npcs[data.id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
+            if (data.remove !== undefined)
+                game.removeNPC(data.id);
+            if (data.pos !== undefined)
+                game.npcs[data.id].POS = data.pos;
+            if (data.type !== undefined)
+                game.setNPCType(data.id, data.type, data.hasDialog);
+            if (data.moving !== undefined)
+                game.npcs[data.id]._moving = data.moving;
+            if (data.direction !== undefined)
+                game.npcs[data.id]._direction = data.direction;
+            if (data.stats !== undefined)
+                game.npcs[data.id]._stats = data.stats;
+            if (data.equipment !== undefined)
+                game.setNPCEquipment(data.id, data.equipment);
+            if (data.health !== undefined)
+                game.setNPCHealth(data.id, data.health);
+            if (data.character !== undefined) {
+                game.npcs[data.id].SPRITE = new lx.Sprite(data.character.src);
+                game.npcs[data.id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
 
-                 game.npcs[data.id].SIZE = game.npcs[data.id].SPRITE.Size();
+                game.npcs[data.id].SIZE = game.npcs[data.id].SPRITE.Size();
 
-                 game.npcs[data.id]._animation = data.character.animation;
-                 game.npcs[data.id]._animation.cur = 0;
+                game.npcs[data.id]._animation = data.character.animation;
+                game.npcs[data.id]._animation.cur = 0;
 
-                 game.npcs[data.id]._sounds = data.character.sounds;
-             }
+                game.npcs[data.id]._sounds = data.character.sounds;
+            }
         });
         channel.on('GAME_ACTION_UPDATE', function (data) {
             //Check if the recieved data is valid

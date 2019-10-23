@@ -1,10 +1,12 @@
 {
   "name": "Captain",
   "showNameplate": true,
-  "movement": "free",
+  "movement": "static",
   "range": 1,
   "facing": 0,
   "type": "friendly",
+  "aggressive": false,
+  "attackRange": 1,
   "character": "captain",
   "stats": {
     "level": 6,

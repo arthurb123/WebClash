@@ -297,24 +297,41 @@ const tiled = {
                     continue;
                 };
 
-                //Get corresponding tile sprite
+                //Get corresponding tileset and tileset sprite
 
-                let sprite;
+                let sprite, tileset;
 
                 for (let i = 0; i < map.tilesets.length; i++)
                     if (layer.data[t] >= map.tilesets[i].firstgid) {
-                        sprite = cache.getTileset(map.tilesets[i].image);
+                        tileset = map.tilesets[i];
+                        sprite = cache.getTileset(tileset.image);
 
                         if (i != 0)
-                            actual = layer.data[t] - map.tilesets[i].firstgid + 1;
+                            actual = layer.data[t] - tileset.firstgid + 1;
                     }
                     else
                         break;
 
                 //Check if sprite is valid
 
-                if (sprite === undefined)
+                if (sprite == undefined)
                     continue;
+
+                //Check if the tile should be skipped
+
+                if (tileset.tiles != undefined) {
+                    let shouldSkip = false;
+
+                    for (let i = 0; i < tileset.tiles.length; i++) 
+                        if (tileset.tiles[i].id === (layer.data[t] - 1) &&
+                            tileset.tiles[i]._skip) {
+                                shouldSkip = true;
+                                break;
+                            }
+
+                    if (shouldSkip)
+                        continue;
+                }
 
                 //Check if sprite has a tilewidth specified
 
@@ -372,7 +389,7 @@ const tiled = {
                  {
                     //Skip empty tiles
 
-                    if (data[t] == 0)
+                    if (data[t] === 0)
                         continue;
 
                     //Get corresponding tileset
@@ -402,17 +419,17 @@ const tiled = {
                         y: Math.floor(t / width) * map.tileheight + this.offset.height
                     };
 
-                    //Check animation
-
-                    this.checkAnimation(map, tileset, data[t], actual);
-
                     //Check collider
 
-                    this.checkCollider(tp, tileset, data[t], actual);
+                    this.checkCollider(tp, tileset, actual);
 
                     //Check properties
 
-                    this.checkProperties(tp, tileset, data[t], actual);
+                    this.checkProperties(tp, tileset, actual);
+
+                    //Check animation
+
+                    this.checkAnimation(map, tileset, data[t], actual);
                  }
              }
 
@@ -547,6 +564,11 @@ const tiled = {
                     map.animatedTiles[id] != undefined)
                     continue;
 
+                //Make sure the tile does not have to be skipped
+
+                if (tileset.tiles[i]._skip)
+                    continue;
+
                 let sprites = [],
                     frames = [];
 
@@ -599,7 +621,7 @@ const tiled = {
             }
         }
     },
-    checkCollider: function(tile_position, tileset, id, actual)
+    checkCollider: function(tile_position, tileset, actual)
     {
         for (let i = 0; i < tileset.tiles.length; i++) {
             if (tileset.tiles[i].id+1 == actual) {
@@ -621,7 +643,7 @@ const tiled = {
             }
         }
     },
-    checkProperties: function(tile_position, tileset, id, actual)
+    checkProperties: function(tile_position, tileset, actual)
     {
         //Check all tile properties
 
@@ -650,8 +672,15 @@ const tiled = {
                         break;
                     }
 
-                if (!valid)
+                if (!valid) {
+                    //Because we are dealing with tile
+                    //properties, if checks do not comply
+                    //enable skipping of the tile on top
+                    //of skipping property handling
+
+                    tileset.tiles[i]._skip = true;
                     continue;
+                }
 
                 //First check if the properties contain a 
                 //load map event, this affects property handling
