@@ -791,7 +791,7 @@
             this.dialogButton.Name = "dialogButton";
             this.dialogButton.Size = new System.Drawing.Size(291, 23);
             this.dialogButton.TabIndex = 24;
-            this.dialogButton.Text = "Edit Dialog";
+            this.dialogButton.Text = "Edit Dialogue";
             this.dialogButton.UseVisualStyleBackColor = true;
             this.dialogButton.Click += new System.EventHandler(this.dialogButton_Click);
             // 

@@ -108,13 +108,13 @@ namespace WebClashServer.Editors
             string location = Program.main.location + "/../client/" + sounds[current].src;
 
             if (!File.Exists(location)) {
-                MessageBox.Show("The sound file could not be found, make sure it refers to an existing sound file.", "WebClash Server - Oof");
+                MessageBox.Show("The sound file could not be found, make sure it refers to an existing sound file.", "WebClash Server - Error");
 
                 return;
             }
             if (!location.Contains(".wav"))
             {
-                MessageBox.Show("Unfortunately only .wav files can be played as of right now, however it will work in-game.", "WebClash Server - Oof");
+                MessageBox.Show("Unfortunately only .wav files can be played as of right now, however it will work in-game.", "WebClash Server - Error");
 
                 return;
             }
@@ -126,7 +126,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "WebClash Server - Oof");
+                MessageBox.Show(ex.Message, "WebClash Server - Error");
             }
         }
 

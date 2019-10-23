@@ -429,17 +429,22 @@ exports.handleChannel = function(channel)
             //Check if valid player and if
             //the player is on a different map
 
-            if (id == -1 || next_map == -1 || game.players[id].map == data)
+            if (id == -1 || next_map == -1 || game.players[id].map === data)
                 return;
 
             //Check if player is near to a loadMap property
 
-            let result = tiled.checkPropertyWithRectangle(game.players[id].map, 'loadMap', {
-                x: game.players[id].pos.X,
-                y: game.players[id].pos.Y,
-                w: game.players[id].character.width,
-                h: game.players[id].character.height
-            });
+            let result = tiled.checkPropertyWithRectangle(
+                game.players[id].map_id, 
+                'loadMap', 
+                data,
+                {
+                    x: game.players[id].pos.X,
+                    y: game.players[id].pos.Y,
+                    w: game.players[id].character.width,
+                    h: game.players[id].character.height
+                }
+            );
 
             if (!result.near)
                 return;
@@ -752,7 +757,10 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game and data is valid
 
-            if (!isInGame() || data == undefined)
+            if (!isInGame() 
+                || data == undefined
+                || data.owner == undefined
+                || data.type == undefined)
                 return;
 
             //Shorten channel name
@@ -769,29 +777,41 @@ exports.handleChannel = function(channel)
 
             //Check if NPC or item dialog
 
-            if (isNaN(data.npc))
+            switch (data.type)
             {
-                //Item
+                case 'item':
+                    //Item
 
-                dialogEvent = items.getItem(data.npc).dialog[data.id];
+                    dialogEvent = items.getItem(data.owner).dialog[data.id];
 
-                eventName =
-                    data.npc.replace(' ', '') +         //Item name to make sure the event can occur
-                                                        //with other items (it is called 'npc' but it is the item name)
-                    dialogEvent.eventType +             //Event type for uniqueness
-                    data.id;                            //Dialog ID for uniqueness
-            }
-            else
-            {
-                //NPC
+                    eventName =
+                        data.owner.replace(' ', '') +       //Item name to make sure the event can occur
+                                                            //with other items (it is called 'npc' but it is the item name)
+                        dialogEvent.eventType +             //Event type for uniqueness
+                        data.id;                            //Dialog ID for uniqueness
+                    break;
+                case 'npc':
+                    //NPC
 
-                dialogEvent = npcs.onMap[map][data.npc].data.dialog[data.id];
+                    dialogEvent = npcs.onMap[map][data.owner].data.dialog[data.id];
 
-                eventName =
-                    map.toString() +                    //Map to make sure the event can occur on other maps
-                    npcs.onMap[map][data.npc].name +    //NPC name for uniqueness
-                    dialogEvent.eventType +             //Event type for uniqueness
-                    data.id;                            //Dialog ID for uniqueness
+                    eventName =
+                        map.toString() +                    //Map to make sure the event can occur on other maps
+                        npcs.onMap[map][data.owner].name +  //NPC name for uniqueness
+                        dialogEvent.eventType +             //Event type for uniqueness
+                        data.id;                            //Dialog ID for uniqueness
+                    break;
+                case 'map':
+                    //Map
+
+                    dialogEvent = tiled.map_dialogs[map][data.owner][data.id];
+
+                    eventName =
+                        map.toString() +                    //Map to make sure the event can occur on other maps
+                        data.owner +                        //Dialog name for uniqueness
+                        dialogEvent.eventType +             //Event type for uniqueness
+                        data.id;                            //Dialog ID for uniqueness
+                    break;
             }
 
             //Check if valid
@@ -951,26 +971,64 @@ exports.handleChannel = function(channel)
     });
 
     channel.on('CLIENT_REQUEST_DIALOG', function(data) {
-        //Check if in-game and data is valid
+        try {
+            //Check if in-game and data is valid
 
-        if (!isInGame() || data == undefined)
-            return;
+            if (!isInGame() || data == undefined)
+                return;
 
-        //Shorten channel name
+            //Shorten channel name
 
-        let id = channel.name;
+            let id = channel.name;
 
-        //Get map index
+            //Get map index
 
-        let map = game.players[id].map_id;
+            let map = game.players[id].map_id;
 
-        //If in dialog range respond with the dialog
+            //If in dialog range respond with the dialog
 
-        if (npcs.inDialogRange(map, data, game.players[id].pos.X, game.players[id].pos.Y))
-            channel.emit('CLIENT_REQUEST_DIALOG_RESPONSE', {
-                npc: data,
-                dialog: dialog.createUnique(id, npcs.onMap[map][data].data.dialog)
-            });    
+            if (npcs.inDialogRange(map, data, game.players[id].pos.X, game.players[id].pos.Y))
+                channel.emit('CLIENT_REQUEST_DIALOG_RESPONSE', {
+                    npc: data,
+                    dialog: dialog.createUnique(id, npcs.onMap[map][data].data.dialog)
+                });    
+        }
+        catch (err) {
+            output.giveError('Could not handle dialog request: ', err);
+        }
+    });
+
+    channel.on('CLIENT_REQUEST_MAP_DIALOG', function(data) {
+        try {
+            //Check if in-game and data is valid
+
+            if (!isInGame() || data == undefined)
+                return;
+
+            //Shorten channel name
+
+            let id = channel.name;
+
+            //Get map index
+
+            let map = game.players[id].map_id;
+
+            //Check if map has the corresponding dialog
+
+            if (tiled.maps_dialogs[map][data] == undefined)
+                return;
+
+            //If in dialog range respond with the dialog
+
+            if (tiled.inDialogRange(id, map, data))
+                channel.emit('CLIENT_REQUEST_MAP_DIALOG_RESPONSE', {
+                    name: data,
+                    dialog: dialog.createUnique(id, tiled.maps_dialogs[map][data])
+                });  
+        }
+        catch (err) {
+            output.giveError('Could not handle map dialog request: ', err);
+        }
     });
 
     channel.on('CLIENT_REQUEST_EXP', function() {

@@ -3,6 +3,7 @@ const tiled = {
     current: '',
     animations: [],
     lightHotspots: [],
+    dialogs: [],
     vars: {},
     convertAndLoadMap: function(data)
     {
@@ -64,6 +65,13 @@ const tiled = {
             this.animations[a].Hide();
 
         this.animations = [];
+
+        //Clear existing map dialogs
+
+        for (let d = 0; d < this.dialogs.length; d++)
+            this.dialogs[d].Hide();
+
+        this.dialogs = [];
 
         //Clear existing map light hotspots
 
@@ -502,12 +510,14 @@ const tiled = {
                                 callbacks.push(f);
                         }
 
-                        //Handle design events/light hotspot events
+                        //Handle design events
 
                         this.handleDesign(
                             properties, 
                             data[o].x+this.offset.width, 
-                            data[o].y+this.offset.height
+                            data[o].y+this.offset.height,
+                            data[o].width,
+                            data[o].height
                         );
                     }
 
@@ -743,12 +753,14 @@ const tiled = {
                     }
                 }
 
-                //Handle design events/light hotspot events
+                //Handle design events
 
                 this.handleDesign(
                     properties, 
-                    tile_position.x+tileset.tilewidth/2, 
-                    tile_position.y+tileset.tileheight/2
+                    tile_position.x, 
+                    tile_position.y,
+                    tileset.tilewidth,
+                    tileset.tileheight
                 );
             }
         }
@@ -777,10 +789,10 @@ const tiled = {
                 return function(go) {
                     if (go === game.players[game.player])
                         player.propertyInteraction.interact();
-                }
+                };
         }
     },
-    handleDesign: function(properties, p_x, p_y)
+    handleDesign: function(properties, p_x, p_y, p_w, p_h)
     {
         //Light hotspot
 
@@ -796,11 +808,13 @@ const tiled = {
             let property = properties[p];
 
             switch (property.name) {
+                //Light hotspots and coloring
+
                 case 'lightHotspot':
                     if (lightHotspotID == undefined)
                         lightHotspotID = this.addLightHotspot(
-                            p_x, 
-                            p_y
+                            p_x+p_w/2, 
+                            p_y+p_h/2
                         );
                     
                     this.lightHotspots[lightHotspotID].size = property.value;
@@ -808,11 +822,140 @@ const tiled = {
                 case 'lightHotspotColor':
                     if (lightHotspotID == undefined)
                         lightHotspotID = this.addLightHotspot(
-                            p_x, 
-                            p_y
+                            p_x+p_w/2,
+                            p_y+p_h/2
                         );
                     
                     this.lightHotspots[lightHotspotID].color = '#' + property.value.substr(3, property.value.length-3);
+                    break;
+
+                //Map dialog
+
+                case 'mapDialogue':
+                    let dialog = new lx.GameObject(
+                        undefined,
+                        p_x, p_y,
+                        p_w, p_h
+                    ).Show(0);
+
+                    //TODO: Make a generic dialog creation
+                    //      method for both NPC and map dialogs
+
+                    //Load dialog texture
+
+                    cache.getSprite('res/ui/dialog.png', function(sprite) {
+                        dialog._dialogTexture = new lx.UITexture(
+                            sprite, 
+                            p_w/2,
+                            -p_h/2
+                        ).Follows(dialog);
+                        
+                        //Check if mobile
+            
+                        if (!game.isMobile) {
+                            //Add a mouse hover event to show
+                            //and or hide the dialog texture
+            
+                            dialog.OnHover(function() {
+                                //Check if texture is already visible
+            
+                                if (this._dialogTexture.UI_ID != undefined)
+                                    return;
+            
+                                //Get position difference
+            
+                                let player = game.players[game.player];
+
+                                let pos = {
+                                    X: player.POS.X+player.SIZE.W/2,
+                                    Y: player.POS.Y+player.SIZE.H/2
+                                },
+                                pos1 = {
+                                    X: this.POS.X+this.SIZE.W/2,
+                                    Y: this.POS.Y+this.SIZE.H/2
+                                };
+            
+                                let dx = Math.abs(pos.X-pos1.X),
+                                    dy = Math.abs(pos.Y-pos1.Y);
+            
+                                //Proximity distance in tiles
+            
+                                let proximity = 2.875;
+            
+                                //Check if in proximity
+            
+                                if (dx > tiled.tile.width*proximity ||
+                                    dy > tiled.tile.height*proximity)
+                                    return;
+            
+                                //Show dialog texture
+            
+                                this._dialogTexture.Show();
+                            });
+
+                            //Add loops that always tries
+                            //to hide the dialog texture
+
+                            dialog.Loops(function() {
+                                if (this._dialogTexture != undefined)
+                                    this._dialogTexture.Hide();
+                            });
+                        } else {
+                            //Add map dialog specific loops that checks if 
+                            //the dialog texture should be displayed
+            
+                            dialog.Loops(function() {       
+                                //Get position difference
+            
+                                let player = game.players[game.player];
+
+                                let pos = {
+                                    X: player.POS.X+player.SIZE.W/2,
+                                    Y: player.POS.Y+player.SIZE.H/2
+                                },
+                                pos1 = {
+                                    X: this.POS.X+this.SIZE.W/2,
+                                    Y: this.POS.Y+this.SIZE.H/2
+                                };
+            
+                                let dx = Math.abs(pos.X-pos1.X),
+                                    dy = Math.abs(pos.Y-pos1.Y);
+            
+                                //Proximity distance in tiles
+            
+                                let proximity = 2.875;
+            
+                                //Check if in proximity and based
+                                //on that hide or show the texture
+            
+                                if (dx > tiled.tile.width*proximity ||
+                                    dy > tiled.tile.height*proximity) 
+                                    this._dialogTexture.Hide();
+                                else
+                                    this._dialogTexture.Show();
+                            });
+                        }
+            
+                        //Give the possibility to engage 
+                        //in dialog through a click event
+            
+                        dialog.OnMouse(0, function(data) {
+                            if (data.state == 0 || 
+                                dialog == undefined)
+                                return;
+            
+                            //Stop mouse
+            
+                            lx.StopMouse(0);
+            
+                            //Request dialog
+
+                             channel.emit('CLIENT_REQUEST_MAP_DIALOG', property.value);
+                        });
+                    });
+
+                    this.dialogs.push(dialog);
+
                     break;
             }
         }

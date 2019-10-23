@@ -462,7 +462,7 @@ namespace WebClashServer
         {
             Dialogue dialogue = new Dialogue(current.dialog.ToList(), current.dialogElements.ToList(), true);
 
-            dialogue.Text = "Edit dialog for '" + name.Text + "'";
+            dialogue.Text = "Edit dialogue for '" + name.Text + "'";
 
             dialogue.FormClosed += (object s, FormClosedEventArgs fcea) => {
                 current.dialog = dialogue.dialogSystem.items.ToArray();

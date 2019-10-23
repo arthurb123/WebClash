@@ -36,7 +36,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.equipmentButton = new System.Windows.Forms.Button();
             this.showNameplate = new System.Windows.Forms.CheckBox();
-            this.dialogButton = new System.Windows.Forms.Button();
+            this.dialogueButton = new System.Windows.Forms.Button();
             this.name = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.charSelect = new System.Windows.Forms.ComboBox();
@@ -137,7 +137,7 @@
             // 
             this.groupBox1.Controls.Add(this.equipmentButton);
             this.groupBox1.Controls.Add(this.showNameplate);
-            this.groupBox1.Controls.Add(this.dialogButton);
+            this.groupBox1.Controls.Add(this.dialogueButton);
             this.groupBox1.Controls.Add(this.name);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.charSelect);
@@ -171,15 +171,15 @@
             this.showNameplate.UseVisualStyleBackColor = true;
             this.showNameplate.CheckedChanged += new System.EventHandler(this.showNameplate_CheckedChanged);
             // 
-            // dialogButton
+            // dialogueButton
             // 
-            this.dialogButton.Location = new System.Drawing.Point(200, 79);
-            this.dialogButton.Name = "dialogButton";
-            this.dialogButton.Size = new System.Drawing.Size(181, 23);
-            this.dialogButton.TabIndex = 15;
-            this.dialogButton.Text = "Edit Dialog";
-            this.dialogButton.UseVisualStyleBackColor = true;
-            this.dialogButton.Click += new System.EventHandler(this.dialogButton_Click);
+            this.dialogueButton.Location = new System.Drawing.Point(200, 79);
+            this.dialogueButton.Name = "dialogueButton";
+            this.dialogueButton.Size = new System.Drawing.Size(181, 23);
+            this.dialogueButton.TabIndex = 15;
+            this.dialogueButton.Text = "Edit Dialogue";
+            this.dialogueButton.UseVisualStyleBackColor = true;
+            this.dialogueButton.Click += new System.EventHandler(this.dialogButton_Click);
             // 
             // name
             // 
@@ -713,7 +713,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox name;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button dialogButton;
+        private System.Windows.Forms.Button dialogueButton;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.NumericUpDown range;
         private System.Windows.Forms.Label label4;

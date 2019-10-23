@@ -74,7 +74,7 @@
             // 
             this.dialogue.Location = new System.Drawing.Point(12, 146);
             this.dialogue.Name = "dialogue";
-            this.dialogue.Size = new System.Drawing.Size(315, 209);
+            this.dialogue.Size = new System.Drawing.Size(306, 209);
             this.dialogue.TabIndex = 2;
             this.dialogue.Text = "";
             this.dialogue.TextChanged += new System.EventHandler(this.dialogue_TextChanged);

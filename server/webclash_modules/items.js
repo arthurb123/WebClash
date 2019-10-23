@@ -34,7 +34,7 @@ exports.getConvertedItem = function(name)
         sounds: item.sounds
     };
 
-    //Delete unwanted/unnecessary properties
+    //Set necessary properties
     //based on item type
 
     switch (item.type) {
@@ -234,12 +234,12 @@ exports.usePlayerItem = function(id, name)
 
     if (item.type === 'consumable')
     {
-        //Consume item
+        //Delta heal and mana
 
         game.healPlayer(id, item.heal);
         game.deltaManaPlayer(id, item.mana);
 
-        //Gold
+        //Delta gold
 
         game.deltaGoldPlayer(id, item.gold);
 

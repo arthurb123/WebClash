@@ -245,7 +245,7 @@ const ui = {
                     '<div id="dialog_box_options" style="position: relative; left: 5%; top: -8px; width: 90%; white-space: normal;"></div>' +
                 '</div>';
         },
-        startDialog: function(npc, name, dialog)
+        startDialog: function(owner, type, name, dialog)
         {
             let start = -1;
 
@@ -260,7 +260,8 @@ const ui = {
                 return;
 
             this.cur = dialog;
-            this.npc = npc;
+            this.owner = owner;
+            this.type = type;
             this.name = name;
             this.items = [];
 
@@ -275,7 +276,8 @@ const ui = {
             if (this.cur[id].isEvent)
             {
                 channel.emit('CLIENT_DIALOG_EVENT', {
-                    npc: this.npc,
+                    owner: this.owner,
+                    type: this.type,
                     id: id
                 });
 
@@ -337,7 +339,7 @@ const ui = {
             //Add mouse handler that removes the dialog box
             //if a click/touch is detected outside of the box
 
-            if (this.mouse == undefined && !isNaN(this.npc))
+            if (this.mouse == undefined && this.type !== 'item')
                 this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
                     if (data.state == 0)
                         return;

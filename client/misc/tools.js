@@ -1,3 +1,5 @@
+//Asynchronous HTTP GET
+
 function httpGetAsync(url, callback)
 {
     let xmlHttp = new XMLHttpRequest();

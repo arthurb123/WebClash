@@ -418,21 +418,6 @@ const client = {
 
             ui.chat.addMessage(data);
         });
-        channel.on('GAME_START_ITEM_DIALOG', function(data) {
-            //Check if the recieved data is valid
-
-            if (data === undefined)
-                return;
-
-            //Check if in-game
-
-            if (!client.inGame)
-                return;
-
-            //Start dialog
-
-            ui.dialog.startDialog(data.name, data.name, data.dialog);
-        });
         channel.on('GAME_OPEN_SHOP', function (data) {
             //Check if the recieved data is valid
 
@@ -510,6 +495,21 @@ const client = {
             //Reset party UI
 
             ui.party.hide();
+        });
+        channel.on('GAME_START_ITEM_DIALOG', function(data) {
+            //Check if the recieved data is valid
+
+            if (data === undefined)
+                return;
+
+            //Check if in-game
+
+            if (!client.inGame)
+                return;
+
+            //Start dialog
+
+            ui.dialog.startDialog(data.name, 'item', data.name, data.dialog);
         });
 
         //Response events
@@ -617,7 +617,17 @@ const client = {
 
             //Start dialog
 
-            ui.dialog.startDialog(data.npc, game.npcs[data.npc].name, data.dialog);
+            ui.dialog.startDialog(data.npc, 'npc', game.npcs[data.npc].name, data.dialog);
+        });
+        channel.on('CLIENT_REQUEST_MAP_DIALOG_RESPONSE', function(data) {
+            //Check if data is valid
+                
+            if (!data.dialog)
+                return;
+
+            //Start dialog
+
+            ui.dialog.startDialog(data.name, 'map', data.name, data.dialog);
         });
         channel.on('CLIENT_DIALOG_EVENT_RESPONSE', function(data) {
             //Handle dialog event

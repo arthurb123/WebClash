@@ -5,6 +5,7 @@ const fs = require('fs');
 exports.maps = [];
 exports.maps_properties = [];
 exports.maps_colliders = [];
+exports.maps_dialogs = [];
 exports.map_requests = {};
 
 exports.loadAllMaps = function(cb)
@@ -138,6 +139,7 @@ exports.cacheMap = function(map)
 
     this.maps_properties[id] = [];
     this.maps_colliders[id] = [];
+    this.maps_dialogs[id] = {};
 
     if (map.tilesets === undefined)
         return;
@@ -257,6 +259,15 @@ exports.cacheMap = function(map)
         }
     }
 
+    //Cache dialog metadata
+
+    for (let d = 0; d < map.mapDialogs.length; d++) 
+        this.maps_dialogs[id][map.mapDialogs[d].name] = map.mapDialogs[d].dialog;
+
+    //Remove unnecessary map data
+
+    delete map.mapDialogs;
+
     //Load NPCs
 
     npcs.loadMap(id);
@@ -286,30 +297,29 @@ exports.getPropertyChecks = function(properties) {
     return checks;
 };
 
-exports.checkPropertyWithRectangle = function(map_name, property_name, rectangle)
+exports.checkPropertyWithRectangle = function(map, property_name, property_value, rectangle)
 {
-    let id = this.getMapIndex(map_name),
-        data = {
-            near: false
-        };
+    let data = {
+        near: false,
+        map: map
+    };
 
-    if (id == -1 ||
-        this.maps_properties[id] === undefined ||
-        this.maps_properties[id].length == 0)
+    if (map == -1 ||
+        this.maps_properties[map] == undefined ||
+        this.maps_properties[map].length == 0)
         return data;
 
-    data.map = id;
-
-    for (let p = 0; p < this.maps_properties[id].length; p++) {
-        if (this.maps_properties[id][p].name !== property_name)
+    for (let p = 0; p < this.maps_properties[map].length; p++) {
+        if (this.maps_properties[map][p].name !== property_name ||
+            this.maps_properties[map][p].value !== property_value)
             continue;
 
-        for (let r = 0; r < this.maps_properties[id][p].rectangles.length; r++)
-            if (this.checkRectangularCollision(this.maps_properties[id][p].rectangles[r], rectangle))
+        for (let r = 0; r < this.maps_properties[map][p].rectangles.length; r++)
+            if (this.checkRectangularCollision(this.maps_properties[map][p].rectangles[r], rectangle))
             {
                 data.near = true;
-                data.tile = this.maps_properties[id][p].tile;
-                data.object = this.maps_properties[id][p].object;
+                data.tile = this.maps_properties[map][p].tile;
+                data.object = this.maps_properties[map][p].object;
 
                 break;
             }
@@ -510,4 +520,42 @@ exports.createPlayerMap = function(id, map_id) {
         vars: vars,
         map: this.maps[map_id]
     };
+};
+
+exports.inDialogRange = function(player, map, dialogName) {
+    //Check if map properties exist
+
+    if (this.maps_properties[map].length === 0)
+        return false;
+
+    //Proximity distance in tiles
+
+    let proximity = 3;
+    
+    //Create player rectangle
+
+    let rect = {
+        x: game.players[player].pos.X, 
+        y: game.players[player].pos.Y,
+        w: game.players[player].character.width,
+        h: game.players[player].character.width
+    };
+
+    rect.x -= (proximity/2)*this.maps[map].tilewidth;
+    rect.y -= (proximity/2)*this.maps[map].tileheight;
+    rect.w += proximity*this.maps[map].tilewidth;
+    rect.h += proximity*this.maps[map].tileheight;
+
+    //Check property with rectangle
+
+    let result = this.checkPropertyWithRectangle(
+        map, 
+        'mapDialogue', 
+        dialogName, 
+        rect
+    );
+
+    //Return near
+
+    return result.near;
 };

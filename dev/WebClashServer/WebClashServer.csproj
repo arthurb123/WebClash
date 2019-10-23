@@ -103,6 +103,12 @@
     <Compile Include="Editors\Quests.Designer.cs">
       <DependentUpon>Quests.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\MapDialogues.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\MapDialogues.Designer.cs">
+      <DependentUpon>MapDialogues.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\ResetData.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -182,6 +188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\Quests.resx">
       <DependentUpon>Quests.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\MapDialogues.resx">
+      <DependentUpon>MapDialogues.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\ResetData.resx">
       <DependentUpon>ResetData.cs</DependentUpon>

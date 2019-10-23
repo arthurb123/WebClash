@@ -188,6 +188,7 @@ namespace WebClashServer.Editors
                 mapType.Enabled = false;
                 bgmSource.Enabled = false;
                 pvp.Enabled = false;
+                editMapDialogues.Enabled = false;
                 dayNight.Enabled = false;
                 alwaysDark.Enabled = false;
                 return;
@@ -196,6 +197,7 @@ namespace WebClashServer.Editors
                 mapType.Enabled = true;
                 bgmSource.Enabled = true;
                 pvp.Enabled = true;
+                editMapDialogues.Enabled = true;
                 if (!alwaysDark.Enabled)
                     dayNight.Enabled = true;
                 if (!dayNight.Enabled)
@@ -386,6 +388,26 @@ namespace WebClashServer.Editors
             SaveMetadata();
         }
 
+        private void editMapDialogues_Click(object sender, EventArgs e)
+        {
+            if (mapList.SelectedIndex == -1)
+                return;
+
+            MapDialogues mapDialogues = new MapDialogues(
+                "Edit dialogues for map '" + mapList.SelectedItem.ToString() + "'",
+                currentMetadata.mapDialogs
+            );
+
+            mapDialogues.FormClosed += ((object s, FormClosedEventArgs fcea) =>
+            {
+                currentMetadata.mapDialogs = mapDialogues.GetSelection();
+
+                SaveMetadata();
+            });
+
+            mapDialogues.ShowDialog();
+        }
+
         private void SaveMetadata()
         {
             File.WriteAllText(
@@ -446,6 +468,7 @@ namespace WebClashServer.Editors
                 showDayNight = temp.showDayNight;
                 alwaysDark = temp.alwaysDark;
                 pvp = temp.pvp;
+                mapDialogs = temp.mapDialogs;
             }
             catch (Exception e)
             {
@@ -460,6 +483,8 @@ namespace WebClashServer.Editors
 
         public bool showDayNight = false;
         public bool alwaysDark = false;
+
+        public MapDialogue[] mapDialogs = new MapDialogue[0];
     }
 
     public class Tileset

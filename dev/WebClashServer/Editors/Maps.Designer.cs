@@ -33,6 +33,7 @@
             this.import = new System.Windows.Forms.Button();
             this.delete = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.editMapDialogues = new System.Windows.Forms.Button();
             this.pvp = new System.Windows.Forms.CheckBox();
             this.alwaysDark = new System.Windows.Forms.CheckBox();
             this.dayNight = new System.Windows.Forms.CheckBox();
@@ -63,13 +64,13 @@
             this.mapList.ItemHeight = 15;
             this.mapList.Location = new System.Drawing.Point(12, 12);
             this.mapList.Name = "mapList";
-            this.mapList.Size = new System.Drawing.Size(150, 212);
+            this.mapList.Size = new System.Drawing.Size(150, 257);
             this.mapList.TabIndex = 0;
             this.mapList.SelectedIndexChanged += new System.EventHandler(this.mapList_SelectedIndexChanged);
             // 
             // import
             // 
-            this.import.Location = new System.Drawing.Point(12, 230);
+            this.import.Location = new System.Drawing.Point(12, 276);
             this.import.Name = "import";
             this.import.Size = new System.Drawing.Size(52, 23);
             this.import.TabIndex = 1;
@@ -79,7 +80,7 @@
             // 
             // delete
             // 
-            this.delete.Location = new System.Drawing.Point(110, 230);
+            this.delete.Location = new System.Drawing.Point(110, 276);
             this.delete.Name = "delete";
             this.delete.Size = new System.Drawing.Size(52, 23);
             this.delete.TabIndex = 2;
@@ -89,6 +90,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.editMapDialogues);
             this.groupBox1.Controls.Add(this.pvp);
             this.groupBox1.Controls.Add(this.alwaysDark);
             this.groupBox1.Controls.Add(this.dayNight);
@@ -102,10 +104,20 @@
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(168, 5);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(264, 128);
+            this.groupBox1.Size = new System.Drawing.Size(264, 171);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Map Properties";
+            // 
+            // editMapDialogues
+            // 
+            this.editMapDialogues.Location = new System.Drawing.Point(8, 137);
+            this.editMapDialogues.Name = "editMapDialogues";
+            this.editMapDialogues.Size = new System.Drawing.Size(248, 23);
+            this.editMapDialogues.TabIndex = 19;
+            this.editMapDialogues.Text = "Edit Map Dialogues";
+            this.editMapDialogues.UseVisualStyleBackColor = true;
+            this.editMapDialogues.Click += new System.EventHandler(this.editMapDialogues_Click);
             // 
             // pvp
             // 
@@ -121,7 +133,7 @@
             // alwaysDark
             // 
             this.alwaysDark.AutoSize = true;
-            this.alwaysDark.Location = new System.Drawing.Point(88, 100);
+            this.alwaysDark.Location = new System.Drawing.Point(88, 106);
             this.alwaysDark.Name = "alwaysDark";
             this.alwaysDark.Size = new System.Drawing.Size(92, 19);
             this.alwaysDark.TabIndex = 17;
@@ -132,7 +144,7 @@
             // dayNight
             // 
             this.dayNight.AutoSize = true;
-            this.dayNight.Location = new System.Drawing.Point(53, 77);
+            this.dayNight.Location = new System.Drawing.Point(53, 83);
             this.dayNight.Name = "dayNight";
             this.dayNight.Size = new System.Drawing.Size(170, 19);
             this.dayNight.TabIndex = 16;
@@ -270,7 +282,7 @@
             // 
             // help
             // 
-            this.help.Location = new System.Drawing.Point(374, 230);
+            this.help.Location = new System.Drawing.Point(374, 276);
             this.help.Name = "help";
             this.help.Size = new System.Drawing.Size(58, 23);
             this.help.TabIndex = 4;
@@ -286,7 +298,7 @@
             this.groupBox2.Controls.Add(this.mapSize);
             this.groupBox2.Controls.Add(this.mapTilesets);
             this.groupBox2.Controls.Add(this.fixTilesets);
-            this.groupBox2.Location = new System.Drawing.Point(168, 137);
+            this.groupBox2.Location = new System.Drawing.Point(168, 182);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(264, 87);
             this.groupBox2.TabIndex = 5;
@@ -297,7 +309,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(444, 261);
+            this.ClientSize = new System.Drawing.Size(444, 311);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.help);
             this.Controls.Add(this.groupBox1);
@@ -307,8 +319,8 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(460, 300);
-            this.MinimumSize = new System.Drawing.Size(460, 300);
+            this.MaximumSize = new System.Drawing.Size(460, 350);
+            this.MinimumSize = new System.Drawing.Size(460, 340);
             this.Name = "Maps";
             this.Text = "WebClash Server - Maps";
             this.Load += new System.EventHandler(this.Maps_Load);
@@ -344,5 +356,6 @@
         private System.Windows.Forms.CheckBox alwaysDark;
         private System.Windows.Forms.CheckBox pvp;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button editMapDialogues;
     }
 }

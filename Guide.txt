@@ -63,6 +63,11 @@ objects are as follows:
 * "NPC"		      -> Spawns a NPC with the specified 
 		         name. (string value)
 
+* "mapDialogue"	      -> Opens up a dialogue with the
+			 specified name, map dialogues
+			 can be created in the Maps 
+			 interface. (string value)
+
 * "lightHotspot"      -> Creates a light hotspot in dark
 		         areas with the specified radius
 		         in tiles. (float value)

@@ -196,12 +196,12 @@ namespace WebClashServer.Editors
         {
             if (current.type != "friendly")
             {
-                dialogButton.Enabled = false;
+                dialogueButton.Enabled = false;
                 aggressive.Enabled = true;
             }
             else
             {
-                dialogButton.Enabled = true;
+                dialogueButton.Enabled = true;
                 aggressive.Enabled = false;
             }
         }
@@ -347,7 +347,7 @@ namespace WebClashServer.Editors
         {
             Dialogue npcDialogue = new Dialogue(current.dialog.ToList(), current.dialogElements.ToList(), false);
 
-            npcDialogue.Text = "Edit dialog for '" + current.name + "'";
+            npcDialogue.Text = "Edit dialogue for '" + current.name + "'";
 
             npcDialogue.FormClosed += (object s, FormClosedEventArgs fcea) => {
                 current.dialog = npcDialogue.dialogSystem.items.ToArray();
