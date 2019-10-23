@@ -182,11 +182,11 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
     else if (dialogEvent.eventType === 'TurnHostile') {
         //Grab target NPC
 
-        let npc = npcs.onMap[map][clientData.npc];
+        let npc = npcs.onMap[map][clientData.owner];
 
         //Kill original NPC
 
-        npcs.killNPC(map, clientData.npc);
+        npcs.killNPC(map, clientData.owner);
 
         //Create event NPC
 
@@ -200,7 +200,7 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
             function() {
                 //On reset, respawn original npc
 
-                npcs.respawnNPC(map, clientData.npc);
+                npcs.respawnNPC(map, clientData.owner);
             }
         );
 
@@ -236,7 +236,7 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
 
         //Open shop for the player
 
-        shop.openShop(id, clientData.npc, clientData.id, dialogEvent.showShopEvent);
+        shop.openShop(id, clientData.owner, clientData.id, dialogEvent.showShopEvent);
     }
 
     //Set player variable event
