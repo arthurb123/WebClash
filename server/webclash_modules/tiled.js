@@ -261,12 +261,14 @@ exports.cacheMap = function(map)
 
     //Cache dialog metadata
 
-    for (let d = 0; d < map.mapDialogs.length; d++) 
-        this.maps_dialogs[id][map.mapDialogs[d].name] = map.mapDialogs[d].dialog;
+    if (map.mapDialogs != undefined) {
+        for (let d = 0; d < map.mapDialogs.length; d++) 
+            this.maps_dialogs[id][map.mapDialogs[d].name] = map.mapDialogs[d].dialog;
 
-    //Remove unnecessary map data
+        //Remove unnecessary map data
 
-    delete map.mapDialogs;
+        delete map.mapDialogs;
+    }
 
     //Load NPCs
 
