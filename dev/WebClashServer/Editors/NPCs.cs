@@ -416,6 +416,8 @@ namespace WebClashServer.Editors
 
                 facing = temp.facing;
 
+                collidesWithinMap = temp.collidesWithinMap;
+
                 actions = temp.actions;
 
                 items = temp.items;
