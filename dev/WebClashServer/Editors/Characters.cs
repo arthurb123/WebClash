@@ -51,10 +51,32 @@ namespace WebClashServer.Editors
 
                 foreach (string c in characters)
                     charSelect.Items.Add(c.Substring(c.LastIndexOf('\\') + 1, c.LastIndexOf('.') - c.LastIndexOf('\\') - 1));
+
+                CheckInput();
             }
             catch (Exception exc)
             {
                 MessageBox.Show(exc.Message, "WebClash Server - Error");
+            }
+        }
+
+        private void CheckInput()
+        {
+            if (charSelect.Items.Count == 0)
+            {
+                generalGroupBox.Enabled = false;
+                movementGroupBox.Enabled = false;
+                colliderGroupBox.Enabled = false;
+                animationGroupBox.Enabled = false;
+                soundGroupBox.Enabled = false;
+            }
+            else
+            {
+                generalGroupBox.Enabled = true;
+                movementGroupBox.Enabled = true;
+                colliderGroupBox.Enabled = true;
+                animationGroupBox.Enabled = true;
+                soundGroupBox.Enabled = true;
             }
         }
 
@@ -159,7 +181,10 @@ namespace WebClashServer.Editors
 
         private void charSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadCharacter(charSelect.SelectedItem.ToString());
+            if (charSelect.SelectedItem.ToString() != "New Character")
+                LoadCharacter(charSelect.SelectedItem.ToString());
+            else
+                LoadCharacter(string.Empty);
         }
 
         private void src_TextChanged(object sender, EventArgs e)
@@ -210,9 +235,14 @@ namespace WebClashServer.Editors
 
         private void add_Click(object sender, EventArgs e)
         {
-            charSelect.Items.Add(string.Empty);
+            if (charSelect.SelectedItem != null &&
+                charSelect.SelectedItem.ToString() == "New Character")
+                return;
 
-            charSelect.SelectedItem = string.Empty;
+            charSelect.Items.Add("New Character");
+            charSelect.SelectedItem = "New Character";
+
+            CheckInput();
         }
 
         private void delete_Click(object sender, EventArgs e)

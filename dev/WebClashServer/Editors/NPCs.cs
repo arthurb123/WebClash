@@ -98,6 +98,7 @@ namespace WebClashServer.Editors
 
             range.Value = current.range;
             facing.SelectedIndex = current.facing;
+            collidesWithinMap.Checked = current.collidesWithinMap;
 
             switch (current.type)
             {
@@ -271,6 +272,11 @@ namespace WebClashServer.Editors
             current.range = (int)range.Value;
         }
 
+        private void collidesWithinMap_CheckedChanged(object sender, EventArgs e)
+        {
+            current.collidesWithinMap = collidesWithinMap.Checked;
+        }
+
         private void facing_SelectedIndexChanged(object sender, EventArgs e)
         {
             current.facing = facing.SelectedIndex;
@@ -432,6 +438,7 @@ namespace WebClashServer.Editors
         public string movement = "free";
         public int range = 10;
         public int facing = 0;
+        public bool collidesWithinMap = true;
 
         public string type = "friendly";
         public bool aggressive = false;

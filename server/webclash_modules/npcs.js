@@ -855,12 +855,23 @@ exports.updateNPCCombat = function(map, id)
 
 exports.checkNPCFacingCollision = function(map, id)
 {
-    let pos = game.calculateFace(this.onMap[map][id].pos, tiled.maps[map].tilewidth, tiled.maps[map].tileheight, this.onMap[map][id].direction);
+    //Calculate facing position of NPC
+
+    let pos = game.calculateFace(
+        this.onMap[map][id].pos, 
+        tiled.maps[map].tilewidth, 
+        tiled.maps[map].tileheight, 
+        this.onMap[map][id].direction
+    );
+
+    //Calculate position delta
 
     let delta = {
         x: pos.X-this.onMap[map][id].pos.X,
         y: pos.Y-this.onMap[map][id].pos.Y
     };
+
+    //Setup NPC rectangle
 
     let rect = {
         x: this.onMap[map][id].pos.X+this.onMap[map][id].data.character.collider.x,
@@ -868,6 +879,8 @@ exports.checkNPCFacingCollision = function(map, id)
         w: this.onMap[map][id].data.character.collider.width,
         h: this.onMap[map][id].data.character.collider.height
     };
+
+    //Based on delta change rectangle
 
     if (delta.x < 0) {
         rect.x += delta.x;
@@ -889,9 +902,14 @@ exports.checkNPCFacingCollision = function(map, id)
         return true;
 
     //Check collision inside map
+    //if the NPC should collide
+    //within maps
 
-    if (tiled.checkCollisionWithRectangle(map, rect))
-        return true;
+    let collidesWithinMap = this.onMap[map][id].data.collidesWithinMap;
+
+    if (collidesWithinMap == undefined || collidesWithinMap)
+        if (tiled.checkCollisionWithRectangle(map, rect))
+            return true;
 
     return false;
 };

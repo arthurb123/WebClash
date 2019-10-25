@@ -4,7 +4,10 @@
   "movement": "free",
   "range": 4,
   "facing": 0,
+  "collidesWithinMap": false,
   "type": "hostile",
+  "aggressive": false,
+  "attackRange": 1,
   "character": "butterfly",
   "stats": {
     "level": 1,
