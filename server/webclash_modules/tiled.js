@@ -169,10 +169,6 @@ exports.cacheMap = function(map)
             if (t > 0)
                 actual = tileset.tiles[i].id + map.tilesets[t].firstgid - 1;
 
-            //Create collider boolean
-
-            let createCollider = true;
-
             //Check properties
 
             if (tileset.tiles[i].properties != undefined) {
@@ -193,22 +189,8 @@ exports.cacheMap = function(map)
                         rectangles: this.getMapTileRectangles(map, actual),
                         checks: checks
                     });
-
-                    //Evaluate property name,
-                    //as design properties do
-                    //not require colliders!
-
-                    if (property.name === 'mapDialogue' ||
-                        property.name === 'lightHotspot' ||
-                        property.name === 'item')
-                        createCollider = false;
                 }
             }
-
-            //Check colliders
-
-            if (createCollider && tileset.tiles[i].objectgroup !== undefined)
-                this.maps_colliders[id].push(this.getMapTileRectangles(map, actual));
         }
     }
 
@@ -337,8 +319,8 @@ exports.handleMapDesign = function(map)
                 case 'item':
                     items.createMapItem(
                         map, 
-                        rect.x,
-                        rect.y,
+                        rect.x+rect.w/2,
+                        rect.y+rect.h/2,
                         property.value
                     );
                     break;
@@ -413,12 +395,14 @@ exports.getPropertiesWithRectangle = function(map, rectangle)
         this.maps_properties[map].length == 0)
         return [];
 
-    for (let p = 0; p < this.maps_properties[map].length; p++)
-        for (let r = 0; r < this.maps_properties[map][p].rectangles.length; r++)
-            if (this.checkRectangularCollision(this.maps_properties[map][p].rectangles[r], rectangle))
-                return this.maps_properties[map];
+    let result = [];
 
-    return [];
+    for (let p = 0; p < this.maps_properties[map].length; p++)
+        for (let r = 0; r < this.maps_properties[map][p].rectangles.length; r++) 
+            if (this.checkRectangularCollision(this.maps_properties[map][p].rectangles[r], rectangle))
+                result.push(this.maps_properties[map][p]);
+
+    return result;
 }
 
 exports.getPropertiesFromTile = function(map, tile)

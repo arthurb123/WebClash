@@ -4,8 +4,8 @@
  "settings": {
   "audio": {
    "main": 50,
-   "music": 50,
-   "sound": 50
+   "sound": 50,
+   "music": 50
   }
  }
 }

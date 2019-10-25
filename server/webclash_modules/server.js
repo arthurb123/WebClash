@@ -727,24 +727,29 @@ exports.handleChannel = function(channel)
             if (properties != undefined) {
                 for (let p = 0; p < properties.length; p++)
                 {
+                    switch (properties[p].name) {
                     //Position X property
 
-                    if (properties[p].name === 'positionX')
+                    case 'positionX':
                         game.setPlayerTilePosition(
                             id,
                             game.players[id].map_id,
-                            properties[p].value
+                            properties[p].value,
+                            undefined
                         );
+                        break;
 
                     //Position Y property
 
-                    else if (properties[p].name === 'positionY')
+                    case 'positionY':
                         game.setPlayerTilePosition(
                             id,
                             game.players[id].map_id,
                             undefined,
                             properties[p].value
                         );
+                        break;
+                    }
                 }
             }
         }
