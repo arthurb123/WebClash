@@ -105,12 +105,17 @@ exports.getMapType = function(name)
 
 exports.getMapTileRectangles = function(map, id)
 {
+    //Create rectangle array
+
     let rects = [];
 
     for (let l = 0; l < map.layers.length; l++) {
         if (!map.layers[l].visible ||
             map.layers[l].type !== 'tilelayer')
             continue;
+
+        //Get map offset width and height
+        //and calculate layer offset
 
         let offset_width = -map.width*map.tilewidth/2,
             offset_height = -map.height*map.tileheight/2;
@@ -119,6 +124,10 @@ exports.getMapTileRectangles = function(map, id)
             offset_width += map.layers[l].offsetx;
         if (map.layers[l].offsety !== undefined)
             offset_height += map.layers[l].offsety;
+
+        //Find all tiles in the layer that correspond to
+        //the specified tile identifier (id), add the
+        //rectangles of these tiles to the rectangle array
 
         for (let t = 0; t < map.layers[l].data.length; t++)
             if (map.layers[l].data[t] == id+1)
@@ -160,6 +169,10 @@ exports.cacheMap = function(map)
             if (t > 0)
                 actual = tileset.tiles[i].id + map.tilesets[t].firstgid - 1;
 
+            //Create collider boolean
+
+            let createCollider = true;
+
             //Check properties
 
             if (tileset.tiles[i].properties != undefined) {
@@ -180,12 +193,20 @@ exports.cacheMap = function(map)
                         rectangles: this.getMapTileRectangles(map, actual),
                         checks: checks
                     });
+
+                    //Evaluate property name,
+                    //as design properties do
+                    //not require colliders!
+
+                    if (property.name === 'mapDialogue' ||
+                        property.name === 'lightHotspot')
+                        createCollider = false;
                 }
             }
 
             //Check colliders
 
-            if (tileset.tiles[i].objectgroup !== undefined)
+            if (createCollider && tileset.tiles[i].objectgroup !== undefined)
                 this.maps_colliders[id].push(this.getMapTileRectangles(map, actual));
         }
     }
@@ -223,6 +244,10 @@ exports.cacheMap = function(map)
                 h: data.height
             };
 
+            //Create collider boolean
+
+            let createCollider = true;
+
             //Check properties
 
             if (data.properties != undefined) {
@@ -243,12 +268,23 @@ exports.cacheMap = function(map)
                         rectangles: [coll],
                         checks: checks
                     });
+
+                    //Evaluate property name,
+                    //as design properties do
+                    //not require colliders!
+
+                    if (property.name === 'mapDialogue' ||
+                        property.name === 'lightHotspot')
+                        createCollider = false;
                 }
             }
 
-            //Check if not a point
+            //Check if not a point or
+            //create collider is set
+            //to false
 
-            if (data.width === 0 ||
+            if (!createCollider ||
+                data.width === 0 ||
                 data.height === 0 ||
                 data.point)
                 continue;

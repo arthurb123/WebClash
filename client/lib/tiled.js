@@ -427,13 +427,13 @@ const tiled = {
                         y: Math.floor(t / width) * map.tileheight + this.offset.height
                     };
 
-                    //Check collider
+                    //Check tile colliders
 
-                    this.checkCollider(tp, tileset, actual);
+                    this.checkTileColliders(tp, tileset, actual);
 
-                    //Check properties
+                    //Check tile properties
 
-                    this.checkProperties(tp, tileset, actual);
+                    this.checkTileProperties(tp, tileset, actual);
 
                     //Check animation
 
@@ -458,6 +458,8 @@ const tiled = {
 
                     const properties = map.layers[l].objects[o].properties,
                           callbacks = [];
+
+                    let createCollider = true;
 
                     //Check properties
 
@@ -499,8 +501,17 @@ const tiled = {
                             //are handled by the server upon map change
 
                             if (properties[p].name === 'positionX' || properties[p].name === 'positionY')
-                            if (isMapEvent)
+                                if (isMapEvent)
+                                    continue;
+
+                            //Skip design events, make sure that
+                            //these also disable collider creation
+
+                            if (properties[p].name === 'mapDialogue' ||
+                                properties[p].name === 'lightHotspot') {
+                                createCollider = false;
                                 continue;
+                            }
 
                             //Handle property
 
@@ -523,7 +534,8 @@ const tiled = {
 
                     //Check if collider should be created
 
-                    if (data.point ||
+                    if (!createCollider ||
+                        data.point ||
                         data[o].width === 0 ||
                         data[o].height === 0)
                         continue;
@@ -631,15 +643,26 @@ const tiled = {
             }
         }
     },
-    checkCollider: function(tile_position, tileset, actual)
+    checkTileColliders: function(tile_position, tileset, actual)
     {
+        //Cycle through all tileset tiles
+
         for (let i = 0; i < tileset.tiles.length; i++) {
+            //If the tile conforms to the specified
+            //tile identifier (actual), check if the
+            //tile has objects which can be used as
+            //colliders
+
             if (tileset.tiles[i].id+1 == actual) {
                 if (tileset.tiles[i].objectgroup === undefined ||
                     tileset.tiles[i].objectgroup.objects === undefined)
                     continue;
 
+                //Get reference for shortening
+
                 const objects = tileset.tiles[i].objectgroup.objects;
+
+                //Add all colliders based on the objects
 
                 for (let c = 0; c < objects.length; c++)
                     if (objects[c].visible)
@@ -653,7 +676,7 @@ const tiled = {
             }
         }
     },
-    checkProperties: function(tile_position, tileset, actual)
+    checkTileProperties: function(tile_position, tileset, actual)
     {
         //Check all tile properties
 
@@ -665,7 +688,8 @@ const tiled = {
                 const properties = tileset.tiles[i].properties,
                       callbacks = [];
 
-                let isMapEvent = false;
+                let isMapEvent = false,
+                    createCollider = true;
 
                 //Get the checks if they exist
 
@@ -713,6 +737,15 @@ const tiled = {
                         if (isMapEvent)
                             continue;
 
+                    //Skip design events, make sure that
+                    //these also disable collider creation
+
+                    if (properties[p].name === 'mapDialogue' ||
+                        properties[p].name === 'lightHotspot') {
+                            createCollider = false;
+                            continue;
+                        }
+
                     //Handle the property
 
                     let f = this.handleProperty(properties[p]);
@@ -724,9 +757,10 @@ const tiled = {
                 }
 
                 //Add all generated callbacks
-                //as a collider
+                //as a collider, if the collider
+                //should be created
 
-                if (callbacks.length > 0) {
+                if (createCollider && callbacks.length > 0) {
                     if (tileset.tiles[i].objectgroup === undefined)
                         new lx.Collider(
                             tile_position.x,
