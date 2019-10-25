@@ -663,7 +663,7 @@ exports.handleChannel = function(channel)
 
             //Pick up world item
 
-            if (!items.pickupWorldItem(game.players[id].map_id, id, data))
+            if (!items.pickupItem(game.players[id].map_id, id, data))
             {
                 //Failure, notify user
 
@@ -1463,9 +1463,9 @@ exports.syncEquipmentItem = function(equippable, id, channel, broadcast)
     }
 }
 
-//Sync single world item function, if channel is undefined it will be globally emitted
+//Sync single item function, if channel is undefined it will be globally emitted
 
-exports.syncWorldItem = function(map, data, channel, broadcast)
+exports.syncItem = function(map, data, channel, broadcast)
 {
     if (channel === undefined)
         io.room(map).emit('GAME_WORLD_ITEM_UPDATE', data);

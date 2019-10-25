@@ -63,6 +63,10 @@ objects are as follows:
 * "NPC"		      -> Spawns a NPC with the specified 
 		         name. (string value)
 
+* "item"	      -> Spawns an item with the specified
+			 name, which respawns after 60
+			 seconds. (string value)
+
 * "mapDialogue"	      -> Opens up a dialogue with the
 			 specified name, map dialogues
 			 can be created in the Maps 

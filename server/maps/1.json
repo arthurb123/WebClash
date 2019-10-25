@@ -1415,8 +1415,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":497,
-                 "y":207
+                 "x":482.333333333333,
+                 "y":185.666666666667
                 }, 
                 {
                  "height":0,
@@ -1440,6 +1440,24 @@
                  "width":0,
                  "x":1043,
                  "y":478
+                }, 
+                {
+                 "height":0,
+                 "id":146,
+                 "name":"",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"item",
+                         "type":"string",
+                         "value":"Sword"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":334.666666666667,
+                 "y":147.333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1448,7 +1466,7 @@
          "y":0
         }],
  "nextlayerid":20,
- "nextobjectid":146,
+ "nextobjectid":147,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.1",

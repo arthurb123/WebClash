@@ -488,7 +488,8 @@ exports.createWorldItem = function(owner, map, x, y, name)
     if (ownerName != -1)
         ownerName = game.players[owner].name;
 
-    //Create world item on map
+    //Create item array on map
+    //if necessary
 
     if (this.onMap[map] == undefined)
         this.onMap[map] = [];
@@ -512,6 +513,7 @@ exports.createWorldItem = function(owner, map, x, y, name)
 
             this.onMap[map][i] = {
                 item: worldItem,
+                type: 'world',
                 timer: {
                     cur: 0,
                     releaseTime: 30, //30 seconds for item release
@@ -524,7 +526,58 @@ exports.createWorldItem = function(owner, map, x, y, name)
 
     //Sync across map
 
-    server.syncWorldItem(map, worldItem);
+    server.syncItem(map, worldItem);
+};
+
+exports.createMapItem = function(map, x, y, name) {
+    //Get item
+
+    let item = this.getItem(name);
+
+    //Check if valid
+
+    if (item == undefined)
+        return;
+
+    //Create item array on map
+    //if necessary
+
+    if (this.onMap[map] == undefined)
+        this.onMap[map] = [];
+
+    //Get converted item and add
+    //map item specific attributes
+
+    let mapItem = this.getConvertedItem(name);
+    mapItem.owner = -1;
+    mapItem.pos = {
+        X: x,
+        Y: y
+    };
+
+    //Add item to map
+
+    for (let i = 0; i < this.onMap[map].length+1; i++)
+        if (this.onMap[map][i] == undefined)
+        {
+            mapItem.id = i;
+
+            this.onMap[map][i] = {
+                item: mapItem,
+                type: 'map',
+                timer: {
+                    cur: 0,
+                    respawnTime: 60,    //Item respawn time of 60 sec
+                    shouldRespawn: false
+                }
+            };
+
+            break;
+        }
+
+    //Sync across map
+
+    server.syncItem(map, mapItem);
 };
 
 exports.releaseWorldItemsFromOwner = function(map, owner)
@@ -549,7 +602,7 @@ exports.releaseWorldItemsFromOwner = function(map, owner)
 
             //Sync world item
 
-            server.syncWorldItem(map, this.onMap[map][i].item);
+            server.syncItem(map, this.onMap[map][i].item);
         }
     }
 };
@@ -567,10 +620,10 @@ exports.releaseWorldItemFromOwner = function(map, item)
 
     //Sync world item
 
-    server.syncWorldItem(map, this.onMap[map][item].item);
+    server.syncItem(map, this.onMap[map][item].item);
 };
 
-exports.pickupWorldItem = function(map, id, item)
+exports.pickupItem = function(map, id, item)
 {
     //Check if valid
 
@@ -584,41 +637,51 @@ exports.pickupWorldItem = function(map, id, item)
         this.onMap[map][item].item.owner !== game.players[id].name)
         return false;
 
+    //If the item is a map item, check
+    //if it should respawn first to prevent
+    //item spamming through some sort of hacking
+
+    if (this.onMap[map][item].type === 'map' &&
+        this.onMap[map][item].timer.shouldRespawn)
+        return false;
+
     //Attempt to add item
 
     if (!this.addPlayerItem(id, this.onMap[map][item].item.name))
         return false;
 
-    //Remove world item
+    //Remove item
 
-    this.removeWorldItem(map, item);
+    this.removeItem(map, item);
 
     //Return true
 
     return true;
 };
 
-exports.removeWorldItem = function(map, item)
+exports.removeItem = function(map, item)
 {
     //Check if valid
 
     if (this.onMap[map] === undefined)
         return;
 
-    //Set as remove object
+    //Sync remove item
 
-    this.onMap[map][item].item = {
+    server.syncItem(map, {
         id: item,
         remove: true
-    };
+    });
 
-    //Sync world item
+    //Remove item if world item
 
-    server.syncWorldItem(map, this.onMap[map][item].item);
+    if (this.onMap[map][item].type === 'world')
+        this.onMap[map][item] = undefined;
 
-    //Remove world item
+    //If map item, enable respawn timer
 
-    this.onMap[map][item] = undefined;
+    else if (this.onMap[map][item].type === 'map')
+        this.onMap[map][item].timer.shouldRespawn = true;
 };
 
 exports.updateMaps = function()
@@ -639,18 +702,40 @@ exports.updateMaps = function()
             if (this.onMap[m][i] === undefined)
                 continue;
 
-            this.onMap[m][i].timer.cur++;
+            //World item
 
-            //Check if item should be released of it's owner
+            if (this.onMap[m][i].type === 'world') {
+                this.onMap[m][i].timer.cur++;
 
-            if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.releaseTime &&
-                this.onMap[m][i].item.owner != -1)
-                this.releaseWorldItemFromOwner(m, i);
+                //Check if item should be released of it's owner
 
-            //Check if item should be removed
+                if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.releaseTime &&
+                    this.onMap[m][i].item.owner != -1)
+                    this.releaseWorldItemFromOwner(m, i);
 
-            if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.removeTime)
-                this.removeWorldItem(m, i);
+                //Check if item should be removed
+
+                if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.removeTime)
+                    this.removeItem(m, i);
+            }
+            else if (this.onMap[m][i].type === 'map') {
+                //Check if should respawn
+
+                if (!this.onMap[m][i].timer.shouldRespawn)
+                    continue;
+
+                this.onMap[m][i].timer.cur++;
+
+                //Check if item can be respawned,
+                //if so sync item and reset should
+                //respawn boolean to false
+
+                if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.respawnTime) {
+                    this.onMap[m][i].timer.shouldRespawn = false;
+
+                    server.syncItem(m, this.onMap[m][i].item);
+                }
+            }
         }
     }
 };
@@ -670,5 +755,5 @@ exports.sendMap = function(id)
 
     for (let i = 0; i < this.onMap[map].length; i++)
         if (this.onMap[map][i] !== undefined)
-            server.syncWorldItem(map, this.onMap[map][i].item, channel, false);
+            server.syncItem(map, this.onMap[map][i].item, channel, false);
 };

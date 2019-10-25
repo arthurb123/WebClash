@@ -199,7 +199,8 @@ exports.cacheMap = function(map)
                     //not require colliders!
 
                     if (property.name === 'mapDialogue' ||
-                        property.name === 'lightHotspot')
+                        property.name === 'lightHotspot' ||
+                        property.name === 'item')
                         createCollider = false;
                 }
             }
@@ -274,7 +275,8 @@ exports.cacheMap = function(map)
                     //not require colliders!
 
                     if (property.name === 'mapDialogue' ||
-                        property.name === 'lightHotspot')
+                        property.name === 'lightHotspot' ||
+                        property.name === 'item')
                         createCollider = false;
                 }
             }
@@ -306,9 +308,47 @@ exports.cacheMap = function(map)
         delete map.mapDialogs;
     }
 
+    //Handle design properties
+
+    this.handleMapDesign(id);
+
     //Load NPCs
 
     npcs.loadMap(id);
+};
+
+exports.handleMapDesign = function(map)
+{
+    //Cycle through all properties
+
+    for (let p = 0; p < this.maps_properties[map].length; p++) {
+        let property = this.maps_properties[map][p];
+
+        for (let r = 0; r < property.rectangles.length; r++) {
+            //Simplify current rectangle
+
+            let rect = property.rectangles[r];
+
+            //Switch on property name
+
+            switch (property.name) {
+                //Item design property
+
+                case 'item':
+                    items.createMapItem(
+                        map, 
+                        rect.x,
+                        rect.y,
+                        property.value
+                    );
+                    break;
+
+                //Other design properties
+
+                //...
+            }
+        }
+    }
 };
 
 exports.getPropertyChecks = function(properties) {
