@@ -1,1 +1,1 @@
-{"mapType":"neutral","bgmSource":"res/bgm/Eerie Scene - Aaron Krogh.mp3","pvp":true,"showDayNight":false,"alwaysDark":true,"mapDialogs":[]}
+{"mapType":"neutral","bgmSource":"res/bgm/Eerie Scene - Aaron Krogh.mp3","pvp":true,"showDayNight":false,"alwaysDark":true,"mapLayers":[{"name":"Ground","hover":false},{"name":"Mask","hover":false}],"mapDialogs":[]}

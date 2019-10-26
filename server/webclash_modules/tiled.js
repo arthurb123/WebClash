@@ -59,8 +59,15 @@ exports.loadMap = function(name)
 
             for (let attr in metadata)
                 map[attr] = metadata[attr];
-        } else 
-            output.give('No metadata found for map "' + name + '".');
+        } else {
+            output.give('No metadata found for map "' + name + '", this map has not been loaded.');
+
+            return;
+        }
+
+        //Verify metadata for map
+
+        this.verifyMetadata(map);
 
         //Add map to map collection
 
@@ -74,6 +81,24 @@ exports.loadMap = function(name)
     {
         output.giveError('Could not load map: ', err);
     }
+};
+
+exports.verifyMetadata = function(map) {
+    //Check if the amount of layers and
+    //map layers are consistent
+
+    let layerAmount = 0;
+
+    for (let l = 0; l < map.layers.length; l++)
+        if (map.layers[l].type === 'tilelayer')
+            layerAmount++;
+
+    if (layerAmount !== map.mapLayers.length)
+        output.give('The amount of layers in map "' + map.name + '" differ from the layers specified in the map settings, updating this is advised.');
+
+    //Other metadata verification checks 
+
+    //...
 };
 
 exports.mapWithName = function(name)

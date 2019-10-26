@@ -52,6 +52,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.help = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.editLayers = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -90,6 +91,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.editLayers);
             this.groupBox1.Controls.Add(this.editMapDialogues);
             this.groupBox1.Controls.Add(this.pvp);
             this.groupBox1.Controls.Add(this.alwaysDark);
@@ -111,11 +113,11 @@
             // 
             // editMapDialogues
             // 
-            this.editMapDialogues.Location = new System.Drawing.Point(8, 137);
+            this.editMapDialogues.Location = new System.Drawing.Point(137, 136);
             this.editMapDialogues.Name = "editMapDialogues";
-            this.editMapDialogues.Size = new System.Drawing.Size(248, 23);
+            this.editMapDialogues.Size = new System.Drawing.Size(120, 23);
             this.editMapDialogues.TabIndex = 19;
-            this.editMapDialogues.Text = "Edit Map Dialogues";
+            this.editMapDialogues.Text = "Edit Dialogues";
             this.editMapDialogues.UseVisualStyleBackColor = true;
             this.editMapDialogues.Click += new System.EventHandler(this.editMapDialogues_Click);
             // 
@@ -164,16 +166,16 @@
             // 
             // bgmSource
             // 
-            this.bgmSource.Location = new System.Drawing.Point(51, 50);
+            this.bgmSource.Location = new System.Drawing.Point(47, 50);
             this.bgmSource.Name = "bgmSource";
-            this.bgmSource.Size = new System.Drawing.Size(180, 21);
+            this.bgmSource.Size = new System.Drawing.Size(184, 21);
             this.bgmSource.TabIndex = 14;
             this.bgmSource.TextChanged += new System.EventHandler(this.bgmSource_TextChanged);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(11, 52);
+            this.label4.Location = new System.Drawing.Point(6, 53);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(35, 15);
             this.label4.TabIndex = 13;
@@ -196,16 +198,16 @@
             this.mapType.Items.AddRange(new object[] {
             "Protected",
             "Neutral"});
-            this.mapType.Location = new System.Drawing.Point(51, 20);
+            this.mapType.Location = new System.Drawing.Point(47, 20);
             this.mapType.Name = "mapType";
-            this.mapType.Size = new System.Drawing.Size(98, 23);
+            this.mapType.Size = new System.Drawing.Size(102, 23);
             this.mapType.TabIndex = 11;
             this.mapType.SelectedIndexChanged += new System.EventHandler(this.mapType_SelectedIndexChanged);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(11, 24);
+            this.label2.Location = new System.Drawing.Point(6, 24);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(33, 15);
             this.label2.TabIndex = 1;
@@ -305,6 +307,16 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Map Information";
             // 
+            // editLayers
+            // 
+            this.editLayers.Location = new System.Drawing.Point(9, 136);
+            this.editLayers.Name = "editLayers";
+            this.editLayers.Size = new System.Drawing.Size(120, 23);
+            this.editLayers.TabIndex = 20;
+            this.editLayers.Text = "Edit Layers";
+            this.editLayers.UseVisualStyleBackColor = true;
+            this.editLayers.Click += new System.EventHandler(this.editLayers_Click);
+            // 
             // Maps
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -357,5 +369,6 @@
         private System.Windows.Forms.CheckBox pvp;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button editMapDialogues;
+        private System.Windows.Forms.Button editLayers;
     }
 }

@@ -44,11 +44,15 @@ WebClash makes use of maps created in
 Tiled (www.mapeditor.org), these maps can be
 imported using the Maps interface.
 
-The first three tile-layers of every tiled map
-are considered ground, mask and second mask. 
-All following layers are treated as hovering. 
-This means that the layer lives atop of 
-all other entities. (players, NPCs, items, etc.)
+Layers of maps have to be given certain
+properties in the maps interface by clicking the
+Edit Layers button. 
+These settings determine the rendering position of 
+the layer and if the layer is hovering.
+The rendering position of the layer can be changed
+with the Move Down and Move Up buttons.
+Hovering layers are layers lives atop of all other 
+entities. (players, NPCs, items, etc.)
 
 Colliders are supported, however only in
 the rectangular form.

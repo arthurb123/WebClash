@@ -6,7 +6,7 @@ const camera = {
             undefined,
             -target.Size().W/2,
             -target.Size().H/2,
-            1, 1
+            0, 0
         );
 
         //Follow the target and focus
@@ -71,7 +71,7 @@ const camera = {
             return viewport;
         };
 
-        //Setup gameobject update loop
+        //Setup gameobject draw loop
 
         go.Draws(function() {
             //Retrieve the current viewport

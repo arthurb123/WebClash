@@ -408,6 +408,27 @@ namespace WebClashServer.Editors
             mapDialogues.ShowDialog();
         }
 
+        private void editLayers_Click(object sender, EventArgs e)
+        {
+            if (mapList.SelectedIndex == -1)
+                return;
+
+            MapLayers mapLayers = new MapLayers(
+                "Edit layers for map '" + mapList.SelectedItem.ToString() + "'",
+                current,
+                currentMetadata.mapLayers
+            );
+
+            mapLayers.FormClosed += ((object s, FormClosedEventArgs fcea) =>
+            {
+                currentMetadata.mapLayers = mapLayers.GetSelection();
+
+                SaveMetadata();
+            });
+
+            mapLayers.ShowDialog();
+        }
+
         private void SaveMetadata()
         {
             File.WriteAllText(
@@ -439,6 +460,7 @@ namespace WebClashServer.Editors
                 height = temp.height;
 
                 tilesets = temp.tilesets;
+                layers = temp.layers;
             }
             catch (Exception e)
             {
@@ -450,6 +472,7 @@ namespace WebClashServer.Editors
                    height = 0;
 
         public Tileset[] tilesets = new Tileset[0];
+        public Layer[] layers = new Layer[0];
     }
 
     public class MapMetadata
@@ -468,6 +491,7 @@ namespace WebClashServer.Editors
                 showDayNight = temp.showDayNight;
                 alwaysDark = temp.alwaysDark;
                 pvp = temp.pvp;
+                mapLayers = temp.mapLayers;
                 mapDialogs = temp.mapDialogs;
             }
             catch (Exception e)
@@ -484,11 +508,18 @@ namespace WebClashServer.Editors
         public bool showDayNight = false;
         public bool alwaysDark = false;
 
+        public MapLayer[] mapLayers = new MapLayer[0];
         public MapDialogue[] mapDialogs = new MapDialogue[0];
     }
 
     public class Tileset
     {
         public string image = "";
+    }
+
+    public class Layer
+    {
+        public string name = "";
+        public string type = "";
     }
 }

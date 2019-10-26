@@ -61,6 +61,12 @@
     <Compile Include="Editors\Actions.Designer.cs">
       <DependentUpon>Actions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\MapLayers.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\MapLayers.Designer.cs">
+      <DependentUpon>MapLayers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Editors\NPCEquipment.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,6 +173,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Editors\Actions.resx">
       <DependentUpon>Actions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\MapLayers.resx">
+      <DependentUpon>MapLayers.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\NPCEquipment.resx">
       <DependentUpon>NPCEquipment.cs</DependentUpon>

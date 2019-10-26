@@ -95,68 +95,94 @@ const tiled = {
 
             tiled.checkObjects(map);
 
-            //Declare necessary variable(s)
-
-            let actualLayer = 0;
-
             //Update progress
 
             cache.progress.update('Building map - 0%');
 
+            //Create base and hovering cached canvases
+
+            let baseCanvas = new lx.Canvas(
+                map.width * map.tilewidth, 
+                map.height * map.tileheight
+            );
+            let hoverCanvas = new lx.Canvas(
+                map.width * map.tilewidth, 
+                map.height * map.tileheight
+            );
+
             //Cache and setup rendering of all layers
 
-            for (let l = 0; l < map.layers.length; l++) {
+            for (let l = 0; l < map.mapLayers.length; l++) {
                 //Update progress
 
                 cache.progress.update('Building map - ' + (l/(map.layers.length-1)*100).toFixed(0) + '%');
 
-                //Check if visible
+                //Grab the layer
 
-                if (!map.layers[l].visible)
-                    continue;
+                const layer = tiled.getLayerWithName(map, map.mapLayers[l].name);
 
-                //Check if tilelayer
+                //Check if layer exists and is visible
 
-                if (map.layers[l].type !== 'tilelayer')
+                if (layer == undefined || !layer.visible)
                     continue;
 
                 //Create offset width and height
 
-                let offset_width = tiled.offset.width,
-                    offset_height = tiled.offset.height;
+                let offset_width = 0,
+                    offset_height = 0;
 
-                if (map.layers[l].offsetx !== undefined)
-                    offset_width += map.layers[l].offsetx;
-                if (map.layers[l].offsety !== undefined)
-                    offset_height += map.layers[l].offsety;
+                if (layer.offsetx !== undefined)
+                    offset_width += layer.offsetx;
+                if (layer.offsety !== undefined)
+                    offset_height += layer.offsety;
 
                 //Prerender/cache layer for easier drawing
 
-                const cachedLayer = tiled.cacheLayer(map, l),
+                const cachedLayer = tiled.cacheLayer(map, l, offset_width, offset_height),
                       cachedLayerSprite = new lx.Sprite(cachedLayer);
 
-                //Add drawing loop
+                //Draw the cached layer to either the base
+                //or hover canvas, based on it's hover setting
 
-                lx.OnLayerDraw(actualLayer, function(gfx) {
-                    if (game.player === -1 ||
-                        game.players[game.player] == undefined)
-                        return;
-
-                    //Draw cached layer sprite
-
-                    lx.DrawSprite(
-                        cachedLayerSprite,
-                        offset_width,
-                        offset_height,
-                        cachedLayerSprite.Size().W,
-                        cachedLayerSprite.Size().H
-                    );
-                });
-
-                //Increment actual layer
-
-                actualLayer++;
+                if (!map.mapLayers[l].hover)
+                    baseCanvas.DrawSprite(cachedLayerSprite, offset_width, offset_height);
+                else
+                    hoverCanvas.DrawSprite(cachedLayerSprite, offset_width, offset_height);
             }
+
+            //Create the sprites and drawing functions 
+            //for the base and hover canvases
+
+            let baseCanvasSprite = new lx.Sprite(baseCanvas),
+                hoverCanvasSprite = new lx.Sprite(hoverCanvas);
+
+            lx.OnLayerDraw(0, function() {
+                if (game.player === -1 ||
+                    game.players[game.player] == undefined)
+                    return;
+
+                //Draw cached layer sprite
+
+                lx.DrawSprite(
+                    baseCanvasSprite,
+                    tiled.offset.width,
+                    tiled.offset.height
+                );
+            });
+
+            lx.OnLayerDraw(3, function() {
+                if (game.player === -1 ||
+                    game.players[game.player] == undefined)
+                    return;
+
+                //Draw cached layer sprite
+
+                lx.DrawSprite(
+                    hoverCanvasSprite,
+                    tiled.offset.width,
+                    tiled.offset.height
+                );
+            });
 
             //Cache the shadow map and setup the 
             //rendering process if the map demands so
@@ -170,7 +196,7 @@ const tiled = {
                 //Setup rendering process on the
                 //highest layer
 
-                lx.OnLayerDraw(actualLayer+1, function() {
+                lx.OnLayerDraw(4, function() {
                     if (game.gameTime.current == undefined)
                         return;
 
@@ -204,9 +230,7 @@ const tiled = {
                     lx.DrawSprite(
                         shadowMapSprite,
                         tiled.offset.width,
-                        tiled.offset.height,
-                        shadowMapSprite.Size().W,
-                        shadowMapSprite.Size().H
+                        tiled.offset.height
                     );
                 });
             }
@@ -240,7 +264,16 @@ const tiled = {
             tiled.loading = false;
         });
     },
-    cacheLayer: function(map, layer_id)
+    getLayerWithName: function(map, layer_name) {
+        //Cycle through all map layers until
+        //the corresponding map was found
+
+        for (let l = 0; l < map.layers.length; l++) {
+            if (map.layers[l].name === layer_name)
+                return map.layers[l];
+        }
+    },
+    cacheLayer: function(map, layer_id, offset_width, offset_height)
     {
         //Get layer
 
@@ -289,8 +322,8 @@ const tiled = {
 
                     animation
                         .Position(
-                            tp.x+this.offset.width,
-                            tp.y+this.offset.height+heightOffset
+                            tp.x+this.offset.width+offset_width,
+                            tp.y+this.offset.height+offset_height+heightOffset
                         )
                         .Size(
                             map.animatedTiles[actual].size.w,
