@@ -93,7 +93,7 @@ exports.verifyMetadata = function(map) {
         if (map.layers[l].type === 'tilelayer')
             layerAmount++;
 
-    if (layerAmount !== map.mapLayers.length)
+    if (map.mapLayers == undefined || layerAmount !== map.mapLayers.length)
         output.give('The amount of layers in map "' + map.name + '" differ from the layers specified in the map settings, updating this is advised.');
 
     //Other metadata verification checks 
