@@ -1,4 +1,4 @@
-const UIBox = function(parent, id, x, y, width, height) {
+const UIBox = function(parent, id, x, y, width, height, appendToBody) {
     this.parent = parent;
     this.id = id;
 
@@ -37,7 +37,10 @@ const UIBox = function(parent, id, x, y, width, height) {
 
     //Append box
 
-    view.dom.appendChild(this.element);
+    if (!appendToBody)
+        view.dom.appendChild(this.element);
+    else
+        document.body.appendChild(this.element);
 
     //Get the complete style and setup padding
 

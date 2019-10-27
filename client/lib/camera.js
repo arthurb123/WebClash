@@ -2,18 +2,11 @@ const camera = {
     initialize: (target) => {
         //Create camera gameobject
 
-        let go = new lx.GameObject(
-            undefined,
-            -target.Size().W/2,
-            -target.Size().H/2,
-            0, 0
-        );
+        let go = new lx.GameObject(undefined, 0, 0, 0, 0);
 
         //Follow the target and focus
         
-        go
-            .Focus()
-            .Show();
+        go.Focus().Show();
             
         //Setup camera viewport retrieval
 
@@ -26,8 +19,8 @@ const camera = {
             //Create viewport object
 
             let viewport = {
-                X: target.Position().X-scaledWidth/2,
-                Y: target.Position().Y-scaledHeight/2,
+                X: target.Position().X+target.Size().W/2-scaledWidth/2,
+                Y: target.Position().Y+target.Size().H/2-scaledHeight/2,
                 W: scaledWidth,
                 H: scaledHeight,
                 safe: true,
@@ -74,6 +67,11 @@ const camera = {
         //Setup gameobject draw loop
 
         go.Draws(function() {
+            //Check if the target is valid
+
+            if (target.BUFFER_ID === -1)
+                return;
+
             //Retrieve the current viewport
 
             let viewport = go.GetViewport();

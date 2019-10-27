@@ -16,7 +16,7 @@ exports.combat = {
         };
     },
     in: function(id) {
-        return this.players[id] != undefined;
+        return (this.players[id] != undefined && !game.players[id].killed)
     },
     add: function(id) {
         this.players[id] = this.timeout;

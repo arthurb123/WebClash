@@ -240,6 +240,21 @@ const client = {
                  game.players[id]._sounds = data.character.sounds;
              }
         });
+        channel.on('GAME_PLAYER_KILLED', function (data) {
+            //Check if data is valid
+
+            if (data === undefined)
+                return;
+
+            //Check if in-game
+
+            if (!client.inGame)
+                return;
+
+            //Kill player with data
+
+            player.kill(data);
+        });
         channel.on('GAME_MAP_UPDATE', function (data) {
              //Check if data is valid
 

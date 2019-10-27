@@ -23,20 +23,29 @@ exports.handleChannel = function(channel)
 
     //Create custom check functions
 
-    const isInGame = function() {
-        return (channel.playing != undefined &&
-                channel.playing &&
-                game.players[channel.name] != undefined);
+    const isInGame = function(checkAlive) {
+        let inGame = (channel.playing != undefined &&
+                      channel.playing &&
+                      game.players[channel.name] != undefined);
+
+        if (inGame && checkAlive)
+            inGame = !game.players[channel.name].killed;
+
+        return inGame;
     };
 
     //Disconnect and logout event listener
 
     const logOut = function() {
         if (channel.playing) {
-            //Check if player is in-combat,
+            //Shorten name
+
+            let id = channel.name;
+
+            //Check if player is in-combat, 
             //if so do not logout
 
-            if (actions.combat.in(channel.name))
+            if (actions.combat.in(id))
                 return;
 
             //Remove player
@@ -45,7 +54,7 @@ exports.handleChannel = function(channel)
 
             //Output
 
-            output.give('User \'' + channel.name + '\' has logged out.');
+            output.give('User \'' + id + '\' has logged out.');
         }
     }
 
@@ -68,233 +77,273 @@ exports.handleChannel = function(channel)
     //Authentication events
 
     channel.on('CLIENT_LOGIN', function(data) {
-        //Check if valid package
+        try {
+            //Check if valid package
 
-        if (data === undefined || 
-            data.name === undefined)
-            return;
+            if (data === undefined || 
+                data.name === undefined)
+                return;
 
-        //Convert name to string
+            //Convert name to string
 
-        let name = data.name.toString();
+            let name = data.name.toString();
 
-        //Check if name is valid
+            //Check if name is valid
 
-        if (!name.match("^[a-zA-Z0-9]*$")) {
-            channel.emit('CLIENT_LOGIN_RESPONSE', 'none');
-            return;
-        }
-
-        //Grab entry with username
-
-        storage.load('accounts', name, function(player) {
-            if (player === undefined)
-            {
+            if (!name.match("^[a-zA-Z0-9]*$")) {
                 channel.emit('CLIENT_LOGIN_RESPONSE', 'none');
                 return;
             }
 
-            //Check if password matches
+            //Grab entry with username
 
-            if (player.pass != data.pass)
-            {
-                channel.emit('CLIENT_LOGIN_RESPONSE', 'wrong');
-                return;
-            }
+            storage.load('accounts', name, function(player) {
+                if (player === undefined)
+                {
+                    channel.emit('CLIENT_LOGIN_RESPONSE', 'none');
+                    return;
+                }
 
-            //Check if there is place available
+                //Check if password matches
 
-            if (properties.maxPlayers != 0 &&
-                game.playerCount >= properties.maxPlayers)
-            {
-                channel.emit('CLIENT_LOGIN_RESPONSE', 'full');
-                return;
-            }
+                if (player.pass != data.pass)
+                {
+                    channel.emit('CLIENT_LOGIN_RESPONSE', 'wrong');
+                    return;
+                }
 
-            //Check if banned
+                //Check if there is place available
 
-            if (permissions.banned.indexOf(name) != -1)
-            {
-                channel.emit('CLIENT_LOGIN_RESPONSE', 'banned');
-                return;
-            }
+                if (properties.maxPlayers != 0 &&
+                    game.playerCount >= properties.maxPlayers)
+                {
+                    channel.emit('CLIENT_LOGIN_RESPONSE', 'full');
+                    return;
+                }
 
-            //Check if already logged in
+                //Check if banned
 
-            if (game.players[name] != undefined)
-            {
-                //If so, log other person out and login
-                //This can also be blocked using
-                //channel.emit('CLIENT_LOGIN_RESPONSE', 'loggedin');
-                //However this is necessary to protect against
-                //account blocking when in-combat and logging out.
+                if (permissions.banned.indexOf(name) != -1)
+                {
+                    channel.emit('CLIENT_LOGIN_RESPONSE', 'banned');
+                    return;
+                }
 
-                game.disconnectPlayer(name, false);
+                //Check if already logged in
 
-                //Output
+                if (game.players[name] != undefined)
+                {
+                    //If so, log other person out and login
+                    //This can also be blocked using
+                    //channel.emit('CLIENT_LOGIN_RESPONSE', 'loggedin');
+                    //However this is necessary to protect against
+                    //account blocking when in-combat and logging out.
 
-                output.give('User \'' + name + '\' has relogged.');
-            }
-            else
-            {
-                //Output
+                    game.disconnectPlayer(name, false);
 
-                output.give('User \'' + name + '\' has logged in.');
-            }
+                    //Output
 
-            //Set variables
+                    output.give('User \'' + name + '\' has relogged.');
+                }
+                else
+                {
+                    //Output
 
-            channel.name = name;
+                    output.give('User \'' + name + '\' has logged in.');
+                }
 
-            //Request the respective page,
-            //based on if the account has
-            //created a character
+                //Set variables
 
-            if (player.created)
-                channel.emit('REQUEST_GAME');
-            else
-                channel.emit('REQUEST_CREATION', game.getPlayerCharacters());
-        });
+                channel.name = name;
+
+                //Request the respective page,
+                //based on if the account has
+                //created a character
+
+                if (player.created)
+                    channel.emit('REQUEST_GAME');
+                else
+                    channel.emit('REQUEST_CREATION', game.getPlayerCharacters());
+            });
+        }
+        catch (err) {
+            output.giveError('Could not handle login: ', err);
+        }
     });
 
     channel.on('CLIENT_REGISTER', function(data) {
-        //Check if valid package
+        try {
+            //Check if valid package
 
-        if (data === undefined || 
-            data.name === undefined)
-            return;
+            if (data === undefined || 
+                data.name === undefined)
+                return;
 
-        //Convert name to string
+            //Convert name to string
 
-        let name = data.name.toString();
+            let name = data.name.toString();
 
-        //Check profanity and illegal characters
+            //Check profanity and illegal characters
 
-        if (input.filterText(name).indexOf('*') != -1 ||
-            !name.match("^[a-zA-Z0-9]*$"))
-        {
-            channel.emit('CLIENT_REGISTER_RESPONSE', 'invalid');
-            return;
-        }
-
-        //Check if account already exists
-
-        storage.exists('accounts', name, function(is) {
-            if (is)
+            if (input.filterText(name).indexOf('*') != -1 ||
+                !name.match("^[a-zA-Z0-9]*$"))
             {
-                channel.emit('CLIENT_REGISTER_RESPONSE', 'taken');
+                channel.emit('CLIENT_REGISTER_RESPONSE', 'invalid');
                 return;
             }
 
-            //Check if there is place available
+            //Check if account already exists
 
-            if (properties.maxPlayers != 0 &&
-                game.playerCount >= properties.maxPlayers)
-            {
-                channel.emit('CLIENT_REGISTER_RESPONSE', 'full');
-                return;
-            }
-
-            //Insert account
-
-            storage.save('accounts', name, {
-                pass: data.pass,
-                created: false,
-                settings: {
-                    audio: {
-                        main: 50,
-                        music: 50,
-                        sound: 50
-                    }
+            storage.exists('accounts', name, function(is) {
+                if (is)
+                {
+                    channel.emit('CLIENT_REGISTER_RESPONSE', 'taken');
+                    return;
                 }
-            }, function() {
-                //Insert and save default stats
 
-                game.savePlayer(name, undefined, function() {
-                    //Give output
+                //Check if there is place available
 
-                    output.give('New user \'' + name + '\' created.');
+                if (properties.maxPlayers != 0 &&
+                    game.playerCount >= properties.maxPlayers)
+                {
+                    channel.emit('CLIENT_REGISTER_RESPONSE', 'full');
+                    return;
+                }
 
-                    //Set variables
+                //Insert account
 
-                    channel.name = name;
+                storage.save('accounts', name, {
+                    pass: data.pass,
+                    created: false,
+                    settings: {
+                        audio: {
+                            main: 50,
+                            music: 50,
+                            sound: 50
+                        }
+                    }
+                }, function() {
+                    //Insert and save default stats
 
-                    //Request character creation page
+                    game.savePlayer(name, undefined, function() {
+                        //Give output
 
-                    channel.emit('REQUEST_CREATION', game.getPlayerCharacters());
+                        output.give('New user \'' + name + '\' created.');
+
+                        //Set variables
+
+                        channel.name = name;
+
+                        //Request character creation page
+
+                        channel.emit('REQUEST_CREATION', game.getPlayerCharacters());
+                    });
                 });
             });
-        });
+        }
+        catch (err) {
+            output.giveError('Could not handle registration: ', err);
+        }
     });
 
     channel.on('CLIENT_CREATE_CHARACTER', function(data) {
-        //Check if client is already in-game
+        try {
+            //Check if client is already in-game
 
-        if (isInGame())
-            return;
-
-        //Check if player is allowed to
-        //create a character
-
-        storage.load('accounts', channel.name, function(account) {
-            if (account.created)
+            if (isInGame())
                 return;
 
-            //Check if character exists and
-            //is an allowed option
+            //Check if player is allowed to
+            //create a character
 
-            if (properties.playerCharacters[data] == undefined)
-                return;
+            storage.load('accounts', channel.name, function(account) {
+                if (account.created)
+                    return;
 
-            //Load stats
+                //Check if character exists and
+                //is an allowed option
 
-            storage.load('stats', channel.name, function(player) {
-                //Change character name
+                if (properties.playerCharacters[data] == undefined)
+                    return;
 
-                player.char_name = properties.playerCharacters[data];
+                //Load stats
 
-                //Save account
+                storage.load('stats', channel.name, function(player) {
+                    //Change character name
 
-                account.created = true;
-                storage.save('accounts', channel.name, account);
+                    player.char_name = properties.playerCharacters[data];
 
-                //Save player
+                    //Calculate starting position based
+                    //on the chosen character
 
-                game.savePlayer(channel.name, player, function() {
-                    //Request game
+                    let char = game.characters[player.char_name];
 
-                    channel.emit('REQUEST_GAME');
+                    let spos = game.tileToActualPosition(
+                        tiled.getMapIndex(properties.startingMap),
+                        properties.startingTile.x,
+                        properties.startingTile.y,
+                        char.width,
+                        char.height
+                    );
+
+                    //Set player starting position
+
+                    player.pos = {
+                        X: spos.x,
+                        Y: spos.y
+                    };
+
+                    //Save account
+
+                    account.created = true;
+                    storage.save('accounts', channel.name, account);
+
+                    //Save player
+
+                    game.savePlayer(channel.name, player, function() {
+                        //Request game
+
+                        channel.emit('REQUEST_GAME');
+                    });
                 });
             });
-        });
+        }
+        catch (err) {
+            output.giveError('Could not handle character creation: ', err);
+        }
     });
 
     channel.on('CLIENT_JOIN_GAME', function() {
-        //Check if client is already in-game
+        try {
+            //Check if client is already in-game
 
-        if (isInGame())
-            return;
+            if (isInGame())
+                return;
 
-        //Add client as player if the player
-        //does not exist yet, otherwise
-        //refresh player
+            //Add client as player if the player
+            //does not exist yet, otherwise
+            //refresh player
 
-        if (game.players[channel.name] == undefined)
-            game.addPlayer(channel);
-        else
-            game.refreshPlayer(channel, channel.name);
+            if (game.players[channel.name] == undefined)
+                game.addPlayer(channel);
+            else
+                game.refreshPlayer(channel, channel.name);
 
-        //Send MOTD message
+            //Send MOTD message
 
-        channel.emit('GAME_CHAT_UPDATE', properties.welcomeMessage);
+            channel.emit('GAME_CHAT_UPDATE', properties.welcomeMessage);
 
-        //Send game time
+            //Send game time
 
-        server.syncGameTime(channel);
+            server.syncGameTime(channel);
 
-        //Set playing
+            //Set playing
 
-        channel.playing = true;
+            channel.playing = true;
+        }
+        catch (err) {
+            output.giveError('Could not handle game join: ', err);
+        }
     });
 
     //Player interaction events
@@ -303,7 +352,7 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game
 
-            if (!isInGame())
+            if (!isInGame(true))
                 return;
 
             //Shorten channel name
@@ -383,7 +432,7 @@ exports.handleChannel = function(channel)
          {
             //Check if in-game
 
-            if (!isInGame())
+            if (!isInGame(true))
                 return;
 
             //Shorten channel name
@@ -411,11 +460,33 @@ exports.handleChannel = function(channel)
          }
     });
 
+    channel.on('CLIENT_RESPAWN_PLAYER', function() {
+        try
+         {
+            //Check if in-game
+
+            if (!isInGame())
+                return;
+
+            //Shorten channel name
+
+            let id = channel.name;
+
+            //Try to respawn player
+
+            game.respawnPlayer(id);
+         }
+         catch (err)
+         {
+            output.giveError('Could not respawn player: ', err);
+         }
+    });
+
     channel.on('CLIENT_REQUEST_MAP', function(data) {
         try {
             //Check if in-game and if data is valid
 
-            if (!isInGame() || data == undefined)
+            if (!isInGame(true) || data == undefined)
                 return;
 
             //Get next map
@@ -482,7 +553,7 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game
 
-            if (!isInGame())
+            if (!isInGame(true))
                 return;
 
             //Shorten channel name
@@ -578,7 +649,7 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game and data is valid
 
-            if (!isInGame() || data == undefined)
+            if (!isInGame(true) || data == undefined)
                 return;
 
             //Shorten channel name
@@ -610,7 +681,7 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game and data is valid
 
-            if (!isInGame() || data == undefined)
+            if (!isInGame(true) || data == undefined)
                 return;
 
             //Shorten channel name
@@ -630,7 +701,7 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game and data is valid
 
-            if (!isInGame() || data == undefined)
+            if (!isInGame(true) || data == undefined)
                 return;
 
             //Shorten channel name
@@ -654,7 +725,7 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game and data is valid
 
-            if (!isInGame() || data == undefined)
+            if (!isInGame(true) || data == undefined)
                 return;
 
             //Shorten channel name
@@ -682,7 +753,7 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game and data is valid
 
-            if (!isInGame() || data == undefined)
+            if (!isInGame(true) || data == undefined)
                 return;
 
             //Shorten channel name
@@ -706,7 +777,7 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game
 
-            if (!isInGame())
+            if (!isInGame(true))
                 return;
 
             //Shorten channel name
@@ -762,7 +833,7 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game and data is valid
 
-            if (!isInGame() 
+            if (!isInGame(true) 
                 || data == undefined
                 || data.owner == undefined
                 || data.type == undefined)
@@ -849,7 +920,7 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game and data is valid
 
-            if (!isInGame() 
+            if (!isInGame(true) 
                 || data == undefined 
                 || data.owner == undefined
                 || data.type == undefined)
@@ -903,7 +974,9 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game and data is valid
 
-            if (!isInGame() || data == undefined || !isNaN(data))
+            if (!isInGame(true) || 
+                data == undefined || 
+                !isNaN(data))
                 return;
 
             //Shorten channel name
@@ -927,7 +1000,7 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game and data is valid
 
-            if (!isInGame() || data == undefined || !isNaN(data))
+            if (!isInGame(true) || data == undefined || !isNaN(data))
                 return;
 
             //Try to finish quest
@@ -943,7 +1016,7 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game and data is valid
 
-            if (!isInGame() || data == undefined)
+            if (!isInGame(true) || data == undefined)
                 return;
 
             //Shorten channel name
@@ -982,7 +1055,7 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game and data is valid
 
-            if (!isInGame() || data == undefined)
+            if (!isInGame(true) || data == undefined)
                 return;
 
             //Shorten channel name
@@ -1010,7 +1083,7 @@ exports.handleChannel = function(channel)
         try {
             //Check if in-game and data is valid
 
-            if (!isInGame() || data == undefined)
+            if (!isInGame(true) || data == undefined)
                 return;
 
             //Shorten channel name
@@ -1057,7 +1130,7 @@ exports.handleChannel = function(channel)
     channel.on('CLIENT_INCREMENT_ATTRIBUTE', function(data) {
         //Check if in-game and data is valid
 
-        if (!isInGame() || data == undefined)
+        if (!isInGame(true) || data == undefined)
             return;
 
         //Shorten channel name
@@ -1072,7 +1145,9 @@ exports.handleChannel = function(channel)
     channel.on('CLIENT_USER_SETTINGS', function(settings) {
         //Check if in-game and data is valid
 
-        if (!isInGame() || settings == undefined || settings.audio == undefined)
+        if (!isInGame() || 
+            settings == undefined || 
+            settings.audio == undefined)
             return;
 
         //Check and/or format data to make sure
@@ -1231,7 +1306,7 @@ exports.syncPlayer = function(id, channel, broadcast)
 
 //Sync player remove function, will be broadcast by default
 
-exports.removePlayer = function(channel)
+exports.removePlayer = function(channel, leaveRoom)
 {
     //Check if valid
 
@@ -1245,10 +1320,13 @@ exports.removePlayer = function(channel)
     channel.broadcast.emit('GAME_PLAYER_UPDATE', { name: channel.name, remove: true });
 
     //Leave room and decrement map popularity
+    //if necessary
 
-    npcs.mapPopulation[channel._roomId]--;
+    if (leaveRoom) {
+        npcs.mapPopulation[channel._roomId]--;
 
-    rooms.leave(channel);
+        rooms.leave(channel);
+    }
 }
 
 //Sync NPC partially function, if channel is undefined it will be globally emitted

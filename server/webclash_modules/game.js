@@ -205,9 +205,15 @@ exports.addPlayer = function(channel)
 
                 game.players[id].setup = false;
 
-                //Load current world
+                //Load current world if not killed
 
-                game.loadMap(channel, player.map);
+                if (!player.killed)
+                    game.loadMap(channel, player.map);
+
+                //Otherwise respawn the player
+
+                else
+                    game.respawnPlayer(id);
             });
         });
     }
@@ -290,7 +296,7 @@ exports.removePlayer = function(channel)
 
         //Remove from clients
 
-        server.removePlayer(channel);
+        server.removePlayer(channel, true);
 
         //Release owned world items
 
@@ -366,18 +372,10 @@ exports.savePlayer = function(name, data, cb)
     //Check if a new player data must be created
 
     if (player == undefined) {
-        //Get starting position before saving
-
-        let spos = this.tileToActualPosition(
-            tiled.getMapIndex(properties.startingMap),
-            properties.startingTile.x,
-            properties.startingTile.y
-        );
-
         player = {
             char_name: properties.playerCharacter,
             map: properties.startingMap,
-            pos: { X: spos.x, Y: spos.y },
+            pos: { X: 0, Y: 0 },
             moving: false,
             direction: 0,
             health: { cur: 100, max: 100 },
@@ -395,6 +393,7 @@ exports.savePlayer = function(name, data, cb)
                     wisdom: 1
                 }
             },
+            killed: false,
             gvars: {},
             actions: [],
             equipment: {},
@@ -417,6 +416,7 @@ exports.savePlayer = function(name, data, cb)
         gold: player.gold,
         level: player.level,
         stats: player.stats,
+        killed: player.killed,
         actions: player.actions,
         inventory: player.inventory,
         equipment: player.equipment,
@@ -521,6 +521,26 @@ exports.killPlayer = function(id, pvpKiller)
 
     npcs.removeNPCTargets(id, true);
 
+    //Reset player's respective quest objectives
+
+    quests.resetQuestObjectives(id);
+
+    //Remove player from map
+
+    server.removePlayer(id, false);
+
+    //Set player killed variable
+
+    this.players[id].killed = true;
+};
+
+exports.respawnPlayer = function(id)
+{
+    //Check if player is killed
+
+    if (!this.players[id].killed)
+        return;
+
     //Reset stats and sync
 
     this.players[id].health.cur = this.players[id].health.max;
@@ -528,8 +548,6 @@ exports.killPlayer = function(id, pvpKiller)
 
     server.syncPlayerPartially(id, 'health');
     server.syncPlayerPartially(id, 'mana');
-
-    //Load starting map if not on it
 
     if (this.players[id].map !== properties.startingMap)
         this.loadMap(this.players[id].channel, properties.startingMap);
@@ -543,21 +561,23 @@ exports.killPlayer = function(id, pvpKiller)
         properties.startingTile.y
     );
 
-    //Reset player's respective quest objectives
+    //Set killed to false
 
-    quests.resetQuestObjectives(id);
+    this.players[id].killed = false;
 };
 
 exports.onPlayerDeath = function(id, pvpKiller)
 {
     //Check for all on player death events
 
-    let deathEvents = gameplay.onPlayerDeath;
+    let deathEvents = gameplay.onPlayerDeath,
+        deathData = {};
 
     //Lose gold death event
 
     if (deathEvents.loseGold.enabled) {
         let delta = -this.players[id].gold*(deathEvents.loseGold.losePercentage/100);
+        deathData.lostGold = delta;
 
         this.deltaGoldPlayer(id, delta);
     }
@@ -566,21 +586,32 @@ exports.onPlayerDeath = function(id, pvpKiller)
 
     if (deathEvents.loseExperience.enabled) {
         let delta = -this.players[id].stats.exp*(deathEvents.loseExperience.losePercentage/100);
+        deathData.lostExperience = delta;
 
         this.deltaExperiencePlayer(id, delta)
     }
 
     //Lose inventory items death event
 
-    if (deathEvents.loseItems) 
+    if (deathEvents.loseItems) {
         for (let i = 0; i < this.playerConstraints.inventorySize; i++)
             items.dropPlayerItem(id, i, pvpKiller);
 
+        deathData.lostItems = true;
+    }
+
     //Lose equipment items death event
 
-    if (deathEvents.loseEquipment)
+    if (deathEvents.loseEquipment) {
         for (let key in this.players[id].equipment) 
             items.dropPlayerItem(id, key, pvpKiller);
+
+        deathData.lostEquipment = true;
+    }
+
+    //Emit killed package to player
+
+    this.players[id].channel.emit('GAME_PLAYER_KILLED', deathData);
 };
 
 exports.deltaManaPlayer = function(id, delta)
@@ -807,32 +838,44 @@ exports.setPlayerTilePosition = function(id, map, x, y)
 {
     //Get actual position
 
-    let pos = this.tileToActualPosition(map, x, y);
+    let pos = this.tileToActualPosition(
+        map, 
+        x, 
+        y,
+        game.players[id].character.width,
+        game.players[id].character.height
+    );
 
     //Set new position
 
     if (pos.x != undefined)
-        this.players[id].pos.X = pos.x-game.players[id].character.width/2;
+        this.players[id].pos.X = pos.x;
 
     if (pos.y != undefined)
-        this.players[id].pos.Y = pos.y-game.players[id].character.height;
+        this.players[id].pos.Y = pos.y;
 
     //Sync to players on the same map
 
     server.syncPlayerPartially(id, 'position');
 };
 
-exports.tileToActualPosition = function(map, x, y)
+exports.tileToActualPosition = function(map, x, y, w, h)
 {
     //Calculate actual position
 
     let result = {};
 
+    if (w == undefined)
+        w = 0;
+
+    if (h == undefined)
+        h = 0;
+
     if (x != undefined)
-        result.x = (x-tiled.maps[map].width/2)*tiled.maps[map].tilewidth;
+        result.x = (x-tiled.maps[map].width/2+.5)*tiled.maps[map].tilewidth-w/2;
 
     if (y != undefined)
-        result.y = (y-tiled.maps[map].height/2-1)*tiled.maps[map].tileheight;
+        result.y = (y-tiled.maps[map].height/2+.5)*tiled.maps[map].tileheight-h;
 
     //Return
 
@@ -890,20 +933,7 @@ exports.loadMap = function(channel, map)
     //Remove player from others on the
     //same map
 
-    server.removePlayer(channel);
-
-    //Decrement map popularity and leave old
-    //room, if it is available
-
-    if (channel._roomId === game.players[id].map_id) {
-        //Decrement map popularity
-
-        npcs.mapPopulation[game.players[id].map_id]--;
-
-        //Leave old room
-
-        rooms.leave(channel);
-    }
+    server.removePlayer(channel, true);
 
     //Set new map
 

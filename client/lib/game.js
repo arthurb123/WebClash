@@ -197,6 +197,7 @@ const game = {
 
         this.players[name] = go.Show(3);
     },
+
     setPlayerHealth: function(id, health)
     {
         if (this.players[id]._health !== undefined) {
@@ -346,7 +347,7 @@ const game = {
             ui.chat.addMessage('You are now level ' + level + '!');
         }
     },
-    removePlayer: function(id, checkParty)
+    removePlayer: function(id)
     {
         //Check if valid
 
@@ -779,13 +780,13 @@ const game = {
 
     resetColliders: function()
     {
-        if (this.players === undefined ||
-            this.player === undefined ||
-            this.players[this.player] === undefined ||
+        if (this.players == undefined ||
+            this.player == undefined ||
+            this.players[this.player] == undefined ||
             !tiled.loading)
             return;
 
-        if (this.players[this.player].COLLIDER !== undefined)
+        if (this.players[this.player].COLLIDER != undefined)
         {
             //Save player's collider
 

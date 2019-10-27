@@ -29,6 +29,7 @@
    "wisdom": 1
   }
  },
+ "killed": false,
  "actions": [],
  "inventory": [
   "Sword"

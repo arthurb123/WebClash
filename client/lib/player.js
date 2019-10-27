@@ -22,22 +22,6 @@ const player = {
         cur: 0,
         standard: 12
     },
-
-    loseFocus: function()
-    {
-        //Check if the player exists
-
-        if (game.player === -1)
-            return;
-
-        //Reset movement
-
-        game.players[game.player].Movement(0, 0);
-
-        //Remove controller targeting
-
-        lx.CONTEXT.CONTROLLER.TARGET = undefined;
-    },
     propertyInteraction:
     {
         cooldown: {
@@ -65,6 +49,28 @@ const player = {
 
             this.cooldown.on = true;
         }
+    },
+
+    loseFocus: function()
+    {
+        //Check if the player exists
+
+        if (game.player === -1)
+            return;
+
+        //Make sure the player exists
+        //in the buffer
+
+        if (game.players[game.player].BUFFER_ID === -1)
+            game.players[game.player].Show(3);
+
+        //Reset movement
+
+        game.players[game.player].Movement(0, 0);
+
+        //Remove controller targeting
+
+        lx.CONTEXT.CONTROLLER.TARGET = undefined;
     },
     instantiate: function(name)
     {
@@ -125,6 +131,42 @@ const player = {
 
         if (properties.lockCamera)
             camera.initialize(go);
+    },
+    kill: function(deathData) {
+        //Attempt to hide the player
+
+        if (game.players[game.player] != undefined)
+            game.players[game.player].Hide();
+
+        //Hide all UI
+
+        ui.hide();
+
+        //Format dialog content based 
+        //on the recieved death data
+
+        let content = '<b>You Died</b><br>';
+
+        if (deathData.lostItems)
+            content += 'You lost all your items.<br>';
+        if (deathData.lostEquipment)
+            content += 'You lost all your equipment.<br>';
+        if (deathData.lostGold != undefined)
+            content += 'You lost ' + deathData.lostGold + ' gold.<br>';
+        if (deathData.lostExperience != undefined)
+            content += 'You lost ' + deathData.lostExperience + ' experience.<br>';
+
+        //Show custom death dialog
+
+        ui.dialogs.custom(content, 'Respawn', function() {
+            //Send respawn package to server
+
+            channel.emit('CLIENT_RESPAWN_PLAYER');
+
+            //Show UI
+
+            ui.show();
+        });
     },
     setCollider: function(collider)
     {

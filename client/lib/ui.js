@@ -2142,11 +2142,57 @@ const ui = {
     //UI dialogs
 
     dialogs: {
+        custom: function(content, option, callback) {
+            let id = 'dialog_' + option + '_box';
+
+            if (document.getElementById(id) != undefined)
+                return;
+
+            let box = new UIBox(
+                'dialog_' + option, 
+                id, 
+                lx.GetDimensions().width/2-120, 
+                lx.GetDimensions().height/2-40, 
+                240, 
+                undefined, 
+                true
+            );
+            box.setResizable(false);
+            box.setMovable(false);
+            box.setTextAlign('center');
+            box.saves = false;
+
+            box.setContent(
+                '<p class="info" style="padding: 0px 3px 3px 3px;">' + content + '</p>' +
+                '<button id="' + id + '_button" style="height: 22px;">' + option + '</button>'
+            );
+
+            document.getElementById(id + '_button').addEventListener('click', function() {
+                box.destroy();
+
+                if (callback != undefined)
+                    callback();
+            });
+        },
+        ok: function(content, callback) {
+            this.custom(content, 'Ok', callback);
+        },
+        confirm: function(content, callback) {
+            this.custom(content, 'Confirm', callback);
+        },
+
         yesNo: function(content, callback) {
             if (document.getElementById('dialog_yesno_box') != undefined)
                 return;
 
-            let box = new UIBox('dialog_yesno', 'dialog_yesno_box', lx.GetDimensions().width/2-120, lx.GetDimensions().height/2-20, 240, undefined);
+            let box = new UIBox(
+                'dialog_yesno', 
+                'dialog_yesno_box', 
+                lx.GetDimensions().width/2-120, 
+                lx.GetDimensions().height/2-40, 
+                240, 
+                undefined
+            );
             box.setResizable(false);
             box.setMovable(false);
             box.setTextAlign('center');
@@ -2169,28 +2215,6 @@ const ui = {
 
                 if (callback != undefined)
                     callback(false);
-            });
-        },
-        ok: function(content, callback) {
-            if (document.getElementById('dialog_ok_box') != undefined)
-                return;
-
-            let box = new UIBox('dialog_ok', 'dialog_ok_box', lx.GetDimensions().width/2-120, lx.GetDimensions().height/2-20, 240, undefined);
-            box.setResizable(false);
-            box.setMovable(false);
-            box.setTextAlign('center');
-            box.saves = false;
-
-            box.setContent(
-                '<p class="info" style="padding: 0px 3px 3px 3px;">' + content + '</p>' +
-                '<button id="dialog_ok_button" style="height: 22px;">Ok</button>'
-            );
-
-            document.getElementById('dialog_ok_button').addEventListener('click', function() {
-                box.destroy();
-
-                if (callback != undefined)
-                    callback();
             });
         }
     }
