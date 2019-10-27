@@ -577,7 +577,7 @@ exports.onPlayerDeath = function(id, pvpKiller)
 
     if (deathEvents.loseGold.enabled) {
         let delta = -this.players[id].gold*(deathEvents.loseGold.losePercentage/100);
-        deathData.lostGold = delta;
+        deathData.lostGold = -delta;
 
         this.deltaGoldPlayer(id, delta);
     }
@@ -586,7 +586,7 @@ exports.onPlayerDeath = function(id, pvpKiller)
 
     if (deathEvents.loseExperience.enabled) {
         let delta = -this.players[id].stats.exp*(deathEvents.loseExperience.losePercentage/100);
-        deathData.lostExperience = delta;
+        deathData.lostExperience = -delta;
 
         this.deltaExperiencePlayer(id, delta)
     }

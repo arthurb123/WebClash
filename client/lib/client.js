@@ -191,8 +191,15 @@ const client = {
              if (data.pos !== undefined) {
                  game.players[id].POS = data.pos;
 
-                if (data.isPlayer) 
+                if (data.isPlayer) {
                     game.players[id].Movement(0, 0);
+
+                    //TODO: Handle respawning on the same
+                    //      map in a better fashion
+
+                    if (game.players[id].BUFFER_ID === -1)
+                        game.players[id].Show(3);
+                }
              }
              if (data.moving !== undefined)
                  game.players[id]._moving = data.moving;
