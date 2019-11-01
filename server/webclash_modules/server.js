@@ -520,10 +520,6 @@ exports.handleChannel = function(channel)
             if (!result.near)
                 return;
 
-            //Send map to player
-
-            game.loadMap(channel, data);
-
             //Check if positioning properties exist
 
             let properties;
@@ -541,9 +537,13 @@ exports.handleChannel = function(channel)
                     if (properties[p].name === 'positionX')
                         game.players[id].pos.X = (properties[p].value-tiled.maps[next_map].width/2+.5)*tiled.maps[next_map].tilewidth-game.players[id].character.width/2;
                     if (properties[p].name === 'positionY') 
-                        game.players[id].pos.Y = (properties[p].value-tiled.maps[next_map].height/2)*tiled.maps[next_map].tileheight-game.players[id].character.height/2;
+                        game.players[id].pos.Y = (properties[p].value-tiled.maps[next_map].height/2+1)*tiled.maps[next_map].tileheight-game.players[id].character.height;
                 }
             }
+            
+            //Send map to player
+
+            game.loadMap(channel, data);
         } catch (err) {
             output.giveError('Could not handle map request: ', err);
         }
@@ -590,6 +590,10 @@ exports.handleChannel = function(channel)
             //Send all items in the same map
 
             items.sendMap(id);
+
+            //Send map finished package
+
+            channel.emit('GAME_MAP_FINISHED');
         }
         catch (err) {
             output.giveError('Could not handle map content request: ', err);

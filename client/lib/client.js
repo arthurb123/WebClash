@@ -157,7 +157,7 @@ const client = {
 
              //Check if in-game or loading map
 
-             if (!client.inGame || tiled.loading)
+             if (!client.inGame)
                  return;
 
              //Get the id of the player's data
@@ -285,7 +285,7 @@ const client = {
 
             //Check if in-game or loading map
 
-            if (!client.inGame || tiled.loading)
+            if (!client.inGame)
                 return;
 
             //Check if NPC exists, if not instantiate
@@ -532,6 +532,15 @@ const client = {
             //Start dialog
 
             ui.dialog.startDialog(data.name, 'item', data.name, data.dialog);
+        });
+        channel.on('GAME_MAP_FINISHED', function() {
+            //Hide progress
+
+            cache.progress.hide();
+
+            //Set loading to false
+
+            tiled.loading = false;
         });
 
         //Response events

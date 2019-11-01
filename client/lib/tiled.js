@@ -251,17 +251,13 @@ const tiled = {
 
             audio.playBGM(map.bgmSource);
 
+            //Set new progress
+
+            cache.progress.start('Joining map..');
+
             //Send map content request
 
             channel.emit('CLIENT_REQUEST_MAP_CONTENT');
-
-            //Hide progress
-
-            cache.progress.hide();
-
-            //Set loading to false
-
-            tiled.loading = false;
         });
     },
     getLayerWithName: function(map, layer_name) {
@@ -844,11 +840,19 @@ const tiled = {
             case "loadMap":
                 return function(go) {
                     if (go === game.players[game.player]) {
-                        cache.progress.start('Loading map...');
+                        if (!tiled.loading) {
+                            //Set tiled loading to true
 
-                        tiled.loading = true;
+                            tiled.loading = true;
 
-                        channel.emit('CLIENT_REQUEST_MAP', property.value);
+                            //Start cache progress
+
+                            cache.progress.start('Loading map...');
+
+                            //Emit request map package                    
+
+                            channel.emit('CLIENT_REQUEST_MAP', property.value);
+                        }
                     }
                 };
             case "positionX":
