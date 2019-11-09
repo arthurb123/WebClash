@@ -31,6 +31,7 @@ global.actions  = require('./webclash_modules/actions');
 global.quests   = require('./webclash_modules/quests');
 global.tiled    = require('./webclash_modules/tiled');
 global.output   = require('./webclash_modules/output');
+global.logger   = require('./webclash_modules/logger');
 global.input    = require('./webclash_modules/input');
 global.storage  = require('./webclash_modules/storage');
 global.tools    = require('./webclash_modules/tools');
@@ -169,12 +170,16 @@ global.exitHandler = function() {
         return;
     }
 
-    //Save all players
+    //Save log
 
-    game.saveAllPlayers(function() {
-        hasSaved = true;
+    logger.save(function() {
+        //Save all players
 
-        process.exit();
+        game.saveAllPlayers(function() {
+            hasSaved = true;
+
+            process.exit();
+        });
     });
 }
 
@@ -183,7 +188,7 @@ global.exitHandler = function() {
 process.on('exit', exitHandler);
 process.on('SIGINT', exitHandler);
 process.on('uncaughtException', function(err) {
-    output.giveError('', err);
+    output.giveError('Server crashed: ', err);
 
     exitHandler();
 });

@@ -14,30 +14,23 @@ exports.give = function(message, filter)
                 .replaceAll('</b>', '');
     };
 
-    console.log(this._timeFormat() + message);
+    console.log(this.getTimeStamp() + message);
 };
 
 exports.giveError = function(message, err)
 {
     let text = message;
 
-    if (err.message)
-        text += err.message;
     if (err.stack)
-        text += ' (stack: ' + err.stack + ')';
+        text += err.stack;
+    else if (err.message)
+        text += err.message;
 
+    logger.add(text);
     this.give(text);
 };
 
-exports._timeFormat = function()
+exports.getTimeStamp = function()
 {
     return "[WebClash @ " + new Date().toString().substr(16, 8) + "] - ";
-};
-
-//Prototype(s)
-
-String.prototype.replaceAll = function(search, replacement) {
-    let target = this;
-
-    return target.replace(new RegExp(search, 'g'), replacement);
 };

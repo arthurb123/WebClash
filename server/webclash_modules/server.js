@@ -593,6 +593,10 @@ exports.handleChannel = function(channel)
 
             //Send map finished package
 
+            //TODO: Seperate this from the map content,
+            //      make it a seperate request in the
+            //      client-server communication pipeline
+
             channel.emit('GAME_MAP_FINISHED');
         }
         catch (err) {
