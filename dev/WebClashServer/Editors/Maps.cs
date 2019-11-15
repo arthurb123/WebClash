@@ -64,6 +64,7 @@ namespace WebClashServer.Editors
             mapTilesets.Text = current.tilesets.Length.ToString();
 
             CheckTilesets();
+            ExtractLayers();
 
             if (currentMetadata.mapType != null &&
                 currentMetadata.mapType != string.Empty)
@@ -83,6 +84,70 @@ namespace WebClashServer.Editors
 
             dayNight.Checked = currentMetadata.showDayNight;
             alwaysDark.Checked = currentMetadata.alwaysDark;
+        }
+
+        private void ExtractLayers()
+        {
+            List<MapLayer> layers = new List<MapLayer>(currentMetadata.mapLayers);
+
+            //Check if existing layers also exist in the map,
+            //to make sure old deleted layers get removed
+
+            for (int l = 0; l < layers.Count; l++)
+            {
+                bool trulyExists = false;
+
+                for (int ll = 0; ll < current.layers.Length; ll++)
+                    if (layers[l].name == current.layers[ll].name)
+                    {
+                        trulyExists = true;
+                        break;
+                    }
+
+                if (!trulyExists)
+                    layers.RemoveAt(l);
+            }
+
+            //Import layers from map, if they already exist
+            //skip these
+
+            for (int l = 0; l < current.layers.Length; l++)
+            {
+                if (current.layers[l].type != "tilelayer")
+                    continue;
+
+                string name = current.layers[l].name;
+
+                if (ExistsLayer(name))
+                    continue;
+
+                if (l <= 2)
+                    layers.Insert(l, new MapLayer(name, false));
+                else
+                    layers.Insert(l, new MapLayer(name, true));
+            }
+
+            //Get old length of metadata map layers
+
+            int mapLayers = currentMetadata.mapLayers.Length;
+
+            //Set metadata map layers
+
+            currentMetadata.mapLayers = layers.ToArray();
+
+            //Check if maps have changed, if so save
+
+            if (mapLayers != currentMetadata.mapLayers.Length)
+                SaveMetadata();
+        }
+
+        private bool ExistsLayer(string layerName)
+        {
+            for (int i = 0; i < currentMetadata.mapLayers.Length; i++)
+                if (currentMetadata.mapLayers[i].name == layerName)
+                    return true;
+
+            return false;
         }
 
         private void CheckTilesets()
@@ -415,7 +480,6 @@ namespace WebClashServer.Editors
 
             MapLayers mapLayers = new MapLayers(
                 "Edit layers for map '" + mapList.SelectedItem.ToString() + "'",
-                current,
                 currentMetadata.mapLayers
             );
 
@@ -519,7 +583,15 @@ namespace WebClashServer.Editors
 
     public class Layer
     {
+        public int x = 0;
+        public int y = 0;
+        public int width = 0;
+        public int height = 0;
+
         public string name = "";
         public string type = "";
+
+        public bool visible = true;
+        public int[] data = new int[0];
     }
 }
