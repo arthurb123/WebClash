@@ -536,6 +536,10 @@ const client = {
             tiled.loading = false;
         });
         channel.on('GAME_PLAYER_RESPAWN', function() {
+            if (game.player == undefined ||
+                game.players[game.player] == undefined)
+                return;
+                
             game.players[game.player].Show(3);
         });
 
