@@ -152,7 +152,7 @@ const client = {
         channel.on('GAME_PLAYER_UPDATE', function (data) {
              //Check if the recieved data is valid
 
-             if (data === undefined || data.name === undefined)
+             if (data == undefined || data.name == undefined)
                  return;
 
              //Check if in-game or loading map
@@ -182,24 +182,17 @@ const client = {
 
                     id = data.name;
                 }
-            }
+             }
 
              //Check what data is present
-
              if (data.remove) 
                 game.removePlayer(id);
              if (data.pos !== undefined) {
                  game.players[id].POS = data.pos;
 
-                if (data.isPlayer) {
+                //If player make sure to stop movement
+                if (data.isPlayer)
                     game.players[id].Movement(0, 0);
-
-                    //TODO: Handle respawning on the same
-                    //      map in a better fashion
-
-                    if (game.players[id].BUFFER_ID === -1)
-                        game.players[id].Show(3);
-                }
              }
              if (data.moving !== undefined)
                  game.players[id]._moving = data.moving;
@@ -541,6 +534,9 @@ const client = {
             //Set loading to false
 
             tiled.loading = false;
+        });
+        channel.on('GAME_PLAYER_RESPAWN', function() {
+            game.players[game.player].Show(3);
         });
 
         //Response events

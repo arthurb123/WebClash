@@ -67,9 +67,10 @@ const camera = {
         //Setup gameobject draw loop
 
         go.Draws(function() {
-            //Check if the target is valid
+            //Check if the target is valid or map has not
+            //fully loaded yet to prevent errors
 
-            if (target.BUFFER_ID === -1)
+            if (target.BUFFER_ID === -1 || tiled.size == undefined)
                 return;
 
             //Retrieve the current viewport

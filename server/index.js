@@ -8,11 +8,6 @@ const fs = require('fs'),
       path = require('path'),
       readline = require('readline');
 
-//Load and setup geckos.io
-
-global.io = geckos();
-io.addServer(http);
-
 //Load deepcopy
 
 global.deepcopy = require('deepcopy');
@@ -53,6 +48,13 @@ global.commandsUser  = fs.readFileSync('commandsUser.txt', 'utf-8').toString();
 
 gameplay.dayLength   *= 60;
 gameplay.nightLength *= 60;
+
+//Load and setup geckos.io
+
+global.io = geckos({
+    cors: properties.accessAddress !== '' ? { origin: properties.accessAddress } : undefined
+});
+io.addServer(http);
 
 //Setup readline and setup line input
 
@@ -189,6 +191,5 @@ process.on('exit', exitHandler);
 process.on('SIGINT', exitHandler);
 process.on('uncaughtException', function(err) {
     output.giveError('Server crashed: ', err);
-
     exitHandler();
 });

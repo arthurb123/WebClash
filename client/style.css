@@ -43,7 +43,7 @@ input[type=password],input[type=text] {
     color: whitesmoke;
 }
 
-input[type=password],input[type=text]:hover {
+input[type=password]:hover,input[type=text]:hover {
     background-color: rgba(125, 125, 125, 0.825);
 }
 

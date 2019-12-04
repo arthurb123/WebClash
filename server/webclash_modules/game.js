@@ -487,6 +487,11 @@ exports.healPlayer = function(id, heal)
 
 exports.regeneratePlayer = function(id)
 {
+    //Check if killed
+
+    if (this.players[id].killed)
+        return;
+
     //Check if in-combat
 
     if (actions.combat.in(id))
@@ -527,7 +532,7 @@ exports.killPlayer = function(id, pvpKiller)
 
     //Remove player from map
 
-    server.removePlayer(id, false);
+    server.removePlayer(game.players[id].channel, false);
 
     //Set player killed variable
 
@@ -541,6 +546,15 @@ exports.respawnPlayer = function(id)
     if (!this.players[id].killed)
         return;
 
+    //If not on starting map; load starting map.
+    //Otherwise make sure to send the player data
+    //to other players on the same map
+
+    if (this.players[id].map !== properties.startingMap)
+        this.loadMap(this.players[id].channel, properties.startingMap);
+    else
+        server.syncPlayer(id, this.players[id].channel, true);
+
     //Reset stats and sync
 
     this.players[id].health.cur = this.players[id].health.max;
@@ -548,9 +562,6 @@ exports.respawnPlayer = function(id)
 
     server.syncPlayerPartially(id, 'health');
     server.syncPlayerPartially(id, 'mana');
-
-    if (this.players[id].map !== properties.startingMap)
-        this.loadMap(this.players[id].channel, properties.startingMap);
 
     //Set starting tile
 
@@ -560,6 +571,10 @@ exports.respawnPlayer = function(id)
         properties.startingTile.x,
         properties.startingTile.y
     );
+
+    //Send respawned package
+
+    this.players[id].channel.emit('GAME_PLAYER_RESPAWN');
 
     //Set killed to false
 
