@@ -44,7 +44,7 @@ exports.joinParty = function(participant_name) {
 
             //Send chat message and the new party data
 
-            game.players[key].channel.emit('GAME_CHAT_UPDATE', participant_name + ' has joined the party.');
+            server.syncChatMessage(participant_name + ' has joined the party.', game.players[key].channel);
         }
 
         //Send party data to all participants (and host)
@@ -136,10 +136,10 @@ exports.leaveParty = function(participant_name, reason) {
             if (this.collection[host_name][key] === 'invitee')
                 continue;
 
-            game.players[key].channel.emit('GAME_CHAT_UPDATE', participant_name + reason);
+            server.syncChatMessage(participant_name + reason, game.players[key].channel);
         }
 
-        game.players[host_name].channel.emit('GAME_CHAT_UPDATE', participant_name + reason);
+        server.syncChatMessage(participant_name + reason, game.players[host_name].channel);
 
         //Send party data to all participants (and host)
 
@@ -179,13 +179,13 @@ exports.disbandParty = function(host_name) {
             if (this.collection[host_name][key] === 'invitee')
                 continue;
 
-            game.players[key].channel.emit('GAME_CHAT_UPDATE', 'The party has been disbanded.');
+            server.syncChatMessage('The party has been disbanded.', game.players[key].channel);
         }
 
         //Send party disband package to host
 
         if (length > 0)
-            game.players[host_name].channel.emit('GAME_CHAT_UPDATE', 'The party has been disbanded.');
+            server.syncChatMessage('The party has been disbanded.', game.players[host_name].channel);
 
         game.players[host_name].channel.emit('GAME_PARTY_DISBAND');
 
@@ -212,7 +212,7 @@ exports.invitePlayer = function(host_name, invitee_name) {
         //Check if the invited player is online/exists
 
         if (game.players[invitee_name] == undefined) {
-            game.players[host_name].channel.emit('GAME_CHAT_UPDATE', invitee_name + ' is not online.');
+            server.syncChatMessage(invitee_name + ' is not online.', game.players[host_name].channel);
 
             return;
         }
@@ -224,9 +224,9 @@ exports.invitePlayer = function(host_name, invitee_name) {
 
         if (name != undefined && name != host_name) {
             if (this.collection[name][host_name] === 'participant')
-                game.players[host_name].channel.emit('GAME_CHAT_UPDATE', 'Only party owners can invite others.');
+                server.syncChatMessage('Only party owners can invite others.', game.players[host_name].channel);
             else
-                game.players[host_name].channel.emit('GAME_CHAT_UPDATE', 'You already have a pending invitation.');
+                server.syncChatMessage('You already have a pending invitation.', game.players[host_name].channel);
 
             return;
         }
@@ -244,12 +244,12 @@ exports.invitePlayer = function(host_name, invitee_name) {
 
             if (other_host === invitee_name ||
                 this.collection[other_host][invitee_name] === 'participant')
-                game.players[host_name].channel.emit('GAME_CHAT_UPDATE', invitee_name + ' is already in a party.');
+                server.syncChatMessage(invitee_name + ' is already in a party.', game.players[host_name].channel);
 
             //Pending invite
 
             else if (this.collection[other_host][invitee_name] === 'invitee')
-                game.players[host_name].channel.emit('GAME_CHAT_UPDATE', invitee_name + ' already has a pending party invitation.');
+                server.syncChatMessage(invitee_name + ' already has a pending party invitation.', game.players[host_name].channel);
 
             return;
         }
@@ -263,7 +263,7 @@ exports.invitePlayer = function(host_name, invitee_name) {
 
         else if (Object.keys(this.collection[host_name]).length >= this.partySize) {
             if (game.players[host_name] != undefined)
-                game.players[host_name].channel.emit('GAME_CHAT_UPDATE', 'Maximum party size reached.');
+                server.syncChatMessage('Maximum party size reached.', game.players[host_name].channel);
 
             return;
         }
@@ -301,7 +301,7 @@ exports.transferPartyHost = function(host_name, participant_name) {
             if (this.collection[participant_name][key] === 'invitee')
                 continue;
 
-            game.players[key].channel.emit('GAME_CHAT_UPDATE', 'Party ownership transferred to ' + participant_name + '.');
+            server.syncChatMessage('Party ownership transferred to ' + participant_name + '.', game.players[key].channel);
 
             this.nameMap[key] = participant_name;
         }
@@ -398,7 +398,11 @@ exports.sendPartyMessage = function(name, message) {
 
             //Send chat message to party member
 
-            game.players[p].channel.emit('GAME_CHAT_UPDATE', message);
+            server.syncChatMessage(message, game.players[p].channel);
         }
+
+        return true;
     }
+
+    return false;
 };

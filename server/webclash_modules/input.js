@@ -85,11 +85,11 @@ exports.handleCommand = function(text, channel)
                 //acordingly
 
                 if (isAdmin) {
-                    channel.emit('GAME_CHAT_UPDATE', commandsUser);
-                    channel.emit('GAME_CHAT_UPDATE', commandsAdmin);
+                    server.syncChatMessage(commandsUser, channel);
+                    server.syncChatMessage(commandsAdmin, channel);
                 }
                 else
-                    channel.emit('GAME_CHAT_UPDATE', commandsUser);
+                    server.syncChatMessage(commandsUser, channel);
             }
             else
                 output.give(commandsAdmin + '\nNote that some commands are not supported on the server-side.', true);
@@ -113,7 +113,10 @@ exports.handleCommand = function(text, channel)
                 if (args.length === 0)
                     return 'wrong';
                 
-                parties.sendPartyMessage(p, '<b>' + p + '</b>: ' + this.filterText(args.join(' ')));
+                if (!parties.sendPartyMessage(
+                    p, '<b>' + p + '</b>: ' + this.filterText(args.join(' '))
+                ))
+                    server.syncChatMessage('You are not in a party.', channel);
 
                 return 'success';
             //Invite to party command
@@ -204,7 +207,7 @@ exports.handleCommand = function(text, channel)
                     });
 
                     if (channel != undefined)
-                        channel.emit('GAME_CHAT_UPDATE', msg);
+                        server.syncChatMessage(msg, channel);
                     else
                         output.give(msg, true);
 

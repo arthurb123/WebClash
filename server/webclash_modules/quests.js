@@ -200,7 +200,9 @@ exports.evaluateQuestObjective = function(id, type, target)
                 sync = true;
 
                 if (objective.gatherObjective.cur >= objective.gatherObjective.amount)
-                  this.advanceQuest(id, quest);
+                    this.advanceQuest(id, quest);
+                else
+                    game.players[id].quests[quest].finished = false;
             }
         }
     }
@@ -263,7 +265,7 @@ exports.advanceQuest = function(id, name)
     //otherwise set quest to finished
 
     let objectives = this.getQuest(name).objectives,
-        o_id = game.players[id].quests[name].id+1;
+        o_id       = game.players[id].quests[name].id+1;
 
     if (objectives[o_id] == undefined)
         game.players[id].quests[name].finished = true;
@@ -297,9 +299,9 @@ exports.finishQuest = function(id, name)
         if (neededSlots > 0) {
             //Send chat message that there is not enough inventory space
 
-            game.players[id].channel.emit(
-                'GAME_CHAT_UPDATE', 
-                'You need ' + neededSlots + ' more free inventory slots to finish the quest.'
+            server.syncChatMessage(
+                'You need ' + neededSlots + ' more free inventory slots to finish the quest.',
+                game.players[id].channel
             );
 
             return;

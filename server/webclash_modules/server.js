@@ -331,7 +331,7 @@ exports.handleChannel = function(channel)
 
             //Send MOTD message
 
-            channel.emit('GAME_CHAT_UPDATE', properties.welcomeMessage);
+            server.syncChatMessage(properties.welcomeMessage, channel);
 
             //Send game time
 
@@ -637,16 +637,17 @@ exports.handleChannel = function(channel)
                 else
                     return;
 
-                channel.emit('GAME_CHAT_UPDATE', msg);
+                server.syncChatMessage(msg, channel);
 
                 return;
             }
             else
                 msg = '<b>' + channel.name + '</b>: ' + input.filterText(data);
 
-            //Send chat message to all other players
+            //Send chat message to player and all others
 
-            io.room(game.players[id].map_id).emit('GAME_CHAT_UPDATE', msg);
+            server.syncChatMessage(msg, channel, true);
+            server.syncChatMessage(msg, channel);
         }
         catch (err) {
             output.giveError('Could not handle chat message: ', err);
@@ -746,10 +747,7 @@ exports.handleChannel = function(channel)
             {
                 //Failure, notify user
 
-                channel.emit(
-                    'GAME_CHAT_UPDATE', 
-                    'You do not have enough inventory space.'
-                );
+                server.syncChatMessage('You do not have enough inventory space.', channel);
             }
         }
         catch (err) {
@@ -1211,6 +1209,20 @@ exports.handleChannel = function(channel)
 
         parties.leaveParty(channel.name, reason);
     });
+};
+
+//Sync/send chat message function, if channel is undefined it will be globally emitted
+
+exports.syncChatMessage = function(message, channel, broadcast)
+{
+    if (channel === undefined)
+        io.emit('GAME_CHAT_UPDATE', message);
+    else {
+        if (broadcast === undefined || !broadcast) 
+            channel.emit('GAME_CHAT_UPDATE', message);
+        else
+            channel.broadcast.emit('GAME_CHAT_UPDATE', message);
+    }
 };
 
 //Sync player partially function, if channel is undefined it will be globally emitted
