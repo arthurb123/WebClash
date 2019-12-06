@@ -33,6 +33,10 @@ exports.createUnique = function(id, dialogData) {
 };
 
 exports.inspectItem = function(id, itemId, dialogData) {
+    if (dialogData[itemId].inspected)
+        return;
+
+    dialogData[itemId].inspected = true;
     let current = dialogData[itemId];
 
     if (current == undefined)

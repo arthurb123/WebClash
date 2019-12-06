@@ -1,7 +1,5 @@
 //NPCs module for WebClash Server
 
-const playersInShop = {};
-
 exports.openShop = function(player, owner, target, showShopEvent) {
     //Convert shop items if necessary,
     //this only happens once in the entire runtime.

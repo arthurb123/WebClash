@@ -466,7 +466,7 @@ const tiled = {
 
                     //Check animation
 
-                    this.checkAnimation(map, tileset, data[t], actual);
+                    this.checkAnimation(map, tileset, data[t], actual, map.layers[l].opacity);
                  }
              }
 
@@ -605,7 +605,7 @@ const tiled = {
              }
         }
     },
-    checkAnimation: function(map, tileset, id, actual)
+    checkAnimation: function(map, tileset, id, actual, opacity)
     {
         for (let i = 0; i < tileset.tiles.length; i++) {
             if (tileset.tiles[i].id+1 === actual) {
@@ -646,6 +646,8 @@ const tiled = {
                         x: (frame.tileid % sprite._tilewidth - 1) * tileset.tilewidth,
                         y: (Math.ceil(frame.tileid / sprite._tilewidth) -1) * tileset.tileheight
                     };
+                    if (tc.x < 0) tc.x = 0;
+                    if (tc.y < 0) tc.y = 0;
 
                     //Tile clip coordinates artefact prevention
 
@@ -654,7 +656,10 @@ const tiled = {
 
                     //Add sprites and frames to end result
 
-                    sprites.push(new lx.Sprite(sprite.IMG.src, tc.x, tc.y, tileset.tilewidth, tileset.tileheight));
+                    let actualSprite = new lx.Sprite(sprite.IMG.src, tc.x, tc.y, tileset.tilewidth, tileset.tileheight);
+                    actualSprite.Opacity((opacity != undefined ? opacity : 1));
+
+                    sprites.push(actualSprite);
                     frames.push(frame.duration * 0.06);
                 };
 

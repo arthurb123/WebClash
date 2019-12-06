@@ -610,7 +610,7 @@ const client = {
             } else {
                 //Not enough currency
 
-                //...
+                ui.chat.addMessage('You do not have enough currency.');
             }
 
             ui.shop.emitted = false;
