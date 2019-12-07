@@ -173,7 +173,7 @@ const player = {
         game.players[game.player].ClearCollider();
 
         game.players[game.player].ApplyCollider(
-            new lx.Collider(
+            new lx.BoxCollider(
                 collider.x,
                 collider.y,
                 collider.width,

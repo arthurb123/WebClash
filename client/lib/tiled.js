@@ -571,7 +571,7 @@ const tiled = {
 
                     //Create collider
 
-                    let coll = new lx.Collider(
+                    let coll = new lx.BoxCollider(
                         data[o].x+this.offset.width,
                         data[o].y+this.offset.height,
                         data[o].width,
@@ -646,13 +646,13 @@ const tiled = {
                         x: (frame.tileid % sprite._tilewidth - 1) * tileset.tilewidth,
                         y: (Math.ceil(frame.tileid / sprite._tilewidth) -1) * tileset.tileheight
                     };
-                    if (tc.x < 0) tc.x = 0;
-                    if (tc.y < 0) tc.y = 0;
 
                     //Tile clip coordinates artefact prevention
 
-                    if (tc.x == -map.tilewidth)
-                        tc.x = sprite.Size().W - tileset.tilewidth;
+                    if (tc.x < 0)
+                        tc.x = sprite.Size().W + tc.x;
+                    if (tc.y < 0)
+                        tc.y = sprite.Size().H + tc.y;
 
                     //Add sprites and frames to end result
 
@@ -700,7 +700,7 @@ const tiled = {
 
                 for (let c = 0; c < objects.length; c++)
                     if (objects[c].visible)
-                        new lx.Collider(
+                        new lx.BoxCollider(
                             tile_position.x + objects[c].x,
                             tile_position.y + objects[c].y,
                             objects[c].width,
@@ -796,7 +796,7 @@ const tiled = {
 
                 if (createCollider && callbacks.length > 0) {
                     if (tileset.tiles[i].objectgroup === undefined)
-                        new lx.Collider(
+                        new lx.BoxCollider(
                             tile_position.x,
                             tile_position.y,
                             tileset.tilewidth,
@@ -1060,11 +1060,11 @@ const tiled = {
         return checks;
     },
     createWorldBoundaries: function(map) {
-        new lx.Collider(this.offset.width, this.offset.height-map.tileheight, map.width*map.tilewidth, map.tileheight, true);
-        new lx.Collider(this.offset.width-map.tilewidth, this.offset.height, map.tilewidth, map.height*map.tileheight, true);
+        new lx.BoxCollider(this.offset.width, this.offset.height-map.tileheight, map.width*map.tilewidth, map.tileheight, true);
+        new lx.BoxCollider(this.offset.width-map.tilewidth, this.offset.height, map.tilewidth, map.height*map.tileheight, true);
 
-        new lx.Collider(this.offset.width, this.offset.height+map.height*map.tileheight, map.width*map.tilewidth, map.tileheight, true);
-        new lx.Collider(this.offset.width+map.width*map.tilewidth, this.offset.height, map.tilewidth, map.height*map.tileheight, true);
+        new lx.BoxCollider(this.offset.width, this.offset.height+map.height*map.tileheight, map.width*map.tilewidth, map.tileheight, true);
+        new lx.BoxCollider(this.offset.width+map.width*map.tilewidth, this.offset.height, map.tilewidth, map.height*map.tileheight, true);
     },
     cacheShadowMap: function(map) {
         //Get shading color based on map
