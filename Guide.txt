@@ -51,7 +51,7 @@ These settings determine the rendering position of
 the layer and if the layer is hovering.
 The rendering position of the layer can be changed
 with the Move Down and Move Up buttons.
-Hovering layers are layers lives atop of all other 
+Hovering layers live atop of all other 
 entities. (players, NPCs, items, etc.)
 
 Colliders are supported, however only in
@@ -124,6 +124,8 @@ To see the list of available commands type
 Because WebClash makes use of real-time UDP, it
 is necessary to open up the port 9208/tcp and 
 the range of ports 0-65535/upd on your server.
+Also do not forget to open up the port which
+is being used for the WebClash server process.
 
 
 	      -- Art usage --
@@ -132,7 +134,7 @@ All provided graphics except UI and particle graphics
 are not mine and are merely being used as example 
 material. 
 These graphics should not be distributed and/or used for 
-commercial purposes, as it is owned by Enterbrain.
+commercial purposes.
 
 	      -- Licensing --
 
