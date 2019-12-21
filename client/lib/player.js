@@ -337,8 +337,7 @@ const player = {
 
         //Face mouse
 
-        if (!game.isMobile)
-            player.faceMouse();
+        player.faceMouse();
 
         //Send action request
 

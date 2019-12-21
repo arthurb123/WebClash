@@ -142,19 +142,13 @@ const ui = {
     },
     fullscreen:
     {
-        lastTap: 0,
         append: function() {
             lx.CONTEXT.CANVAS.addEventListener('touchend', function(event) {
-                let currentTime = new Date().getTime(),
-                    tapLength = currentTime - ui.fullscreen.lastTap;
+                if (event.touches.length < 2)
+                    return;
 
-                if (tapLength < 500 && tapLength > 0) {
-                    ui.fullscreen.request();
-
-                    event.preventDefault();
-                }
-
-                ui.fullscreen.lastTap = currentTime;
+                ui.fullscreen.request();
+                event.preventDefault();
             });
         },
         request: function() {
@@ -456,6 +450,8 @@ const ui = {
     actionbar:
     {
         cooldowns: [],
+        selectedAction: 0,
+        standardOpacity: '.875',
         create: function() {
             this.slots = [];
 
@@ -470,10 +466,39 @@ const ui = {
                 if (i < 2)
                     size = 32;
 
-                r += '<div class="slot" style="width: ' + size + 'px; height: ' + size + 'px;" ontouchstart="player.performAction(' + i + ');" id="' + this.slots[i] + '"></div>';
+                r += '<div class="slot" style="opacity: .75; width: ' + size + 'px; height: ' + size + 'px;" id="' + this.slots[i] + '"></div>';
             }
 
+            r += '</div>';
+
             view.dom.innerHTML += r;
+
+            lx.CONTEXT.CANVAS.addEventListener('touchend', function(event) {
+                if (ui.dialog.showing   || 
+                    ui.profile.showing  || 
+                    ui.settings.showing || 
+                    ui.journal.showing)
+                    return;
+
+                if (ui.actionbar.selectedAction !== -1) {
+                    lx.CONTEXT.CONTROLLER.MOUSE.POS.X = event.changedTouches[0].clientX;
+                    lx.CONTEXT.CONTROLLER.MOUSE.POS.Y = event.changedTouches[0].clientY;
+                    player.performAction(ui.actionbar.selectedAction);
+                }
+            });
+            lx.Loops(function() {
+                if (player.actions[ui.actionbar.selectedAction] == undefined) {
+                    let slot = ui.actionbar.slots[ui.actionbar.selectedAction];
+                    let element = document.getElementById(slot);
+
+                    if (element != undefined) {
+                        document.getElementById(slot).style.border = '';
+                        document.getElementById(slot).style.opacity = ui.actionbar.standardOpacity;
+                    }
+
+                    ui.actionbar.selectedAction = -1;
+                }
+            });
         },
         reload: function() {
             if (this.slots === undefined)
@@ -510,6 +535,24 @@ const ui = {
 
             document.getElementById(this.slots[a]).innerHTML =
                 '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: ' + size + 'px; height: ' + size + 'px;"/>' + uses;
+
+            this.appendActionEventListener(a);
+        },
+        appendActionEventListener: function(a) {
+            let slot = this.slots[a];
+            document.getElementById(slot).addEventListener('touchstart', function(event) {
+                if (ui.actionbar.selectedAction === a) 
+                    ui.actionbar.selectedAction = -1;
+                else
+                    ui.actionbar.selectedAction = a;
+
+                document.getElementById(slot).style.border =
+                    (ui.actionbar.selectedAction === a ? '1px solid whitesmoke' : '');
+                document.getElementById(slot).style.opacity =
+                    (ui.actionbar.selectedAction === a ? '1' : ui.actionbar.standardOpacity);
+
+                event.preventDefault();
+            });
         },
         setCooldown: function(slot) {
             if (this.slots === undefined)
@@ -1263,7 +1306,7 @@ const ui = {
         },
         loadFromSettings: function(settings) {
             //Audio values
-
+            
             document.getElementById('settings_audio_mainVolume').value = settings.audio.main;
             document.getElementById('settings_audio_musicVolume').value = settings.audio.music;
             document.getElementById('settings_audio_soundVolume').value = settings.audio.sound;
