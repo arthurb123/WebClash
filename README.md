@@ -1,5 +1,5 @@
 # WebClash<br>
-WebClash uses NodeJS and Lynx2D to allow easy top-down ORPG game creation for the browser.<br>
+WebClash uses geckos.io (UDP) and Lynx2D to allow easy top-down ORPG game creation for the browser.<br>
 Almost everything in WebClash can be fully customized using the Server binary tool.<br>
 To understand how to use WebClash, please refer to the guide.txt file.
 
