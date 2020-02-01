@@ -42,7 +42,7 @@ namespace WebClashServer
                     ".json"
                 };
 
-                string[] quests = Directory.GetFiles(Program.main.location + "/quests", "*.*", SearchOption.AllDirectories)
+                string[] quests = Directory.GetFiles(Program.main.serverLocation + "/quests", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 for (int i = 0; i < quests.Length; i++)
@@ -63,7 +63,7 @@ namespace WebClashServer
             if (questName == string.Empty)
                 current = new Quest();
             else
-                current = new Quest(Program.main.location + "/quests/" + questName + ".json");
+                current = new Quest(Program.main.serverLocation + "/quests/" + questName + ".json");
 
             name.Text = questName;
 
@@ -159,9 +159,9 @@ namespace WebClashServer
             }
 
             if (oldName != name.Text)
-                File.Delete(Program.main.location + "/quests/" + oldName + ".json");
+                File.Delete(Program.main.serverLocation + "/quests/" + oldName + ".json");
 
-            File.WriteAllText(Program.main.location + "/quests/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
+            File.WriteAllText(Program.main.serverLocation + "/quests/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
             MessageBox.Show("Quest has been saved!", "WebClash - Message");
 
@@ -196,7 +196,7 @@ namespace WebClashServer
                 return;
             }
 
-            File.Delete(Program.main.location + "/quests/" + oldName + ".json");
+            File.Delete(Program.main.serverLocation + "/quests/" + oldName + ".json");
 
             ReloadQuests();
 

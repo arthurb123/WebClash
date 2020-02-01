@@ -105,7 +105,7 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] maps = Directory.GetFiles(Program.main.location + "/maps", "*.*", SearchOption.AllDirectories)
+                string[] maps = Directory.GetFiles(Program.main.serverLocation + "/maps", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s)) && !s.Contains(".metadata")).ToArray();
 
                 foreach (string m in maps)
@@ -153,7 +153,7 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] items = Directory.GetFiles(Program.main.location + "/items", "*.*", SearchOption.AllDirectories)
+                string[] items = Directory.GetFiles(Program.main.serverLocation + "/items", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 for (int i = 0; i < items.Length; i++)
@@ -225,7 +225,7 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] items = Directory.GetFiles(Program.main.location + "/npcs", "*.*", SearchOption.AllDirectories)
+                string[] items = Directory.GetFiles(Program.main.serverLocation + "/npcs", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 for (int i = 0; i < items.Length; i++)
@@ -276,7 +276,7 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] quests = Directory.GetFiles(Program.main.location + "/quests", "*.*", SearchOption.AllDirectories)
+                string[] quests = Directory.GetFiles(Program.main.serverLocation + "/quests", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 for (int i = 0; i < quests.Length; i++)

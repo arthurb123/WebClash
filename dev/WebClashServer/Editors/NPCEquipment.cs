@@ -103,21 +103,21 @@ namespace WebClashServer.Editors
         {
             for (int i = 0; i < equipment.Count; i++)
             {
-                string location = Program.main.location + "/../client/" + equipment[i].source;
+                string serverLocation = Program.main.serverLocation + "/../client/" + equipment[i].source;
 
-                if (!File.Exists(location))
+                if (!File.Exists(serverLocation))
                     continue;
 
                 if (i >= equipmentImages.Count)
-                    equipmentImages.Add(new EquipmentImage(location));
+                    equipmentImages.Add(new EquipmentImage(serverLocation));
                 else if (equipmentImages[i].source != equipment[i].source)
-                    equipmentImages[i] = new EquipmentImage(location);
+                    equipmentImages[i] = new EquipmentImage(serverLocation);
             }
         }
 
         private void LoadCharacter()
         {
-            character = new Character(Program.main.location + "/characters/" + charName + ".json");
+            character = new Character(Program.main.serverLocation + "/characters/" + charName + ".json");
 
             AttemptSetCharImage(character.src);
 
@@ -223,14 +223,14 @@ namespace WebClashServer.Editors
         {
             try
             {
-                if (!File.Exists(Program.main.location + "/../client/" + src))
+                if (!File.Exists(Program.main.serverLocation + "/../client/" + src))
                 {
                     charImage = null;
 
                     return;
                 }
 
-                charImage = Image.FromFile(Program.main.location + "/../client/" + src);
+                charImage = Image.FromFile(Program.main.serverLocation + "/../client/" + src);
 
                 animation.Interval = (1000 / 60) * character.animation.speed;
 

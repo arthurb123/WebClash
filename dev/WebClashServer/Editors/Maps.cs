@@ -40,7 +40,7 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] maps = Directory.GetFiles(Program.main.location + "/maps", "*.*", SearchOption.AllDirectories)
+                string[] maps = Directory.GetFiles(Program.main.serverLocation + "/maps", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s)) && !s.Contains(".metadata")).ToArray();
 
                 foreach (string m in maps)
@@ -57,8 +57,8 @@ namespace WebClashServer.Editors
             if (mapName == string.Empty)
                 return;
            
-            current = new Map(Program.main.location + "/maps/" + mapName + ".json");
-            currentMetadata = new MapMetadata(Program.main.location + "/maps/" + mapName + ".metadata.json");
+            current = new Map(Program.main.serverLocation + "/maps/" + mapName + ".json");
+            currentMetadata = new MapMetadata(Program.main.serverLocation + "/maps/" + mapName + ".metadata.json");
             
             mapSize.Text = current.width + "x" + current.height;
             mapTilesets.Text = current.tilesets.Length.ToString();
@@ -174,7 +174,7 @@ namespace WebClashServer.Editors
 
         private bool CheckTileset(Tileset ts)
         {
-            string clientLocation = Program.main.location + "/../client/res/tilesets/";
+            string clientLocation = Program.main.serverLocation + "/../client/res/tilesets/";
 
             int s = ts.image.LastIndexOf("/") + 1;
 
@@ -197,7 +197,7 @@ namespace WebClashServer.Editors
                     for (int i = 0; i < current.tilesets.Length; i++)
                         current.tilesets[i].image = Path.GetDirectoryName(ofd.FileName) + "/" + current.tilesets[i].image;
 
-                    string startLocation = Program.main.location + "\\maps\\";
+                    string startLocation = Program.main.serverLocation + "\\maps\\";
 
                     File.Copy(ofd.FileName, startLocation + ofd.SafeFileName, true);
 
@@ -228,8 +228,8 @@ namespace WebClashServer.Editors
             if (dr != DialogResult.Yes)
                 return;
 
-            string path = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".json",
-                   pathMetadata = Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".metadata.json";
+            string path = Program.main.serverLocation + "/maps/" + mapList.SelectedItem.ToString() + ".json",
+                   pathMetadata = Program.main.serverLocation + "/maps/" + mapList.SelectedItem.ToString() + ".metadata.json";
 
             if (File.Exists(path))
                 File.Delete(path);
@@ -284,7 +284,7 @@ namespace WebClashServer.Editors
 
             try
             {
-                string startLocation = Program.main.location + "/maps/";
+                string startLocation = Program.main.serverLocation + "/maps/";
 
                 foreach (Tileset ts in current.tilesets)
                     if (!CheckTileset(ts))
@@ -322,7 +322,7 @@ namespace WebClashServer.Editors
                             continue;
                         }
 
-                        string clientLocation = Program.main.location + "/../client/res/tilesets/";
+                        string clientLocation = Program.main.serverLocation + "/../client/res/tilesets/";
 
                         temp.Save(clientLocation + name);
 
@@ -496,7 +496,7 @@ namespace WebClashServer.Editors
         private void SaveMetadata()
         {
             File.WriteAllText(
-                Program.main.location + "/maps/" + mapList.SelectedItem.ToString() + ".metadata.json", 
+                Program.main.serverLocation + "/maps/" + mapList.SelectedItem.ToString() + ".metadata.json", 
                 JsonConvert.SerializeObject(currentMetadata)
             );
 

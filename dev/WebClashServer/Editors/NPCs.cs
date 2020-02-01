@@ -41,7 +41,7 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] npcs = Directory.GetFiles(Program.main.location + "/npcs", "*.*", SearchOption.AllDirectories)
+                string[] npcs = Directory.GetFiles(Program.main.serverLocation + "/npcs", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 foreach (string n in npcs)
@@ -64,7 +64,7 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] characters = Directory.GetFiles(Program.main.location + "/characters", "*.*", SearchOption.AllDirectories)
+                string[] characters = Directory.GetFiles(Program.main.serverLocation + "/characters", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 foreach (string c in characters)
@@ -81,7 +81,7 @@ namespace WebClashServer.Editors
             if (npcName == string.Empty)
                 current = new NPC();
             else
-                current = new NPC(Program.main.location + "/npcs/" + npcName + ".json");
+                current = new NPC(Program.main.serverLocation + "/npcs/" + npcName + ".json");
 
             name.Text = current.name;
             showNameplate.Checked = current.showNameplate;
@@ -158,7 +158,7 @@ namespace WebClashServer.Editors
                 return;
             }
 
-            File.WriteAllText(Program.main.location + "/npcs/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
+            File.WriteAllText(Program.main.serverLocation + "/npcs/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
             MessageBox.Show("NPC has been saved!", "WebClash - Message");
 
@@ -178,14 +178,14 @@ namespace WebClashServer.Editors
 
         private void delete_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(Program.main.location + "/npcs/" + name.Text + ".json"))
+            if (!File.Exists(Program.main.serverLocation + "/npcs/" + name.Text + ".json"))
             {
                 MessageBox.Show("This character cannot be deleted as it does not exist yet.", "WebClash - Error");
 
                 return;
             }
 
-            File.Delete(Program.main.location + "/npcs/" + name.Text + ".json");
+            File.Delete(Program.main.serverLocation + "/npcs/" + name.Text + ".json");
 
             ReloadNPCs();
 

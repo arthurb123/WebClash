@@ -77,7 +77,7 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] characters = Directory.GetFiles(Program.main.location + "/actions", "*.*", SearchOption.AllDirectories)
+                string[] characters = Directory.GetFiles(Program.main.serverLocation + "/actions", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 foreach (string c in characters)

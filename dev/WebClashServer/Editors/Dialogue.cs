@@ -297,7 +297,7 @@ namespace WebClashServer.Editors
                     r
                 );
             }
-            catch (Exception e)
+            catch
             {
                 //...
             }

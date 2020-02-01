@@ -91,7 +91,7 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] items = Directory.GetFiles(Program.main.location + "/npcs", "*.*", SearchOption.AllDirectories)
+                string[] items = Directory.GetFiles(Program.main.serverLocation + "/npcs", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 for (int i = 0; i < items.Length; i++)
@@ -144,7 +144,7 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] items = Directory.GetFiles(Program.main.location + "/items", "*.*", SearchOption.AllDirectories)
+                string[] items = Directory.GetFiles(Program.main.serverLocation + "/items", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 for (int i = 0; i < items.Length; i++)

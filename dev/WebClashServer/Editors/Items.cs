@@ -46,7 +46,7 @@ namespace WebClashServer
                     ".json"
                 };
 
-                string[] items = Directory.GetFiles(Program.main.location + "/items", "*.*", SearchOption.AllDirectories)
+                string[] items = Directory.GetFiles(Program.main.serverLocation + "/items", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 for (int i = 0; i < items.Length; i++)
@@ -76,7 +76,7 @@ namespace WebClashServer
                     ".json"
                 };
 
-                string[] actions = Directory.GetFiles(Program.main.location + "/actions", "*.*", SearchOption.AllDirectories)
+                string[] actions = Directory.GetFiles(Program.main.serverLocation + "/actions", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 foreach (string c in actions)
@@ -98,7 +98,7 @@ namespace WebClashServer
             if (itemName == string.Empty)
                 current = new Item();
             else
-                current = new Item(Program.main.location + "/items/" + itemName + ".json");
+                current = new Item(Program.main.serverLocation + "/items/" + itemName + ".json");
 
             name.Text = itemName;
             oldName = name.Text;
@@ -192,9 +192,9 @@ namespace WebClashServer
                 current.equippable = string.Empty;
 
             if (oldName != name.Text)
-                File.Delete(Program.main.location + "/items/" + oldName + ".json");
+                File.Delete(Program.main.serverLocation + "/items/" + oldName + ".json");
 
-            File.WriteAllText(Program.main.location + "/items/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
+            File.WriteAllText(Program.main.serverLocation + "/items/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
             MessageBox.Show("Item has been saved!", "WebClash - Message");
 
@@ -238,16 +238,16 @@ namespace WebClashServer
 
         private void AttemptSetIcon()
         {
-            string location = Program.main.location + "/../client/" + src.Text;
+            string serverLocation = Program.main.serverLocation + "/../client/" + src.Text;
 
-            if (!File.Exists(location))
+            if (!File.Exists(serverLocation))
             {
                 icon.BackgroundImage = null;
                 current.source = string.Empty;
                 return;
             }
 
-            icon.BackgroundImage = Image.FromFile(location);
+            icon.BackgroundImage = Image.FromFile(serverLocation);
             current.source = src.Text;
         }
 
@@ -317,7 +317,7 @@ namespace WebClashServer
                 return;
             }
 
-            File.Delete(Program.main.location + "/items/" + oldName + ".json");
+            File.Delete(Program.main.serverLocation + "/items/" + oldName + ".json");
 
             ReloadItems();
 

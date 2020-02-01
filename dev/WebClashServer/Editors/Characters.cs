@@ -46,7 +46,7 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] characters = Directory.GetFiles(Program.main.location + "/characters", "*.*", SearchOption.AllDirectories)
+                string[] characters = Directory.GetFiles(Program.main.serverLocation + "/characters", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 foreach (string c in characters)
@@ -85,7 +85,7 @@ namespace WebClashServer.Editors
             if (charName == string.Empty)
                 current = new Character();
             else
-                current = new Character(Program.main.location + "/characters/" + charName + ".json");
+                current = new Character(Program.main.serverLocation + "/characters/" + charName + ".json");
 
             name.Text = charName;
 
@@ -141,14 +141,14 @@ namespace WebClashServer.Editors
         {
             try
             {
-                if (!File.Exists(Program.main.location + "/../client/" + src))
+                if (!File.Exists(Program.main.serverLocation + "/../client/" + src))
                 {
                     charImage = null;
 
                     return;
                 }
 
-                charImage = Image.FromFile(Program.main.location + "/../client/" + src);
+                charImage = Image.FromFile(Program.main.serverLocation + "/../client/" + src);
 
                 animation.Interval = (1000 / 60) * current.animation.speed;
 
@@ -222,7 +222,7 @@ namespace WebClashServer.Editors
                 return;
             }
 
-            File.WriteAllText(Program.main.location + "/characters/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
+            File.WriteAllText(Program.main.serverLocation + "/characters/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
             MessageBox.Show("Character has been saved!", "WebClash - Message");
 
@@ -247,14 +247,14 @@ namespace WebClashServer.Editors
 
         private void delete_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(Program.main.location + "/characters/" + name.Text + ".json"))
+            if (!File.Exists(Program.main.serverLocation + "/characters/" + name.Text + ".json"))
             {
                 MessageBox.Show("This character cannot be deleted as it does not exist yet.", "WebClash - Error");
 
                 return;
             }
 
-            File.Delete(Program.main.location + "/characters/" + name.Text + ".json");
+            File.Delete(Program.main.serverLocation + "/characters/" + name.Text + ".json");
 
             ReloadCharacters();
 

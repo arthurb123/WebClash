@@ -1,5 +1,7 @@
 .DS_Store
+.vs/
 server/logs
+server/node_modules
 dev/WebClashServer/bin/
 dev/WebClashServer/obj/
 dev/WebClashServer/.vs/

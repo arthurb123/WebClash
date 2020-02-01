@@ -40,14 +40,14 @@ namespace WebClashServer.Editors
         {
             try
             {
-                if (!File.Exists(Program.main.location + "/../client/" + src))
+                if (!File.Exists(Program.main.serverLocation + "/../client/" + src))
                 {
                     current.portrait = null;
 
                     return;
                 }
 
-                portrait.BackgroundImage = Image.FromFile(Program.main.location + "/../client/" + src);
+                portrait.BackgroundImage = Image.FromFile(Program.main.serverLocation + "/../client/" + src);
 
                 current.portrait = src;
             }

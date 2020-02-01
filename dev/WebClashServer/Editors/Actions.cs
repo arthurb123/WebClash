@@ -79,7 +79,7 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] characters = Directory.GetFiles(Program.main.location + "/actions", "*.*", SearchOption.AllDirectories)
+                string[] characters = Directory.GetFiles(Program.main.serverLocation + "/actions", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 foreach (string c in characters)
@@ -102,7 +102,7 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] characters = Directory.GetFiles(Program.main.location + "/characters", "*.*", SearchOption.AllDirectories)
+                string[] characters = Directory.GetFiles(Program.main.serverLocation + "/characters", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 foreach (string c in characters)
@@ -119,7 +119,7 @@ namespace WebClashServer.Editors
             if (actionName == string.Empty)
                 current = new Action();
             else
-                current = new Action(Program.main.location + "/actions/" + actionName + ".json");
+                current = new Action(Program.main.serverLocation + "/actions/" + actionName + ".json");
 
             if (current.elements.Length > 0)
                 GrabElement(0);
@@ -153,7 +153,7 @@ namespace WebClashServer.Editors
             if (charName == string.Empty)
                 currentCharacter = new Character();
             else
-                currentCharacter = new Character(Program.main.location + "/characters/" + charName + ".json");
+                currentCharacter = new Character(Program.main.serverLocation + "/characters/" + charName + ".json");
 
             if (currentCharacter.src != string.Empty)
                 AttemptSetCharImage(currentCharacter.src);
@@ -163,14 +163,14 @@ namespace WebClashServer.Editors
         {
             try
             {
-                if (!File.Exists(Program.main.location + "/../client/" + src))
+                if (!File.Exists(Program.main.serverLocation + "/../client/" + src))
                 {
                     charImage = null;
 
                     return;
                 }
 
-                charImage = Image.FromFile(Program.main.location + "/../client/" + src);
+                charImage = Image.FromFile(Program.main.serverLocation + "/../client/" + src);
             }
             catch (Exception e)
             {
@@ -182,10 +182,10 @@ namespace WebClashServer.Editors
 
         private Image GetClientImage(string src)
         {
-            if (!File.Exists(Program.main.location + "/../client/" + src))
+            if (!File.Exists(Program.main.serverLocation + "/../client/" + src))
                 return null;
 
-            return Image.FromFile(Program.main.location + "/../client/" + src);
+            return Image.FromFile(Program.main.serverLocation + "/../client/" + src);
         }
 
         private void paintCanvas(object sender, PaintEventArgs e)
@@ -333,14 +333,14 @@ namespace WebClashServer.Editors
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(Program.main.location + "/actions/" + current.name + ".json"))
+            if (!File.Exists(Program.main.serverLocation + "/actions/" + current.name + ".json"))
             {
                 MessageBox.Show("This action cannot be deleted as it does not exist yet.", "WebClash - Error");
 
                 return;
             }
 
-            File.Delete(Program.main.location + "/actions/" + current.name + ".json");
+            File.Delete(Program.main.serverLocation + "/actions/" + current.name + ".json");
 
             ReloadActions();
 
@@ -355,7 +355,7 @@ namespace WebClashServer.Editors
             if (current == null)
                 return;
 
-            File.WriteAllText(Program.main.location + "/actions/" + current.name + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
+            File.WriteAllText(Program.main.serverLocation + "/actions/" + current.name + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
             MessageBox.Show("Action has been saved!", "WebClash - Message");
 
@@ -601,16 +601,16 @@ namespace WebClashServer.Editors
 
         private void AttemptSetIcon()
         {
-            string location = Program.main.location + "/../client/" + icon.Text;
+            string serverLocation = Program.main.serverLocation + "/../client/" + icon.Text;
 
-            if (!File.Exists(location))
+            if (!File.Exists(serverLocation))
             {
                 iconImage.BackgroundImage = null;
                 current.src = string.Empty;
                 return;
             }
 
-            iconImage.BackgroundImage = Image.FromFile(location);
+            iconImage.BackgroundImage = Image.FromFile(serverLocation);
             current.src = icon.Text;
         }
 

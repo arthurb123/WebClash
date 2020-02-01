@@ -1,18 +1,4 @@
-//NodeJS Modules
-
-const fs = require('fs'),
-      geckos = require('@geckos.io/server').default,
-      express = require('express'),
-      app = express(),
-      http = require('http').Server(app),
-      path = require('path'),
-      readline = require('readline');
-
-//Load deepcopy
-
-global.deepcopy = require('deepcopy');
-
-//Unique Modules
+//Load WebClash modules
 
 global.server   = require('./webclash_modules/server');
 global.game     = require('./webclash_modules/game');
@@ -31,6 +17,33 @@ global.input    = require('./webclash_modules/input');
 global.storage  = require('./webclash_modules/storage');
 global.tools    = require('./webclash_modules/tools');
 
+//Safe module require method
+
+const safeRequire = (name) => {
+    try 
+    {
+        return require(name);
+    }
+    catch (err) 
+    {
+        output.give('Could not load node module "' + name + '"!');
+        output.give('Try installing the dependencies by running install_dependencies.bat or running \'npm install package.json\' in the console.');
+        process.exit();
+    }
+};
+
+//Safe load NodeJS Modules
+
+const fs       = safeRequire('fs'),
+      geckos   = safeRequire('@geckos.io/server').default,
+      express  = safeRequire('express'),
+      app      = safeRequire(),
+      http     = safeRequire('http').Server(app),
+      path     = safeRequire('path'),
+      readline = safeRequire('readline');
+    
+global.deepcopy = safeRequire('deepcopy');
+
 //Load server settings
 
 global.properties   = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
@@ -44,7 +57,7 @@ global.gameplay     = JSON.parse(fs.readFileSync('gameplay.json', 'utf-8'));
 global.commandsAdmin = fs.readFileSync('commandsAdmin.txt', 'utf-8').toString();
 global.commandsUser  = fs.readFileSync('commandsUser.txt', 'utf-8').toString();
 
-//Setup game time
+//Convert game time to usable format
 
 gameplay.dayLength   *= 60;
 gameplay.nightLength *= 60;

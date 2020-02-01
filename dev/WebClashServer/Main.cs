@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WebClashServer.Editors;
 
+using Action = System.Action;
 
 namespace WebClashServer
 {
@@ -12,28 +12,25 @@ namespace WebClashServer
     {
         //Server variables
 
-        private bool running = false;
+        private bool    running       = false;
+        private bool    shouldRestart = false;
+        private Process p             = null;
 
-        public string location = "server";
-
-        private Process p = null;
-
-        private bool shouldRestart = false;
+        public string serverLocation = "server";
+        public string nodeLocation   = "";
 
         //Forms
 
         Characters characters = new Characters();
-        Maps maps = new Maps();
-        NPCs npcs = new NPCs();
-        Actions actions = new Actions();
-        Items items = new Items();
-        Quests quests = new Quests();
+        Maps       maps       = new Maps();
+        NPCs       npcs       = new NPCs();
+        Actions    actions    = new Actions();
+        Items      items      = new Items();
+        Quests     quests     = new Quests();
 
         public Main()
         {
             InitializeComponent();
-
-            //Setup command enter event
 
             inputCommand.KeyDown += new KeyEventHandler((object s, KeyEventArgs kea) =>
             {
@@ -64,63 +61,117 @@ namespace WebClashServer
                 AttemptStopServer();
         }
 
+        private void InstallDependencies()
+        {
+            output.Text = "";
+            status.Text = "Installing dependencies..";
+            startButton.Enabled = false;
+
+            StartNodeProcess("npm.cmd", "install package.json", () =>
+            {
+                status.Text = "Dependencies installed.";
+                startButton.Enabled = true;
+
+                DialogResult startServer = MessageBox.Show(
+                    "Finished installing dependencies, do you want to start the server?",
+                    "WebClash - Question",
+                    MessageBoxButtons.YesNo
+                );
+
+                if (startServer == DialogResult.Yes)
+                    AttemptStartServer();
+            });
+        }
+
         private void AttemptStartServer()
         {
-            if (p != null)
+            if (p != null || !CheckServerLocation())
                 return;
 
-            if (!CheckServerLocation())
-                return;
-
-            string nodeLocation = getNodeJSLocation();
+            //Check if NodeJS is present
 
             if (nodeLocation == "")
             {
-                MessageBox.Show("Could not locate NodeJS, the server could not be started. \nNodeJS can be downloaded from https://www.nodejs.org/", "WebClash - Error");
+                nodeLocation = getNodeJSLocation();
 
-                return;
+                if (nodeLocation == "")
+                {
+                    MessageBox.Show(
+                        "Could not locate NodeJS, the server could not be started. " +
+                        "\nNodeJS can be downloaded from https://www.nodejs.org/",
+                        "WebClash - Error"
+                    );
+
+                    return;
+                }
             }
 
+            //Check if NodeJS modules exist
+
+            if (!Directory.Exists(serverLocation + "/node_modules"))
+            {
+                DialogResult installDependencies = MessageBox.Show(
+                    "The server dependencies could not be found, do you want to install these now?",
+                    "WebClash - Question",
+                    MessageBoxButtons.YesNo
+                );
+
+                if (installDependencies == DialogResult.Yes)
+                {
+                    InstallDependencies();
+                    return;
+                }
+            }
+
+            //Start server
+
+            StartNodeProcess("node.exe", "index.js");
+
+            running          = true;
             startButton.Text = "Stop";
+            output.Text      = "";
+            status.Text      = "Server has been started.";
+        }
 
-            running = true;
-
-            output.Text = "";
-
+        private void StartNodeProcess(string target, string arguments, Action exitCallback = null)
+        {
             try
             {
-                ProcessStartInfo pi = new ProcessStartInfo(nodeLocation + "/node.exe", "index.js");
+                ProcessStartInfo pi = new ProcessStartInfo(nodeLocation + "/" + target, arguments);
                 p = new Process();
 
-                pi.CreateNoWindow = true;
-                pi.UseShellExecute = false;
-                pi.WorkingDirectory = location;
+                pi.CreateNoWindow   = true;
+                pi.UseShellExecute  = false;
+                pi.WorkingDirectory = serverLocation;
 
-                pi.RedirectStandardError = true;
+                pi.RedirectStandardError  = true;
                 pi.RedirectStandardOutput = true;
-                pi.RedirectStandardInput = true;
+                pi.RedirectStandardInput  = true;
 
                 p = Process.Start(pi);
 
                 p.BeginOutputReadLine();
                 p.BeginErrorReadLine();
 
-                p.OutputDataReceived += ((object sender, DataReceivedEventArgs e) =>
+                p.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
                 {
                     AddOutput(e.Data);
-                });
+                };
+                p.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
+                {
+                    AddOutput(e.Data);
+                };
 
-                p.ErrorDataReceived += ((object sender, DataReceivedEventArgs e) =>
-                {
-                    AddOutput(e.Data);
-                });
+                if (exitCallback != null)
+                    p.Exited += (object sender, EventArgs e) =>
+                    {
+                        exitCallback();
+                    };
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "WebClash - Error");
             }
-
-            status.Text = "Server has been started.";
         }
 
         private void AttemptStopServer()
@@ -140,13 +191,10 @@ namespace WebClashServer
 
         private void FinalShutDownProcedure()
         {
-            status.Text = "Server has been stopped.";
-
+            status.Text      = "Server has been stopped.";
             startButton.Text = "Start";
-
-            p = null;
-
-            running = false;
+            running          = false;
+            p                = null;
 
             if (shouldRestart)
             {
@@ -174,12 +222,12 @@ namespace WebClashServer
 
         private bool CheckServerLocation()
         {
-            if (Directory.Exists(location) ||
-                File.Exists(location + "/index.js"))
+            if (Directory.Exists(serverLocation) ||
+                File.Exists(serverLocation + "/index.js"))
                 return true;
 
-            while (!Directory.Exists(location) ||
-                !File.Exists(location + "/index.js"))
+            while (!Directory.Exists(serverLocation) ||
+                !File.Exists(serverLocation + "/index.js"))
             {
                 status.Text = "Server folder not located.";
 
@@ -204,7 +252,7 @@ namespace WebClashServer
             {
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    location = dialog.SelectedPath;
+                    serverLocation = dialog.SelectedPath;
 
                     return true;
                 }
@@ -217,7 +265,7 @@ namespace WebClashServer
         {
             try
             {
-                if (!running || msg == null)
+                if (msg == null)
                     return;
 
                 if (!InvokeRequired)
@@ -233,7 +281,7 @@ namespace WebClashServer
                 else
                     Invoke(new Action<string>(AddOutput), msg);
             }
-            catch (Exception exc)
+            catch
             {
                 //...
             }
@@ -252,7 +300,11 @@ namespace WebClashServer
 
             if (result == "")
             {
-                DialogResult manuallySelect = MessageBox.Show("NodeJS could not be found, do you want to manually select the installation folder?", "WebClash - Error", MessageBoxButtons.YesNo);
+                DialogResult manuallySelect = MessageBox.Show(
+                    "NodeJS could not be found, do you want to manually select the installation folder?", 
+                    "WebClash - Error", 
+                    MessageBoxButtons.YesNo
+                );
                 
                 if (manuallySelect == DialogResult.Yes)
                     using (FolderBrowserDialog dialog = new FolderBrowserDialog())
@@ -270,10 +322,10 @@ namespace WebClashServer
 
             try
             {
-                if (location.IndexOf("\\") == -1)
-                    location = Application.StartupPath + "/" + location;
+                if (serverLocation.IndexOf("\\") == -1)
+                    serverLocation = Application.StartupPath + "/" + serverLocation;
 
-                Process.Start(new ProcessStartInfo(location + "/properties.json"));
+                Process.Start(new ProcessStartInfo(serverLocation + "/properties.json"));
             }
             catch (Exception exc)
             {
@@ -288,10 +340,10 @@ namespace WebClashServer
 
             try
             {
-                if (location.IndexOf("\\") == -1)
-                    location = Application.StartupPath + "/" + location;
+                if (serverLocation.IndexOf("\\") == -1)
+                    serverLocation = Application.StartupPath + "/" + serverLocation;
 
-                Process.Start(new ProcessStartInfo(location + "/permissions.json"));
+                Process.Start(new ProcessStartInfo(serverLocation + "/permissions.json"));
             }
             catch (Exception exc)
             {
@@ -432,7 +484,7 @@ namespace WebClashServer
             if (!CheckServerLocation())
                 return;
 
-            new ResetData(location).ShowDialog();
+            new ResetData(serverLocation).ShowDialog();
         }
 
         //About
