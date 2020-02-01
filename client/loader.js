@@ -60,14 +60,17 @@ function loadAllScripts()
         addScript('lib/ui.js');
     else
         addScript('lib/ui-mobile.js');
+    
+    //Load misc. scripts if mobile
+    
+    if (isMobile) {
+        //iNoBounce for iOS bounce disabling
+        addScript('misc/inobounce.js');
+    }
 }
 
 function finishLoading(isMobile)
 {
-    //Initialize game/Lynx2D
-
-    game.initialize(isMobile);
-
     //Set status
 
     document.getElementById('status_text').innerHTML = 'Connecting';
@@ -87,6 +90,10 @@ function finishLoading(isMobile)
         st.parentNode.removeChild(st);
         ls.parentNode.removeChild(ls);
     });
+
+    //Initialize game/Lynx2D
+
+    game.initialize(isMobile);
 }
 
 

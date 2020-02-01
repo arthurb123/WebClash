@@ -1188,8 +1188,10 @@ const game = {
 
         this.isMobile = isMobile;
 
-        if (isMobile)
+        if (isMobile) {
+            //Append fullscreen functionality
             ui.fullscreen.append();
+        }
     },
     update: function() {
         //Order NPCs against NPCs

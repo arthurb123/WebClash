@@ -2,25 +2,6 @@
 
 exports.handleChannel = function(channel)
 {
-    //Check if direct or external connection
-
-    /*
-    Is it possible to check this with geckos.io?
-
-    if (channel.handshake.xdomain) {
-
-        //Check if external connections/clients are allowed
-
-        if (!properties.allowExternalClients) {
-            //If not allowed, disconnect channel
-
-            channel.disconnect();
-
-            return;
-        }
-    }
-    */
-
     //Create custom check functions
 
     const isInGame = function(checkAlive) {

@@ -2,8 +2,12 @@ const cache = {
     progress: {
         visible: false,
         create: function() {
-            view.dom.innerHTML += 
-                '<p id="progress_text" class="info" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); visibility: hidden;"></p>';
+            let text = document.createElement('p');
+            text.id = 'progress_text';
+            text.classList.add('info');
+            text.style = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); visibility: hidden;';
+
+            view.dom.appendChild(text);
         },
         update: function(text) {
             document.getElementById('progress_text').innerHTML = text;
