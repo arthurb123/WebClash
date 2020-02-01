@@ -32,12 +32,12 @@ const safeRequire = (name) => {
     }
 };
 
-//Safe load NodeJS Modules
+//Safely load NodeJS Modules
 
 const fs       = safeRequire('fs'),
       geckos   = safeRequire('@geckos.io/server').default,
       express  = safeRequire('express'),
-      app      = safeRequire(),
+      app      = express(),
       http     = safeRequire('http').Server(app),
       path     = safeRequire('path'),
       readline = safeRequire('readline');
