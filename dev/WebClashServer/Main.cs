@@ -67,20 +67,46 @@ namespace WebClashServer
             status.Text = "Installing dependencies..";
             startButton.Enabled = false;
 
-            StartNodeProcess("npm.cmd", "install package.json", () =>
+            StartNodeProcess(
+                "npm.cmd", 
+                "install package.json", 
+                FinishInstallingDependencies
+            );
+        }
+
+        private void FinishInstallingDependencies()
+        {
+            if (!InvokeRequired)
             {
-                status.Text = "Dependencies installed.";
+                p = null;
                 startButton.Enabled = true;
 
-                DialogResult startServer = MessageBox.Show(
-                    "Finished installing dependencies, do you want to start the server?",
-                    "WebClash - Question",
-                    MessageBoxButtons.YesNo
-                );
+                if (!Directory.Exists(serverLocation + "/node_modules"))
+                {
+                    status.Text = "Dependencies failed.";
 
-                if (startServer == DialogResult.Yes)
-                    AttemptStartServer();
-            });
+                    MessageBox.Show(
+                        "Could not install the server dependencies, " +
+                        "please try again or use 'npm install package.json' in the console.",
+                        "WebClash - Error"
+                    );
+                }
+                else
+                {
+                    status.Text = "Dependencies installed.";
+
+                    DialogResult startServer = MessageBox.Show(
+                        "Finished installing dependencies, do you want to start the server?",
+                        "WebClash - Question",
+                        MessageBoxButtons.YesNo
+                    );
+
+                    if (startServer == DialogResult.Yes)
+                        AttemptStartServer();
+                }
+            }
+            else
+                Invoke(new Action(FinishInstallingDependencies));
         }
 
         private void AttemptStartServer()
@@ -160,6 +186,9 @@ namespace WebClashServer
                 p.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
                 {
                     AddOutput(e.Data);
+
+                    if (p != null && !p.HasExited)
+                        p.Kill();
                 };
 
                 if (exitCallback != null)
