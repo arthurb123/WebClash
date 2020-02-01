@@ -969,7 +969,7 @@
             this.MaximumSize = new System.Drawing.Size(762, 525);
             this.MinimumSize = new System.Drawing.Size(762, 525);
             this.Name = "Actions";
-            this.Text = "WebClash Server - Actions";
+            this.Text = "WebClash - Actions";
             this.Load += new System.EventHandler(this.Actions_Load);
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
             this.properties.ResumeLayout(false);

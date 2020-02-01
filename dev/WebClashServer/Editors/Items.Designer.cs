@@ -825,7 +825,7 @@
             this.MaximumSize = new System.Drawing.Size(467, 470);
             this.MinimumSize = new System.Drawing.Size(467, 470);
             this.Name = "Items";
-            this.Text = "WebClash Server - Items";
+            this.Text = "WebClash - Items";
             this.Load += new System.EventHandler(this.Items_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

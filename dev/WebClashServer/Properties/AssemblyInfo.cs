@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WebClash Server")]
+[assembly: AssemblyTitle("WebClash")]
 [assembly: AssemblyDescription("The WebClash server binary.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Arthur Baars")]
-[assembly: AssemblyProduct("WebClash Server")]
+[assembly: AssemblyProduct("WebClash")]
 [assembly: AssemblyCopyright("Copyright ©  2018-2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

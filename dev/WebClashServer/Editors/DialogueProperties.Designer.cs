@@ -260,7 +260,7 @@
             this.MaximumSize = new System.Drawing.Size(575, 405);
             this.MinimumSize = new System.Drawing.Size(575, 405);
             this.Name = "DialogueProperties";
-            this.Text = "WebClash Server - DialogItem";
+            this.Text = "WebClash - DialogItem";
             this.Load += new System.EventHandler(this.DialogueItem_Load);
             ((System.ComponentModel.ISupportInitialize)(this.portrait)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.optionNext)).EndInit();

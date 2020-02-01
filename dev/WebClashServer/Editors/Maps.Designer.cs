@@ -334,7 +334,7 @@
             this.MaximumSize = new System.Drawing.Size(460, 350);
             this.MinimumSize = new System.Drawing.Size(460, 340);
             this.Name = "Maps";
-            this.Text = "WebClash Server - Maps";
+            this.Text = "WebClash - Maps";
             this.Load += new System.EventHandler(this.Maps_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

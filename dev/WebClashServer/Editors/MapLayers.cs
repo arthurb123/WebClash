@@ -50,7 +50,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash Server - Error");
+                MessageBox.Show(exc.Message, "WebClash - Error");
             }
             
             if (current == -1 &&
@@ -91,7 +91,7 @@ namespace WebClashServer.Editors
             {
                 if (!layers[current].hover && layers[current+1].hover)
                 {
-                    MessageBox.Show("Could not move layer down, as hover layers should always be on top.", "WebClash Server - Error");
+                    MessageBox.Show("Could not move layer down, as hover layers should always be on top.", "WebClash - Error");
                     return;
                 }
 
@@ -108,7 +108,7 @@ namespace WebClashServer.Editors
             if (current > 0) {
                 if (layers[current].hover && !layers[current - 1].hover)
                 {
-                    MessageBox.Show("Could not move layer up, as hover layers should always be on top.", "WebClash Server - Error");
+                    MessageBox.Show("Could not move layer up, as hover layers should always be on top.", "WebClash - Error");
                     return;
                 }
 

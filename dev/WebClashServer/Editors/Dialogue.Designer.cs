@@ -175,7 +175,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(665, 405);
             this.Name = "Dialogue";
-            this.Text = "WebClash Server - Dialogue";
+            this.Text = "WebClash - Dialogue";
             this.Load += new System.EventHandler(this.Dialogue_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

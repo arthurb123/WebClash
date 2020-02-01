@@ -56,7 +56,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash Server - Error");
+                MessageBox.Show(exc.Message, "WebClash - Error");
             }
         }
 
@@ -156,7 +156,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "WebClash Server - Error");
+                MessageBox.Show(e.Message, "WebClash - Error");
             }
 
             canvas.Invalidate();
@@ -217,14 +217,14 @@ namespace WebClashServer.Editors
         {
             if (name.Text.Length == 0)
             {
-                MessageBox.Show("This character cannot be saved as it has an invalid name.", "WebClash Server - Error");
+                MessageBox.Show("This character cannot be saved as it has an invalid name.", "WebClash - Error");
 
                 return;
             }
 
             File.WriteAllText(Program.main.location + "/characters/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
-            MessageBox.Show("Character has been saved!", "WebClash Server - Message");
+            MessageBox.Show("Character has been saved!", "WebClash - Message");
 
             ReloadCharacters();
 
@@ -249,7 +249,7 @@ namespace WebClashServer.Editors
         {
             if (!File.Exists(Program.main.location + "/characters/" + name.Text + ".json"))
             {
-                MessageBox.Show("This character cannot be deleted as it does not exist yet.", "WebClash Server - Error");
+                MessageBox.Show("This character cannot be deleted as it does not exist yet.", "WebClash - Error");
 
                 return;
             }
@@ -363,7 +363,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "WebClash Server - Error");
+                MessageBox.Show(e.Message, "WebClash - Error");
             }
         }
 

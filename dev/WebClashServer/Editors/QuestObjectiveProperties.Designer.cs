@@ -233,7 +233,7 @@
             this.MaximumSize = new System.Drawing.Size(306, 251);
             this.MinimumSize = new System.Drawing.Size(306, 251);
             this.Name = "QuestObjectiveProperties";
-            this.Text = "WebClash Server - Quest Objective";
+            this.Text = "WebClash - Quest Objective";
             this.Load += new System.EventHandler(this.QuestObjectiveProperties_Load);
             this.groupBox1.ResumeLayout(false);
             this.gatherObjectivePanel.ResumeLayout(false);

@@ -49,7 +49,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash Server - Error");
+                MessageBox.Show(exc.Message, "WebClash - Error");
             }
         }
 
@@ -72,7 +72,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash Server - Error");
+                MessageBox.Show(exc.Message, "WebClash - Error");
             }
         }
 
@@ -153,14 +153,14 @@ namespace WebClashServer.Editors
         {
             if (name.Text.Length == 0)
             {
-                MessageBox.Show("This NPC cannot be saved as it has an invalid name.", "WebClash Server - Error");
+                MessageBox.Show("This NPC cannot be saved as it has an invalid name.", "WebClash - Error");
 
                 return;
             }
 
             File.WriteAllText(Program.main.location + "/npcs/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
-            MessageBox.Show("NPC has been saved!", "WebClash Server - Message");
+            MessageBox.Show("NPC has been saved!", "WebClash - Message");
 
             ReloadNPCs();
 
@@ -180,7 +180,7 @@ namespace WebClashServer.Editors
         {
             if (!File.Exists(Program.main.location + "/npcs/" + name.Text + ".json"))
             {
-                MessageBox.Show("This character cannot be deleted as it does not exist yet.", "WebClash Server - Error");
+                MessageBox.Show("This character cannot be deleted as it does not exist yet.", "WebClash - Error");
 
                 return;
             }
@@ -430,7 +430,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "WebClash Server - Error");
+                MessageBox.Show(e.Message, "WebClash - Error");
             }
         }
 

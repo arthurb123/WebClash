@@ -76,7 +76,7 @@ namespace WebClashServer
 
             if (nodeLocation == "")
             {
-                MessageBox.Show("Could not locate NodeJS, the server could not be started. \nNodeJS can be downloaded from https://www.nodejs.org/", "WebClash Server - Error");
+                MessageBox.Show("Could not locate NodeJS, the server could not be started. \nNodeJS can be downloaded from https://www.nodejs.org/", "WebClash - Error");
 
                 return;
             }
@@ -117,7 +117,7 @@ namespace WebClashServer
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "WebClash Server - Error");
+                MessageBox.Show(e.Message, "WebClash - Error");
             }
 
             status.Text = "Server has been started.";
@@ -183,7 +183,7 @@ namespace WebClashServer
             {
                 status.Text = "Server folder not located.";
 
-                MessageBox.Show("Server folder could not be located, please select the server location.", "WebClash Server - Error");
+                MessageBox.Show("Server folder could not be located, please select the server location.", "WebClash - Error");
 
                 if (RequestServerLocation())
                 {
@@ -252,7 +252,7 @@ namespace WebClashServer
 
             if (result == "")
             {
-                DialogResult manuallySelect = MessageBox.Show("NodeJS could not be found, do you want to manually select the installation folder?", "WebClash Server - Error", MessageBoxButtons.YesNo);
+                DialogResult manuallySelect = MessageBox.Show("NodeJS could not be found, do you want to manually select the installation folder?", "WebClash - Error", MessageBoxButtons.YesNo);
                 
                 if (manuallySelect == DialogResult.Yes)
                     using (FolderBrowserDialog dialog = new FolderBrowserDialog())
@@ -277,7 +277,7 @@ namespace WebClashServer
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash Server - Error");
+                MessageBox.Show(exc.Message, "WebClash - Error");
             }
         }
 
@@ -295,7 +295,7 @@ namespace WebClashServer
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash Server - Error");
+                MessageBox.Show(exc.Message, "WebClash - Error");
             }
         }
 
@@ -433,6 +433,20 @@ namespace WebClashServer
                 return;
 
             new ResetData(location).ShowDialog();
+        }
+
+        //About
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(
+                "WebClash, an ORPG suite for the browser.\nThis binary serves as the design tool for WebClash.\n" +
+                "Usable for personal and commercial usage.\n\nCreated by Arthur Baars 2019/2020\nwww.github.com/arthurb123/webclash", 
+
+                "WebClash - About", 
+                MessageBoxButtons.OK, 
+                MessageBoxIcon.Information
+            );
         }
     }
 }

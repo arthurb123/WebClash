@@ -218,7 +218,7 @@
             this.MaximumSize = new System.Drawing.Size(340, 495);
             this.MinimumSize = new System.Drawing.Size(340, 495);
             this.Name = "NPCEquipment";
-            this.Text = "WebClash Server - NPC Equipment";
+            this.Text = "WebClash - NPC Equipment";
             this.Load += new System.EventHandler(this.NPCGear_Load);
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
             this.groupBox1.ResumeLayout(false);

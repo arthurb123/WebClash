@@ -54,7 +54,7 @@ namespace WebClashServer
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash Server - Error");
+                MessageBox.Show(exc.Message, "WebClash - Error");
             }
         }
 
@@ -154,7 +154,7 @@ namespace WebClashServer
         {
             if (current == null || name.Text.Length == 0)
             {
-                MessageBox.Show("Could not save quest as it is invalid.", "WebClash Server - Error");
+                MessageBox.Show("Could not save quest as it is invalid.", "WebClash - Error");
                 return;
             }
 
@@ -163,7 +163,7 @@ namespace WebClashServer
 
             File.WriteAllText(Program.main.location + "/quests/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
-            MessageBox.Show("Quest has been saved!", "WebClash Server - Message");
+            MessageBox.Show("Quest has been saved!", "WebClash - Message");
 
             ReloadQuests();
 
@@ -192,7 +192,7 @@ namespace WebClashServer
         {
             if (current == null)
             {
-                MessageBox.Show("Could not remove item as it is invalid.", "WebClash Server - Error");
+                MessageBox.Show("Could not remove item as it is invalid.", "WebClash - Error");
                 return;
             }
 
@@ -299,7 +299,7 @@ namespace WebClashServer
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "WebClash Server - Error");
+                MessageBox.Show(e.Message, "WebClash - Error");
             }
         }
         

@@ -53,7 +53,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "WebClash Server - Error");
+                MessageBox.Show(e.Message, "WebClash - Error");
             }
         }
 

@@ -48,7 +48,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash Server - Error");
+                MessageBox.Show(exc.Message, "WebClash - Error");
             }
         }
 
@@ -186,7 +186,7 @@ namespace WebClashServer.Editors
         private void import_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Title = "WebClash Server - Import Map";
+            ofd.Title = "WebClash - Import Map";
             ofd.Filter = "Tiled JSON Map|*.json";
 
             if (ofd.ShowDialog() == DialogResult.OK)
@@ -216,7 +216,7 @@ namespace WebClashServer.Editors
                 }
                 catch (Exception exc)
                 {
-                    MessageBox.Show(exc.Message, "WebClash Server - Error");
+                    MessageBox.Show(exc.Message, "WebClash - Error");
                 }
             }
         }
@@ -243,7 +243,7 @@ namespace WebClashServer.Editors
 
         private void help_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("You can import maps created with Tiled (www.mapeditor.org) in the JSON format. The tilemaps must also have the used tilesets embedded into them.\n\nTileset images are often imported automatically. If the tileset could not be found it will have to be selected manually.", "WebClash Server - Help");
+            MessageBox.Show("You can import maps created with Tiled (www.mapeditor.org) in the JSON format. The tilemaps must also have the used tilesets embedded into them.\n\nTileset images are often imported automatically. If the tileset could not be found it will have to be selected manually.", "WebClash - Help");
         }
 
         private void mapList_SelectedIndexChanged(object sender, EventArgs e)
@@ -309,7 +309,7 @@ namespace WebClashServer.Editors
                                 temp = Image.FromFile(ofd.FileName);
                             else
                             {
-                                MessageBox.Show("Tileset '" + name + "' could not be imported.", "WebClash Server - Error");
+                                MessageBox.Show("Tileset '" + name + "' could not be imported.", "WebClash - Error");
 
                                 continue;
                             }
@@ -317,7 +317,7 @@ namespace WebClashServer.Editors
                         }
 
                         if (temp == null) {
-                            MessageBox.Show("Tileset '" + name + "' could not be imported.", "WebClash Server - Error");
+                            MessageBox.Show("Tileset '" + name + "' could not be imported.", "WebClash - Error");
 
                             continue;
                         }
@@ -333,13 +333,13 @@ namespace WebClashServer.Editors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "WebClash Server - Error");
+                MessageBox.Show(e.Message, "WebClash - Error");
             }
         }
 
         private void mapTypeHelp_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Map types determine the behaviour of the map.\nPossible map types are as follows:\n\nProtected -> Regenerate all stats when out of combat\nNeutral -> No regeneration of stats", "WebClash Server - Map Types");
+            MessageBox.Show("Map types determine the behaviour of the map.\nPossible map types are as follows:\n\nProtected -> Regenerate all stats when out of combat\nNeutral -> No regeneration of stats", "WebClash - Map Types");
         }
 
         private void mapType_SelectedIndexChanged(object sender, EventArgs e)
@@ -362,7 +362,7 @@ namespace WebClashServer.Editors
 
         private void bgmSourceHelp_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("The BGM source determines which music file should be played as the background music in the map. If left empty no BGM will be played.", "WebClash Server - Background Music Source");
+            MessageBox.Show("The BGM source determines which music file should be played as the background music in the map. If left empty no BGM will be played.", "WebClash - Background Music Source");
         }
 
         private void bgmSource_TextChanged(object sender, EventArgs e)
@@ -528,7 +528,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "WebClash Server - Error");
+                MessageBox.Show(e.Message, "WebClash - Error");
             }
         }
 
@@ -560,7 +560,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "WebClash Server - Error");
+                MessageBox.Show(e.Message, "WebClash - Error");
             }
         }
 

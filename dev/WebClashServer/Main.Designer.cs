@@ -45,6 +45,7 @@
             this.restartAfterNewChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.permissions = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.inputCommand = new System.Windows.Forms.TextBox();
@@ -83,9 +84,9 @@
             this.status.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.status.BackColor = System.Drawing.SystemColors.Control;
             this.status.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.status.Location = new System.Drawing.Point(174, 2);
+            this.status.Location = new System.Drawing.Point(208, 2);
             this.status.Name = "status";
-            this.status.Size = new System.Drawing.Size(227, 20);
+            this.status.Size = new System.Drawing.Size(193, 20);
             this.status.TabIndex = 2;
             this.status.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -113,7 +114,8 @@
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.editToolStripMenuItem,
             this.optionsToolStripMenuItem,
-            this.toolsToolStripMenuItem});
+            this.toolsToolStripMenuItem,
+            this.aboutToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(404, 24);
@@ -204,7 +206,7 @@
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.resetDataToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
             // resetDataToolStripMenuItem
@@ -214,6 +216,13 @@
             this.resetDataToolStripMenuItem.Text = "Reset Data";
             this.resetDataToolStripMenuItem.ToolTipText = "Allows for server data resetting";
             this.resetDataToolStripMenuItem.Click += new System.EventHandler(this.resetDataToolStripMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // permissions
             // 
@@ -268,7 +277,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.MinimumSize = new System.Drawing.Size(420, 280);
             this.Name = "Main";
-            this.Text = "WebClash Server";
+            this.Text = "WebClash";
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -299,6 +308,7 @@
         private System.Windows.Forms.TextBox inputCommand;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem restartAfterNewChangesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }
 

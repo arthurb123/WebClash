@@ -586,7 +586,7 @@
             this.MaximumSize = new System.Drawing.Size(420, 635);
             this.MinimumSize = new System.Drawing.Size(420, 635);
             this.Name = "Characters";
-            this.Text = "WebClash Server - Characters";
+            this.Text = "WebClash - Characters";
             this.Load += new System.EventHandler(this.Characters_Load);
             this.generalGroupBox.ResumeLayout(false);
             this.generalGroupBox.PerformLayout();

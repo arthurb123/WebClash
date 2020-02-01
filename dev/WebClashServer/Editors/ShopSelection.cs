@@ -57,7 +57,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash Server - Error");
+                MessageBox.Show(exc.Message, "WebClash - Error");
             }
 
             if (current == -1 &&
@@ -87,7 +87,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash Server - Error");
+                MessageBox.Show(exc.Message, "WebClash - Error");
             }
         }
 

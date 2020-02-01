@@ -87,7 +87,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash Server - Error");
+                MessageBox.Show(exc.Message, "WebClash - Error");
             }
         }
 
@@ -110,7 +110,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash Server - Error");
+                MessageBox.Show(exc.Message, "WebClash - Error");
             }
         }
 
@@ -174,7 +174,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "WebClash Server - Error");
+                MessageBox.Show(e.Message, "WebClash - Error");
             }
 
             canvas.Invalidate();
@@ -335,7 +335,7 @@ namespace WebClashServer.Editors
         {
             if (!File.Exists(Program.main.location + "/actions/" + current.name + ".json"))
             {
-                MessageBox.Show("This action cannot be deleted as it does not exist yet.", "WebClash Server - Error");
+                MessageBox.Show("This action cannot be deleted as it does not exist yet.", "WebClash - Error");
 
                 return;
             }
@@ -357,7 +357,7 @@ namespace WebClashServer.Editors
 
             File.WriteAllText(Program.main.location + "/actions/" + current.name + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
-            MessageBox.Show("Action has been saved!", "WebClash Server - Message");
+            MessageBox.Show("Action has been saved!", "WebClash - Message");
 
             ReloadActions();
 
@@ -730,7 +730,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "WebClash Server - Error");
+                MessageBox.Show(e.Message, "WebClash - Error");
             }
         }
 

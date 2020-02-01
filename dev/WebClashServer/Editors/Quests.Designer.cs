@@ -372,7 +372,7 @@
             this.MaximumSize = new System.Drawing.Size(369, 486);
             this.MinimumSize = new System.Drawing.Size(369, 486);
             this.Name = "Quests";
-            this.Text = "WebClash Server - Quests";
+            this.Text = "WebClash - Quests";
             this.Load += new System.EventHandler(this.Quests_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

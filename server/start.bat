@@ -1,5 +1,5 @@
 @echo off
-title WebClash Server Bash
+title WebClash Server
 
 node index.js
 pause

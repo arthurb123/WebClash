@@ -593,7 +593,7 @@
             this.MaximumSize = new System.Drawing.Size(328, 254);
             this.MinimumSize = new System.Drawing.Size(328, 254);
             this.Name = "DialogueEventProperties";
-            this.Text = "WebClash Server - DialogEvent";
+            this.Text = "WebClash - DialogEvent";
             this.Load += new System.EventHandler(this.DialogueEventProperties_Load);
             this.loadMapPanel.ResumeLayout(false);
             this.loadMapPanel.PerformLayout();
