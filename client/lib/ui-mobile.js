@@ -8,7 +8,6 @@ const ui = {
         this.controller.create();
 
         this.actionbar.create();
-        this.dialog.create();
         this.loot.create();
         this.inventory.create();
         this.equipment.create();
@@ -18,8 +17,8 @@ const ui = {
         this.journal.create();
         this.shop.create();
         this.chat.create();
-
         this.party.create();
+        this.dialog.create();
 
         lx.Loops(this.floaties.update);
     },
