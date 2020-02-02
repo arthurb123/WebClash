@@ -49,6 +49,7 @@ namespace WebClashServer.Editors
 
                 killObjectivePanel.Visible = true;
                 gatherObjectivePanel.Visible = false;
+                talkObjectivePanel.Visible = false;
 
                 killNpcSelection.SelectedItem = current.killObjective.npc;
                 killNpcAmount.Value = current.killObjective.amount;
@@ -56,16 +57,29 @@ namespace WebClashServer.Editors
                 resetOnDeath.Checked = current.killObjective.resetOnDeath;
             }
 
-            if (current.type == "gather")
+            else if (current.type == "gather")
             {
                 if (current.gatherObjective == null)
                     current.gatherObjective = new QuestObjectiveGather();
 
                 gatherObjectivePanel.Visible = true;
                 killObjectivePanel.Visible = false;
+                talkObjectivePanel.Visible = false;
 
                 itemList.SelectedItem = current.gatherObjective.item;
                 gatherAmount.Value = current.gatherObjective.amount;
+            }
+
+            else if (current.type == "talk")
+            {
+                if (current.talkObjective == null)
+                    current.talkObjective = new QuestObjectiveTalk();
+
+                talkObjectivePanel.Visible = true;
+                killObjectivePanel.Visible = false;
+                gatherObjectivePanel.Visible = false;
+
+                talkNpcSelection.SelectedItem = current.talkObjective.npc;
             }
 
             objectiveType.SelectedItem = char.ToUpper(current.type[0]) + current.type.Substring(1, current.type.Length - 1);
@@ -78,11 +92,12 @@ namespace WebClashServer.Editors
             LoadObjectiveProperties();
         }
 
-        //Kill Quest Objective
+        //General methods for selection loading
 
         private void LoadNPCSelection()
         {
             killNpcSelection.Items.Clear();
+            talkNpcSelection.Items.Clear();
 
             try
             {
@@ -97,8 +112,10 @@ namespace WebClashServer.Editors
                 for (int i = 0; i < items.Length; i++)
                 {
                     string it = items[i];
+                    string npc = it.Substring(it.LastIndexOf('\\') + 1, it.LastIndexOf('.') - it.LastIndexOf('\\') - 1);
 
-                    killNpcSelection.Items.Add(it.Substring(it.LastIndexOf('\\') + 1, it.LastIndexOf('.') - it.LastIndexOf('\\') - 1));
+                    killNpcSelection.Items.Add(npc);
+                    talkNpcSelection.Items.Add(npc);
                 }
             }
             catch (Exception exc)
@@ -107,31 +124,6 @@ namespace WebClashServer.Editors
             }
         }
 
-        private void killNpcSelection_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (current == null)
-                return;
-
-            current.killObjective.npc = killNpcSelection.SelectedItem.ToString();
-        }
-
-        private void killNpcAmount_ValueChanged(object sender, EventArgs e)
-        {
-            if (current == null)
-                return;
-
-            current.killObjective.amount = (int)killNpcAmount.Value;
-        }
-
-        private void ResetOnDeath_CheckedChanged(object sender, EventArgs e)
-        {
-            if (current == null)
-                return;
-
-            current.killObjective.resetOnDeath = resetOnDeath.Checked;
-        }
-
-        //Gather Quest Objective
 
         private void LoadItemSelection()
         {
@@ -160,6 +152,34 @@ namespace WebClashServer.Editors
             }
         }
 
+        //Kill Quest Objective
+
+        private void killNpcSelection_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.killObjective.npc = killNpcSelection.SelectedItem.ToString();
+        }
+
+        private void killNpcAmount_ValueChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.killObjective.amount = (int)killNpcAmount.Value;
+        }
+
+        private void ResetOnDeath_CheckedChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.killObjective.resetOnDeath = resetOnDeath.Checked;
+        }
+
+        //Gather Quest Objective
+
         private void itemList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (current == null)
@@ -174,6 +194,37 @@ namespace WebClashServer.Editors
                 return;
 
             current.gatherObjective.amount = (int)gatherAmount.Value;
+        }
+
+        //Talk Quest Objective
+
+        private void talkNpcSelection_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.talkObjective.npc = talkNpcSelection.SelectedItem.ToString();
+        }
+
+        private void talkEditDialog_Click(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            Dialogue talkDialogue = new Dialogue(
+                current.talkObjective.dialog.ToList(),
+                current.talkObjective.dialogElements.ToList(),
+                false
+            );
+
+            talkDialogue.Text = Text + " dialog for '" + current.talkObjective.npc + "'";
+
+            talkDialogue.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                current.talkObjective.dialog = talkDialogue.dialogSystem.items.ToArray();
+                current.talkObjective.dialogElements = talkDialogue.elements.ToArray();
+            };
+
+            talkDialogue.ShowDialog();
         }
 
         //Get result method

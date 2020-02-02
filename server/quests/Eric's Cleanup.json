@@ -10,7 +10,82 @@
         "cur": 0,
         "resetOnDeath": false
       },
-      "gatherObjective": null
+      "gatherObjective": null,
+      "talkObjective": null
+    },
+    {
+      "type": "talk",
+      "killObjective": null,
+      "gatherObjective": null,
+      "talkObjective": {
+        "npc": "Eric",
+        "dialog": [
+          {
+            "text": "Thanks for helping me kill those ghouls.\nNext time I should put in a little less effort,\n'cause I am tired now!",
+            "portrait": "res/portraits/1.png",
+            "entry": true,
+            "isEvent": false,
+            "options": [
+              {
+                "text": "I did everything!",
+                "next": 1
+              },
+              {
+                "text": "Exit",
+                "next": -1
+              }
+            ],
+            "eventType": "",
+            "repeatable": false,
+            "giveItemEvent": null,
+            "loadMapEvent": null,
+            "affectPlayerEvent": null,
+            "spawnNPCEvent": null,
+            "turnHostileEvent": null,
+            "showQuestEvent": null,
+            "showShopEvent": null,
+            "getVariableEvent": null,
+            "setVariableEvent": null
+          },
+          {
+            "text": "Yeah yeah, you adventurers always like to take all the credit - don't ya? Now leave.",
+            "portrait": "res/portraits/1.png",
+            "entry": false,
+            "isEvent": false,
+            "options": [
+              {
+                "text": "Exit",
+                "next": -1
+              }
+            ],
+            "eventType": "",
+            "repeatable": false,
+            "giveItemEvent": null,
+            "loadMapEvent": null,
+            "affectPlayerEvent": null,
+            "spawnNPCEvent": null,
+            "turnHostileEvent": null,
+            "showQuestEvent": null,
+            "showShopEvent": null,
+            "getVariableEvent": null,
+            "setVariableEvent": null
+          }
+        ],
+        "dialogElements": [
+          {
+            "p": "21, 101",
+            "id": 0,
+            "isEvent": false,
+            "size": "100, 80"
+          },
+          {
+            "p": "200, 31",
+            "id": 1,
+            "isEvent": false,
+            "size": "100, 80"
+          }
+        ]
+      }
     }
   ],
   "rewards": {

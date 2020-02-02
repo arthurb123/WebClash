@@ -341,6 +341,11 @@ namespace WebClashServer
                             result = dialog.SelectedPath;
             }
 
+            if (result == "")
+                status.Text = "NodeJS folder not located.";
+            else
+                status.Text = "NodeJS folder located.";
+
             return result;
         }
 

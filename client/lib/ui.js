@@ -1789,6 +1789,9 @@ const ui = {
                             objective = objective.gatherObjective;
                             objective_result = objective.cur + '/' + objective.amount + ' ' + objective.item + (objective.amount === 1 ? '' : 's');
                             break;
+                        case 'talk':
+                            objective = objective.talkObjective;
+                            objective_result = 'Talk to ' + objective.npc + '.';
                     }
 
                     if (i != quest.id)

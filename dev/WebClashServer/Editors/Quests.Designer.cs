@@ -49,11 +49,11 @@
             this.objectiveList = new System.Windows.Forms.ListBox();
             this.newObjective = new System.Windows.Forms.LinkLabel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.editItemRewards = new System.Windows.Forms.Button();
             this.goldReward = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
             this.experienceReward = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
-            this.editItemRewards = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minLevel)).BeginInit();
             this.groupBox3.SuspendLayout();
@@ -294,6 +294,16 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Rewards";
             // 
+            // editItemRewards
+            // 
+            this.editItemRewards.Location = new System.Drawing.Point(11, 69);
+            this.editItemRewards.Name = "editItemRewards";
+            this.editItemRewards.Size = new System.Drawing.Size(204, 22);
+            this.editItemRewards.TabIndex = 24;
+            this.editItemRewards.Text = "Edit Item Rewards";
+            this.editItemRewards.UseVisualStyleBackColor = true;
+            this.editItemRewards.Click += new System.EventHandler(this.editItemRewards_Click);
+            // 
             // goldReward
             // 
             this.goldReward.Location = new System.Drawing.Point(98, 19);
@@ -339,16 +349,6 @@
             this.label2.Size = new System.Drawing.Size(60, 13);
             this.label2.TabIndex = 20;
             this.label2.Text = "Experience";
-            // 
-            // editItemRewards
-            // 
-            this.editItemRewards.Location = new System.Drawing.Point(11, 69);
-            this.editItemRewards.Name = "editItemRewards";
-            this.editItemRewards.Size = new System.Drawing.Size(204, 22);
-            this.editItemRewards.TabIndex = 24;
-            this.editItemRewards.Text = "Edit Item Rewards";
-            this.editItemRewards.UseVisualStyleBackColor = true;
-            this.editItemRewards.Click += new System.EventHandler(this.editItemRewards_Click);
             // 
             // Quests
             // 

@@ -1055,11 +1055,19 @@ exports.handleChannel = function(channel)
 
             //If in dialog range respond with the dialog
 
-            if (npcs.inDialogRange(map, data, game.players[id].pos.X, game.players[id].pos.Y))
+            if (npcs.inDialogRange(map, data, game.players[id].pos.X, game.players[id].pos.Y)) {
+                //Check if NPC should provide quest dialog, this method
+                //otherwise returns the default dialog by the NPC
+
+                let npcDialog = quests.providesQuestDialog(id, map, data);
+
+                //Send dialog response (with uniquely created dialog)
+
                 channel.emit('CLIENT_REQUEST_DIALOG_RESPONSE', {
                     npc: data,
-                    dialog: dialog.createUnique(id, npcs.onMap[map][data].data.dialog)
-                });    
+                    dialog: dialog.createUnique(id, npcDialog)
+                });
+            }
         }
         catch (err) {
             output.giveError('Could not handle dialog request: ', err);

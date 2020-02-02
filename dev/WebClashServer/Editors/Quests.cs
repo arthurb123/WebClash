@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using WebClashServer.Classes;
 using WebClashServer.Editors;
 
 namespace WebClashServer
@@ -85,10 +86,18 @@ namespace WebClashServer
             {
                 string name = (i+1) + ". ";
 
-                if (current.objectives[i].type == "kill")
-                    name += "Kill " + current.objectives[i].killObjective.amount + " " + current.objectives[i].killObjective.npc + "(s)";
-                else if (current.objectives[i].type == "gather")
-                    name += "Gather " + current.objectives[i].gatherObjective.amount + " " + current.objectives[i].gatherObjective.item + "(s)";
+                switch (current.objectives[i].type)
+                {
+                    case "kill":
+                        name += "Kill " + current.objectives[i].killObjective.amount + " " + current.objectives[i].killObjective.npc + "(s)";
+                        break;
+                    case "gather":
+                        name += "Gather " + current.objectives[i].gatherObjective.amount + " " + current.objectives[i].gatherObjective.item + "(s)";
+                        break;
+                    case "talk":
+                        name += "Talk to " + current.objectives[i].talkObjective.npc;
+                        break;
+                }
 
                 objectiveList.Items.Add(name);
             }
@@ -113,10 +122,17 @@ namespace WebClashServer
                     case "kill":
                         //Clear everything except QuestObjectiveKill
                         current.objectives[objectiveList.SelectedIndex].gatherObjective = null;
+                        current.objectives[objectiveList.SelectedIndex].talkObjective = null;
                         break;
                     case "gather":
                         //Clear everything except QuestObjectiveGather
                         current.objectives[objectiveList.SelectedIndex].killObjective = null;
+                        current.objectives[objectiveList.SelectedIndex].talkObjective = null;
+                        break;
+                    case "talk":
+                        //Clear everything except QuestObjectiveTalk
+                        current.objectives[objectiveList.SelectedIndex].killObjective = null;
+                        current.objectives[objectiveList.SelectedIndex].gatherObjective = null;
                         break;
 
                     //...
@@ -328,6 +344,8 @@ namespace WebClashServer
         public QuestObjectiveKill killObjective = null;
 
         public QuestObjectiveGather gatherObjective = null;
+
+        public QuestObjectiveTalk talkObjective = null;
     }
 
     public class QuestObjectiveKill
@@ -348,9 +366,18 @@ namespace WebClashServer
         public int cur = 0;
     }
 
+    public class QuestObjectiveTalk
+    {
+        public string npc = "";
+
+        public DialogueItem[] dialog = new DialogueItem[0];
+        public CanvasElement[] dialogElements = new CanvasElement[0];
+    }
+
     public enum QuestObjectiveType
     {
         Kill = 0,
         Gather,
+        Talk,
     }
 }

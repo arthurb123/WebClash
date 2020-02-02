@@ -82,14 +82,19 @@ exports.getQuestDialog = function(name)
 
     for (let o = 0; o < quest.objectives.length; o++) {
         quest.text += '<br>● ';
+        let objective = quest.objectives[o];
 
-        //Kill objective
-        if (quest.objectives[o].type === 'kill')
-            quest.text += 'Kill ' + quest.objectives[o].killObjective.amount + ' ' + quest.objectives[o].killObjective.npc + (quest.objectives[o].killObjective.amount === 1 ? '' : 's') + '.';
-
-        //Gather objective
-        if (quest.objectives[o].type === 'gather')
-            quest.text += 'Gather ' + quest.objectives[o].gatherObjective.amount + ' ' + quest.objectives[o].gatherObjective.item + (quest.objectives[o].gatherObjective.amount === 1 ? '' : 's') + '.';
+        switch (objective.type) {
+            case 'kill':
+                quest.text += 'Kill ' + objective.killObjective.amount + ' ' + objective.killObjective.npc + (objective.killObjective.amount === 1 ? '' : 's') + '.';
+                break;
+            case 'gather':
+                quest.text += 'Gather ' + objective.gatherObjective.amount + ' ' + objective.gatherObjective.item + (objective.gatherObjective.amount === 1 ? '' : 's') + '.';
+                break;
+            case 'talk':
+                quest.text += 'Talk to ' + objective.talkObjective.npc + '.';
+                break;
+        }
     }
 
     //Experience and gold rewards
@@ -109,6 +114,33 @@ exports.getQuestDialog = function(name)
     delete quest.rewards;
 
     return quest;
+};
+
+exports.providesQuestDialog = function(id, map, npc) {
+    //For all player's quests, check if the current objective
+    //is a talk objective and involves the specified NPC
+
+    let npcName = npcs.onMap[map][npc].name;
+
+    for (quest in game.players[id].quests) {
+        let currentObjective = game.players[id].quests[quest].objectives[game.players[id].quests[quest].id];
+        if (currentObjective.type === 'talk' &&
+            currentObjective.talkObjective != undefined && 
+            currentObjective.talkObjective.npc === npcName) {
+            //Advance quest objective (provide quest as questOverride, 
+            //because it is a talk objective)
+
+            this.evaluateQuestObjective(id, 'talk', npcName, quest);
+
+            //Return the quest dialog
+
+            return currentObjective.talkObjective.dialog;
+        }
+    }
+
+    //Otherwise return the regular NPC dialog
+
+    return npcs.onMap[map][npc].data.dialog;
 };
 
 exports.acceptQuest = function(id, name)
@@ -157,7 +189,7 @@ exports.acceptQuest = function(id, name)
     return true;
 };
 
-exports.evaluateQuestObjective = function(id, type, target)
+exports.evaluateQuestObjective = function(id, type, target, questOverride)
 {
     //Check if player is valid
 
@@ -171,6 +203,14 @@ exports.evaluateQuestObjective = function(id, type, target)
     //Check if player has a quest with the matching objective
 
     for (let quest in game.players[id].quests) {
+        //If quest override is defined, make sure to skip all quests
+        //that do not comply to the quest override
+
+        if (questOverride != undefined && quest !== questOverride)
+            continue;
+
+        //Grab current quest objective
+
         let objective = game.players[id].quests[quest].objectives[game.players[id].quests[quest].id];
 
         //Check if type matches
@@ -203,6 +243,22 @@ exports.evaluateQuestObjective = function(id, type, target)
                     this.advanceQuest(id, quest);
                 else
                     game.players[id].quests[quest].finished = false;
+            }
+
+            //Talk objective
+
+            if (objective.talkObjective != undefined &&
+                objective.talkObjective.npc === target) {
+                sync = true;
+
+                this.advanceQuest(id, quest);
+
+                //Talk objective should only be handled for one
+                //objective of a quest at a time, so we break
+                //out of the quest loop! It would be wise to
+                //provide a questOverride when handling a talk
+                //object.
+                break;
             }
         }
     }
