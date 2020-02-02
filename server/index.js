@@ -17,6 +17,52 @@ global.input    = require('./webclash_modules/input');
 global.storage  = require('./webclash_modules/storage');
 global.tools    = require('./webclash_modules/tools');
 
+//Exit handler
+
+let hasSaved = false;
+global.exitHandler = function() {
+    //Check if exit handler has already been executed
+
+    if (hasSaved) {
+        output.give('Completed shut down procedure.');
+
+        return;
+    }
+
+    //Output
+
+    output.give('Shutting down server..');
+
+    //Check if there are players that need to be saved
+
+    if (game.playerCount === 0) {
+        hasSaved = true;
+
+        process.exit();
+    }
+
+    //Save log
+
+    logger.save(function() {
+        //Save all players
+
+        game.saveAllPlayers(function() {
+            hasSaved = true;
+
+            process.exit();
+        });
+    });
+}
+
+//On close event listeners
+
+process.on('exit', exitHandler);
+process.on('SIGINT', exitHandler);
+process.on('uncaughtException', function(err) {
+    output.giveError('Server crashed: ', err);
+    exitHandler();
+});
+
 //Safe module require method
 
 const safeRequire = (name) => {
@@ -28,6 +74,8 @@ const safeRequire = (name) => {
     {
         output.give('Could not load node module "' + name + '"!');
         output.give('Try installing the dependencies by running install_dependencies.bat or running \'npm install package.json\' in the console.');
+        
+        hasSaved = true;
         process.exit();
     }
 };
@@ -158,51 +206,3 @@ function startServer() {
 
     game.startLoop();
 }
-
-//Exit handler
-
-let hasSaved = false;
-global.exitHandler = function() {
-    //Check if exit handler has already been executed
-
-    if (hasSaved) {
-        output.give('Completed shut down procedure.');
-
-        return;
-    }
-
-    //Output
-
-    output.give('Shutting down server..');
-
-    //Check if there are players that need to be saved
-
-    if (game.playerCount === 0) {
-        hasSaved = true;
-
-        process.exit();
-
-        return;
-    }
-
-    //Save log
-
-    logger.save(function() {
-        //Save all players
-
-        game.saveAllPlayers(function() {
-            hasSaved = true;
-
-            process.exit();
-        });
-    });
-}
-
-//On close event listeners
-
-process.on('exit', exitHandler);
-process.on('SIGINT', exitHandler);
-process.on('uncaughtException', function(err) {
-    output.giveError('Server crashed: ', err);
-    exitHandler();
-});
