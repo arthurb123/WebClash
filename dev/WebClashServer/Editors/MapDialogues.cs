@@ -106,7 +106,7 @@ namespace WebClashServer.Editors
             Dialogue mapDialogue = new Dialogue(
                 dialogs[current].dialog.ToList(), 
                 dialogs[current].dialogElements.ToList(), 
-                true
+                DialogueType.Map
             );
 
             mapDialogue.Text = "Edit dialogue for '" + dialogs[current].name + "'";

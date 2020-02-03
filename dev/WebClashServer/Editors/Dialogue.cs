@@ -12,11 +12,10 @@ namespace WebClashServer.Editors
         public DialogueSystem dialogSystem = new DialogueSystem();
         public List<CanvasElement> elements = new List<CanvasElement>();
         
-        int curElement = -1;
+        private int curElement = -1;
+        private Point oldMouse = new Point(-1, -1);
 
-        Point oldMouse = new Point(-1, -1);
-
-        public Dialogue(List<DialogueItem> items, List<CanvasElement> elements, bool isItem)
+        public Dialogue(List<DialogueItem> items, List<CanvasElement> elements, DialogueType dialogueType)
         {
             InitializeComponent();
 
@@ -32,9 +31,21 @@ namespace WebClashServer.Editors
             //If not an item enable certain options
             //only applicable to NPCs
 
-            if (!isItem)
+            switch (dialogueType)
             {
-                turnHostileToolStripMenuItem.Enabled = true;
+                case DialogueType.NPC:
+                    turnHostileToolStripMenuItem.Enabled = true;
+                    break;
+                case DialogueType.NPCQuest:
+                    turnHostileToolStripMenuItem.Enabled = true;
+                    advanceQuestToolStripMenuItem.Enabled = true;
+                    break;
+                case DialogueType.Map:
+                    //...
+                    break;
+                case DialogueType.Item:
+                    //...
+                    break;
             }
         }
 
@@ -289,11 +300,17 @@ namespace WebClashServer.Editors
                 g.FillRectangle(Brushes.WhiteSmoke, r);
                 g.DrawRectangle(Pens.Black, r);
 
+                int offset = 4;
                 g.DrawString(
                     "#" + ca.id + ": " + (ca.isEvent ? dialogSystem.items[ca.id].eventType : dialogSystem.items[ca.id].text),
                     DefaultFont,
                     Brushes.Black,
-                    r
+                    new Rectangle(
+                        r.X + offset,
+                        r.Y + offset,
+                        r.Width - offset,
+                        r.Height - offset
+                    )
                 );
             }
             catch
@@ -336,8 +353,6 @@ namespace WebClashServer.Editors
 
             switch (dialogSystem.items[cee.id].eventType)
             {
-                case "":
-                    break;
                 case "GiveItem":
                     dialogSystem.items[cee.id].giveItemEvent = new GiveItemEvent();
                     break;
@@ -361,6 +376,10 @@ namespace WebClashServer.Editors
                     dialogSystem.items[cee.id].showShopEvent = new ShowShopEvent();
                     dialogSystem.items[cee.id].repeatable = true;
                     break;
+                case "AdvanceQuest":
+                    dialogSystem.items[cee.id].advanceQuestEvent = new AdvanceQuestEvent();
+                    dialogSystem.items[cee.id].repeatable = true;
+                    break;
                 case "GetVariable":
                     dialogSystem.items[cee.id].getVariableEvent = new GetVariableEvent();
                     dialogSystem.items[cee.id].repeatable = true;
@@ -368,6 +387,8 @@ namespace WebClashServer.Editors
                 case "SetVariable":
                     dialogSystem.items[cee.id].setVariableEvent = new SetVariableEvent();
                     dialogSystem.items[cee.id].repeatable = true;
+                    break;
+                default:
                     break;
             }
 
@@ -441,6 +462,13 @@ namespace WebClashServer.Editors
             canvas.Invalidate();
         }
 
+        private void advanceQuestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addCanvasEventElement(EventType.AdvanceQuest);
+
+            canvas.Invalidate();
+        }
+
         //Player Events
 
         private void GetVariableToolStripMenuItem_Click(object sender, EventArgs e)
@@ -456,6 +484,14 @@ namespace WebClashServer.Editors
 
             canvas.Invalidate();
         }
+    }
+
+    public enum DialogueType
+    {
+        NPC = 0,
+        NPCQuest,
+        Item,
+        Map,
     }
 
     public class CanvasElement
@@ -482,7 +518,7 @@ namespace WebClashServer.Editors
         {
             isEvent = true;
 
-            size = new Size(95, 20);
+            size = new Size(110, 20);
         }
     }
 
@@ -495,6 +531,7 @@ namespace WebClashServer.Editors
         ShowQuest,
         TurnHostile,
         ShowShop,
+        AdvanceQuest,
         SetVariable,
         GetVariable
     }

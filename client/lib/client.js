@@ -524,7 +524,7 @@ const client = {
 
             //Start dialog
 
-            ui.dialog.startDialog(data.name, 'item', data.name, data.dialog);
+            ui.dialog.startDialog(data.name, 'item', data.name, data.quest, data.dialog);
         });
         channel.on('GAME_MAP_FINISHED', function() {
             //Hide progress
@@ -648,7 +648,7 @@ const client = {
 
             //Start dialog
 
-            ui.dialog.startDialog(data.npc, 'npc', game.npcs[data.npc].name, data.dialog);
+            ui.dialog.startDialog(data.npc, 'npc', game.npcs[data.npc].name, data.quest, data.dialog);
         });
         channel.on('CLIENT_REQUEST_MAP_DIALOG_RESPONSE', function(data) {
             //Check if data is valid
@@ -658,7 +658,7 @@ const client = {
 
             //Start dialog
 
-            ui.dialog.startDialog(data.name, 'map', data.name, data.dialog);
+            ui.dialog.startDialog(data.name, 'map', data.name, data.quest, data.dialog);
         });
         channel.on('CLIENT_DIALOG_EVENT_RESPONSE', function(data) {
             //Handle dialog event

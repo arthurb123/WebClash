@@ -32,6 +32,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.newItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.eventsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setVariableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.giveItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.affectPlayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,7 +43,7 @@
             this.playerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getVariableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.canvas = new System.Windows.Forms.PictureBox();
-            this.setVariableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.advanceQuestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.SuspendLayout();
@@ -76,10 +77,18 @@
             this.spawnNPCToolStripMenuItem,
             this.showQuestToolStripMenuItem,
             this.showShopToolStripMenuItem,
-            this.turnHostileToolStripMenuItem});
+            this.turnHostileToolStripMenuItem,
+            this.advanceQuestToolStripMenuItem});
             this.eventsToolStripMenuItem.Name = "eventsToolStripMenuItem";
             this.eventsToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.eventsToolStripMenuItem.Text = "Events";
+            // 
+            // setVariableToolStripMenuItem
+            // 
+            this.setVariableToolStripMenuItem.Name = "setVariableToolStripMenuItem";
+            this.setVariableToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setVariableToolStripMenuItem.Text = "Set Variable";
+            this.setVariableToolStripMenuItem.Click += new System.EventHandler(this.SetVariableToolStripMenuItem_Click);
             // 
             // giveItemToolStripMenuItem
             // 
@@ -142,7 +151,7 @@
             // getVariableToolStripMenuItem
             // 
             this.getVariableToolStripMenuItem.Name = "getVariableToolStripMenuItem";
-            this.getVariableToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.getVariableToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.getVariableToolStripMenuItem.Text = "Get Variable";
             this.getVariableToolStripMenuItem.Click += new System.EventHandler(this.GetVariableToolStripMenuItem_Click);
             // 
@@ -156,12 +165,13 @@
             this.canvas.TabIndex = 2;
             this.canvas.TabStop = false;
             // 
-            // setVariableToolStripMenuItem
+            // advanceQuestToolStripMenuItem
             // 
-            this.setVariableToolStripMenuItem.Name = "setVariableToolStripMenuItem";
-            this.setVariableToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.setVariableToolStripMenuItem.Text = "Set Variable";
-            this.setVariableToolStripMenuItem.Click += new System.EventHandler(this.SetVariableToolStripMenuItem_Click);
+            this.advanceQuestToolStripMenuItem.Enabled = false;
+            this.advanceQuestToolStripMenuItem.Name = "advanceQuestToolStripMenuItem";
+            this.advanceQuestToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.advanceQuestToolStripMenuItem.Text = "Advance Quest";
+            this.advanceQuestToolStripMenuItem.Click += new System.EventHandler(this.advanceQuestToolStripMenuItem_Click);
             // 
             // Dialogue
             // 
@@ -200,5 +210,6 @@
         private System.Windows.Forms.ToolStripMenuItem playerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem getVariableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setVariableToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem advanceQuestToolStripMenuItem;
     }
 }

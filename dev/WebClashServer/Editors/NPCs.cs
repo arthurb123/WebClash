@@ -351,7 +351,11 @@ namespace WebClashServer.Editors
 
         private void dialogButton_Click(object sender, EventArgs e)
         {
-            Dialogue npcDialogue = new Dialogue(current.dialog.ToList(), current.dialogElements.ToList(), false);
+            Dialogue npcDialogue = new Dialogue(
+                current.dialog.ToList(), 
+                current.dialogElements.ToList(), 
+                DialogueType.NPC
+            );
 
             npcDialogue.Text = "Edit dialogue for '" + current.name + "'";
 

@@ -99,13 +99,15 @@ const player = {
             //Mouse event handlers
 
             lx.OnMouse(0, function(data) {
-                if (data.state == 0)
+                if (data.state == 0 ||
+                    lx.CONTEXT.CONTROLLER.MOUSE.BUTTONS[1])
                     return;
 
                 player.performAction(0);
             });
             lx.OnMouse(2, function(data) {
-                if (data.state == 0)
+                if (data.state == 0 ||
+                    lx.CONTEXT.CONTROLLER.MOUSE.BUTTONS[0])
                     return;
 
                 player.performAction(1);

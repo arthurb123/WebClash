@@ -180,7 +180,7 @@ const ui = {
 
             view.dom.appendChild(div);
         },
-        startDialog: function(owner, type, name, dialog)
+        startDialog: function(owner, type, name, quest, dialog)
         {
             let start = -1;
 
@@ -198,6 +198,7 @@ const ui = {
             this.owner = owner;
             this.type = type;
             this.name = name;
+            this.quest = quest;
             this.items = [];
 
             this.setDialog(start);
@@ -212,7 +213,8 @@ const ui = {
             {
                 channel.emit('CLIENT_DIALOG_EVENT', {
                     owner: this.owner,
-                    type: this.type,
+                    type: (this.quest == undefined ? this.type : 'quest'),                    
+                    quest: this.quest,
                     id: id
                 });
 
@@ -737,25 +739,27 @@ const ui = {
             }
         },
         reloadItem: function(slot) {
-            if (document.getElementById(this.slots[slot]) == undefined)
+            let slotDOM = document.getElementById(this.slots[slot]);
+
+            if (slotDOM == undefined)
                 return;
 
-            document.getElementById(this.slots[slot]).style.backgroundColor = '';
+                slotDOM.style.backgroundColor = '';
 
             if (player.inventory[slot] !== undefined) {
-                document.getElementById(this.slots[slot]).innerHTML =
+                slotDOM.innerHTML =
                     '<img src="' + player.inventory[slot].source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>';
 
-                document.getElementById(this.slots[slot]).style.border = '1px solid ' + this.getItemColor(player.inventory[slot].rarity);
+                    slotDOM.style.border = '1px solid ' + this.getItemColor(player.inventory[slot].rarity);
 
                 if (player.inventory[slot].minLevel !== 0 &&
                     player.inventory[slot].minLevel > game.players[game.player]._level)
-                    document.getElementById(this.slots[slot]).style.backgroundColor = '#ff6666';
+                    slotDOM.style.backgroundColor = '#ff6666';
             }
             else {
-                document.getElementById(this.slots[slot]).innerHTML = '';
+                slotDOM.innerHTML = '';
 
-                document.getElementById(this.slots[slot]).style.border = '1px solid gray';
+                slotDOM.style.border = '1px solid gray';
             }
         },
         setGold: function(gold) {

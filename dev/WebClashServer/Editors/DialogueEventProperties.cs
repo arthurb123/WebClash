@@ -44,6 +44,11 @@ namespace WebClashServer.Editors
 
                     loadShowQuestOptions();
                     break;
+                case "AdvanceQuest":
+                    advanceQuestPanel.Visible = true;
+
+                    loadAdvanceQuestOptions();
+                    break;
                 case "SetVariable":
                     playerVariablePanel.Visible = true;
 
@@ -295,6 +300,18 @@ namespace WebClashServer.Editors
         private void questList_SelectedIndexChanged(object sender, EventArgs e)
         {
             current.showQuestEvent.name = questList.SelectedItem.ToString();
+        }
+
+        //Advance quest event
+
+        private void loadAdvanceQuestOptions()
+        {
+            advanceQuestEntryPoint.Checked = current.advanceQuestEvent.entry;
+        }
+
+        private void advanceQuestEntryPoint_CheckedChanged(object sender, EventArgs e)
+        {
+            current.advanceQuestEvent.entry = advanceQuestEntryPoint.Checked;
         }
 
         //Player variable event

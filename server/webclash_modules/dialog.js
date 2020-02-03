@@ -243,6 +243,20 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
         shop.openShop(id, clientData.owner, clientData.id, dialogEvent.showShopEvent);
     }
 
+    //Advance quest event
+
+    else if (dialogEvent.eventType === 'AdvanceQuest') {
+        //Advance quest objective (provide quest as questOverride,
+        //because it is a talk objective)
+
+        let npcName = npcs.onMap[map][clientData.owner].name;
+        quests.evaluateQuestObjective(id, 'talk', npcName, clientData.quest);
+
+        //Respond to continue dialog
+
+        channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: false, id: clientData.id });
+    }
+
     //Set player variable event
 
     else if (dialogEvent.eventType === 'SetVariable') {

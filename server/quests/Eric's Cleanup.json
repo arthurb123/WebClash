@@ -6,7 +6,7 @@
       "type": "kill",
       "killObjective": {
         "npc": "Ghoul",
-        "amount": 5,
+        "amount": 3,
         "cur": 0,
         "resetOnDeath": false
       },
@@ -32,7 +32,7 @@
               },
               {
                 "text": "Exit",
-                "next": -1
+                "next": 2
               }
             ],
             "eventType": "",
@@ -44,6 +44,7 @@
             "turnHostileEvent": null,
             "showQuestEvent": null,
             "showShopEvent": null,
+            "advanceQuestEvent": null,
             "getVariableEvent": null,
             "setVariableEvent": null
           },
@@ -55,7 +56,7 @@
             "options": [
               {
                 "text": "Exit",
-                "next": -1
+                "next": 2
               }
             ],
             "eventType": "",
@@ -67,13 +68,44 @@
             "turnHostileEvent": null,
             "showQuestEvent": null,
             "showShopEvent": null,
+            "advanceQuestEvent": null,
+            "getVariableEvent": null,
+            "setVariableEvent": null
+          },
+          {
+            "text": "",
+            "portrait": "",
+            "entry": false,
+            "isEvent": true,
+            "options": [
+              {
+                "text": "",
+                "next": -1
+              },
+              {
+                "text": "",
+                "next": -1
+              }
+            ],
+            "eventType": "AdvanceQuest",
+            "repeatable": true,
+            "giveItemEvent": null,
+            "loadMapEvent": null,
+            "affectPlayerEvent": null,
+            "spawnNPCEvent": null,
+            "turnHostileEvent": null,
+            "showQuestEvent": null,
+            "showShopEvent": null,
+            "advanceQuestEvent": {
+              "entry": false
+            },
             "getVariableEvent": null,
             "setVariableEvent": null
           }
         ],
         "dialogElements": [
           {
-            "p": "21, 101",
+            "p": "24, 101",
             "id": 0,
             "isEvent": false,
             "size": "100, 80"
@@ -83,6 +115,12 @@
             "id": 1,
             "isEvent": false,
             "size": "100, 80"
+          },
+          {
+            "p": "389, 132",
+            "id": 2,
+            "isEvent": true,
+            "size": "110, 20"
           }
         ]
       }

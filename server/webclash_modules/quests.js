@@ -39,7 +39,48 @@ exports.loadAllQuests = function(cb)
 exports.loadQuest = function(location)
 {
     try {
-        return JSON.parse(fs.readFileSync(location, 'utf-8'));
+        let quest = JSON.parse(fs.readFileSync(location, 'utf-8'));
+
+        //Go over all quest objectives, certain objectives need
+        //to be checked before actual usage
+
+        for (let o = 0; o < quest.objectives.length; o++) {
+            switch (quest.objectives[o].type) {
+                //Talk quest objective
+
+                case 'talk':
+                    let questDialog = quest.objectives[o].talkObjective.dialog;
+
+                    //Go over all talk dialog events, if the event is an 
+                    //AdvanceQuest event - make sure to set the quest name
+                    //of that event to the name of this quest
+
+                    let foundAdvancement = false;
+                    for (let e = 0; e < questDialog.length; e++)
+                        if (questDialog[e].eventType === 'AdvanceQuest' &&
+                            questDialog[e].advanceQuestEvent != undefined) {
+                            foundAdvancement = true;
+                            break;
+                        }
+
+                    //Check if atleast one advancement was found, otherwise
+                    //we do notify the user to add an AdvanceQuest event 
+                    //as this is the way it should be done
+
+                    if (!foundAdvancement)
+                        output.give(
+                            'No AdvanceQuest event was found in the quest dialog for ' +
+                            'the talk objective #' + o + ' of quest \'' + location + '\'. This quest will ' +
+                            'not be able to advance and therefore result in a progression lock.'
+                        );
+
+                    break;
+
+                //...
+            }
+        }
+
+        return quest;
     }
     catch (err)
     {
@@ -63,6 +104,11 @@ exports.getQuestIndex = function(name)
             return i;
 
     return -1;
+};
+
+exports.getPlayerQuestObjective = function(id, name)
+{
+    return game.players[id].quests[name].objectives[game.players[id].quests[name].id];
 };
 
 exports.getQuestDialog = function(name)
@@ -123,24 +169,28 @@ exports.providesQuestDialog = function(id, map, npc) {
     let npcName = npcs.onMap[map][npc].name;
 
     for (quest in game.players[id].quests) {
-        let currentObjective = game.players[id].quests[quest].objectives[game.players[id].quests[quest].id];
-        if (currentObjective.type === 'talk' &&
-            currentObjective.talkObjective != undefined && 
-            currentObjective.talkObjective.npc === npcName) {
-            //Advance quest objective (provide quest as questOverride, 
-            //because it is a talk objective)
+        //Grab the current objective
 
-            this.evaluateQuestObjective(id, 'talk', npcName, quest);
+        let current = this.getPlayerQuestObjective(id, quest);
 
-            //Return the quest dialog
+        //Check if the current objective is a talk objective
+        //that features the NPC that needs it's dialog engaged
 
-            return currentObjective.talkObjective.dialog;
+        if (current.type === 'talk' &&
+            current.talkObjective != undefined && 
+            current.talkObjective.npc === npcName) {
+            //Return the quest dialog and the quest name
+
+            return {
+                npcDialog: current.talkObjective.dialog,
+                questName: quest
+            };
         }
     }
 
     //Otherwise return the regular NPC dialog
 
-    return npcs.onMap[map][npc].data.dialog;
+    return { npcDialog: npcs.onMap[map][npc].data.dialog };
 };
 
 exports.acceptQuest = function(id, name)
@@ -211,7 +261,7 @@ exports.evaluateQuestObjective = function(id, type, target, questOverride)
 
         //Grab current quest objective
 
-        let objective = game.players[id].quests[quest].objectives[game.players[id].quests[quest].id];
+        let objective = this.getPlayerQuestObjective(id, quest);
 
         //Check if type matches
 

@@ -875,6 +875,21 @@ exports.handleChannel = function(channel)
                         dialogEvent.eventType +             //Event type for uniqueness
                         data.id;                            //Dialog ID for uniqueness
                     break;
+                case 'quest':
+                    //Quest
+
+                    let questObjective = quests.getPlayerQuestObjective(id, data.quest);
+                    if (questObjective.talkObjective == undefined)
+                        return;
+                    
+                    dialogEvent = questObjective.talkObjective.dialog[data.id];
+
+                    eventName = 
+                        data.quest +                        //Quest name to make sure the event can occur with other quests
+                        data.owner +                        //The current objective for uniqueness
+                        dialogEvent.eventType +             //Event type for uniqueness
+                        data.id;                            //Dialog ID for uniqueness
+                    break;
             }
 
             //Check if valid
@@ -1059,12 +1074,13 @@ exports.handleChannel = function(channel)
                 //Check if NPC should provide quest dialog, this method
                 //otherwise returns the default dialog by the NPC
 
-                let npcDialog = quests.providesQuestDialog(id, map, data);
+                let { npcDialog, questName } = quests.providesQuestDialog(id, map, data);
 
                 //Send dialog response (with uniquely created dialog)
 
                 channel.emit('CLIENT_REQUEST_DIALOG_RESPONSE', {
                     npc: data,
+                    quest: questName,
                     dialog: dialog.createUnique(id, npcDialog)
                 });
             }

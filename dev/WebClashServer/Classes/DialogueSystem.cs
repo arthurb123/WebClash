@@ -76,6 +76,8 @@ namespace WebClashServer.Classes
 
         public ShowShopEvent showShopEvent = null;
 
+        public AdvanceQuestEvent advanceQuestEvent = null;
+
         public GetVariableEvent getVariableEvent = null;
 
         public SetVariableEvent setVariableEvent = null;
@@ -147,6 +149,11 @@ namespace WebClashServer.Classes
         public ShopItem[] items = new ShopItem[0];
 
         public bool acceptSell = true;
+    }
+
+    public class AdvanceQuestEvent
+    {
+        public bool entry = false;
     }
 
     public class GetVariableEvent

@@ -138,4 +138,5 @@ commercial purposes.
 
 	      -- Licensing --
 
-For all licensing needs please check the LICENSE file.
+For all licensing needs concerning the code and used
+libraries, please check the accompanied LICENSE file.

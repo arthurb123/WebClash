@@ -214,7 +214,7 @@ namespace WebClashServer.Editors
             Dialogue talkDialogue = new Dialogue(
                 current.talkObjective.dialog.ToList(),
                 current.talkObjective.dialogElements.ToList(),
-                false
+                DialogueType.NPCQuest
             );
 
             talkDialogue.Text = Text + " dialog for '" + current.talkObjective.npc + "'";

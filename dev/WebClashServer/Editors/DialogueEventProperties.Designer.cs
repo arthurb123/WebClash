@@ -64,10 +64,13 @@
             this.questList = new System.Windows.Forms.ComboBox();
             this.label15 = new System.Windows.Forms.Label();
             this.playerVariablePanel = new System.Windows.Forms.Panel();
+            this.getVariableEntryPoint = new System.Windows.Forms.CheckBox();
             this.playerVariableValue = new System.Windows.Forms.CheckBox();
             this.playerVariableName = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
-            this.getVariableEntryPoint = new System.Windows.Forms.CheckBox();
+            this.advanceQuestPanel = new System.Windows.Forms.Panel();
+            this.advanceQuestEntryPoint = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.loadMapPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.positionY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.positionX)).BeginInit();
@@ -83,6 +86,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.npcAmount)).BeginInit();
             this.showQuestPanel.SuspendLayout();
             this.playerVariablePanel.SuspendLayout();
+            this.advanceQuestPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // loadMapPanel
@@ -530,6 +534,17 @@
             this.playerVariablePanel.TabIndex = 11;
             this.playerVariablePanel.Visible = false;
             // 
+            // getVariableEntryPoint
+            // 
+            this.getVariableEntryPoint.AutoSize = true;
+            this.getVariableEntryPoint.Location = new System.Drawing.Point(203, 7);
+            this.getVariableEntryPoint.Name = "getVariableEntryPoint";
+            this.getVariableEntryPoint.Size = new System.Drawing.Size(76, 17);
+            this.getVariableEntryPoint.TabIndex = 3;
+            this.getVariableEntryPoint.Text = "Entry point";
+            this.getVariableEntryPoint.UseVisualStyleBackColor = true;
+            this.getVariableEntryPoint.CheckedChanged += new System.EventHandler(this.GetVariableEntryPoint_CheckedChanged);
+            // 
             // playerVariableValue
             // 
             this.playerVariableValue.AutoSize = true;
@@ -559,22 +574,42 @@
             this.label14.TabIndex = 0;
             this.label14.Text = "Variable Name";
             // 
-            // getVariableEntryPoint
+            // advanceQuestPanel
             // 
-            this.getVariableEntryPoint.AutoSize = true;
-            this.getVariableEntryPoint.Location = new System.Drawing.Point(203, 7);
-            this.getVariableEntryPoint.Name = "getVariableEntryPoint";
-            this.getVariableEntryPoint.Size = new System.Drawing.Size(76, 17);
-            this.getVariableEntryPoint.TabIndex = 3;
-            this.getVariableEntryPoint.Text = "Entry point";
-            this.getVariableEntryPoint.UseVisualStyleBackColor = true;
-            this.getVariableEntryPoint.CheckedChanged += new System.EventHandler(this.GetVariableEntryPoint_CheckedChanged);
+            this.advanceQuestPanel.Controls.Add(this.advanceQuestEntryPoint);
+            this.advanceQuestPanel.Controls.Add(this.label1);
+            this.advanceQuestPanel.Location = new System.Drawing.Point(12, 12);
+            this.advanceQuestPanel.Name = "advanceQuestPanel";
+            this.advanceQuestPanel.Size = new System.Drawing.Size(286, 126);
+            this.advanceQuestPanel.TabIndex = 12;
+            this.advanceQuestPanel.Visible = false;
+            // 
+            // advanceQuestEntryPoint
+            // 
+            this.advanceQuestEntryPoint.AutoSize = true;
+            this.advanceQuestEntryPoint.Location = new System.Drawing.Point(203, 7);
+            this.advanceQuestEntryPoint.Name = "advanceQuestEntryPoint";
+            this.advanceQuestEntryPoint.Size = new System.Drawing.Size(76, 17);
+            this.advanceQuestEntryPoint.TabIndex = 3;
+            this.advanceQuestEntryPoint.Text = "Entry point";
+            this.advanceQuestEntryPoint.UseVisualStyleBackColor = true;
+            this.advanceQuestEntryPoint.CheckedChanged += new System.EventHandler(this.advanceQuestEntryPoint_CheckedChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(34, 60);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(215, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Advances the current \'Talk\' quest objective.";
             // 
             // DialogueEventProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(312, 215);
+            this.Controls.Add(this.advanceQuestPanel);
             this.Controls.Add(this.playerVariablePanel);
             this.Controls.Add(this.showQuestPanel);
             this.Controls.Add(this.spawnNPCPanel);
@@ -616,6 +651,8 @@
             this.showQuestPanel.PerformLayout();
             this.playerVariablePanel.ResumeLayout(false);
             this.playerVariablePanel.PerformLayout();
+            this.advanceQuestPanel.ResumeLayout(false);
+            this.advanceQuestPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -662,5 +699,8 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.CheckBox playerVariableValue;
         private System.Windows.Forms.CheckBox getVariableEntryPoint;
+        private System.Windows.Forms.Panel advanceQuestPanel;
+        private System.Windows.Forms.CheckBox advanceQuestEntryPoint;
+        private System.Windows.Forms.Label label1;
     }
 }

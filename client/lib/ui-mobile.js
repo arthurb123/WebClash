@@ -265,7 +265,7 @@ const ui = {
 
             view.dom.appendChild(box);
         },
-        startDialog: function(owner, type, name, dialog)
+        startDialog: function(owner, type, name, quest, dialog)
         {
             let start = -1;
 
@@ -283,6 +283,7 @@ const ui = {
             this.owner = owner;
             this.type = type;
             this.name = name;
+            this.quest = quest;
             this.items = [];
 
             this.setDialog(start);
@@ -297,7 +298,8 @@ const ui = {
             {
                 channel.emit('CLIENT_DIALOG_EVENT', {
                     owner: this.owner,
-                    type: this.type,
+                    type: (this.quest == undefined ? this.type : 'quest'),
+                    quest: this.quest,
                     id: id
                 });
 
@@ -500,6 +502,8 @@ const ui = {
                 slot.style = 'opacity: .75; width: ' + size + 'px; height: ' + size + 'px;';
                 
                 box.appendChild(slot);
+
+                this.appendActionEventListener(slot, i);
             }
 
             view.dom.appendChild(box);
@@ -530,6 +534,8 @@ const ui = {
                     ui.actionbar.selectedAction = -1;
                 }
             });
+
+            this.reload();
         },
         reload: function() {
             if (this.slots === undefined)
@@ -539,55 +545,61 @@ const ui = {
                 if (document.getElementById(this.slots[i]) == undefined)
                     continue;
 
-                document.getElementById(this.slots[i]).innerHTML = '';
-            }
+                document.getElementById(this.slots[i]).clear();
 
-            for (let a = 0; a < player.actions.length; a++)
-                if (player.actions[a] != undefined)
-                    this.reloadAction(a);
+                if (player.actions[i] != undefined)
+                    this.reloadAction(i);
+            }
         },
         reloadAction: function(a) {
-            if (player.actions[a] == undefined) {
-                document.getElementById(this.slots[a]).innerHTML = '';
+            document.getElementById(this.slots[a]).clear();
 
+            if (player.actions[a] == undefined)
                 return;
-            }
-
-            let uses = '', usesContent = '∞';
+            
+            let usesContent = '∞';
             if (player.actions[a].uses != undefined)
                 usesContent = player.actions[a].uses + '/' + player.actions[a].max;
 
-            uses = '<font class="info" style="position: absolute; top: 100%; margin-top: -12px; margin-left: -6px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%; text-align: right;">' + usesContent + '</font>';
+            let uses = document.createElement('font');
+            uses.classList.add('info');
+            uses.style = 'position: absolute; top: 100%; margin-top: -12px; margin-left: -6px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%; text-align: right;';
+            uses.innerHTML = usesContent;
 
             let size = 24;
-
             if (a < 2)
                 size = 32;
 
-            document.getElementById(this.slots[a]).innerHTML =
-                '<img src="' + player.actions[a].src + '" style="position: absolute; top: 4px; left: 4px; width: ' + size + 'px; height: ' + size + 'px;"/>' + uses;
+            let actionImg = document.createElement('img');
+            actionImg.src = player.actions[a].src;
+            actionImg.style = 'position: absolute; top: 4px; left: 4px; width: ' + size + 'px; height: ' + size + 'px;';
 
-            this.appendActionEventListener(a);
+            let slot = document.getElementById(this.slots[a]);
+            slot.appendChild(actionImg);
+            slot.appendChild(uses);
         },
-        appendActionEventListener: function(a) {
-            let slot = this.slots[a];
-            document.getElementById(slot).addEventListener('touchstart', function(event) {
+        appendActionEventListener: function(slot, a) {
+            slot.addEventListener('touchend', function() {
+                if (player.actions[a] == undefined)
+                    return;
+
                 if (ui.actionbar.selectedAction === a) 
                     ui.actionbar.selectedAction = -1;
                 else {
                     if (ui.actionbar.selectedAction !== -1) {
                         let oldSlot = ui.actionbar.slots[ui.actionbar.selectedAction];
+                        oldSlot = document.getElementById(oldSlot);
 
-                        document.getElementById(oldSlot).style.border = '';
-                        document.getElementById(oldSlot).style.opacity = ui.actionbar.standardOpacity;
+                        oldSlot.style.border = '';
+                        oldSlot.style.opacity = ui.actionbar.standardOpacity;
                     }
 
                     ui.actionbar.selectedAction = a;
                 }
 
-                document.getElementById(slot).style.border =
+                slot.style.border =
                     (ui.actionbar.selectedAction === a ? '1px solid whitesmoke' : '');
-                document.getElementById(slot).style.opacity =
+                slot.style.opacity =
                     (ui.actionbar.selectedAction === a ? '1' : ui.actionbar.standardOpacity);
             }, { passive: false });
         },
@@ -688,9 +700,6 @@ const ui = {
             content.id = 'inventory_box_content';
             content.style = 'position: absolute; top: 0px; left: 0px; width: auto; height: auto; white-space: nowrap;';
 
-            box.appendChild(content);
-            view.dom.appendChild(box);
-
             content.addEventListener('touchmove', function() {
                 ui.inventory.move();
             }, { passive: false });
@@ -698,26 +707,25 @@ const ui = {
                 ui.inventory.removeBox();
             }, { passive: false });
 
-            for (let y = 0; y < this.size.height; y++)
-                for (let x = 0; x < this.size.width; x++) {
-                    let i = (y*this.size.width+x);
+            for (let i = 0; i < this.size.width*this.size.height; i++) {
+                let slot = document.createElement('div');
+                slot.id = 'inventory_slot' + i;
+                slot.classList.add('slot');
+                slot.style = 'display: flex-inline; width: 24px; height: 24px;';
 
-                    let slot = document.createElement('div');
-                    slot.id = 'inventory_slot' + i;
-                    slot.classList.add('slot');
-                    slot.style = 'display: flex-inline; width: 24px; height: 24px;';
+                slot.addEventListener('contextmenu', function() {
+                    ui.inventory.displayContext(i);
+                });
+                slot.addEventListener('touchend', function() {
+                    ui.inventory.useItem(i);
+                }, { passive: false });
+                
+                content.appendChild(slot);
+                this.slots[i] = 'inventory_slot' + i;
+            }
 
-                    content.appendChild(slot);
-
-                    slot.addEventListener('contextmenu', function() {
-                        ui.inventory.displayContext(i);
-                    });
-                    slot.addEventListener('touchend', function() {
-                        ui.inventory.useItem(i);
-                    }, { passive: false });
-
-                    this.slots[i] = 'inventory_slot' + i;
-                }
+            box.appendChild(content);
+            view.dom.appendChild(box);
 
             let gold = document.createElement('p');
             gold.id = 'gold_label';
@@ -744,33 +752,45 @@ const ui = {
                 return;
 
             for (let i = 0; i < this.slots.length; i++) {
-                document.getElementById(this.slots[i]).innerHTML = '';
+                document.getElementById(this.slots[i]).clear();
+
+                if (player.inventory[i] == undefined)
+                    continue;
 
                 this.reloadItem(i);
             }
         },
         reloadItem: function(slot) {
-            if (document.getElementById(this.slots[slot]) == undefined)
+            let slotDOM = document.getElementById(this.slots[slot]);
+
+            if (slotDOM == undefined)
                 return;
 
-            let indicator = '<font style="font-size: 8px; position: absolute; top: 1px; left: 1px;">' + (slot+1) + '</font>';
+            slotDOM.clear();
 
-            document.getElementById(this.slots[slot]).style.backgroundColor = '';
+            let indicator = document.createElement('font');
+            indicator.style = 'font-size: 8px; position: absolute; top: 1px; left: 1px;';
+            indicator.innerHTML = slot+1;
+
+            slotDOM.style.backgroundColor = '';
 
             if (player.inventory[slot] !== undefined) {
-                document.getElementById(this.slots[slot]).innerHTML =
-                    indicator + '<img src="' + player.inventory[slot].source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px;"/>';
-
-                document.getElementById(this.slots[slot]).style.border = '1px solid ' + this.getItemColor(player.inventory[slot].rarity);
+                let itemImg = document.createElement('img');
+                itemImg.src = player.inventory[slot].source;
+                itemImg.style = 'pointer-events: none; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px;';
+                
+                slotDOM.appendChild(indicator);
+                slotDOM.appendChild(itemImg);
+                slotDOM.style.border = '1px solid ' + this.getItemColor(player.inventory[slot].rarity);
 
                 if (player.inventory[slot].minLevel !== 0 &&
                     player.inventory[slot].minLevel > game.players[game.player]._level)
-                    document.getElementById(this.slots[slot]).style.backgroundColor = '#ff6666';
+                    slotDOM.style.backgroundColor = '#ff6666';
             }
             else {
-                document.getElementById(this.slots[slot]).innerHTML = indicator;
+                slotDOM.appendChild(indicator);
 
-                document.getElementById(this.slots[slot]).style.border = '1px solid gray';
+                slotDOM.style.border = '1px solid gray';
             }
         },
         setGold: function(gold) {
@@ -1087,7 +1107,16 @@ const ui = {
             for (let i = 0; i < this.slots.length; i++) {
                 let equippable = this.getEquippableAtIndex(i);
 
-                document.getElementById('inventory_box_content').innerHTML += '<div class="slot" id="' + this.slots[i] + '" style="display: flex-inline; width: 24px; height: 24px;" ontouchend="player.unequip(\'' + equippable + '\')"></div>';
+                let slot = document.createElement('div');
+                slot.id = this.slots[i];
+                slot.classList.add('slot');
+                slot.style = 'display: flex-inline; width: 24px; height: 24px;';
+
+                slot.addEventListener('touchend', function() {
+                    player.unequip(equippable);
+                }, { passive: false });
+
+                document.getElementById('inventory_box_content').appendChild(slot);
             }
 
             this.reload();
@@ -1097,7 +1126,7 @@ const ui = {
                 return;
 
             for (let i = 0; i < this.slots.length; i++)
-                document.getElementById(this.slots[i]).innerHTML = '';
+                document.getElementById(this.slots[i]).clear();
 
             this.reloadEquipment('main');
             this.reloadEquipment('offhand');
@@ -1108,23 +1137,32 @@ const ui = {
             this.reloadEquipment('feet');
         },
         reloadEquipment: function(equippable) {
-            let slot = this.getEquippableIndex(equippable);
+            let slot = this.getEquippableIndex(equippable),
+                slotDOM = document.getElementById(this.slots[slot]);
 
-            if (slot == -1)
+            if (slotDOM == undefined)
                 return;
 
-            let indicator = '<p style="position: absolute; left: 2px; top: 2px; color: #373737; opacity: .85; font-size: 7px; width: 100%; margin: 0px;">' + equippable + '</p>';
+            slotDOM.clear();
+
+            let indicator = document.createElement('p');
+            indicator.style = 'position: absolute; left: 2px; top: 2px; color: #373737; opacity: .85; font-size: 7px; width: 100%; margin: 0px;';
+            indicator.innerHTML = equippable;
 
             if (player.equipment[equippable] !== undefined) {
-                document.getElementById(this.slots[slot]).innerHTML =
-                    indicator + '<img src="' + player.equipment[equippable].source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px;"/>';
+                let equipImg = document.createElement('img');
+                equipImg.src = player.equipment[equippable].source;
+                equipImg.style = 'pointer-events: none; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px;';
 
-                document.getElementById(this.slots[slot]).style.border = '1px solid ' + ui.inventory.getItemColor(player.equipment[equippable].rarity);
+                slotDOM.appendChild(indicator);
+                slotDOM.appendChild(equipImg);
+
+                slotDOM.style.border = '1px solid ' + ui.inventory.getItemColor(player.equipment[equippable].rarity);
             }
             else {
-                document.getElementById(this.slots[slot]).innerHTML = indicator;
+                slotDOM.appendChild(indicator);
 
-                document.getElementById(this.slots[slot]).style.border = '1px solid gray';
+                slotDOM.style.border = '1px solid gray';
             }
         },
         getEquippableIndex: function(equippable) {
@@ -1963,26 +2001,6 @@ const ui = {
             if (full) {
                 result.innerHTML +=
                     '<hr style="padding: 0px; border: 0; width: 90%; border-bottom: 1px solid whitesmoke; margin: 2px;"/>';
-
-                //Tracking option
-
-                let tracking_option_name = 'Track';
-
-                if (quest.pinned)
-                    tracking_option_name = 'Untrack';
-
-                let tracking_option = document.createElement('a');
-                tracking_option.style = 'font-size: 11px; color: #4dff4d; padding: 2px;';
-                tracking_option.classList.add('link');
-
-                tracking_option.innerHTML = tracking_option_name;
-
-                tracking_option.addEventListener('click', function() {
-                    ui.journal.track(name);
-                });
-
-                if (this.pinned < this.max_pinned || quest.pinned)
-                    result.appendChild(tracking_option);
 
                 //Abandon option
 

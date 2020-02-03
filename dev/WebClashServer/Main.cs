@@ -67,6 +67,8 @@ namespace WebClashServer
             status.Text = "Installing dependencies..";
             startButton.Enabled = false;
 
+            AddOutput("Installing dependencies, this may take a while..");
+
             StartNodeProcess(
                 "npm.cmd", 
                 "install package.json", 

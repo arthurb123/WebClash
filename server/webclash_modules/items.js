@@ -207,8 +207,16 @@ exports.usePlayerItem = function(id, name)
     //Check if minimal item level matches player level
 
     if (item.minLevel !== 0 &&
-        game.players[id].level < item.minLevel)
+        game.players[id].level < item.minLevel) {
+        //Notify player
+
+        server.syncChatMessage(
+            'This item requires you to be level ' + item.minLevel + '.', 
+            game.players[id].channel
+        );
+
         return false;
+    }
 
     //Check if piece of equipment
 
@@ -304,8 +312,16 @@ exports.setPlayerEquipment = function(id, item)
     //If this is not possible return.
 
     if (game.players[id].equipment[equippable] !== undefined)
-        if (!this.addPlayerItem(id, game.players[id].equipment[equippable]))
+        if (!this.addPlayerItem(id, game.players[id].equipment[equippable])) {
+            //Notify player
+
+            server.syncChatMessage(
+                'No inventory space available to unequip ' + equippable + '.', 
+                game.players[id].channel
+            );
+
             return false;
+        }
 
     //Set equipment equippable of player
 
