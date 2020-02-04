@@ -311,29 +311,35 @@ const ui = {
             let contentEl = document.getElementById('dialog_box_content'),
                 optionsEl = document.getElementById('dialog_box_options');
 
+            //Clear elements
+
+            contentEl.clear();
+            optionsEl.clear();
+
             //Set title/name
 
-            contentEl.innerHTML = '<b>' + (name_override == undefined ? this.name : name_override) + '</b><br>';
+            let title = document.createElement('font');
+            title.classList.add('info');
+            title.style = 'font-weight: bold;';
+            title.innerHTML = name_override == undefined ? this.name : name_override;
 
-            //Set portrait
+            contentEl.appendChild(title);
 
-            if (this.cur[id].portrait != undefined)
-                contentEl.innerHTML += '<img src="' + this.cur[id].portrait + '" class="portrait"/><br>';
-            else
-                contentEl.innerHTML += '<br>';
+            //Set portrait (if available)
 
-            //Set content and clear options
+            if (this.cur[id].portrait != undefined) {
+                let portrait = document.createElement('img');
+                portrait.classList.add('portrait');
+                portrait.src = this.cur[id].portrait;
+                
+                contentEl.appendChild(portrait);
+            }
 
-            contentEl.innerHTML += this.cur[id].text;
-            optionsEl.innerHTML = '';
+            //Append break
+
+            contentEl.appendChild(document.createElement('br'));
 
             //Handle options
-
-            //TODO: Move from creating a button via a string
-            //      to actual DOM element creation with
-            //      an event listener, this is more stable
-            //      and better for in the future if we ever
-            //      want to obfuscate our client code!
 
             this.cur[id].options.forEach(function(option) {
                 let cb = '';
@@ -362,7 +368,16 @@ const ui = {
                         cb += 'ui.dialog.setDialog(' + option.actual_next + ');';
                 }
 
-                optionsEl.innerHTML += '<button class="link_button" style="margin-left: 0px;" onclick="' + cb + '">[ ' + option.text + ' ]</button>';
+                let button = documen.createElement('button');
+                button.classList.add('link_button');
+                button.style = 'margin-left: 0px;';
+                button.innerHTML = '[ ' + option.text + ' ]';
+
+                button.appendActionEventListener('click', function() {
+                    eval(cb);
+                });
+
+                optionsEl.appendChild(button);
             });
 
             //Set dialog box visibility to visible
@@ -508,19 +523,6 @@ const ui = {
 
             view.dom.appendChild(box);
 
-            lx.CONTEXT.CANVAS.addEventListener('touchend', function(event) {
-                if (ui.dialog.showing   || 
-                    ui.profile.showing  || 
-                    ui.settings.showing || 
-                    ui.journal.showing)
-                    return;
-
-                if (ui.actionbar.selectedAction !== -1) {
-                    lx.CONTEXT.CONTROLLER.MOUSE.POS.X = event.changedTouches[0].clientX;
-                    lx.CONTEXT.CONTROLLER.MOUSE.POS.Y = event.changedTouches[0].clientY;
-                    player.performAction(ui.actionbar.selectedAction);
-                }
-            }, { passive: false });
             lx.Loops(function() {
                 if (player.actions[ui.actionbar.selectedAction] == undefined) {
                     let slot = ui.actionbar.slots[ui.actionbar.selectedAction];
@@ -1348,12 +1350,23 @@ const ui = {
 
             this.items[data.id] = data;
 
-            //Add to DOM loot box content
+            //Create loot box slot
 
-            el_content.innerHTML +=
-                '<div class="slot" id="loot_slot' + data.id + '" style="width: 24px; height: 24px; border: 1px solid ' + ui.inventory.getItemColor(data.rarity) + ';" onclick="ui.loot.pickup(' + data.id + ')">' +
-                    '<img src="' + data.source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px;"/>' +
-                '</div>';
+            let slot = document.createElement('div');
+            slot.id = 'loot_slot' + data.id;
+            slot.classList.add('slot');
+            slot.style = 'width: 24px; height: 24px; border: 1px solid ' + ui.inventory.getItemColor(data.rarity) + ';';
+
+            let lootImg = document.createElement('img');
+            lootImg.src = data.source;
+            lootImg.style = 'pointer-events: none; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px;';
+
+            slot.appendChild(lootImg);
+            slot.addEventListener('click', function() {
+                ui.loot.pickup(data.id);
+            });
+
+            el_content.appendChild(slot);
 
             //Show loot box
 
@@ -1428,8 +1441,7 @@ const ui = {
 
             //Clear all items
 
-            el_content.innerHTML = '';
-
+            el_content.clear();
             this.items = [];
 
             //Set visibility
@@ -1669,8 +1681,17 @@ const ui = {
 
             el.innerHTML = attribute + ': ' + player.attributes[attribute.toLowerCase()];
 
-            if (show_button)
-                el.innerHTML += ' <button onclick="ui.profile.incrementAttribute(\'' + attribute.toLowerCase() + '\');" style="width: 18px; height: 18px; padding: 0px;">+</button>';
+            if (show_button) {
+                let button = document.createElement('button');
+                button.style = 'width: 18px; height: 18px; padding: 0px;';
+                button.innerHTML = '+';
+
+                button.addEventListener('click', function() {
+                    ui.profile.incrementAttribute(attribute.toLowerCase());
+                });
+
+                el.appendChild(button);
+            }
         },
         incrementAttribute: function(attribute) {
             if (player.points == 0)
@@ -1761,7 +1782,7 @@ const ui = {
             this.target = target;
             this.id = id;
 
-            document.getElementById('shop_content').innerHTML = '';
+            document.getElementById('shop_content').clear();
             document.getElementById('shop_name').innerHTML = shop.name;
 
             let items = shop.items;
@@ -1771,13 +1792,28 @@ const ui = {
                 this.items[i] = item;
                 this.prices[i] = items[i].price;
 
-                document.getElementById('shop_content').innerHTML += 
-                    '<div id="shop_slot' + i + '" class="slot" onclick="ui.shop.buy(' + i + ');">' +
-                        '<img src="' + item.source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' +
-                        '<p class="info" style="font-size: 9px; position: absolute; top: 100%; left: 2px; transform: translate(0, -110%); color: yellow;">' + items[i].price + '</p>' +
-                    '</div>';
+                let slot = document.createElement('div');
+                slot.id = 'shop_slot' + i;
+                slot.style = 'border: 1px solid ' + ui.inventory.getItemColor(item.rarity) + ';';
+                slot.classList.add('slot');
+                
+                let itemImg = document.createElement('img');
+                itemImg.src = item.source;
+                itemImg.style = 'pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;';
 
-                document.getElementById('shop_slot' + i).style.border = '1px solid ' + ui.inventory.getItemColor(item.rarity);
+                let itemPrice = document.createElement('p');
+                itemPrice.classList.add('info');
+                itemPrice.style = 'font-size: 9px; position: absolute; top: 100%; left: 2px; transform: translate(0, -110%); color: yellow;';
+                itemPrice.innerHTML = items[i].price;
+
+                slot.appendChild(itemImg);
+                slot.appendChild(itemPrice);
+
+                slot.addEventListener('click', function() {
+                    ui.shop.buy(i);
+                });
+
+                document.getElementById('shop_content').appendChild(slot);
             }
 
             this.reload();

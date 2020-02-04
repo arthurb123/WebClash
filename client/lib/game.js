@@ -151,6 +151,11 @@ const game = {
         go.OnMouse(button, function() {
             lx.StopMouse(2);
 
+            //Check if isMobile and action has been selected
+
+            if (game.isMobile && ui.actionbar.selectedAction !== -1)
+                return;
+
             //Check if already exists
 
             if (document.getElementById('player_context_box') != undefined)

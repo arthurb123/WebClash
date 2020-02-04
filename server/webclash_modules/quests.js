@@ -51,9 +51,8 @@ exports.loadQuest = function(location)
                 case 'talk':
                     let questDialog = quest.objectives[o].talkObjective.dialog;
 
-                    //Go over all talk dialog events, if the event is an 
-                    //AdvanceQuest event - make sure to set the quest name
-                    //of that event to the name of this quest
+                    //Go over all talk dialog events, check if atleast
+                    //one AdvanceQuest is present
 
                     let foundAdvancement = false;
                     for (let e = 0; e < questDialog.length; e++)

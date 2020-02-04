@@ -124,6 +124,21 @@ const player = {
                     player.performAction(i+1);
                 });
         }
+        else {
+            //Mobile mouse event handler
+
+            lx.OnMouse(0, function(data) {
+                if (ui.dialog.showing   || 
+                    ui.profile.showing  || 
+                    ui.settings.showing || 
+                    ui.journal.showing  ||
+                    data.state === 0)
+                    return;
+
+                if (ui.actionbar.selectedAction !== -1)
+                    player.performAction(ui.actionbar.selectedAction);
+            });
+        }
 
         //Request xp target
 
