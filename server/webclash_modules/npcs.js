@@ -1,7 +1,5 @@
 //NPCs module for WebClash Server
 
-const fs = require('fs');
-
 //Respawn time in seconds
 
 exports.respawnTime = 15;

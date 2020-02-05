@@ -1,7 +1,5 @@
 //Items module for WebClash Server
 
-const fs = require('fs');
-
 exports.collection = [];
 exports.onMap = [];
 

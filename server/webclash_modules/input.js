@@ -1,7 +1,5 @@
 //Input module for WebClash
 
-const fs = require('fs');
-
 exports.filterText = function(text)
 {
     //Cycle through all censored words

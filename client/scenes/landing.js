@@ -38,17 +38,45 @@ const landingScene = new lx.Scene(function() {
     box.setResizable(false);
     box.saves = false;
 
-    box.setContent(
-        '<form>' +
-            '<p class="info" style="font-size: 14px;">Username</p>' +
-            '<input id="windowName" autocomplete="username" maxlength="16" type="text" style="width: 95%;"></input><br>' +
-            '<p class="info" style="font-size: 14px;">Password</p>' +
-            '<input id="windowPassword" autocomplete="current-password" type="password" style="width: 95%;"></input>' +
-        '</form>' +
-        '<br>' +
-        '<button id="windowLogin">Login</button>' +
-        '<button id="windowRegister">Register</button>'
-    );
+    let form = document.createElement('form');
+
+    let usernameTitle = document.createElement('p');
+    usernameTitle.classList.add('info');
+    usernameTitle.style = 'font-size: 14px;';
+    usernameTitle.innerHTML = 'Username';
+    let username = document.createElement('input');
+    username.id = 'windowName';
+    username.autocomplete = 'username';
+    username.maxLength = '16';
+    username.type = 'text';
+    username.style = 'width: 95%;';
+
+    let passwordTitle = document.createElement('p');
+    passwordTitle.classList.add('info');
+    passwordTitle.style = 'font-size: 14px;';
+    passwordTitle.innerHTML = 'Username';
+    let password = document.createElement('input');
+    password.id = 'windowPassword';
+    password.autocomplete = 'current-password';
+    password.maxLength = '16';
+    password.type = 'password';
+    password.style = 'width: 95%;';
+
+    let loginButton = document.createElement('button');
+    loginButton.innerHTML = 'Login';
+    let registerButton = document.createElement('button');
+    registerButton.innerHTML = 'Register';
+
+    form.appendChild(usernameTitle);
+    form.appendChild(username);
+    form.appendChild(document.createElement('br'));
+    form.appendChild(passwordTitle);
+    form.appendChild(password);
+
+    box.addElement(form);
+    box.addElement(document.createElement('br'));
+    box.addElement(loginButton);
+    box.addElement(registerButton);
 
     //Setup a output function that shows
     //and hides the login/register box
@@ -66,7 +94,7 @@ const landingScene = new lx.Scene(function() {
 
     //Add login submission event
 
-    document.getElementById('windowLogin').addEventListener('click', function() {
+    loginButton.addEventListener('click', function() {
         let name = document.getElementById('windowName').value,
             pass = document.getElementById('windowPassword').value;
 
@@ -107,7 +135,7 @@ const landingScene = new lx.Scene(function() {
 
     //Add register event
 
-    document.getElementById('windowRegister').addEventListener('click', function() {
+    registerButton.addEventListener('click', function() {
         let name = document.getElementById('windowName').value,
             pass = document.getElementById('windowPassword').value;
 

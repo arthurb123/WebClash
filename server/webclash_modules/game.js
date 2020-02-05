@@ -1,7 +1,5 @@
 //Game module for WebClash
 
-const fs = require('fs');
-
 exports.characters = {};
 exports.players = {};
 
@@ -909,6 +907,17 @@ exports.getPlayerGlobalVariable = function(id, name)
     //Return player global variable
 
     return game.players[id].gvars[name];
+};
+
+exports.checkPlayerForChecks = function(id, checks)
+{
+    //Go over all checks
+
+    for (let c = 0; c < checks.length; c++) {
+        console.log(checks[c]);
+    }
+
+    return true;
 };
 
 exports.loadMap = function(channel, map)

@@ -1,7 +1,5 @@
 //Actions module for WebClash Server
 
-const fs = require('fs');
-
 exports.collection = [];
 exports.projectiles = [];
 

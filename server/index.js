@@ -82,14 +82,14 @@ const safeRequire = (name) => {
 
 //Safely load NodeJS Modules
 
-const fs       = safeRequire('fs'),
-      geckos   = safeRequire('@geckos.io/server').default,
+const geckos   = safeRequire('@geckos.io/server').default,
       express  = safeRequire('express'),
       app      = express(),
       http     = safeRequire('http').Server(app),
       path     = safeRequire('path'),
       readline = safeRequire('readline');
     
+global.fs       = safeRequire('fs');
 global.deepcopy = safeRequire('deepcopy');
 
 //Load server settings

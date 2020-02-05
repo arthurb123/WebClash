@@ -382,7 +382,7 @@ exports.handleChannel = function(channel)
                         y: data.pos.Y + collider.y + (1-factor) * collider.height,
                         w: collider.width  * factor,
                         h: collider.height * factor
-                    }))
+                    }, id))
                         valid = false;
                 }
 

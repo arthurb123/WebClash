@@ -1,7 +1,5 @@
 //Logger module for WebClash
 
-const fs = require('fs');
-
 let saved = [];
 let maxSaves = 32;
 

@@ -1255,7 +1255,7 @@ const ui = {
 
             let links = document.createElement('div');
             links.style = 'transform: translate(-50%, 0); position: absolute; left: 50%; pointer-events: auto;';
-            links.appendChild(createLink('Profie', function() { ui.profile.show(); }));
+            links.appendChild(createLink('Profile', function() { ui.profile.show(); }));
             links.appendChild(createLink('Journal', function() { ui.journal.show(); }));
             links.appendChild(document.createElement('br'));
             links.appendChild(createLink('Party', function() { ui.party.show(); }));
@@ -1310,6 +1310,7 @@ const ui = {
             let hide = document.createElement('p');
             hide.classList.add('link');
             hide.style = 'font-size: 12px; color: #ff3333;';
+            hide.innerHTML = 'Close';
             hide.addEventListener('click', function() {
                 ui.loot.hide();
             });
@@ -1651,6 +1652,7 @@ const ui = {
             let close = document.createElement('p');
             close.classList.add('link');
             close.style = 'font-size: 12px; color: red; padding-top: 4px;';
+            close.innerHTML = 'Close';
             close.addEventListener('click', function() {
                 ui.profile.hide();
             });
@@ -1766,6 +1768,7 @@ const ui = {
             let close = document.createElement('p');
             close.classList.add('link');
             close.style = 'font-size: 12px; color: #ff3333; position: relative; top: -4px;';
+            close.innerHTML = 'Close';
             close.addEventListener('click', function() {
                 ui.shop.hide();
             });
@@ -1794,12 +1797,12 @@ const ui = {
 
                 let slot = document.createElement('div');
                 slot.id = 'shop_slot' + i;
-                slot.style = 'border: 1px solid ' + ui.inventory.getItemColor(item.rarity) + ';';
+                slot.style = 'border: 1px solid ' + ui.inventory.getItemColor(item.rarity) + '; width: 24px; height: 24px;';
                 slot.classList.add('slot');
                 
                 let itemImg = document.createElement('img');
                 itemImg.src = item.source;
-                itemImg.style = 'pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;';
+                itemImg.style = 'pointer-events: none; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px;';
 
                 let itemPrice = document.createElement('p');
                 itemPrice.classList.add('info');
@@ -1897,18 +1900,38 @@ const ui = {
             view.dom.appendChild(box);
         },
         reload: function() {
+            let box = document.getElementById('journal_box');
             let done = false;
 
-            document.getElementById('journal_box').innerHTML = '<p class="info" style="font-size: 15px; padding-bottom: 6px;"><b>Journal</b></p>';
+            let title = document.createElement('p');
+            title.classList.add('info');
+            title.style = 'font-size: 15px; padding-bottom: 6px; text-align: center; font-weight: bold;';
+            title.innerHTML = 'Journal';
+
+            box.clear();
+            box.appendChild(title);
 
             for (let quest in player.quests) {
-                document.getElementById('journal_box').appendChild(ui.quests.generateQuestDom(quest, player.quests[quest], true));
+                box.appendChild(ui.quests.generateQuestDom(quest, player.quests[quest], true));
 
                 done = true;
             }
 
-            if (!done)
-                document.getElementById('journal_box').innerHTML += '<p class="info">No quests available.</p>';
+            if (!done) {
+                let notice = document.createElement('p');
+                notice.classList.add('info');
+                notice.innerHTML = 'No quests available.';
+                box.appendChild(notice);
+            }
+
+            let close = document.createElement('p');
+            close.classList.add('link');
+            close.style = 'font-size: 12px; color: red; padding-top: 4px;';
+            close.innerHTML = 'Close';
+            close.addEventListener('click', function() {
+                ui.journal.hide();
+            });
+            box.appendChild(close);
         },
         show: function() {
             if (this.visible) {
@@ -2152,12 +2175,20 @@ const ui = {
                 level = ' (' + game.players[name]._level + ')';
             }
 
-            this.box.addContent(
-                '<div id="party_' + name + '" class="content" style="padding-left: 8px; padding-right: 8px; padding-bottom: 8px;">' +
-                    '<p class="info" style="font-weight: bold; font-size: 12px;">' + name + level + '</p>' +
-                    content +
-                '</div>'
-            );
+            let box = document.createElement('div');
+            box.id = 'party_' + name;
+            box.classList.add('content');
+            box.style = 'padding-left: 8px; padding-right: 8px; padding-bottom: 8px;';
+
+            let player = document.createElement('p');
+            player.classList.add('info');
+            player.style = 'font-weight: bold; font-size: 12px;';
+            player.innerHTML = name + level;
+
+            box.addElement(player);
+            box.addElement(new DOMParser().parseFromString(content, 'text/xml'));
+
+            this.box.addElement(box);
 
             if (game.players[name] != undefined)
                 this.updatePlayer(name);
@@ -2351,7 +2382,7 @@ const ui = {
     //UI dialogs
 
     dialogs: {
-        custom: function(content, option, callback) {
+        custom: function(content, options, callbacks) {
             let id = 'dialog_' + option + '_box';
 
             if (document.getElementById(id) != undefined)
@@ -2371,60 +2402,36 @@ const ui = {
             box.setTextAlign('center');
             box.saves = false;
 
-            box.setContent(
-                '<p class="info" style="padding: 0px 3px 3px 3px;">' + content + '</p>' +
-                '<button id="' + id + '" style="height: 22px;">' + option + '</button>'
-            );
+            let title = document.createElement('p');
+            title.classList.add('info');
+            title.style = 'padding: 0px 3px 3px 3px;';
+            title.innerHTML = content;
 
-            document.getElementById(id).addEventListener('click', function() {
-                box.destroy();
+            box.addElement(title);
 
-                if (callback != undefined)
-                    callback();
-            });
+            for (let option = 0; option < options.length; option++) {
+                let button = document.createElement('button');
+                button.style = 'height: 22px;';
+                button.innerHTML = options[option];
+
+                button.addEventListener('click', function() {
+                    box.destroy();
+
+                    if (callbacks[option] != undefined)
+                        callbacks[option]();
+                });
+
+                box.addElement(button);
+            }
         },
         ok: function(content, callback) {
-            this.custom(content, 'Ok', callback);
+            this.custom(content, ['Ok'], [callback]);
         },
         confirm: function(content, callback) {
-            this.custom(content, 'Confirm', callback);
+            this.custom(content, ['Confirm'], [callback]);
         },
-        
         yesNo: function(content, callback) {
-            if (document.getElementById('dialog_yesno_box') != undefined)
-                return;
-
-            let box = new UIBox(
-                'dialog_yesno', 
-                'dialog_yesno_box', 
-                lx.GetDimensions().width/2-120, 
-                lx.GetDimensions().height/2-40, 
-                240, 
-                undefined
-            );
-            box.setResizable(false);
-            box.setMovable(false);
-            box.setTextAlign('center');
-            box.saves = false;
-
-            box.setContent(
-                '<p class="info" style="padding: 0px 3px 3px 3px;">' + content + '</p>' +
-                '<button id="dialog_yesno_button_yes" style="height: 22px;">Yes</button>' +
-                '<button id="dialog_yesno_button_no" style="height: 22px;">No</button>'
-            );
-
-            document.getElementById('dialog_yesno_button_yes').addEventListener('click', function() {
-                box.destroy();
-
-                if (callback != undefined)
-                    callback(true);
-            });
-            document.getElementById('dialog_yesno_button_no').addEventListener('click', function() {
-                box.destroy();
-
-                if (callback != undefined)
-                    callback(false);
-            });
+            this.custom(content, ['Yes', 'No'], [function() { callback(true); }, function() { callback(false); }])
         }
     }
 };

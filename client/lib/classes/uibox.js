@@ -98,7 +98,7 @@ const UIBox = function(parent, id, x, y, width, height, appendToBody) {
     };
 
     this.clear = function() {
-        this.content.innerHTML = '';
+        this.content.clear();
     };
 
     this.destroy = function() {
@@ -127,12 +127,8 @@ const UIBox = function(parent, id, x, y, width, height, appendToBody) {
         this.save();
     };
 
-    this.setContent = function(innerHTML) {
-        this.content.innerHTML = innerHTML;
-    };
-
-    this.addContent = function(html) {
-        this.content.innerHTML += html;
+    this.addElement = function(dom) {
+        this.content.appendChild(dom);
     };
 
     this.setResizable = function(resizable) {
@@ -170,7 +166,6 @@ const UIBox = function(parent, id, x, y, width, height, appendToBody) {
             return;
 
         mouseDown = true; 
-
         oldMouse = { X: e.pageX, Y: e.pageY };
 
         borderVerticalType = this.checkBorderVertical(oldMouse.X, oldMouse.Y);
