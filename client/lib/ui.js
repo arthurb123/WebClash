@@ -2402,13 +2402,17 @@ const ui = {
 
     dialogs: {
         custom: function(content, options, callbacks) {
-            let id = 'dialog_' + option + '_box';
+            let name = options[0].toLowerCase();
+            for (let o = 1; o < options.length; o++)
+                name += options[o];
+
+            let id = 'dialog_' + name + '_box';
 
             if (document.getElementById(id) != undefined)
                 return;
 
             let box = new UIBox(
-                'dialog_' + option, 
+                'dialog_' + name, 
                 id, 
                 lx.GetDimensions().width/2-120, 
                 lx.GetDimensions().height/2-40, 
@@ -2421,12 +2425,12 @@ const ui = {
             box.setTextAlign('center');
             box.saves = false;
 
-            let title = document.createElement('p');
-            title.classList.add('info');
-            title.style = 'padding: 0px 3px 3px 3px;';
-            title.innerHTML = content;
+            let body = document.createElement('p');
+            body.classList.add('info');
+            body.style = 'padding: 0px 3px 3px 3px;';
+            body.innerHTML = content;
 
-            box.addElement(title);
+            box.addElement(body);
 
             for (let option = 0; option < options.length; option++) {
                 let button = document.createElement('button');
