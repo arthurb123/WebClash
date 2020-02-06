@@ -118,7 +118,7 @@ exports.refreshPlayer = function(channel, id)
             server.syncPlayerPartially(id, 'mana', channel, false);
             server.syncPlayerPartially(id, 'actions', channel, false);
             server.syncPlayerPartially(id, 'quests', channel, false);
-            server.syncPlayerPartially(id, 'gold', channel, false);
+            server.syncPlayerPartially(id, 'currency', channel, false);
 
             //Sync inventory
 
@@ -238,7 +238,7 @@ exports.setupPlayer = function(channel)
         server.syncPlayerPartially(id, 'attributes', channel, false);
         server.syncPlayerPartially(id, 'actions', channel, false);
         server.syncPlayerPartially(id, 'quests', channel, false);
-        server.syncPlayerPartially(id, 'gold', channel, false);
+        server.syncPlayerPartially(id, 'currency', channel, false);
 
         //Sync inventory
 
@@ -397,7 +397,7 @@ exports.savePlayer = function(name, data, cb)
             equipment: {},
             quests: {},
             inventory: properties.playerStartingItems,
-            gold: 0
+            currency: 0
         };
     }
 
@@ -411,7 +411,7 @@ exports.savePlayer = function(name, data, cb)
         direction: player.direction,
         health: player.health,
         mana: player.mana,
-        gold: player.gold,
+        currency: player.currency,
         level: player.level,
         stats: player.stats,
         killed: player.killed,
@@ -586,13 +586,13 @@ exports.onPlayerDeath = function(id, pvpKiller)
     let deathEvents = gameplay.onPlayerDeath,
         deathData = {};
 
-    //Lose gold death event
+    //Lose currency death event
 
-    if (deathEvents.loseGold.enabled) {
-        let delta = -this.players[id].gold*(deathEvents.loseGold.losePercentage/100);
-        deathData.lostGold = -delta;
+    if (deathEvents.loseCurrency.enabled) {
+        let delta = -this.players[id].currency*(deathEvents.loseCurrency.losePercentage/100);
+        deathData.lostcurrency = -delta;
 
-        this.deltaGoldPlayer(id, delta);
+        this.deltaCurrencyPlayer(id, delta);
     }
 
     //Lose experience death event
@@ -645,20 +645,20 @@ exports.deltaManaPlayer = function(id, delta)
     server.syncPlayerPartially(id, 'mana');
 };
 
-exports.deltaGoldPlayer = function(id, delta)
+exports.deltaCurrencyPlayer = function(id, delta)
 {
     //Check if possible
 
-    if (this.players[id].gold+delta < 0)
+    if (this.players[id].currency+delta < 0)
         return false;
 
     //Add delta
 
-    this.players[id].gold += delta;
+    this.players[id].currency += delta;
 
-    //Sync gold
+    //Sync currency
 
-    server.syncPlayerPartially(id, 'gold', this.players[id].channel, false);
+    server.syncPlayerPartially(id, 'currency', this.players[id].channel, false);
 
     //Return true
 

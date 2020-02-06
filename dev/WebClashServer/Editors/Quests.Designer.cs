@@ -50,7 +50,7 @@
             this.newObjective = new System.Windows.Forms.LinkLabel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.editItemRewards = new System.Windows.Forms.Button();
-            this.goldReward = new System.Windows.Forms.NumericUpDown();
+            this.currencyReward = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
             this.experienceReward = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
@@ -59,7 +59,7 @@
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.goldReward)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.currencyReward)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.experienceReward)).BeginInit();
             this.SuspendLayout();
             // 
@@ -283,7 +283,7 @@
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.editItemRewards);
-            this.groupBox4.Controls.Add(this.goldReward);
+            this.groupBox4.Controls.Add(this.currencyReward);
             this.groupBox4.Controls.Add(this.label3);
             this.groupBox4.Controls.Add(this.experienceReward);
             this.groupBox4.Controls.Add(this.label2);
@@ -304,28 +304,28 @@
             this.editItemRewards.UseVisualStyleBackColor = true;
             this.editItemRewards.Click += new System.EventHandler(this.editItemRewards_Click);
             // 
-            // goldReward
+            // currencyReward
             // 
-            this.goldReward.Location = new System.Drawing.Point(98, 19);
-            this.goldReward.Maximum = new decimal(new int[] {
+            this.currencyReward.Location = new System.Drawing.Point(98, 19);
+            this.currencyReward.Maximum = new decimal(new int[] {
             -1981284353,
             -1966660860,
             0,
             0});
-            this.goldReward.Name = "goldReward";
-            this.goldReward.Size = new System.Drawing.Size(117, 20);
-            this.goldReward.TabIndex = 23;
-            this.goldReward.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.goldReward.ValueChanged += new System.EventHandler(this.goldReward_ValueChanged);
+            this.currencyReward.Name = "currencyReward";
+            this.currencyReward.Size = new System.Drawing.Size(117, 20);
+            this.currencyReward.TabIndex = 23;
+            this.currencyReward.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.currencyReward.ValueChanged += new System.EventHandler(this.currencyReward_ValueChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(10, 21);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(29, 13);
+            this.label3.Size = new System.Drawing.Size(49, 13);
             this.label3.TabIndex = 22;
-            this.label3.Text = "Gold";
+            this.label3.Text = "Currency";
             // 
             // experienceReward
             // 
@@ -382,7 +382,7 @@
             this.groupBox2.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.goldReward)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.currencyReward)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.experienceReward)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -410,7 +410,7 @@
         private System.Windows.Forms.LinkLabel delObjective;
         private System.Windows.Forms.LinkLabel newObjective;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.NumericUpDown goldReward;
+        private System.Windows.Forms.NumericUpDown currencyReward;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown experienceReward;
         private System.Windows.Forms.Label label2;

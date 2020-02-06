@@ -190,7 +190,7 @@ namespace WebClashServer.Editors
         {
             healthDifference.Value = current.affectPlayerEvent.healthDifference;
             manaDifference.Value = current.affectPlayerEvent.manaDifference;
-            goldDifference.Value = current.affectPlayerEvent.goldDifference;
+            currencyDifference.Value = current.affectPlayerEvent.currencyDifference;
         }
 
         private void healthDifference_ValueChanged(object sender, EventArgs e)
@@ -203,9 +203,9 @@ namespace WebClashServer.Editors
             current.affectPlayerEvent.manaDifference = (int)manaDifference.Value;
         }
 
-        private void goldDifference_ValueChanged(object sender, EventArgs e)
+        private void currencyDifference_ValueChanged(object sender, EventArgs e)
         {
-            current.affectPlayerEvent.goldDifference = (int)goldDifference.Value;
+            current.affectPlayerEvent.currencyDifference = (int)currencyDifference.Value;
         }
 
         //Spawn NPC event

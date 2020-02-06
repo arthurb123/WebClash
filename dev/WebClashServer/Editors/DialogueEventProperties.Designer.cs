@@ -48,7 +48,7 @@
             this.nextIndex1 = new System.Windows.Forms.NumericUpDown();
             this.occurredText = new System.Windows.Forms.Label();
             this.affectPlayerPanel = new System.Windows.Forms.Panel();
-            this.goldDifference = new System.Windows.Forms.NumericUpDown();
+            this.currencyDifference = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
             this.manaDifference = new System.Windows.Forms.NumericUpDown();
             this.label10 = new System.Windows.Forms.Label();
@@ -79,7 +79,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nextIndex)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nextIndex1)).BeginInit();
             this.affectPlayerPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.goldDifference)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.currencyDifference)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.manaDifference)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.healthDifference)).BeginInit();
             this.spawnNPCPanel.SuspendLayout();
@@ -321,7 +321,7 @@
             // 
             // affectPlayerPanel
             // 
-            this.affectPlayerPanel.Controls.Add(this.goldDifference);
+            this.affectPlayerPanel.Controls.Add(this.currencyDifference);
             this.affectPlayerPanel.Controls.Add(this.label11);
             this.affectPlayerPanel.Controls.Add(this.manaDifference);
             this.affectPlayerPanel.Controls.Add(this.label10);
@@ -333,24 +333,24 @@
             this.affectPlayerPanel.TabIndex = 7;
             this.affectPlayerPanel.Visible = false;
             // 
-            // goldDifference
+            // currencyDifference
             // 
-            this.goldDifference.Location = new System.Drawing.Point(174, 61);
-            this.goldDifference.Maximum = new decimal(new int[] {
+            this.currencyDifference.Location = new System.Drawing.Point(174, 61);
+            this.currencyDifference.Maximum = new decimal(new int[] {
             1215752191,
             23,
             0,
             0});
-            this.goldDifference.Minimum = new decimal(new int[] {
+            this.currencyDifference.Minimum = new decimal(new int[] {
             -727379969,
             232,
             0,
             -2147483648});
-            this.goldDifference.Name = "goldDifference";
-            this.goldDifference.Size = new System.Drawing.Size(102, 20);
-            this.goldDifference.TabIndex = 8;
-            this.goldDifference.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.goldDifference.ValueChanged += new System.EventHandler(this.goldDifference_ValueChanged);
+            this.currencyDifference.Name = "currencyDifference";
+            this.currencyDifference.Size = new System.Drawing.Size(102, 20);
+            this.currencyDifference.TabIndex = 8;
+            this.currencyDifference.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.currencyDifference.ValueChanged += new System.EventHandler(this.currencyDifference_ValueChanged);
             // 
             // label11
             // 
@@ -359,7 +359,7 @@
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(63, 13);
             this.label11.TabIndex = 7;
-            this.label11.Text = "Gold (Delta)";
+            this.label11.Text = "Currency (Delta)";
             // 
             // manaDifference
             // 
@@ -641,7 +641,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nextIndex1)).EndInit();
             this.affectPlayerPanel.ResumeLayout(false);
             this.affectPlayerPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.goldDifference)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.currencyDifference)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.manaDifference)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.healthDifference)).EndInit();
             this.spawnNPCPanel.ResumeLayout(false);
@@ -683,7 +683,7 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.NumericUpDown manaDifference;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.NumericUpDown goldDifference;
+        private System.Windows.Forms.NumericUpDown currencyDifference;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Panel spawnNPCPanel;
         private System.Windows.Forms.NumericUpDown npcAmount;

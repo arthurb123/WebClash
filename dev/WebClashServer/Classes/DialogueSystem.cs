@@ -120,7 +120,7 @@ namespace WebClashServer.Classes
     {
         public int healthDifference = 0;
         public int manaDifference = 0;
-        public int goldDifference = 0;
+        public int currencyDifference = 0;
     }
 
     public class SpawnNPCEvent

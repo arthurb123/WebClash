@@ -44,7 +44,7 @@ exports.getConvertedItem = function(name)
 
             result.heal = item.heal;
             result.mana = item.mana;
-            result.gold = item.gold;
+            result.currency = item.currency;
             break;
         case 'equipment':
             result.actionIcon = item.actionIcon;
@@ -245,9 +245,9 @@ exports.usePlayerItem = function(id, name)
         game.healPlayer(id, item.heal);
         game.deltaManaPlayer(id, item.mana);
 
-        //Delta gold
+        //Delta currency
 
-        game.deltaGoldPlayer(id, item.gold);
+        game.deltaCurrencyPlayer(id, item.currency);
 
         //Add action
 

@@ -249,7 +249,7 @@
       "affectPlayerEvent": {
         "healthDifference": -5,
         "manaDifference": 0,
-        "goldDifference": 0
+        "currencyDifference": 0
       },
       "spawnNPCEvent": null,
       "turnHostileEvent": null,

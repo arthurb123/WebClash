@@ -808,13 +808,13 @@ const ui = {
                     this.slots[i] = 'inventory_slot' + i;
                 }
 
-            let gold = document.createElement('p');
-            gold.id = 'gold_label';
-            gold.classList.add('info');
-            gold.style = 'font-size: 11px; color: yellow;';
-            gold.innerHTML = '0 ' + game.aliases.currency;
+            let currency = document.createElement('p');
+            currency.id = 'currency_label';
+            currency.classList.add('info');
+            currency.style = 'font-size: 11px; color: yellow;';
+            currency.innerHTML = '0 ' + game.aliases.currency;
 
-           this.box.addElement(gold);
+           this.box.addElement(currency);
         },
         reload: function() {
             if (this.slots === undefined)
@@ -853,8 +853,8 @@ const ui = {
             else
                 slotDOM.style.border = '1px solid gray';
         },
-        setGold: function(gold) {
-            document.getElementById('gold_label').innerHTML = gold + ' ' + game.aliases.currency;
+        setCurrency: function(currency) {
+            document.getElementById('currency_label').innerHTML = currency + ' ' + game.aliases.currency;
         },
         useItem: function(slot) {
             if (player.inventory[slot] !== undefined) {
@@ -997,8 +997,8 @@ const ui = {
                     stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.heal + ' Health</p>';
                 if (item.mana > 0)
                     stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.mana + ' Mana</p>';
-                if (item.gold > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.gold + ' ' + game.aliases.currency + '</p>';
+                if (item.currency > 0)
+                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.currency + ' ' + game.aliases.currency + '</p>';
             }
 
             if (item.type === 'equipment' &&
@@ -1038,7 +1038,7 @@ const ui = {
                     '<font class="info" style="position: relative; top: 6px;">' + item.description + '</font><br>' +
                     stats +
                     (note !== '' ? '<font class="info" style="position: relative; top: 10px; font-size: 11px; margin-top: 5px;">' + note + '</font><br>' : '') +
-                    '<font class="info" style="position: relative; top: 10px; font-size: 11px; color: yellow;">' + item.value + ' Gold</font><br>';
+                    '<font class="info" style="position: relative; top: 10px; font-size: 11px; color: yellow;">' + item.value + ' ' + game.aliases.currency + '</font><br>';
 
             //Append
 
@@ -1852,7 +1852,7 @@ const ui = {
         },
         reload: function() {
             for (let i = 0; i < this.prices.length; i++) 
-                if (game.players[game.player]._gold-this.prices[i] < 0)
+                if (game.players[game.player]._currency-this.prices[i] < 0)
                     document.getElementById('shop_slot' + i).style.backgroundColor = '#ff6666';
                 else
                     document.getElementById('shop_slot' + i).style.backgroundColor = '';

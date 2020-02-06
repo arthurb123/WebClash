@@ -12,7 +12,7 @@
   "description": "I can't read.",
   "heal": 0,
   "mana": 0,
-  "gold": 0,
+  "currency": 0,
   "consumableAction": "Heal",
   "consumableActionUses": 3,
   "equippable": "none",

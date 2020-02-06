@@ -3,7 +3,7 @@
     "nightLength": 360,
     
     "onPlayerDeath": {
-        "loseGold": {
+        "loseCurrency": {
             "enabled": false,
             "losePercentage": 50
         },

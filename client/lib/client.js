@@ -216,11 +216,11 @@ const client = {
                  player.setActions(data.actions);
              if (data.quests !== undefined)
                  player.setQuests(data.quests);
-             if (data.gold !== undefined) {
-                 game.players[id]._gold = data.gold;
+             if (data.currency !== undefined) {
+                 game.players[id]._currency = data.currency;
 
                  if (id === game.player)
-                     ui.inventory.setGold(data.gold);
+                     ui.inventory.setCurrency(data.currency);
              }
              if (data.character !== undefined) {
                  game.players[id].SPRITE = new lx.Sprite(data.character.src);
@@ -621,7 +621,7 @@ const client = {
         });
         channel.on('CLIENT_SELL_ITEM_RESPONSE', function(sold) {
             if (sold) {
-                //Play gold sound??
+                //Play currency sound??
 
                 //...
 

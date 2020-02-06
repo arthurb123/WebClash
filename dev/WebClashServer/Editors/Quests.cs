@@ -72,7 +72,7 @@ namespace WebClashServer
 
             description.Text = current.description;
 
-            goldReward.Value = current.rewards.gold;
+            currencyReward.Value = current.rewards.currency;
             experienceReward.Value = current.rewards.experience;
 
             LoadObjectives();
@@ -250,12 +250,12 @@ namespace WebClashServer
             LoadObjectives();
         }
 
-        private void goldReward_ValueChanged(object sender, EventArgs e)
+        private void currencyReward_ValueChanged(object sender, EventArgs e)
         {
             if (current == null)
                 return;
 
-            current.rewards.gold = (int)goldReward.Value;
+            current.rewards.currency = (int)currencyReward.Value;
         }
 
         private void experienceReward_ValueChanged(object sender, EventArgs e)
@@ -330,7 +330,7 @@ namespace WebClashServer
 
     public class QuestRewards
     {
-        public int gold = 0;
+        public int currency = 0;
 
         public int experience = 0;
 

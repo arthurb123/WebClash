@@ -44,12 +44,12 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restartAfterNewChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.obfuscateClientToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.permissions = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.inputCommand = new System.Windows.Forms.TextBox();
-            this.obfuscateClientToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -211,10 +211,17 @@
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
+            // obfuscateClientToolStripMenuItem
+            // 
+            this.obfuscateClientToolStripMenuItem.Name = "obfuscateClientToolStripMenuItem";
+            this.obfuscateClientToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.obfuscateClientToolStripMenuItem.Text = "Obfuscate Client";
+            this.obfuscateClientToolStripMenuItem.Click += new System.EventHandler(this.obfuscateClientToolStripMenuItem_Click);
+            // 
             // resetDataToolStripMenuItem
             // 
             this.resetDataToolStripMenuItem.Name = "resetDataToolStripMenuItem";
-            this.resetDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.resetDataToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.resetDataToolStripMenuItem.Text = "Reset Data";
             this.resetDataToolStripMenuItem.ToolTipText = "Allows for server data resetting";
             this.resetDataToolStripMenuItem.Click += new System.EventHandler(this.resetDataToolStripMenuItem_Click);
@@ -263,13 +270,6 @@
             this.inputCommand.Name = "inputCommand";
             this.inputCommand.Size = new System.Drawing.Size(242, 20);
             this.inputCommand.TabIndex = 6;
-            // 
-            // obfuscateClientToolStripMenuItem
-            // 
-            this.obfuscateClientToolStripMenuItem.Name = "obfuscateClientToolStripMenuItem";
-            this.obfuscateClientToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.obfuscateClientToolStripMenuItem.Text = "Obfuscate Client";
-            this.obfuscateClientToolStripMenuItem.Click += new System.EventHandler(this.obfuscateClientToolStripMenuItem_Click);
             // 
             // Main
             // 

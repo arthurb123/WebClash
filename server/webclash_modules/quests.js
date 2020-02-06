@@ -140,9 +140,9 @@ exports.getQuestDialog = function(name)
         }
     }
 
-    //Experience and gold rewards
+    //Experience and currency rewards
 
-    quest.text += '</i><br><br>Rewards: ' + quest.rewards.experience + ' Exp, ' + quest.rewards.gold + ' ' + gameplay.aliases.currency;
+    quest.text += '</i><br><br>Rewards: ' + quest.rewards.experience + ' Exp, ' + quest.rewards.currency + ' ' + gameplay.aliases.currency;
 
     //Convert item rewards and set as data to be send
 
@@ -419,7 +419,7 @@ exports.finishQuest = function(id, name)
 
     //Redeem quest rewards
 
-    game.deltaGoldPlayer(id, rewards.gold);
+    game.deltaCurrencyPlayer(id, rewards.currency);
     game.deltaExperiencePlayer(id, rewards.experience);
 
     //Set quest completed global variable

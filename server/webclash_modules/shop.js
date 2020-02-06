@@ -61,16 +61,16 @@ exports.buyItem = function(player, item, owner, dialogId) {
 
     //Check if the player has enough currency
 
-    if (game.players[player].gold-shop[item].price < 0) 
+    if (game.players[player].currency-shop[item].price < 0) 
         return false;
 
     //Add item to the player inventory
 
     if (items.addPlayerItem(player, shop[item].item.name)) {
-        //Subtract gold from player, because item
+        //Subtract currency from player, because item
         //has been added successfully!
 
-        game.deltaGoldPlayer(player, -shop[item].price);
+        game.deltaCurrencyPlayer(player, -shop[item].price);
 
         //Return successful
 
@@ -102,7 +102,7 @@ exports.sellItem = function(player, item, owner) {
             npcs.onMap[map][owner].data.dialog.length === 0)
             return false;
 
-    //Sell item for it's gold value
+    //Sell item for it's currency value
 
     item = items.getItem(item);
 
@@ -110,7 +110,7 @@ exports.sellItem = function(player, item, owner) {
         item.value <= 0)
         return false;
 
-    game.deltaGoldPlayer(player, item.value);
+    game.deltaCurrencyPlayer(player, item.value);
 
     //Remove from inventory
 

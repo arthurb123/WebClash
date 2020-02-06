@@ -1270,8 +1270,8 @@ exports.syncPlayerPartially = function(id, type, channel, broadcast)
         case 'attributes':
             data.attributes = game.players[id].attributes;
             break;
-        case 'gold':
-            data.gold = game.players[id].gold;
+        case 'currency':
+            data.currency = game.players[id].currency;
             break;
         case 'health':
             data.health = game.players[id].health;

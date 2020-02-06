@@ -146,9 +146,9 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
 
         game.deltaManaPlayer(id, dialogEvent.affectPlayerEvent.manaDifference);
 
-        //Gold
+        //Currency
 
-        if (!game.deltaGoldPlayer(id, dialogEvent.affectPlayerEvent.goldDifference)) {
+        if (!game.deltaCurrencyPlayer(id, dialogEvent.affectPlayerEvent.currencyDifference)) {
             channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: false, id: clientData.id });
             return;
         }

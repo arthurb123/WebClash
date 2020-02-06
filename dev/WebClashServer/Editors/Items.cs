@@ -117,7 +117,7 @@ namespace WebClashServer
 
             heals.Value = current.heal;
             mana.Value = current.mana;
-            gold.Value = current.gold;
+            currency.Value = current.currency;
 
             if (current.consumableAction != string.Empty)
                 consumableAction.SelectedItem = FirstCharToUpper(current.consumableAction);
@@ -339,12 +339,12 @@ namespace WebClashServer
             current.heal = (int)heals.Value;
         }
 
-        private void gold_ValueChanged(object sender, EventArgs e)
+        private void currency_ValueChanged(object sender, EventArgs e)
         {
             if (current == null)
                 return;
 
-            current.gold = (int)gold.Value;
+            current.currency = (int)currency.Value;
         }
 
         private void mana_ValueChanged(object sender, EventArgs e)
@@ -511,7 +511,7 @@ namespace WebClashServer
 
                 heal = temp.heal;
                 mana = temp.mana;
-                gold = temp.gold;
+                currency = temp.currency;
 
                 consumableAction = temp.consumableAction;
                 consumableActionUses = temp.consumableActionUses;
@@ -553,7 +553,7 @@ namespace WebClashServer
 
         public int heal = 0;
         public int mana = 0;
-        public int gold = 0;
+        public int currency = 0;
 
         public string consumableAction = string.Empty;
         public int consumableActionUses = 1;

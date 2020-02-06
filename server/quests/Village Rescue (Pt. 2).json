@@ -14,7 +14,7 @@
     }
   ],
   "rewards": {
-    "gold": 50,
+    "currency": 50,
     "experience": 45,
     "items": []
   }

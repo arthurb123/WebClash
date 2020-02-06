@@ -168,8 +168,8 @@ const player = {
             content += 'You lost all your items.<br>';
         if (deathData.lostEquipment)
             content += 'You lost all your equipment.<br>';
-        if (deathData.lostGold != undefined)
-            content += 'You lost ' + deathData.lostGold + ' ' + game.aliases.currency + '.<br>';
+        if (deathData.lostCurrency != undefined)
+            content += 'You lost ' + deathData.lostCurrency + ' ' + game.aliases.currency + '.<br>';
         if (deathData.lostExperience != undefined)
             content += 'You lost ' + deathData.lostExperience + ' experience.<br>';
 

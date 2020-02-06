@@ -295,13 +295,13 @@ exports.handleCommand = function(text, channel)
                     items.addPlayerItem(p, item);
 
                     return 'success';
-                //Give gold command
-                case 'givegold':
+                //Give currency command
+                case 'givecurrency':
                     if (args.length < 1 ||
                         channel == undefined)
                         return 'wrong';
 
-                    game.deltaGoldPlayer(p, parseInt(args[0]));
+                    game.deltaCurrencyPlayer(p, parseInt(args[0]));
 
                     return 'success';
                 //Change character command

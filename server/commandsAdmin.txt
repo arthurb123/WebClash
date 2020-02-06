@@ -10,7 +10,7 @@ Admin commands:<br>
 /sendmap <i>player</i> <i>map</i><br>
 /spawnnpc <i>name</i><br>
 /giveitem <i>name</i><br>
-/givegold <i>amount</i><br>
+/givecurrency <i>amount</i><br>
 /setcharacter <i>name</i><br>
 /settime <i>time</i><br>
 /shutdown

@@ -75,7 +75,7 @@
             this.label19 = new System.Windows.Forms.Label();
             this.mana = new System.Windows.Forms.NumericUpDown();
             this.label18 = new System.Windows.Forms.Label();
-            this.gold = new System.Windows.Forms.NumericUpDown();
+            this.currency = new System.Windows.Forms.NumericUpDown();
             this.label17 = new System.Windows.Forms.Label();
             this.heals = new System.Windows.Forms.NumericUpDown();
             this.label16 = new System.Windows.Forms.Label();
@@ -104,7 +104,7 @@
             this.consumableSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.actionUses)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mana)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gold)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.currency)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.heals)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.consumablePanel.SuspendLayout();
@@ -561,7 +561,7 @@
             this.consumableSettings.Controls.Add(this.label19);
             this.consumableSettings.Controls.Add(this.mana);
             this.consumableSettings.Controls.Add(this.label18);
-            this.consumableSettings.Controls.Add(this.gold);
+            this.consumableSettings.Controls.Add(this.currency);
             this.consumableSettings.Controls.Add(this.label17);
             this.consumableSettings.Controls.Add(this.heals);
             this.consumableSettings.Controls.Add(this.label16);
@@ -647,19 +647,19 @@
             this.label18.TabIndex = 21;
             this.label18.Text = "Mana";
             // 
-            // gold
+            // currency
             // 
-            this.gold.Location = new System.Drawing.Point(211, 26);
-            this.gold.Maximum = new decimal(new int[] {
+            this.currency.Location = new System.Drawing.Point(211, 26);
+            this.currency.Maximum = new decimal(new int[] {
             -1981284353,
             -1966660860,
             0,
             0});
-            this.gold.Name = "gold";
-            this.gold.Size = new System.Drawing.Size(90, 20);
-            this.gold.TabIndex = 20;
-            this.gold.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.gold.ValueChanged += new System.EventHandler(this.gold_ValueChanged);
+            this.currency.Name = "currency";
+            this.currency.Size = new System.Drawing.Size(90, 20);
+            this.currency.TabIndex = 20;
+            this.currency.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.currency.ValueChanged += new System.EventHandler(this.currency_ValueChanged);
             // 
             // label17
             // 
@@ -668,7 +668,7 @@
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(29, 13);
             this.label17.TabIndex = 19;
-            this.label17.Text = "Gold";
+            this.label17.Text = "Currency";
             // 
             // heals
             // 
@@ -846,7 +846,7 @@
             this.consumableSettings.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.actionUses)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mana)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gold)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.currency)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.heals)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.consumablePanel.ResumeLayout(false);
@@ -903,7 +903,7 @@
         private System.Windows.Forms.GroupBox consumableSettings;
         private System.Windows.Forms.NumericUpDown mana;
         private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.NumericUpDown gold;
+        private System.Windows.Forms.NumericUpDown currency;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.NumericUpDown heals;
         private System.Windows.Forms.Label label16;
