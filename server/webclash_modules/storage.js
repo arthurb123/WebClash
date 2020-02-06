@@ -1,7 +1,5 @@
 //Storage module for WebClash Server
 
-const fs = require('fs');
-
 exports.load = function(dir, name, cb)
 {
     this.exists(dir, name, function(is) {

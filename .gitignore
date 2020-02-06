@@ -3,8 +3,8 @@
 obf_client/
 server/logs
 server/node_modules
-server/data/accounts/admin.json
-server/data/stats/admin.json
+server/data/accounts/
+server/data/stats/
 dev/WebClashServer/bin/
 dev/WebClashServer/obj/
 dev/WebClashServer/.vs/

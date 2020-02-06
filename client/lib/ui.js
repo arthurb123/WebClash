@@ -253,6 +253,7 @@ const ui = {
             title.innerHTML = name_override == undefined ? this.name : name_override;
 
             contentEl.appendChild(title);
+            contentEl.appendChild(document.createElement('br'));
 
             //Set portrait (if available)
 
@@ -261,13 +262,11 @@ const ui = {
                 portrait.classList.add('portrait');
                 portrait.src = this.cur[id].portrait;
                 
-                contentEl.appendChild(document.createElement('br'));
                 contentEl.appendChild(portrait);
             }
 
             //Append break
 
-            contentEl.appendChild(document.createElement('br'));
             contentEl.appendChild(document.createElement('br'));
 
             //Add quest text
@@ -483,7 +482,7 @@ const ui = {
 
             let uses = document.createElement('font');
             uses.classList.add('info');
-            uses.style = 'position: absolute; top: 100%; margin-top: -12px; margin-left: -6px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%; color: #333333; z-index: 2; text-align: right;';
+            uses.style = 'position: absolute; top: 100%; margin-top: -14px; margin-left: -6px; font-size: 10px; text-shadow: 0px 0px 1px rgba(0,0,0,1); width: 100%; z-index: 2; text-align: right;';
             uses.innerHTML = usesContent;
 
             let actionImg = document.createElement('img');
@@ -994,28 +993,31 @@ const ui = {
 
             if (item.type === 'consumable') {
                 if (item.heal > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.heal + ' Health</p>';
+                    stats += '<p class="info" style="font-size: 12px;">+' + item.heal + ' Health</p>';
                 if (item.mana > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.mana + ' Mana</p>';
+                    stats += '<p class="info" style="font-size: 12px;">+' + item.mana + ' Mana</p>';
                 if (item.currency > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.currency + ' ' + game.aliases.currency + '</p>';
+                    stats += '<p class="info" style="font-size: 12px;">+' + item.currency + ' ' + game.aliases.currency + '</p>';
             }
 
             if (item.type === 'equipment' &&
                 item.stats != undefined) {
                     if (item.stats.power > 0)
-                        stats += '<p class="info" style="font-size: 11px;">+' + item.stats.power + ' ' + game.aliases.power + '</p>';
+                        stats += '<p class="info" style="font-size: 12px;">+' + item.stats.power + ' ' + game.aliases.power + '</p>';
                     if (item.stats.intelligence > 0)
-                        stats += '<p class="info" style="font-size: 11px;">+' + item.stats.intelligence + ' ' + game.aliases.intelligence + '</p>';
+                        stats += '<p class="info" style="font-size: 12px;">+' + item.stats.intelligence + ' ' + game.aliases.intelligence + '</p>';
                     if (item.stats.toughness > 0)
-                        stats += '<p class="info" style="font-size: 11px;">+' + item.stats.toughness + ' ' + game.aliases.toughness + '</p>';
+                        stats += '<p class="info" style="font-size: 12px;">+' + item.stats.toughness + ' ' + game.aliases.toughness + '</p>';
                     if (item.stats.vitality > 0)
-                        stats += '<p class="info" style="font-size: 11px;">+' + item.stats.vitality + ' ' + game.aliases.vitality + '</p>';
+                        stats += '<p class="info" style="font-size: 12px;">+' + item.stats.vitality + ' ' + game.aliases.vitality + '</p>';
                     if (item.stats.wisdom > 0)
-                        stats += '<p class="info" style="font-size: 11px;">+' + item.stats.wisdom + ' ' + game.aliases.wisdom + '</p>';
+                        stats += '<p class="info" style="font-size: 12px;">+' + item.stats.wisdom + ' ' + game.aliases.wisdom + '</p>';
                     if (item.stats.agility > 0)
-                        stats += '<p class="info" style="font-size: 11px;">+' + item.stats.agility + ' ' + game.aliases.agility +'</p>';
+                        stats += '<p class="info" style="font-size: 12px;">+' + item.stats.agility + ' ' + game.aliases.agility +'</p>';
             }
+
+            if (stats !== '')
+                stats = '<div style="position: relative; top: 8px;">' + stats + '</div>';
 
             //Item type
 
@@ -1481,6 +1483,7 @@ const ui = {
                 editMode.innerHTML = '<b>UI</b>';
 
                 let checkbox = document.createElement('input');
+                checkbox.id = 'settings_ui_editMode';
                 checkbox.type = 'checkbox';
                 checkbox.style = 'margin-left: 2px;';
 

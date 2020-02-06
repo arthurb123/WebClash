@@ -834,7 +834,7 @@ const game = {
 
         //Create item name
 
-        let name = data.name + ' (' + data.value + 'g)';
+        let name = data.name + ' (' + data.value + game.aliases.currency[0].toLowerCase() + ')';
 
         //Check if world item already exists
 

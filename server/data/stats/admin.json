@@ -15,7 +15,7 @@
   "cur": 100,
   "max": 100
  },
- "gold": 0,
+ "currency": 0,
  "level": 1,
  "stats": {
   "exp": 0,

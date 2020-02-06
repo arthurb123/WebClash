@@ -324,6 +324,7 @@ const ui = {
             title.innerHTML = name_override == undefined ? this.name : name_override;
 
             contentEl.appendChild(title);
+            contentEl.appendChild(document.createElement('br'));
 
             //Set portrait (if available)
 
@@ -332,13 +333,11 @@ const ui = {
                 portrait.classList.add('portrait');
                 portrait.src = this.cur[id].portrait;
                 
-                contentEl.appendChild(document.createElement('br'));
                 contentEl.appendChild(portrait);
             }
 
             //Append breaks
 
-            contentEl.appendChild(document.createElement('br'));
             contentEl.appendChild(document.createElement('br'));
 
             //Add quest text
@@ -933,7 +932,7 @@ const ui = {
 
             //Stats
 
-            let stats = '<div style="position: relative; top: 3px;">';
+            let stats = '';
 
             if (item.type === 'consumable') {
                 if (item.heal > 0)
@@ -960,7 +959,8 @@ const ui = {
                     stats += '<p class="info" style="font-size: 11px;">+' + item.stats.agility + ' ' + game.aliases.agility +'</p>';
             }
 
-            stats + '</div>';
+            if (stats !== '')
+                stats = '<div style="position: relative; top: 8px;">' + stats + '</div>';
 
             //Item type
 
