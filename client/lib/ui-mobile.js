@@ -332,12 +332,20 @@ const ui = {
                 portrait.classList.add('portrait');
                 portrait.src = this.cur[id].portrait;
                 
+                contentEl.appendChild(document.createElement('br'));
                 contentEl.appendChild(portrait);
             }
 
-            //Append break
+            //Append breaks
 
             contentEl.appendChild(document.createElement('br'));
+            contentEl.appendChild(document.createElement('br'));
+
+            //Add quest text
+
+            let text = document.createElement('div');
+            text.innerHTML = this.cur[id].text;
+            contentEl.appendChild(text);
 
             //Handle options
 
@@ -368,12 +376,12 @@ const ui = {
                         cb += 'ui.dialog.setDialog(' + option.actual_next + ');';
                 }
 
-                let button = documen.createElement('button');
+                let button = document.createElement('button');
                 button.classList.add('link_button');
                 button.style = 'margin-left: 0px;';
                 button.innerHTML = '[ ' + option.text + ' ]';
 
-                button.appendActionEventListener('click', function() {
+                button.addEventListener('click', function() {
                     eval(cb);
                 });
 

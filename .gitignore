@@ -2,6 +2,7 @@
 .vs/
 server/logs
 server/node_modules
+server/data
 dev/WebClashServer/bin/
 dev/WebClashServer/obj/
 dev/WebClashServer/.vs/

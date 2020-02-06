@@ -601,14 +601,10 @@ exports.updateNPCCombat = function(map, id)
         //If aggressive, check if a player is in range
 
         if (this.onMap[map][id].data.aggressive) {
-            //TODO: Create a data structure or method
-            //      that keeps track of all the players
-            //      on a map, this should be done as
-            //      efficiently as possible!
-            //      As this will greatly reduce the amount
-            //      of load per agressive NPC.
+            //Get the current room with the map ID,
+            //this way we can go over all players on the map
 
-            for (let p in game.players) {
+            for (let p in rooms.get(map)) {
                 //Check if on same map
 
                 if (game.players[p].map_id !== map)

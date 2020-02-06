@@ -261,12 +261,20 @@ const ui = {
                 portrait.classList.add('portrait');
                 portrait.src = this.cur[id].portrait;
                 
+                contentEl.appendChild(document.createElement('br'));
                 contentEl.appendChild(portrait);
             }
 
             //Append break
 
             contentEl.appendChild(document.createElement('br'));
+            contentEl.appendChild(document.createElement('br'));
+
+            //Add quest text
+
+            let text = document.createElement('div');
+            text.innerHTML = this.cur[id].text;
+            contentEl.appendChild(text);
 
             //Handle options
 
@@ -297,12 +305,12 @@ const ui = {
                         cb += 'ui.dialog.setDialog(' + option.actual_next + ');';
                 }
 
-                let button = documen.createElement('button');
+                let button = document.createElement('button');
                 button.classList.add('link_button');
                 button.style = 'margin-left: 0px;';
                 button.innerHTML = '[ ' + option.text + ' ]';
 
-                button.appendActionEventListener('click', function() {
+                button.addEventListener('click', function() {
                     eval(cb);
                 });
 
@@ -1156,7 +1164,7 @@ const ui = {
             let box = document.createElement('div');
             box.id = 'loot_box';
             box.classList.add('box');
-            box.style = 'visibility: hidden; position: absolute; top: 50%; left: 25%; transform: translate(-50%, -50%); width: auto; max-width: 120px; height: auto; max-height: 195px; text-align: center;';
+            box.style = 'visibility: hidden; position: absolute; top: 50%; left: 25%; transform: translate(-50%, -50%); width: auto; max-width: 144px; height: auto; max-height: 195px; text-align: center;';
 
             let title = document.createElement('p');
             title.classList.add('info');

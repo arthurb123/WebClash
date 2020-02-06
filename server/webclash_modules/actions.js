@@ -745,7 +745,9 @@ exports.damagePlayers = function(stats, actionData, action, onlyStatic, except)
             if (parties.inParty(except))
                 members = parties.getPartyMembers(except);
 
-            for (let p in game.players)
+            //Get all players on the same map
+
+            for (let p in rooms.get(actionData.map))
             {
                 if (game.players[p] == undefined ||
                     game.players[p].map_id != actionData.map ||
