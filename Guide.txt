@@ -34,8 +34,8 @@ useful/important for customization;
 			    be changed, such as server specific
 			    and player starting settings.
 * server/gameplay.json   -> Here gameplay properties can
-			    be changed, such as day/night
-			    and on player death settings.
+			    be changed, such as day/night,
+		            player death settings and aliases.
 
 
 	        -- Maps --
