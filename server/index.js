@@ -1,3 +1,50 @@
+//Safe module require method
+
+const safeRequire = (name) => {
+    try 
+    {
+        return require(name);
+    }
+    catch (err) 
+    {
+        output.give('Could not load node module "' + name + '"!');
+        output.give('Try installing the dependencies by running install_dependencies.bat or running \'npm install package.json\' in the console.');
+        
+        hasSaved = true;
+        process.exit();
+    }
+};
+
+//Safely load NodeJS Modules
+
+const geckos   = safeRequire('@geckos.io/server').default,
+      express  = safeRequire('express'),
+      app      = express(),
+      http     = safeRequire('http').Server(app),
+      path     = safeRequire('path'),
+      readline = safeRequire('readline');
+    
+global.fs       = safeRequire('fs');
+global.deepcopy = safeRequire('deepcopy');
+
+//Load server settings
+
+global.properties   = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
+global.permissions  = JSON.parse(fs.readFileSync('permissions.json', 'utf-8'));
+global.censored     = JSON.parse(fs.readFileSync('censored.json', 'utf-8'));
+global.exptable     = JSON.parse(fs.readFileSync('exptable.json', 'utf-8'));
+global.gameplay     = JSON.parse(fs.readFileSync('gameplay.json', 'utf-8'));
+
+//Load commands text files
+
+global.commandsAdmin = fs.readFileSync('commandsAdmin.txt', 'utf-8').toString();
+global.commandsUser  = fs.readFileSync('commandsUser.txt', 'utf-8').toString();
+
+//Convert game time to usable format
+
+gameplay.dayLength   *= 60;
+gameplay.nightLength *= 60;
+
 //Load WebClash modules
 
 global.server   = require('./webclash_modules/server');
@@ -62,53 +109,6 @@ process.on('uncaughtException', function(err) {
     output.giveError('Server crashed: ', err);
     exitHandler();
 });
-
-//Safe module require method
-
-const safeRequire = (name) => {
-    try 
-    {
-        return require(name);
-    }
-    catch (err) 
-    {
-        output.give('Could not load node module "' + name + '"!');
-        output.give('Try installing the dependencies by running install_dependencies.bat or running \'npm install package.json\' in the console.');
-        
-        hasSaved = true;
-        process.exit();
-    }
-};
-
-//Safely load NodeJS Modules
-
-const geckos   = safeRequire('@geckos.io/server').default,
-      express  = safeRequire('express'),
-      app      = express(),
-      http     = safeRequire('http').Server(app),
-      path     = safeRequire('path'),
-      readline = safeRequire('readline');
-    
-global.fs       = safeRequire('fs');
-global.deepcopy = safeRequire('deepcopy');
-
-//Load server settings
-
-global.properties   = JSON.parse(fs.readFileSync('properties.json', 'utf-8'));
-global.permissions  = JSON.parse(fs.readFileSync('permissions.json', 'utf-8'));
-global.censored     = JSON.parse(fs.readFileSync('censored.json', 'utf-8'));
-global.exptable     = JSON.parse(fs.readFileSync('exptable.json', 'utf-8'));
-global.gameplay     = JSON.parse(fs.readFileSync('gameplay.json', 'utf-8'));
-
-//Load commands text files
-
-global.commandsAdmin = fs.readFileSync('commandsAdmin.txt', 'utf-8').toString();
-global.commandsUser  = fs.readFileSync('commandsUser.txt', 'utf-8').toString();
-
-//Convert game time to usable format
-
-gameplay.dayLength   *= 60;
-gameplay.nightLength *= 60;
 
 //Load and setup geckos.io
 

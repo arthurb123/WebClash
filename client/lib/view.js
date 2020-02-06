@@ -13,6 +13,10 @@ const view = {
         //Load landing page scene
         
         lx.LoadScene(landingScene);
+                
+        //Request aliases
+
+        channel.emit('CLIENT_REQUEST_ALIASES');
     },
     loadCreation: function(characters)
     {

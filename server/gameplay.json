@@ -18,5 +18,16 @@
     "partyBenefits": {
         "everyoneGetsLoot": true,
         "evenlyShareExperience": true
+    },
+    
+    "aliases": {
+        "currency": "Gold",
+        "party": "Party",
+        "power": "Power",
+        "vitality": "Vitality",
+        "intelligence": "Intelligence",
+        "toughness": "Toughness",
+        "agility": "Agility",
+        "wisdom": "Wisdom"
     }
 }

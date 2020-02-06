@@ -142,7 +142,7 @@ exports.getQuestDialog = function(name)
 
     //Experience and gold rewards
 
-    quest.text += '</i><br><br>Rewards: ' + quest.rewards.experience + ' Exp, ' + quest.rewards.gold + ' Gold';
+    quest.text += '</i><br><br>Rewards: ' + quest.rewards.experience + ' Exp, ' + quest.rewards.gold + ' ' + gameplay.aliases.currency;
 
     //Convert item rewards and set as data to be send
 

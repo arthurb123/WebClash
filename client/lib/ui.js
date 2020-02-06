@@ -812,7 +812,7 @@ const ui = {
             gold.id = 'gold_label';
             gold.classList.add('info');
             gold.style = 'font-size: 11px; color: yellow;';
-            gold.innerHTML = '0 Gold';
+            gold.innerHTML = '0 ' + game.aliases.currency;
 
            this.box.addElement(gold);
         },
@@ -854,7 +854,7 @@ const ui = {
                 slotDOM.style.border = '1px solid gray';
         },
         setGold: function(gold) {
-            document.getElementById('gold_label').innerHTML = gold + ' Gold';
+            document.getElementById('gold_label').innerHTML = gold + ' ' + game.aliases.currency;
         },
         useItem: function(slot) {
             if (player.inventory[slot] !== undefined) {
@@ -998,23 +998,23 @@ const ui = {
                 if (item.mana > 0)
                     stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.mana + ' Mana</p>';
                 if (item.gold > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.gold + ' Gold</p>';
+                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.gold + ' ' + game.aliases.currency + '</p>';
             }
 
             if (item.type === 'equipment' &&
                 item.stats != undefined) {
-                if (item.stats.power > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.power + ' Power</p>';
-                if (item.stats.intelligence > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.intelligence + ' Intelligence</p>';
-                if (item.stats.toughness > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.toughness + ' Toughness</p>';
-                if (item.stats.vitality > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.vitality + ' Vitality</p>';
-                if (item.stats.wisdom > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.wisdom + ' Wisdom</p>';
-                if (item.stats.agility > 0)
-                    stats += '<p class="info" style="position: relative; top: 8px; font-size: 12px;">+' + item.stats.agility + ' Agility</p>';
+                    if (item.stats.power > 0)
+                        stats += '<p class="info" style="font-size: 11px;">+' + item.stats.power + ' ' + game.aliases.power + '</p>';
+                    if (item.stats.intelligence > 0)
+                        stats += '<p class="info" style="font-size: 11px;">+' + item.stats.intelligence + ' ' + game.aliases.intelligence + '</p>';
+                    if (item.stats.toughness > 0)
+                        stats += '<p class="info" style="font-size: 11px;">+' + item.stats.toughness + ' ' + game.aliases.toughness + '</p>';
+                    if (item.stats.vitality > 0)
+                        stats += '<p class="info" style="font-size: 11px;">+' + item.stats.vitality + ' ' + game.aliases.vitality + '</p>';
+                    if (item.stats.wisdom > 0)
+                        stats += '<p class="info" style="font-size: 11px;">+' + item.stats.wisdom + ' ' + game.aliases.wisdom + '</p>';
+                    if (item.stats.agility > 0)
+                        stats += '<p class="info" style="font-size: 11px;">+' + item.stats.agility + ' ' + game.aliases.agility +'</p>';
             }
 
             //Item type
@@ -1706,7 +1706,7 @@ const ui = {
         reloadAttribute: function(attribute, show_button) {
             let el = document.getElementById('profile_stat_' + attribute.toLowerCase());
 
-            el.innerHTML = attribute + ': ' + player.attributes[attribute.toLowerCase()];
+            el.innerHTML = game.aliases[attribute.toLowerCase()] + ': ' + player.attributes[attribute.toLowerCase()];
 
             if (show_button) {
                 let button = document.createElement('button');
@@ -2179,7 +2179,7 @@ const ui = {
             leave.classList.add('link');
             leave.classList.add('colorError');
             leave.style = 'font-size: 12px; padding-top: 2px;'
-            leave.innerHTML = 'Leave Party';
+            leave.innerHTML = 'Leave ' + game.aliases.party;
 
             leave.addEventListener('click', function() {
                 channel.emit('CLIENT_LEAVE_PARTY', 'leave');
@@ -2216,23 +2216,38 @@ const ui = {
         },  
         loadPlayer: function(name) {
             if (document.getElementById('party_' + name) != undefined)
-            document.getElementById('party_' + name).remove();
+                document.getElementById('party_' + name).remove();
 
             //Generate content
 
-            let content = '<p class="info">In different map</p>',
-                level = '';
+            let level = '';
+
+            let content = document.createElement('p');
+            content.classList.add('info');
+            content.innerHTML = 'In different map';
 
             if (this.participants[name] === 'invitee')
-                content = '<p class="info">Has been invited</p>';
+                content.innerHTML = 'Has been invited';
             else if (game.players[name] != undefined) {
-                content =
-                    '<div id="party_' + name + '_health_box" class="smaller_bar" style="text-align: center; width: 100%">' +
-                        '<div id="party_' + name + '_health" class="bar_content" style="background-color: #E87651; width: 100%;"></div>' +
-                    '</div>' +
-                    '<div id="party_' + name + '_mana_box" class="smaller_bar" style="text-align: center; width: 100%;">' +
-                        '<div id="party_' + name + '_mana" class="bar_content" style="background-color: #2B92ED; width: 100%;"></div>' +
-                    '</div>';
+                content = document.createElement('div');
+
+                const createBar = (id, color) => {
+                    let barBox = document.createElement('div');
+                    barBox.id = 'party_' + name + '_' + id + '_box';
+                    barBox.classList.add('smaller_bar');
+                    barBox.style = 'text-align: center; width: 100%';
+
+                    let innerBar = document.createElement('div');
+                    innerBar.id = 'party_' + name + '_' + id;
+                    innerBar.classList.add('bar_content');
+                    innerBar.style = 'background-color: ' + color + '; width: 100%;';
+
+                    barBox.appendChild(innerBar);
+                    return barBox;
+                };
+
+                content.appendChild(createBar('health', '#E87651'));
+                content.appendChild(createBar('mana', '#2B92ED'));
 
                 level = ' (' + game.players[name]._level + ')';
             }
@@ -2244,11 +2259,11 @@ const ui = {
 
             let player = document.createElement('p');
             player.classList.add('info');
-            player.style = 'font-weight: bold; font-size: 12px;';
+            player.style = 'font-weight: bold; font-size: 13px;';
             player.innerHTML = name + level;
 
-            box.addElement(player);
-            box.addElement(new DOMParser().parseFromString(content, 'text/xml'));
+            box.appendChild(player);
+            box.appendChild(content);
 
             this.box.addElement(box);
 

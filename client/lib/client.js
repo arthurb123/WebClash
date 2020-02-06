@@ -13,7 +13,7 @@ const client = {
                 //Set status text
 
                 document.getElementById('status_text').innerHTML = 'Server is not available';
-            }, 8000);
+            }, 12000);
 
             //Generate address and full address
 
@@ -475,7 +475,7 @@ const client = {
 
             //Create invite dialog
 
-            ui.dialogs.yesNo('Do you want to join ' + data + '\'s party?', function(result) {
+            ui.dialogs.yesNo('Do you want to join ' + data + '\'s ' + game.aliases.party.toLowerCase() + '?', function(result) {
                 if (result) 
                     channel.emit('CLIENT_JOIN_PARTY');
                 else 
@@ -685,6 +685,9 @@ const client = {
 
             if (player.exp != undefined)
                 ui.status.setExperience(player.exp, player.expTarget);
+        });
+        channel.on('CLIENT_REQUEST_ALIASES_RESPONSE', function(data) {
+            game.aliases = data;
         });
     }
 }

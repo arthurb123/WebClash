@@ -1214,6 +1214,12 @@ exports.handleChannel = function(channel)
 
         parties.leaveParty(channel.name, reason);
     });
+
+    channel.on('CLIENT_REQUEST_ALIASES', function() {
+        //Respond with current target xp
+
+        channel.emit('CLIENT_REQUEST_ALIASES_RESPONSE', gameplay.aliases);
+    });
 };
 
 //Sync/send chat message function, if channel is undefined it will be globally emitted
