@@ -304,6 +304,10 @@ const client = {
                 game.setNPCEquipment(data.id, data.equipment);
             if (data.health !== undefined)
                 game.setNPCHealth(data.id, data.health);
+            if (data.aggressive !== undefined)
+                game.npcs[data.id]._aggressive = data.aggressive;
+            if (data.inCombat != undefined)
+                game.npcs[data.id]._inCombat = data.inCombat;
             if (data.character !== undefined) {
                 game.npcs[data.id].SPRITE = new lx.Sprite(data.character.src);
                 game.npcs[data.id].SPRITE.Clip(0, 0, data.character.width, data.character.height);

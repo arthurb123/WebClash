@@ -403,8 +403,12 @@ const game = {
     
                     if (this._type === 'friendly')
                         this._nameplate.Color('black');
-                    else if (this._type === 'hostile')
-                        this._nameplate.Color('#FF4242');
+                    else if (this._type === 'hostile') {
+                        if (this._aggressive || this._inCombat)
+                            this._nameplate.Color('#FF4242');
+                        else if (!this._aggressive && !this._inCombat)
+                            this._nameplate.Color('#EBDE57');
+                    }
     
                     if (this._stats !== undefined &&
                         this._type === 'hostile')

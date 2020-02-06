@@ -1411,6 +1411,11 @@ exports.syncNPCPartially = function(map, id, type, channel)
         case 'equipment':
             data.equipment = npcs.onMap[map][id].data.equipment;
             break;
+        case 'aggressive':
+            data.aggressive = npcs.onMap[map][id].data.agressive;
+            break;
+        case 'inCombat':
+            data.inCombat = (npcs.onMap[map][id].target !== -1);
     }
 
     //Emit
@@ -1442,6 +1447,8 @@ exports.syncNPC = function(map, id, channel)
     this.syncNPCPartially(map, id, 'character', channel);
     this.syncNPCPartially(map, id, 'equipment', channel);
     this.syncNPCPartially(map, id, 'type', channel);
+    this.syncNPCPartially(map, id, 'aggressive', channel);
+    this.syncNPCPartially(map, id, 'inCombat', channel);
 
     //Some NPCs don't have stats, so we dont send it if
     //it is empty

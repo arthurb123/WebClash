@@ -2,7 +2,8 @@
 .vs/
 server/logs
 server/node_modules
-server/data
+server/data/accounts/admin.json
+server/data/stats/admin.json
 dev/WebClashServer/bin/
 dev/WebClashServer/obj/
 dev/WebClashServer/.vs/

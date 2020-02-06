@@ -553,6 +553,10 @@ exports.updateNPCCombat = function(map, id)
         //Reset out of combat time
 
         this.onMap[map][id].outOfCombatTime = 0;
+
+        //Broadcast in combat package
+
+        server.syncNPCPartially(map, id, 'inCombat');
     }
 
     //Check if target exists
@@ -1072,6 +1076,10 @@ exports.setNPCTarget = function(map, id, owner)
     //Set new target
 
     this.onMap[map][id].target = newTarget;
+
+    //Broadcast inCombat
+
+    server.syncNPCPartially(map, id, 'inCombat');
 };
 
 exports.setNPCTargetExcept = function(map, id, except) {
