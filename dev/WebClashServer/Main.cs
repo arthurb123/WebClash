@@ -116,6 +116,18 @@ namespace WebClashServer
             if (p != null || !CheckServerLocation())
                 return;
 
+            //Start server
+
+            StartNodeProcess("node.exe", "index.js");
+
+            running          = true;
+            startButton.Text = "Stop";
+            output.Text      = "";
+            status.Text      = "Server has been started.";
+        }
+
+        private void StartNodeProcess(string target, string arguments, Action exitCallback = null)
+        {
             //Check if NodeJS is present
 
             if (nodeLocation == "")
@@ -150,31 +162,26 @@ namespace WebClashServer
                     return;
                 }
             }
+            
+            //Start node process
 
-            //Start server
-
-            StartNodeProcess("node.exe", "index.js");
-
-            running          = true;
-            startButton.Text = "Stop";
-            output.Text      = "";
-            status.Text      = "Server has been started.";
+            StartProcess(nodeLocation + "/" + target, arguments, exitCallback);
         }
 
-        private void StartNodeProcess(string target, string arguments, Action exitCallback = null)
+        private void StartProcess(string command, string arguments, Action exitCallback = null)
         {
             try
             {
-                ProcessStartInfo pi = new ProcessStartInfo(nodeLocation + "/" + target, arguments);
+                ProcessStartInfo pi = new ProcessStartInfo(command, arguments);
                 p = new Process();
 
-                pi.CreateNoWindow   = true;
-                pi.UseShellExecute  = false;
+                pi.CreateNoWindow = true;
+                pi.UseShellExecute = false;
                 pi.WorkingDirectory = serverLocation;
 
-                pi.RedirectStandardError  = true;
+                pi.RedirectStandardError = true;
                 pi.RedirectStandardOutput = true;
-                pi.RedirectStandardInput  = true;
+                pi.RedirectStandardInput = true;
 
                 p = Process.Start(pi);
 
@@ -515,6 +522,112 @@ namespace WebClashServer
 
         //Tools
 
+        private void obfuscateClientToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!CheckServerLocation())
+                    return;
+
+                //Output
+
+                status.Text = "Obfuscating client..";
+                output.Text = "";
+                AddOutput("Obfuscating client, this might take a while..");
+                startButton.Enabled = false;
+
+                //Setup copying method
+
+                Action<DirectoryInfo, DirectoryInfo> CopyFilesRecursively = null;
+                CopyFilesRecursively = new Action<DirectoryInfo, DirectoryInfo>(
+                    (DirectoryInfo source, DirectoryInfo target) =>
+                    {
+                        foreach (DirectoryInfo dir in source.GetDirectories())
+                            CopyFilesRecursively(dir, target.CreateSubdirectory(dir.Name));
+                        foreach (FileInfo file in source.GetFiles())
+                            file.CopyTo(Path.Combine(target.FullName, file.Name));
+                    }
+                );
+
+                //Check if obfuscated client already exists
+
+                string obfClientLocation = serverLocation + "/../obf_client/";
+
+                if (Directory.Exists(obfClientLocation))
+                {
+                    AddOutput("Removing old obfuscated client..");
+                    Directory.Delete(obfClientLocation, true);
+                }
+
+                //Copy client
+
+                AddOutput("Copying client..");
+                CopyFilesRecursively(
+                    new DirectoryInfo(serverLocation + "/../client/"),
+                    new DirectoryInfo(obfClientLocation)
+                );
+
+                //Get all files that can be obfuscated
+
+                string libLocation = obfClientLocation + "lib/";
+                string scenesLocation = obfClientLocation + "scenes/";
+                string miscLocation = obfClientLocation + "misc/";
+                string[] libFiles = Directory.GetFiles(libLocation, "*.js", SearchOption.AllDirectories);
+                string[] sceneFiles = Directory.GetFiles(scenesLocation, "*.js", SearchOption.AllDirectories);
+                string[] miscFiles = Directory.GetFiles(miscLocation, "*.js", SearchOption.AllDirectories);
+
+                string[] files = new string[libFiles.Length + sceneFiles.Length + miscFiles.Length];
+                libFiles.CopyTo(files, 0);
+                sceneFiles.CopyTo(files, libFiles.Length);
+                miscFiles.CopyTo(files, libFiles.Length + sceneFiles.Length);
+
+                AddOutput("Obfuscating client code..");
+
+                int f = 0;
+                Action callback = null;
+                callback = () =>
+                {
+                    if (f + 1 >= files.Length)
+                    {
+                        Action finish = null;
+                        finish = () =>
+                        {
+                            AddOutput("Finished obfuscating the client.");
+                            AddOutput("Check the 'obf_client' folder.");
+
+                            p = null;
+                            status.Text = "Obfuscated client.";
+                            startButton.Enabled = true;
+                        };
+
+                        if (!InvokeRequired)
+                            finish();
+                        else
+                            Invoke(finish);
+
+                        return;
+                    }
+                    else
+                        f++;
+
+                    string file = files[f];
+                    AddOutput("Obfuscating '" + file + "'..");
+                    StartNodeProcess("node.exe", "misc/obfuscate.js \"" + file + "\" \"" + file + "\"", callback);
+                };
+
+                AddOutput("Obfuscating '" + files[f] + "'..");
+                StartNodeProcess("node.exe", "misc/obfuscate.js \"" + files[f] + "\" \"" + files[f] + "\"", callback);
+            }
+            catch (Exception exc)
+            {
+                AddOutput("Obfuscation failed due to an error.");
+                status.Text = "Obfuscation failed.";
+                startButton.Enabled = true;
+
+                MessageBox.Show("Could not obfuscate client: " + exc.Message, "WebClash - Error");
+            }
+        }
+
         private void resetDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!CheckServerLocation())
@@ -529,7 +642,7 @@ namespace WebClashServer
         {
             MessageBox.Show(
                 "WebClash, an ORPG suite for the browser.\nThis binary serves as the design tool for WebClash.\n" +
-                "Usable for personal and commercial usage.\n\nCreated by Arthur Baars 2019/2020\nwww.github.com/arthurb123/webclash", 
+                "Usable for personal and commercial usage.\n\nCreated by Arthur Baars 2020\nwww.github.com/arthurb123/webclash", 
 
                 "WebClash - About", 
                 MessageBoxButtons.OK, 

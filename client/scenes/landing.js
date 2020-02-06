@@ -89,7 +89,7 @@ const landingScene = new lx.Scene(function() {
 
         ui.dialogs.ok(content, function() {
             box.show();
-        });
+        }); 
     };
 
     //Add login submission event

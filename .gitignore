@@ -1,5 +1,6 @@
 .DS_Store
 .vs/
+obf_client/
 server/logs
 server/node_modules
 server/data/accounts/admin.json

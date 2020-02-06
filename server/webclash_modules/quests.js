@@ -1,7 +1,5 @@
 //Quests module for WebClash Server
 
-const fs = require('fs');
-
 exports.collection = [];
 
 exports.loadAllQuests = function(cb)
