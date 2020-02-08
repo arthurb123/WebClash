@@ -862,11 +862,18 @@ exports.checkNPCFacingCollision = function(map, id)
         this.onMap[map][id].direction
     );
 
+    //Setup delta overestimation factor,
+    //this smoothes out collisions and
+    //prevents NPCs from getting stuck in
+    //unique scenarios
+
+    let deltaFactor = 1.1;
+
     //Calculate position delta
 
     let delta = {
-        x: pos.X-this.onMap[map][id].pos.X,
-        y: pos.Y-this.onMap[map][id].pos.Y
+        x: (pos.X-this.onMap[map][id].pos.X) * deltaFactor,
+        y: (pos.Y-this.onMap[map][id].pos.Y) * deltaFactor
     };
 
     //Setup NPC rectangle

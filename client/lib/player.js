@@ -162,7 +162,7 @@ const player = {
         //Format dialog content based 
         //on the recieved death data
 
-        let content = '<b>You Died</b><br>';
+        let content = '<p style="font-weight: bold; padding-bottom: 3px;">You Died</p>';
 
         if (deathData.lostItems)
             content += 'You lost all your items.<br>';
@@ -175,7 +175,7 @@ const player = {
 
         //Show custom death dialog
 
-        ui.dialogs.custom(content, 'Respawn', function() {
+        ui.dialogs.custom(content, ['Respawn'], [function() {
             //Send respawn package to server
 
             channel.emit('CLIENT_RESPAWN_PLAYER');
@@ -183,7 +183,7 @@ const player = {
             //Show UI
 
             ui.show();
-        });
+        }]);
     },
     setCollider: function(collider)
     {

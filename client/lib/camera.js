@@ -1,5 +1,5 @@
 const camera = {
-    initialize: (target) => {
+    initialize: function(target) {
         //Create camera gameobject
 
         let go = new lx.GameObject(undefined, 0, 0, 0, 0);
@@ -66,7 +66,7 @@ const camera = {
 
         //Setup gameobject draw loop
 
-        go.Draws(function() {
+        lx.Loops(function() {
             //Check if the target is valid or map has not
             //fully loaded yet to prevent errors
 

@@ -2723,14 +2723,13 @@ const ui = {
 
             let body = document.createElement('p');
             body.classList.add('info');
-            body.style = 'padding: 0px 3px 3px 3px;';
+            body.style = 'padding-bottom: 6px;';
             body.innerHTML = content;
 
             box.addElement(body);
 
             for (let option = 0; option < options.length; option++) {
                 let button = document.createElement('button');
-                button.style = 'height: 22px;';
                 button.innerHTML = options[option];
 
                 button.addEventListener('click', function() {
