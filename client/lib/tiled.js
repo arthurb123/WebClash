@@ -984,6 +984,8 @@ const tiled = {
                                 //Get position difference
             
                                 let player = game.players[game.player];
+                                if (player == undefined)
+                                    return;
 
                                 let pos = {
                                     X: player.POS.X+player.SIZE.W/2,

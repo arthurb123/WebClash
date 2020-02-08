@@ -1040,18 +1040,18 @@ const ui = {
 
             if (item.type === 'equipment' &&
                 item.stats != undefined) {
-                    if (item.stats.power > 0)
-                        stats += '<p class="info" style="font-size: 12px;">+' + item.stats.power + ' ' + game.aliases.power + '</p>';
-                    if (item.stats.intelligence > 0)
-                        stats += '<p class="info" style="font-size: 12px;">+' + item.stats.intelligence + ' ' + game.aliases.intelligence + '</p>';
-                    if (item.stats.toughness > 0)
-                        stats += '<p class="info" style="font-size: 12px;">+' + item.stats.toughness + ' ' + game.aliases.toughness + '</p>';
-                    if (item.stats.vitality > 0)
-                        stats += '<p class="info" style="font-size: 12px;">+' + item.stats.vitality + ' ' + game.aliases.vitality + '</p>';
-                    if (item.stats.wisdom > 0)
-                        stats += '<p class="info" style="font-size: 12px;">+' + item.stats.wisdom + ' ' + game.aliases.wisdom + '</p>';
-                    if (item.stats.agility > 0)
-                        stats += '<p class="info" style="font-size: 12px;">+' + item.stats.agility + ' ' + game.aliases.agility +'</p>';
+                if (item.stats.power > 0)
+                    stats += '<p class="info" style="font-size: 12px;">+' + item.stats.power + ' ' + game.aliases.power + '</p>';
+                if (item.stats.intelligence > 0)
+                    stats += '<p class="info" style="font-size: 12px;">+' + item.stats.intelligence + ' ' + game.aliases.intelligence + '</p>';
+                if (item.stats.toughness > 0)
+                    stats += '<p class="info" style="font-size: 12px;">+' + item.stats.toughness + ' ' + game.aliases.toughness + '</p>';
+                if (item.stats.vitality > 0)
+                    stats += '<p class="info" style="font-size: 12px;">+' + item.stats.vitality + ' ' + game.aliases.vitality + '</p>';
+                if (item.stats.wisdom > 0)
+                    stats += '<p class="info" style="font-size: 12px;">+' + item.stats.wisdom + ' ' + game.aliases.wisdom + '</p>';
+                if (item.stats.agility > 0)
+                    stats += '<p class="info" style="font-size: 12px;">+' + item.stats.agility + ' ' + game.aliases.agility +'</p>';
             }
 
             if (stats !== '')

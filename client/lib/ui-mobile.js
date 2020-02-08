@@ -44,11 +44,17 @@ const ui = {
             joystick.id = 'joystick';
             joystick.style = 'position: absolute; transform: translate(-50%, -50%); background-color: rgba(175, 175, 175, .85); border: 1px solid whitesmoke; border-radius: 50%; width: ' + this.size/3 + 'px; height: ' + this.size/3 + 'px; box-shadow: 0px 1px 1px rgba(0,0,0,0.45);';
 
+            div.addEventListener('touchend', function(event) {
+                ui.controller.canFace = true;
+                ui.controller.face(event);
+                ui.controller.canFace = false;
+            }, { passive: false });
+
             joystick.addEventListener('touchmove', function(event) {
                 ui.controller.move(event);
             }, { passive: false });
             joystick.addEventListener('touchend', function() {
-                ui.controller.reset()
+                ui.controller.reset();
             }, { passive: false });
 
             div.appendChild(joystick);
@@ -835,6 +841,14 @@ const ui = {
                     return;
                 }
 
+                //Check if in bank, if so try to deposit
+
+                if (ui.bank.visible) {
+                    ui.bank.deposit(player.inventory[slot].name);
+
+                    return;
+                }
+
                 //Send to server
 
                 channel.emit('CLIENT_USE_ITEM', player.inventory[slot].name);
@@ -902,16 +916,19 @@ const ui = {
             let color = this.getItemColor(item.rarity);
             let note = '';
 
-            if (item.minLevel == undefined ||
-                item.minLevel === 0 ||
-                game.players[game.player]._level >= item.minLevel) {
-                if (item.type === 'consumable' ||
-                    item.type === 'dialog')
-                    note = '(Click to '  + (ui.shop.visible ? 'sell' : 'use') + ')';
+            if (ui.shop.visible)
+                note = '(Click to sell)';
+            else if (ui.bank.visible)
+                note = '(Click to deposit)';
+            else if (item.minLevel == undefined ||
+                    item.minLevel === 0 ||
+                    game.players[game.player]._level >= item.minLevel) {
+                if (item.type === 'consumable' || item.type === 'dialog')
+                    note = '(Click to use)';
 
                 if (item.type === 'equipment') {
                     if (player.equipment[slot] === undefined)
-                        note = '(Click to ' + (ui.shop.visible ? 'sell' : 'equip') + ')';
+                        note = '(Click to equip)';
                     else
                         note = '(Click to unequip)';
                 }
@@ -994,10 +1011,10 @@ const ui = {
                     '<font class="header" style="font-size: 14px; color: ' + color + ';">' + item.name + '</font><br>' +
                     '<font class="info" style="font-size: 10px;">' + (item.minLevel > 0 ? ' lvl ' + item.minLevel + ' ' : '') + type + '</font><br>' +
                     action +
-                    '<font class="info" style="position: relative; top: 4px;">' + item.description + '</font><br>' +
+                    '<font class="info" style="position: relative; top: 6px;">' + item.description + '</font><br>' +
                     stats +
-                    (note !== '' ? '<font class="info" style="font-size: 11px; margin-top: 5px;">' + note + '</font><br>' : '') +
-                    '<font class="info" style="font-size: 10px; color: yellow;">' + item.value + ' ' + game.aliases.currency + '</font><br>';
+                    (note !== '' ? '<font class="info" style="position: relative; top: 10px; font-size: 11px; margin-top: 5px;">' + note + '</font><br>' : '') +
+                    '<font class="info" style="position: relative; top: 10px; font-size: 10px; color: yellow;">' + item.value + ' ' + game.aliases.currency + '</font><br>';
 
             displayBox._slot = slot;
             displayBox._minLevel = item.minLevel;
