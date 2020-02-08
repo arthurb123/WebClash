@@ -12,12 +12,14 @@ The development process can be followed on [Trello](https://trello.com/b/658XHkJ
 * Mobile and tablet support<br>
 * Tiled maps support (.json format)<br>
 * Character editor<br>
-* NPC (with dialog) editor<br>
+* NPC editor<br>
+* Detailed dialog editor<br>
 * Quest editor<br>
 * Item editor<br>
 * Action editor<br>
 * Chat with commands<br>
 * Party system<br>
+* Banking system<br>
 * Day and night system<br>
 ...<br>
 
