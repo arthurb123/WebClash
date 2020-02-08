@@ -1,6 +1,15 @@
-//NPCs module for WebClash Server
+//Shop module for WebClash Server
+
+const shoppingPositions = {};
 
 exports.openShop = function(player, owner, target, showShopEvent) {
+    //Set shopping position
+
+    shoppingPositions[player] = {
+        X: game.players[player].pos.X,
+        Y: game.players[player].pos.Y
+    };
+
     //Convert shop items if necessary,
     //this only happens once in the entire runtime.
 
@@ -28,6 +37,15 @@ exports.openShop = function(player, owner, target, showShopEvent) {
 };
 
 exports.buyItem = function(player, item, owner, dialogId) {
+    //Check if shopping position is equal to the
+    //player's position
+
+    if (game.players[player].pos.X !== shoppingPositions[player].X ||
+        game.players[player].pos.Y !== shoppinhPositions[player].Y) 
+        return false;
+
+    //Setup necessary variables
+
     let map = game.players[player].map_id,
         target;
 
@@ -79,6 +97,13 @@ exports.buyItem = function(player, item, owner, dialogId) {
 };
 
 exports.sellItem = function(player, item, owner) {
+    //Check if shopping position is equal to the
+    //player's position
+
+    if (game.players[player].pos.X !== shoppingPositions[player].X ||
+        game.players[player].pos.Y !== shoppinhPositions[player].Y) 
+        return false;
+
     //Check if player has item
 
     if (!items.hasPlayerItem(player, item))

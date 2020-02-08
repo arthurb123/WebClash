@@ -115,6 +115,12 @@
     <Compile Include="Editors\MapDialogues.Designer.cs">
       <DependentUpon>MapDialogues.cs</DependentUpon>
     </Compile>
+    <Compile Include="Input\TextInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Input\TextInput.Designer.cs">
+      <DependentUpon>TextInput.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\ResetData.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -200,6 +206,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\MapDialogues.resx">
       <DependentUpon>MapDialogues.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Input\TextInput.resx">
+      <DependentUpon>TextInput.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\ResetData.resx">
       <DependentUpon>ResetData.cs</DependentUpon>

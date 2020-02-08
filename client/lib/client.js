@@ -452,6 +452,40 @@ const client = {
 
             ui.shop.showShop(data.target, data.id, data.shop);
         });
+        channel.on('GAME_OPEN_BANK', function(data) {
+            //Check if the recieved data is valid
+
+            if (data === undefined)
+                return;
+
+            //Check if in-game
+
+            if (!client.inGame)
+                return;
+
+            //Open bank UI
+
+            ui.bank.showBank(data.name, data.bank);
+        });
+        channel.on('GAME_BANK_UPDATE', function(data) {
+            //Check if the recieved data is valid
+
+            if (data === undefined)
+                return;
+
+            //Check if in-game
+
+            if (!client.inGame)
+                return;
+
+            //Reload bank UI
+
+            ui.bank.reload(data);
+
+            //Set emitted to false
+
+            ui.bank.emitted = false;
+        });
         channel.on('GAME_PARTY_INVITE', function(data) {
             //Check if the recieved data is valid
 
@@ -670,19 +704,28 @@ const client = {
             ui.dialog.handleDialogEvent(data);
         });
         channel.on('CLIENT_ACCEPT_QUEST_RESPONSE', function(data) {
+            //Add chat message
+
             ui.chat.addMessage('Accepted "' + data + '".');
         });
         channel.on('CLIENT_ABANDON_QUEST_RESPONSE', function(data) {
+            //Delete current quest
+
             delete player.quests[data];
 
+            //Add chat message
+
             ui.chat.addMessage('Abandoned "' + data + '".');
+
+            //Reload UI
 
             ui.journal.reload();
             ui.quests.reload();
         });
         channel.on('CLIENT_REQUEST_EXP_RESPONSE', function(data) {
-            player.expTarget = data;
+            //Set experience data and UI
 
+            player.expTarget = data;
             if (player.exp != undefined)
                 ui.status.setExperience(player.exp, player.expTarget);
         });

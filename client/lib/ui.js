@@ -21,6 +21,7 @@ const ui = {
         this.loot.create();
         this.dialog.create();
         this.shop.create();
+        this.bank.create();
         this.profile.create();
         this.journal.create();
         this.settings.create();
@@ -169,13 +170,13 @@ const ui = {
     },
     dialog:
     {
-        showing: false,
+        visible: false,
         create: function()
         {
             let box = document.createElement('div');
             box.id = 'dialog_box';
             box.classList.add('box');
-            box.style = 'visibility: hidden; position: absolute; top: 50%; left: 70%; transform: translate(-50%, -50%); min-width: 260px; max-width: 340px; max-height: 380px; text-align: center; padding: 0px;';
+            box.style = 'visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); min-width: 260px; max-width: 340px; max-height: 380px; text-align: center; padding: 0px;';
             
             let content = document.createElement('p');
             content.id = 'dialog_box_content';
@@ -218,6 +219,14 @@ const ui = {
             this.setDialog(start);
 
             player.loseFocus();
+
+            ui.profile.hide();
+            ui.settings.hide();
+            ui.journal.hide();
+            ui.shop.hide();
+            ui.bank.hide();
+
+            this.visible = true;
         },
         setDialog: function(id, name_override)
         {
@@ -249,7 +258,7 @@ const ui = {
 
             let title = document.createElement('font');
             title.classList.add('info');
-            title.style = 'font-weight: bold;';
+            title.style = 'font-weight: bold; font-size: 14px;';
             title.innerHTML = name_override == undefined ? this.name : name_override;
 
             contentEl.appendChild(title);
@@ -334,6 +343,9 @@ const ui = {
                 });
         },
         hideDialog: function() {
+            if (!this.visible)
+                return;
+
             document.getElementById('dialog_box').style.visibility = 'hidden';
 
             if (this.mouse != undefined)
@@ -342,6 +354,8 @@ const ui = {
             this.mouse = undefined;
 
             lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
+
+            this.visible = false;
         },
         handleDialogEvent: function(data) {
             if (data.quest == undefined) {
@@ -613,7 +627,7 @@ const ui = {
             displayBox.classList.add('box');
             displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 6px; height: auto; text-align: center;';
             displayBox.innerHTML =
-                    '<font class="header" style="font-size: 15px;">' + player.actions[slot].name + '</font><br>' +
+                    '<font class="header" style="font-size: 14px;">' + player.actions[slot].name + '</font><br>' +
                     '<font class="info" style="position: relative; top: 6px;">' + player.actions[slot].description + '</font><br>' +
                     '<font class="info" style="margin-top: 10px; font-size: 10px; display: block;">DPS: ' + dps + '</font>' +
                     heal + mana +
@@ -857,15 +871,23 @@ const ui = {
         },
         useItem: function(slot) {
             if (player.inventory[slot] !== undefined) {
-                //Check if shop is not emitting
+                //Check if shop and bank is not emitting
 
-                if (ui.shop.emitted)
+                if (ui.shop.emitted || ui.bank.emitted)
                     return;
 
                 //Check if in shop, if so try to sell
 
                 if (ui.shop.visible) {
                     ui.shop.sell(player.inventory[slot].name);
+
+                    return;
+                }
+
+                //Check if in bank, if so try to deposit
+
+                if (ui.bank.visible) {
+                    ui.bank.deposit(player.inventory[slot].name);
 
                     return;
                 }
@@ -900,7 +922,8 @@ const ui = {
                 slotType === 'equipment' && player.equipment[slot] == undefined ||
                 slotType === 'loot' && ui.loot.items[slot] == undefined ||
                 slotType === 'dialog' && ui.dialog.items[slot] == undefined ||
-                slotType === 'shop' && ui.shop.items[slot] == undefined)
+                slotType === 'shop' && ui.shop.items[slot] == undefined ||
+                slotType === 'bank' && ui.bank.items[slot] == undefined)
                 return;
 
             //Element
@@ -932,6 +955,8 @@ const ui = {
                 case 'shop':
                     item = ui.shop.items[slot];
                     break;
+                case 'bank':
+                    item = ui.bank.items[slot].item;
             }
 
             //Color
@@ -939,25 +964,38 @@ const ui = {
             let color = this.getItemColor(item.rarity);
             let note = '';
 
-            if (slotType !== 'shop') {
-                if (slotType === 'loot') 
+            switch (slotType) 
+            {
+                case 'loot':
                     note = '(Click to loot)';
-                else if (item.minLevel == undefined ||
-                        item.minLevel === 0 ||
-                        game.players[game.player]._level >= item.minLevel) {
-                    if (slotType !== 'dialog') {
-                        if (item.type === 'consumable' ||
-                            item.type === 'dialog')
-                            note = '(Click to ' + (ui.shop.visible ? 'sell' : 'use') + ')';
-
+                    break;
+                case 'bank':
+                    note = '(Click to withdraw)';
+                    break;
+                case 'shop':
+                case 'dialog':
+                    break;
+                default:
+                    if (ui.shop.visible) {
+                        note = '(Click to sell)';
+                    }
+                    else if (ui.bank.visible) {
+                        note = '(Click to deposit)';
+                    }
+                    else if (item.minLevel == undefined ||
+                            item.minLevel === 0 ||
+                            game.players[game.player]._level >= item.minLevel) {
+                        if (item.type === 'consumable' || item.type === 'dialog')
+                            note = '(Click to use)';
+    
                         if (item.type === 'equipment') {
                             if (player.equipment[slot] === undefined)
-                                note = '(Click to ' + (ui.shop.visible ? 'sell' : 'equip') + ')';
+                                note = '(Click to equip)';
                             else
                                 note = '(Click to unequip)';
                         }
                     }
-                }
+                    break;
             }
 
             //Action
@@ -1034,7 +1072,7 @@ const ui = {
             displayBox.classList.add('box');
             displayBox.style = 'position: absolute; top: 0px; left: 0px; min-width: 120px; max-width: 160px; width: auto; padding: 10px; padding-bottom: 16px; height: auto; text-align: center;';
             displayBox.innerHTML =
-                    '<font class="header" style="font-size: 15px; color: ' + color + ';">' + item.name + '</font><br>' +
+                    '<font class="header" style="font-size: 14px; color: ' + color + ';">' + item.name + '</font><br>' +
                     '<font class="info" style="font-size: 10px;">' + (item.minLevel > 0 ? ' lvl ' + item.minLevel + ' ' : '') + type + '</font><br>' +
                     action +
                     '<font class="info" style="position: relative; top: 6px;">' + item.description + '</font><br>' +
@@ -1578,7 +1616,7 @@ const ui = {
             document.getElementById(data.target.id+'_text').innerHTML = text + ' (' + val + ')';
         },
         show: function() {
-            if (tiled.loading || this.visible) {
+            if (tiled.loading || this.visible || ui.dialog.visible) {
                 this.hide();
 
                 return;
@@ -1587,6 +1625,7 @@ const ui = {
             ui.profile.hide();
             ui.journal.hide();
             ui.shop.hide();
+            ui.bank.hide();
 
             player.loseFocus();
 
@@ -1652,7 +1691,7 @@ const ui = {
 
             let title = document.createElement('p');
             title.classList.add('info');
-            title.style = 'font-size: 15px; padding-bottom: 6px;';
+            title.style = 'font-size: 14px; padding-bottom: 6px;';
             title.innerHTML = '<b>Profile</b>';
 
             let level = document.createElement('p');
@@ -1730,7 +1769,7 @@ const ui = {
             channel.emit('CLIENT_INCREMENT_ATTRIBUTE', attribute);
         },
         show: function() {
-            if (this.visible) {
+            if (this.visible || ui.dialog.visible) {
                 this.hide();
 
                 return;
@@ -1739,6 +1778,7 @@ const ui = {
             ui.settings.hide();
             ui.journal.hide();
             ui.shop.hide();
+            ui.bank.hide();
 
             player.loseFocus();
 
@@ -1788,8 +1828,8 @@ const ui = {
             let title = document.createElement('p');
             title.id = 'shop_name';
             title.classList.add('info');
-            title.style = 'font-size: 15px; padding-bottom: 2px;';
-            title.innerHTML = '<b>Shop</b>';
+            title.style = 'font-size: 14px; padding-bottom: 2px; font-weight: bold;';
+            title.innerHTML = 'Shop';
 
             let content = document.createElement('div');
             content.id = 'shop_content';
@@ -1886,6 +1926,8 @@ const ui = {
             ui.profile.hide();
             ui.settings.hide();
             ui.journal.hide();
+            ui.bank.hide();
+            ui.dialog.hideDialog();
 
             player.loseFocus();
 
@@ -1918,6 +1960,233 @@ const ui = {
             this.visible = false;
         }
     },
+    bank:
+    {
+        emitted: false,
+        visible: false,
+        items: {},
+        create: function() {
+            let box = document.createElement('div');
+            box.id = 'bank_box';
+            box.classList.add('box');
+            box.style = 'visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; max-width: 240px; height: auto; max-height: 220px; text-align: center;';
+
+            let title = document.createElement('p');
+            title.id = 'bank_box_name';
+            title.classList.add('info');
+            title.style = 'font-size: 14px; margin: 3px; font-weight: bold;';
+            title.innerHTML = 'Bank';
+
+            let content = document.createElement('div');
+            content.id = 'bank_box_content';
+            content.style = 'text-align: left; overflow-y: auto; width: 100%; height: 100%; max-height: 200px;';
+
+            let hide = document.createElement('p');
+            hide.classList.add('link');
+            hide.style = 'font-size: 12px; color: #ff3333;';
+            hide.innerHTML = 'Close';
+            hide.addEventListener('click', function() {
+                ui.bank.hide();
+            });
+
+            box.appendChild(title);
+            box.appendChild(content);
+            box.appendChild(hide);
+
+            view.dom.appendChild(box);
+        },
+        add: function(data) {
+            //Check if item has already been added to the bank box
+
+            if (this.items[data.item.name] != undefined)
+                return;
+
+            //Get DOM elements
+
+            let el = document.getElementById('bank_box'),
+                el_content = document.getElementById('bank_box_content');
+
+            //Check if valid
+
+            if (el === undefined ||
+                el_content === undefined)
+                return;
+
+            //Set item
+
+            this.items[data.item.name] = data;
+
+            //Create bank box slot
+
+            let slot = document.createElement('div');
+            slot.id = 'bank_slot' + data.item.name;
+            slot.classList.add('slot');
+            slot.style = 'width: 32px; height: 32px; border: 1px solid ' + ui.inventory.getItemColor(data.item.rarity) + ';';
+
+            let itemImg = document.createElement('img');
+            itemImg.src = data.item.source;
+            itemImg.style = 'pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;';
+
+            let amount = document.createElement('p');
+            amount.classList.add('info');
+            amount.style = 'font-size: 9px; position: absolute; top: 100%; left: 2px; transform: translate(0, -110%);';
+            amount.innerHTML = data.amount;
+
+            slot.appendChild(itemImg);
+            slot.appendChild(amount);
+
+            slot.addEventListener('mouseenter', function() {
+                ui.inventory.displayBox(data.item.name, 'bank');
+            });
+            slot.addEventListener('mouseleave', function() {
+                ui.inventory.removeBox();
+            });
+            slot.addEventListener('click', function() {
+                ui.bank.withdraw(data.item.name);
+            });
+
+            el_content.appendChild(slot);
+        },
+        showBank: function(name, data) {
+            //Check if valid
+
+            if (data == undefined || name == undefined)
+                return;
+
+            //Set bank name
+
+            document.getElementById('bank_box_name').innerHTML = name;
+
+            //Reload with data
+
+            this.reload(data);
+
+            //Show bank
+
+            this.show();
+        },
+        reload: function(data) {
+            //Clear content
+
+            document.getElementById('bank_box_content').clear();
+            
+            //Clear items
+
+            this.items = {};
+
+            //Add items
+
+            if (data.length === 0) {
+                let empty = document.createElement('p');
+                empty.classList.add('info');
+                empty.style = 'text-align: center; font-size: 12px;';
+                empty.innerHTML = 'Bank is empty.';
+
+                document.getElementById('bank_box_content').appendChild(empty);
+            }
+            else
+                for (let i = 0; i < data.length; i++)
+                    this.add(data[i]);
+        },
+        deposit: function(name) {
+            //Check if emitted
+
+            if (this.emitted)
+                return;
+
+            //Emit withdraw request
+
+            channel.emit('CLIENT_BANK_ADD_ITEM', name);
+
+            //Set emitted
+
+            this.emitted = true;
+
+            //Hide (inventory) displaybox
+
+            ui.inventory.removeBox();
+        },
+        withdraw: function(name) {
+            //Check if valid
+
+            if (this.items[name] == undefined)
+                return;
+
+            //Check if emitted
+
+            if (this.emitted)
+                return;
+
+            //Emit withdraw request
+
+            channel.emit('CLIENT_BANK_REMOVE_ITEM', name);
+
+            //Set emitted
+
+            this.emitted = true;
+
+            //Hide (inventory) displaybox
+
+            ui.inventory.removeBox();
+        },
+        show: function() {
+            //Check if already visible
+
+            if (this.visible) {
+                this.hide();
+
+                return;
+            }
+
+            //Hide other windows
+
+            ui.profile.hide();
+            ui.settings.hide();
+            ui.journal.hide();
+            ui.shop.hide();
+            ui.dialog.hideDialog();
+
+            //Lose focus
+
+            player.loseFocus();
+
+            //Add mouse handler
+
+            if (this.mouse == undefined)
+                this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
+                    if (data.state == 0)
+                        return;
+
+                    lx.StopMouse(0);
+
+                    ui.bank.hide();
+                });
+
+            //Set visible
+
+            document.getElementById('bank_box').style.visibility = 'visible';
+
+            this.visible = true;
+        },
+        hide: function() {
+            //Check if truly visible
+
+            if (!this.visible)
+                return;
+
+            //Restore target and clear mouse event
+
+            lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
+
+            lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
+            this.mouse = undefined;
+
+            //Set hidden
+
+            document.getElementById('bank_box').style.visibility = 'hidden';
+            this.visible = false;
+        }
+    },
     journal:
     {
         create: function() {
@@ -1934,7 +2203,7 @@ const ui = {
 
             let title = document.createElement('p');
             title.classList.add('info');
-            title.style = 'font-size: 15px; padding-bottom: 6px; text-align: center; font-weight: bold;';
+            title.style = 'font-size: 14px; padding-bottom: 6px; text-align: center; font-weight: bold;';
             title.innerHTML = 'Journal';
 
             box.clear();
@@ -1963,7 +2232,7 @@ const ui = {
             box.appendChild(close);
         },
         show: function() {
-            if (this.visible) {
+            if (this.visible || ui.dialog.visible) {
                 this.hide();
 
                 return;
@@ -1974,6 +2243,7 @@ const ui = {
             ui.profile.hide();
             ui.settings.hide();
             ui.shop.hide();
+            ui.bank.hide();
 
             player.loseFocus();
 

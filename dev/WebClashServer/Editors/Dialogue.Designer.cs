@@ -40,10 +40,11 @@
             this.showQuestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showShopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.turnHostileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.advanceQuestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.playerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getVariableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.canvas = new System.Windows.Forms.PictureBox();
-            this.advanceQuestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.SuspendLayout();
@@ -77,6 +78,7 @@
             this.spawnNPCToolStripMenuItem,
             this.showQuestToolStripMenuItem,
             this.showShopToolStripMenuItem,
+            this.showBankToolStripMenuItem,
             this.turnHostileToolStripMenuItem,
             this.advanceQuestToolStripMenuItem});
             this.eventsToolStripMenuItem.Name = "eventsToolStripMenuItem";
@@ -140,6 +142,14 @@
             this.turnHostileToolStripMenuItem.Text = "Turn Hostile";
             this.turnHostileToolStripMenuItem.Click += new System.EventHandler(this.TurnHostileToolStripMenuItem_Click);
             // 
+            // advanceQuestToolStripMenuItem
+            // 
+            this.advanceQuestToolStripMenuItem.Enabled = false;
+            this.advanceQuestToolStripMenuItem.Name = "advanceQuestToolStripMenuItem";
+            this.advanceQuestToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.advanceQuestToolStripMenuItem.Text = "Advance Quest";
+            this.advanceQuestToolStripMenuItem.Click += new System.EventHandler(this.advanceQuestToolStripMenuItem_Click);
+            // 
             // playerToolStripMenuItem
             // 
             this.playerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -165,13 +175,12 @@
             this.canvas.TabIndex = 2;
             this.canvas.TabStop = false;
             // 
-            // advanceQuestToolStripMenuItem
+            // showBankToolStripMenuItem
             // 
-            this.advanceQuestToolStripMenuItem.Enabled = false;
-            this.advanceQuestToolStripMenuItem.Name = "advanceQuestToolStripMenuItem";
-            this.advanceQuestToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.advanceQuestToolStripMenuItem.Text = "Advance Quest";
-            this.advanceQuestToolStripMenuItem.Click += new System.EventHandler(this.advanceQuestToolStripMenuItem_Click);
+            this.showBankToolStripMenuItem.Name = "showBankToolStripMenuItem";
+            this.showBankToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showBankToolStripMenuItem.Text = "Show Bank";
+            this.showBankToolStripMenuItem.Click += new System.EventHandler(this.showBankToolStripMenuItem_Click);
             // 
             // Dialogue
             // 
@@ -211,5 +220,6 @@
         private System.Windows.Forms.ToolStripMenuItem getVariableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setVariableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem advanceQuestToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showBankToolStripMenuItem;
     }
 }

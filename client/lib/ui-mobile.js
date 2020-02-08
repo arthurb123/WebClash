@@ -16,6 +16,7 @@ const ui = {
         this.profile.create();
         this.journal.create();
         this.shop.create();
+        this.bank.create();
         this.chat.create();
         this.party.create();
         this.dialog.create();
@@ -240,7 +241,7 @@ const ui = {
     },
     dialog:
     {
-        showing: false,
+        visible: false,
         create: function()
         {
             let box = document.createElement('div');
@@ -289,6 +290,14 @@ const ui = {
             this.setDialog(start);
 
             player.loseFocus();
+
+            ui.profile.hide();
+            ui.settings.hide();
+            ui.journal.hide();
+            ui.shop.hide();
+            ui.bank.hide();
+
+            this.visible = true;
         },
         setDialog: function(id, name_override)
         {
@@ -320,7 +329,7 @@ const ui = {
 
             let title = document.createElement('font');
             title.classList.add('info');
-            title.style = 'font-weight: bold;';
+            title.style = 'font-weight: bold; font-size: 14px;';
             title.innerHTML = name_override == undefined ? this.name : name_override;
 
             contentEl.appendChild(title);
@@ -377,7 +386,7 @@ const ui = {
 
                 let button = document.createElement('button');
                 button.classList.add('link_button');
-                button.style = 'margin-left: 0px;';
+                button.style = 'margin-left: 0px; font-size: 12px;';
                 button.innerHTML = '[ ' + option.text + ' ]';
 
                 button.addEventListener('click', function() {
@@ -405,6 +414,9 @@ const ui = {
                 });
         },
         hideDialog: function() {
+            if (!this.visible)
+                return;
+
             document.getElementById('dialog_box').style.visibility = 'hidden';
 
             if (this.mouse != undefined)
@@ -413,6 +425,8 @@ const ui = {
             this.mouse = undefined;
 
             lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
+
+            this.visible = false;
         },
         handleDialogEvent: function(data) {
             if (data.quest == undefined) {
@@ -1470,7 +1484,7 @@ const ui = {
 
             let title = document.createElement('p');
             title.classList.add('info');
-            title.style = 'font-size: 15px; padding-bottom: 6px;';
+            title.style = 'font-size: 14px; padding-bottom: 6px;';
             title.innerHTML = '<b>Settings</b>';
 
             box.appendChild(title);
@@ -1563,7 +1577,7 @@ const ui = {
             document.getElementById(data.target.id+'_text').innerHTML = text + ' (' + val + ')';
         },
         show: function() {
-            if (tiled.loading || this.visible) {
+            if (tiled.loading || this.visible || ui.dialog.visible) {
                 this.hide();
 
                 return;
@@ -1573,6 +1587,7 @@ const ui = {
             ui.journal.hide();
             ui.shop.hide();
             ui.party.hide();
+            ui.bank.hide();
 
             lx.CONTEXT.CONTROLLER.TARGET = undefined;
 
@@ -1632,7 +1647,7 @@ const ui = {
 
             let title = document.createElement('p');
             title.classList.add('info');
-            title.style = 'font-size: 15px; padding-bottom: 6px;';
+            title.style = 'font-size: 14px; padding-bottom: 6px;';
             title.innerHTML = '<b>Profile</b>';
 
             let level = document.createElement('p');
@@ -1710,7 +1725,7 @@ const ui = {
             channel.emit('CLIENT_INCREMENT_ATTRIBUTE', attribute);
         },
         show: function() {
-            if (this.visible) {
+            if (this.visible || ui.dialog.visible) {
                 this.hide();
 
                 return;
@@ -1720,6 +1735,7 @@ const ui = {
             ui.journal.hide();
             ui.shop.hide();
             ui.party.hide();
+            ui.bank.hide();
 
             lx.CONTEXT.CONTROLLER.TARGET = undefined;
 
@@ -1766,8 +1782,8 @@ const ui = {
             let title = document.createElement('p');
             title.id = 'shop_name';
             title.classList.add('info');
-            title.style = 'font-size: 15px; padding-bottom: 2px;';
-            title.innerHTML = '<b>Shop</b>';
+            title.style = 'font-size: 14px; padding-bottom: 2px; font-weight: bold;';
+            title.innerHTML = 'Shop';
 
             let content = document.createElement('div');
             content.id = 'shop_content';
@@ -1855,7 +1871,7 @@ const ui = {
             channel.emit('CLIENT_SELL_ITEM', { npc: this.target, item: name });
         },
         show: function() {
-            if (this.visible) {
+            if (this.visible || ui.dialog.visible) {
                 this.hide();
 
                 return;
@@ -1865,6 +1881,7 @@ const ui = {
             ui.settings.hide();
             ui.journal.hide();
             ui.party.hide();
+            ui.bank.hide();
 
             player.loseFocus();
 
@@ -1897,6 +1914,227 @@ const ui = {
             this.visible = false;
         }
     },
+    bank:
+    {
+        emitted: false,
+        visible: false,
+        items: {},
+        create: function() {
+            let box = document.createElement('div');
+            box.id = 'bank_box';
+            box.classList.add('box');
+            box.style = 'visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; max-width: 240px; height: auto; max-height: 220px; text-align: center;';
+
+            let title = document.createElement('p');
+            title.id = 'bank_box_name';
+            title.classList.add('info');
+            title.style = 'font-size: 14px; margin: 3px; font-weight: bold;';
+            title.innerHTML = 'Bank';
+
+            let content = document.createElement('div');
+            content.id = 'bank_box_content';
+            content.style = 'text-align: left; overflow-y: auto; width: 100%; height: 100%; max-height: 200px;';
+
+            let hide = document.createElement('p');
+            hide.classList.add('link');
+            hide.style = 'font-size: 12px; color: #ff3333;';
+            hide.innerHTML = 'Close';
+            hide.addEventListener('click', function() {
+                ui.bank.hide();
+            });
+
+            box.appendChild(title);
+            box.appendChild(content);
+            box.appendChild(hide);
+
+            view.dom.appendChild(box);
+        },
+        add: function(data) {
+            //Check if item has already been added to the bank box
+
+            if (this.items[data.item.name] != undefined)
+                return;
+
+            //Get DOM elements
+
+            let el = document.getElementById('bank_box'),
+                el_content = document.getElementById('bank_box_content');
+
+            //Check if valid
+
+            if (el === undefined ||
+                el_content === undefined)
+                return;
+
+            //Set item
+
+            this.items[data.item.name] = data;
+
+            //Create bank box slot
+
+            let slot = document.createElement('div');
+            slot.id = 'bank_slot' + data.item.name;
+            slot.classList.add('slot');
+            slot.style = 'width: 24px; height: 24px; border: 1px solid ' + ui.inventory.getItemColor(data.item.rarity) + ';';
+
+            let itemImg = document.createElement('img');
+            itemImg.src = data.item.source;
+            itemImg.style = 'pointer-events: none; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px;';
+
+            let amount = document.createElement('p');
+            amount.classList.add('info');
+            amount.style = 'font-size: 9px; position: absolute; top: 100%; left: 2px; transform: translate(0, -110%);';
+            amount.innerHTML = data.amount;
+
+            slot.appendChild(itemImg);
+            slot.appendChild(amount);
+
+            slot.addEventListener('click', function() {
+                ui.bank.withdraw(data.item.name);
+            });
+
+            el_content.appendChild(slot);
+        },
+        showBank: function(name, data) {
+            //Check if valid
+
+            if (data == undefined || name == undefined)
+                return;
+
+            //Set bank name
+
+            document.getElementById('bank_box_name').innerHTML = name;
+
+            //Reload with data
+
+            this.reload(data);
+
+            //Show bank
+
+            this.show();
+        },
+        reload: function(data) {
+            //Clear content
+
+            document.getElementById('bank_box_content').clear();
+            
+            //Clear items
+
+            this.items = {};
+
+            //Add items
+
+            if (data.length === 0) {
+                let empty = document.createElement('p');
+                empty.classList.add('info');
+                empty.style = 'text-align: center; font-size: 12px;';
+                empty.innerHTML = 'Bank is empty.';
+
+                document.getElementById('bank_box_content').appendChild(empty);
+            }
+            else
+                for (let i = 0; i < data.length; i++)
+                    this.add(data[i]);
+        },
+        deposit: function(name) {
+            //Check if emitted
+
+            if (this.emitted)
+                return;
+
+            //Emit withdraw request
+
+            channel.emit('CLIENT_BANK_ADD_ITEM', name);
+
+            //Set emitted
+
+            this.emitted = true;
+
+            //Hide (inventory) displaybox
+
+            ui.inventory.removeBox();
+        },
+        withdraw: function(name) {
+            //Check if valid
+
+            if (this.items[name] == undefined)
+                return;
+
+            //Check if emitted
+
+            if (this.emitted)
+                return;
+
+            //Emit withdraw request
+
+            channel.emit('CLIENT_BANK_REMOVE_ITEM', name);
+
+            //Set emitted
+
+            this.emitted = true;
+
+            //Hide (inventory) displaybox
+
+            ui.inventory.removeBox();
+        },
+        show: function() {
+            //Check if already visible
+
+            if (this.visible) {
+                this.hide();
+
+                return;
+            }
+
+            //Hide other windows
+
+            ui.profile.hide();
+            ui.settings.hide();
+            ui.journal.hide();
+            ui.shop.hide();
+            ui.dialog.hideDialog();
+
+            //Lose focus
+
+            player.loseFocus();
+
+            //Add mouse handler
+
+            if (this.mouse == undefined)
+                this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {
+                    if (data.state == 0)
+                        return;
+
+                    lx.StopMouse(0);
+
+                    ui.bank.hide();
+                });
+
+            //Set visible
+
+            document.getElementById('bank_box').style.visibility = 'visible';
+
+            this.visible = true;
+        },
+        hide: function() {
+            //Check if truly visible
+
+            if (!this.visible)
+                return;
+
+            //Restore target and clear mouse event
+
+            lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
+
+            lx.GAME.CLEAR_EVENT('mousebutton', 0, this.mouse);
+            this.mouse = undefined;
+
+            //Set hidden
+
+            document.getElementById('bank_box').style.visibility = 'hidden';
+            this.visible = false;
+        }
+    },
     journal:
     {
         create: function() {
@@ -1913,7 +2151,7 @@ const ui = {
 
             let title = document.createElement('p');
             title.classList.add('info');
-            title.style = 'font-size: 15px; padding-bottom: 6px; text-align: center; font-weight: bold;';
+            title.style = 'font-size: 14px; padding-bottom: 6px; text-align: center; font-weight: bold;';
             title.innerHTML = 'Journal';
 
             box.clear();
@@ -1942,7 +2180,7 @@ const ui = {
             box.appendChild(close);
         },
         show: function() {
-            if (this.visible) {
+            if (this.visible || ui.dialog.visible) {
                 this.hide();
 
                 return;
@@ -1954,6 +2192,7 @@ const ui = {
             ui.settings.hide();
             ui.shop.hide();
             ui.party.hide();
+            ui.bank.hide();
 
             lx.CONTEXT.CONTROLLER.TARGET = undefined;
 
@@ -2253,7 +2492,7 @@ const ui = {
             this.mouse = undefined;
         },
         show: function(forceShow) {
-            if (this.box.visible && !forceShow) {
+            if (this.box.visible && !forceShow || ui.dialog.visible) {
                 this.hide(true);
 
                 return;
@@ -2269,6 +2508,7 @@ const ui = {
             ui.settings.hide();
             ui.shop.hide();
             ui.journal.hide();
+            ui.bank.hide();
 
             if (this.mouse == undefined) 
                 this.mouse = lx.GAME.ADD_EVENT('mousebutton', 0, function(data) {

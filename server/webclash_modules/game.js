@@ -57,6 +57,10 @@ exports.startLoop = function()
         //Update in combat
 
         actions.combat.update();
+
+        //Update banks cache
+
+        banks.updateCache();
     }, 1000);
 };
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using WebClashServer.Editors;
 
 namespace WebClashServer.Classes
@@ -76,6 +75,8 @@ namespace WebClashServer.Classes
 
         public ShowShopEvent showShopEvent = null;
 
+        public ShowBankEvent showBankEvent = null;
+
         public AdvanceQuestEvent advanceQuestEvent = null;
 
         public GetVariableEvent getVariableEvent = null;
@@ -149,6 +150,11 @@ namespace WebClashServer.Classes
         public ShopItem[] items = new ShopItem[0];
 
         public bool acceptSell = true;
+    }
+
+    public class ShowBankEvent
+    {
+        public string name = "Bank";
     }
 
     public class AdvanceQuestEvent

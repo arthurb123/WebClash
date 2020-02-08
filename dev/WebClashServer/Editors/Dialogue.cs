@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using WebClashServer.Classes;
+using WebClashServer.Input;
 
 namespace WebClashServer.Editors
 {
@@ -146,6 +147,22 @@ namespace WebClashServer.Editors
                     };
 
                     ss.ShowDialog();
+
+                    return;
+                }
+
+                //If it is a show bank event, open a text input
+                //form instead of dialogue event properties
+
+                if (dialogSystem.items[elements[item].id].eventType == "ShowBank")
+                {
+                    //Open text input
+
+                    TextInput ti = new TextInput("Bank event #" + elements[item].id, "Set the bank name", dialogSystem.items[elements[item].id].showBankEvent.name);
+
+                    ti.ShowDialog();
+                    if (ti.DialogResult == DialogResult.OK)
+                        dialogSystem.items[elements[item].id].showBankEvent.name = ti.GetResult();
 
                     return;
                 }
@@ -365,15 +382,19 @@ namespace WebClashServer.Editors
                 case "SpawnNPC":
                     dialogSystem.items[cee.id].spawnNPCEvent = new SpawnNPCEvent();
                     break;
-                case "ShowQuest":
-                    dialogSystem.items[cee.id].showQuestEvent = new ShowQuestEvent();
-                    break;
                 case "TurnHostile":
                     dialogSystem.items[cee.id].turnHostileEvent = new TurnHostileEvent();
                     dialogSystem.items[cee.id].repeatable = true;
                     break;
+                case "ShowQuest":
+                    dialogSystem.items[cee.id].showQuestEvent = new ShowQuestEvent();
+                    break;
                 case "ShowShop":
                     dialogSystem.items[cee.id].showShopEvent = new ShowShopEvent();
+                    dialogSystem.items[cee.id].repeatable = true;
+                    break;
+                case "ShowBank":
+                    dialogSystem.items[cee.id].showBankEvent = new ShowBankEvent();
                     dialogSystem.items[cee.id].repeatable = true;
                     break;
                 case "AdvanceQuest":
@@ -462,6 +483,13 @@ namespace WebClashServer.Editors
             canvas.Invalidate();
         }
 
+        private void showBankToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addCanvasEventElement(EventType.ShowBank);
+
+            canvas.Invalidate();
+        }
+
         private void advanceQuestToolStripMenuItem_Click(object sender, EventArgs e)
         {
             addCanvasEventElement(EventType.AdvanceQuest);
@@ -528,9 +556,10 @@ namespace WebClashServer.Editors
         LoadMap,
         AffectPlayer,
         SpawnNPC,
-        ShowQuest,
         TurnHostile,
+        ShowQuest,
         ShowShop,
+        ShowBank,
         AdvanceQuest,
         SetVariable,
         GetVariable

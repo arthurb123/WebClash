@@ -1,3 +1,8 @@
+//Load the WebClash output module, this
+//module is necessary for safe require
+
+global.output = require('./webclash_modules/output');
+
 //Safe module require method
 
 const safeRequire = (name) => {
@@ -9,8 +14,7 @@ const safeRequire = (name) => {
     {
         output.give('Could not load node module "' + name + '"!');
         output.give('Try installing the dependencies by running install_dependencies.bat or running \'npm install package.json\' in the console.');
-        
-        hasSaved = true;
+        output.give('Completed shut down procedure.');
         process.exit();
     }
 };
@@ -51,6 +55,7 @@ global.server   = require('./webclash_modules/server');
 global.game     = require('./webclash_modules/game');
 global.rooms    = require('./webclash_modules/rooms');
 global.parties  = require('./webclash_modules/parties');
+global.banks    = require('./webclash_modules/banks');
 global.dialog   = require('./webclash_modules/dialog');
 global.items    = require('./webclash_modules/items');
 global.shop     = require('./webclash_modules/shop');
@@ -58,57 +63,10 @@ global.npcs     = require('./webclash_modules/npcs');
 global.actions  = require('./webclash_modules/actions');
 global.quests   = require('./webclash_modules/quests');
 global.tiled    = require('./webclash_modules/tiled');
-global.output   = require('./webclash_modules/output');
 global.logger   = require('./webclash_modules/logger');
 global.input    = require('./webclash_modules/input');
 global.storage  = require('./webclash_modules/storage');
 global.tools    = require('./webclash_modules/tools');
-
-//Exit handler
-
-let hasSaved = false;
-global.exitHandler = function() {
-    //Check if exit handler has already been executed
-
-    if (hasSaved) {
-        output.give('Completed shut down procedure.');
-
-        return;
-    }
-
-    //Output
-
-    output.give('Shutting down server..');
-
-    //Check if there are players that need to be saved
-
-    if (game.playerCount === 0) {
-        hasSaved = true;
-
-        process.exit();
-    }
-
-    //Save log
-
-    logger.save(function() {
-        //Save all players
-
-        game.saveAllPlayers(function() {
-            hasSaved = true;
-
-            process.exit();
-        });
-    });
-}
-
-//On close event listeners
-
-process.on('exit', exitHandler);
-process.on('SIGINT', exitHandler);
-process.on('uncaughtException', function(err) {
-    output.giveError('Server crashed: ', err);
-    exitHandler();
-});
 
 //Load and setup geckos.io
 
@@ -136,25 +94,6 @@ rl.on('line', (text) => {
 app.use('/', express.static(path.resolve(__dirname +  "/../client/")));
 app.get('/map/:request_id', tiled.requestMap);
 
-//Load all game data, and if successful start server
-
-game.loadAllCharacters(function() {
-    actions.loadAllActions(function() {
-        items.loadAllItems(function() {
-            quests.loadAllQuests(function() {
-                tiled.loadAllMaps(function() {
-                    //First check if the properties are valid
-
-                    checkProperties(function() {
-                        //Start server
-
-                        startServer();
-                    });
-                });
-            });
-        });
-    });
-});
 
 //Check properties function
 
@@ -206,3 +145,69 @@ function startServer() {
 
     game.startLoop();
 }
+
+//Load all game data, and if successful start server
+
+game.loadAllCharacters(function() {
+    actions.loadAllActions(function() {
+        items.loadAllItems(function() {
+            quests.loadAllQuests(function() {
+                tiled.loadAllMaps(function() {
+                    //First check if the properties are valid
+
+                    checkProperties(function() {
+                        //Start server
+
+                        startServer();
+                    });
+                });
+            });
+        });
+    });
+});
+
+//Exit handler
+
+let hasSaved = false;
+global.exitHandler = function() {
+    //Check if exit handler has already been executed
+
+    if (hasSaved) {
+        output.give('Completed shut down procedure.');
+
+        return;
+    }
+
+    //Output
+
+    output.give('Shutting down server..');
+
+    //Check if there are players that need to be saved
+
+    if (game.playerCount === 0) {
+        hasSaved = true;
+
+        process.exit();
+    }
+
+    //Save log
+
+    logger.save(function() {
+        //Save all players
+
+        game.saveAllPlayers(function() {
+            hasSaved = true;
+
+            process.exit();
+        });
+    });
+}
+
+//On close event listeners
+
+process.on('exit', exitHandler);
+process.on('SIGINT', exitHandler);
+process.on('uncaughtException', function(err) {
+    output.giveError('Server crashed: ', err);
+    exitHandler();
+});

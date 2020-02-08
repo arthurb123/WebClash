@@ -204,6 +204,10 @@ exports.handleChannel = function(channel)
                         }
                     }
                 }, function() {
+                    //Insert bank
+
+                    storage.save('banks', name, {});
+
                     //Insert and save default stats
 
                     game.savePlayer(name, undefined, function() {
@@ -1213,6 +1217,72 @@ exports.handleChannel = function(channel)
         //Leave party
 
         parties.leaveParty(channel.name, reason);
+    });
+
+    channel.on('CLIENT_BANK_REMOVE_ITEM', function(item) {
+        //Check if in-game
+
+        if (!isInGame())
+            return;
+
+        //Shorten channel name
+
+        let id = channel.name;
+
+        //Check if player has inventory space available
+
+        let slot = items.getPlayerFreeSlot(id);
+
+        //Check if slot is valid
+
+        if (slot === -1)
+            return;
+
+        //Remove item from player bank
+
+        banks.removeItem(id, item, function(success, bank) {
+            if (!success)
+                return;
+
+            //Give item to player
+
+            items.addPlayerItem(id, item);
+
+            //Send new bank
+
+            channel.emit('GAME_BANK_UPDATE', bank);
+        });
+    });
+
+    channel.on('CLIENT_BANK_ADD_ITEM', function(item) {
+        //Check if in-game
+
+        if (!isInGame())
+            return;
+
+        //Shorten channel name
+
+        let id = channel.name;
+
+        //Check if player has the item
+
+        if (!items.hasPlayerItem(id, item))
+            return;
+
+        //Add item to bank
+
+        banks.addItem(id, item, function(success, bank) {
+            if (!success)
+                return;
+
+            //Remove item from inventory
+
+            items.removePlayerItem(id, item);
+
+            //Send new bank
+
+            channel.emit('GAME_BANK_UPDATE', bank);
+        });
     });
 
     channel.on('CLIENT_REQUEST_ALIASES', function() {

@@ -242,6 +242,18 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
 
         shop.openShop(id, clientData.owner, clientData.id, dialogEvent.showShopEvent);
     }
+    
+    //Show bank event
+
+    else if (dialogEvent.eventType === 'ShowBank') {
+        //Respond to make sure the dialog closes
+
+        channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: true, id: clientData.id });
+
+        //Open bank for the player
+
+        banks.openBank(id, dialogEvent.showBankEvent.name);
+    }
 
     //Advance quest event
 

@@ -420,7 +420,7 @@ exports.getPlayerFreeSlot = function(id)
     //Search for a undefined/non-existing slot
 
     for (let i = 0; i < game.playerConstraints.inventorySize; i++)
-        if (game.players[id].inventory[i] == null)
+        if (game.players[id].inventory[i] == undefined)
             return i;
 
     //Otherwise return an invalid slot
@@ -435,7 +435,7 @@ exports.getPlayerFreeSlots = function(id)
     let amount = 0;
 
     for (let i = 0; i < game.playerConstraints.inventorySize; i++)
-        if (game.players[id].inventory[i] == null)
+        if (game.players[id].inventory[i] == undefined)
             amount++;
 
     //Return the amount
