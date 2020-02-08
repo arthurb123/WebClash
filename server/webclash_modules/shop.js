@@ -41,7 +41,7 @@ exports.buyItem = function(player, item, owner, dialogId) {
     //player's position
 
     if (game.players[player].pos.X !== shoppingPositions[player].X ||
-        game.players[player].pos.Y !== shoppinhPositions[player].Y) 
+        game.players[player].pos.Y !== shoppingPositions[player].Y) 
         return false;
 
     //Setup necessary variables
@@ -101,7 +101,7 @@ exports.sellItem = function(player, item, owner) {
     //player's position
 
     if (game.players[player].pos.X !== shoppingPositions[player].X ||
-        game.players[player].pos.Y !== shoppinhPositions[player].Y) 
+        game.players[player].pos.Y !== shoppingPositions[player].Y) 
         return false;
 
     //Check if player has item
