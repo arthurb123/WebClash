@@ -79,6 +79,9 @@ exports.loadAllItems = function(cb)
     let location = 'items';
 
     fs.readdir(location, (err, files) => {
+        if (err)
+            output.giveError('Could not load items: ', err);
+
         let count = 0;
 
         files.forEach(file => {

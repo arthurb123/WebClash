@@ -640,15 +640,14 @@ const client = {
         });
         channel.on('CLIENT_BUY_ITEM_RESPONSE', function(bought) {
             if (bought) {
-                //Enough currency, bought item
-
-                //Reload shop items
+                //Enough currency, bought item;
+                //Thus reload shop items
 
                 ui.shop.reload();
             } else {
                 //Not enough currency
 
-                ui.chat.addMessage('You do not have enough currency.');
+                ui.chat.addMessage('You do not have enough ' + game.aliases.currency.toLowerCase() + '.');
             }
 
             ui.shop.emitted = false;

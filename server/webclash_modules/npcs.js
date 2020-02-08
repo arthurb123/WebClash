@@ -250,6 +250,10 @@ exports.createEventNPC = function(map, name, x, y, owner, hostile, resetCallback
     if (npc_id === -1)
         return;
 
+    //Set aggressivity based on if hostile
+
+    this.onMap[map][npc_id].data.aggressive = hostile;
+
     //Convert type according to if hostile
 
     if (hostile) {

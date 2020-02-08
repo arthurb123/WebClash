@@ -1488,7 +1488,7 @@ exports.syncNPCPartially = function(map, id, type, channel)
             data.equipment = npcs.onMap[map][id].data.equipment;
             break;
         case 'aggressive':
-            data.aggressive = npcs.onMap[map][id].data.agressive;
+            data.aggressive = npcs.onMap[map][id].data.aggressive;
             break;
         case 'inCombat':
             data.inCombat = (npcs.onMap[map][id].target !== -1);
