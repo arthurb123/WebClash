@@ -1,0 +1,28 @@
+{
+  "source": "res/items/3.png",
+  "type": "equipment",
+  "rarity": "exotic",
+  "value": 80,
+  "minLevel": 5,
+  "sounds": [],
+  "description": "This once belonged to a failure of a captain.",
+  "heal": 0,
+  "mana": 0,
+  "currency": 0,
+  "consumableAction": "",
+  "consumableActionUses": 1,
+  "equippable": "main",
+  "equippableSource": "res/equipment/main/1.png",
+  "equippableAction": "Swingfest",
+  "stats": {
+    "power": 2,
+    "toughness": 0,
+    "vitality": 0,
+    "intelligence": 0,
+    "wisdom": 0,
+    "agility": 0
+  },
+  "dialog": [],
+  "dialogElements": [],
+  "consumableDialog": false
+}

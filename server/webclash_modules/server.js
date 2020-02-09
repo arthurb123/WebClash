@@ -344,6 +344,10 @@ exports.handleChannel = function(channel)
 
             let id = channel.name;
 
+            //Cancel player casting
+
+            actions.cancelPlayerCasting(id);
+
             //Check data
 
             let type = '';
@@ -413,8 +417,8 @@ exports.handleChannel = function(channel)
     });
 
     channel.on('CLIENT_PLAYER_ACTION', function(data) {
-         try
-         {
+        try
+        {
             //Check if in-game
 
             if (!isInGame(true))
@@ -425,24 +429,25 @@ exports.handleChannel = function(channel)
             let id = channel.name;
 
             //Try to create an action based
-            //on the map conditions (PvP)
+            //on the map conditions (if PvP map)
 
             let result;
-            
             if (!tiled.maps[game.players[id].map_id].pvp)
-                result = actions.createPlayerAction(data, id);
+                result = actions.performPlayerAction(data, id, false);
             else
-                result = actions.createPvPAction(data, id);
+                result = actions.performPlayerAction(data, id, true);
 
-            //Emit result
+            //Emit casting action packages to self and others
 
-            if (result)
-                channel.emit('CLIENT_PLAYER_ACTION_RESPONSE', data);
-         }
-         catch (err)
-         {
+            if (result) {
+                server.syncPlayerActionCast(data, id, channel);
+                server.syncPlayerActionCast(data, id, channel, true);
+            }
+        }
+        catch (err)
+        {
             output.giveError('Could not add player action: ', err);
-         }
+        }
     });
 
     channel.on('CLIENT_RESPAWN_PLAYER', function() {
@@ -1222,7 +1227,7 @@ exports.handleChannel = function(channel)
     channel.on('CLIENT_BANK_REMOVE_ITEM', function(item) {
         //Check if in-game
 
-        if (!isInGame())
+        if (!isInGame(true))
             return;
 
         //Shorten channel name
@@ -1257,7 +1262,7 @@ exports.handleChannel = function(channel)
     channel.on('CLIENT_BANK_ADD_ITEM', function(item) {
         //Check if in-game
 
-        if (!isInGame())
+        if (!isInGame(true))
             return;
 
         //Shorten channel name
@@ -1552,10 +1557,105 @@ exports.removeNPC = function(map, id, channel)
         channel.emit('GAME_NPC_UPDATE', data);
 };
 
+//Sync player action casting function, if channel is undefined it will be globally emitted
+
+exports.syncPlayerActionCast = function(slot, id, channel, broadcast)
+{
+    //Check if casting time is immediate
+
+    //TODO: Make it so we don't have to lookup the action
+    //      everytime we sync casting time, this will greatly
+    //      improve performance
+
+    let targetTime = actions.getAction(game.players[id].actions[slot].name).castingTime;
+    if (targetTime === 0)
+        return;
+
+    //Setup base data
+
+    let data = {
+        player: id,
+        beginTime: Date.now()
+    };
+
+    //Set data based on syncing type
+
+    if (channel === undefined || broadcast)
+        data.targetTime = targetTime;
+    else
+        data.slot = slot;
+
+    //Sync
+
+    if (channel === undefined)
+        io.room(game.players[id].map_id).emit('GAME_OTHER_PLAYER_CAST_ACTION', data);
+    else {
+        if (broadcast === undefined || !broadcast)
+            channel.emit('GAME_PLAYER_CAST_ACTION', data);
+        else
+            channel.broadcast.emit('GAME_OTHER_PLAYER_CAST_ACTION', data);
+    }
+};
+
+//Sync player cancel casting function, if channel is undefined it will be globally emitted
+
+exports.syncPlayerCancelCast = function(id, channel, broadcast) 
+{
+    if (channel === undefined)
+        io.room(game.players[id].map_id).emit('GAME_OTHER_PLAYER_CANCELLED_CAST', id);
+    else {
+        if (broadcast === undefined || !broadcast)
+            channel.emit('GAME_OTHER_PLAYER_CANCELLED_CAST', id);
+        else
+            channel.broadcast.emit('GAME_OTHER_PLAYER_CANCELLED_CAST', id);
+    }
+};
+
+//Sync NPC action casting function, if channel is undefined it will be globally emitted
+
+exports.syncNPCActionCast = function(map, id, targetTime, channel, broadcast)
+{
+    //Check if casting time is immediate
+
+    if (targetTime === 0)
+        return;
+
+    //Setup data
+
+    const data = {
+        npc: id,
+        targetTime: targetTime,
+        beginTime: Date.now()
+    };
+    
+    //Sync
+
+    if (channel === undefined)
+        io.room(map).emit('GAME_NPC_CAST_ACTION', data);
+    else {
+        if (broadcast === undefined || !broadcast)
+            channel.emit('GAME_NPC_CAST_ACTION', data);
+        else
+            channel.broadcast.emit('GAME_NPC_CAST_ACTION', data);
+    }
+};
+
 //Sync whole action function, if channel is undefined it will be globally emitted
 
-exports.syncAction = function(data, channel, broadcast)
+exports.syncActionElement = function(actionData, actionElement, channel, broadcast)
 {
+    //Trim data by creating custom data structure
+
+    const data = {
+        pos: actionData.pos,
+        map: actionData.map,
+        element: actionElement,
+        ownerType: actionData.ownerType,
+        owner: actionData.owner,
+        sounds: actionData.sounds,
+        centerPosition: actionData.centerPosition
+    };
+
     if (channel === undefined)
         io.room(data.map).emit('GAME_ACTION_UPDATE', data);
     else {
@@ -1568,7 +1668,7 @@ exports.syncAction = function(data, channel, broadcast)
 
 //Remove Action function, if channel is undefined it will be globally emitted
 
-exports.removeAction = function(id, map, channel, broadcast)
+exports.removeActionElement = function(id, map, channel, broadcast)
 {
     let data = {
         remove: true,

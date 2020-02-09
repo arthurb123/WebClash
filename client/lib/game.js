@@ -22,10 +22,19 @@ const game = {
 
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
             .Loops(function() {
+                //Animate
+
                 animation.animateMoving(this);
 
-                if (this._nameplate.Position().X === 0)
+                //Handle nameplate
+
+                if (this._nameplate != undefined) {
                     this._nameplate.Position(this.Size().W/2, -Math.floor(this.Size().H/5));
+                    if (this._level !== undefined)
+                        this._nameplate.Text('lvl ' + this._level + ' - ' + this.name);
+                }
+
+                //Handle party
 
                 if (ui.party.inParty(name))
                     this._nameplate.Color('#4099FF');
@@ -36,32 +45,34 @@ const game = {
                         this._nameplate.Color('#ce1010');
                 }
 
-                if (this._level !== undefined)
-                    this._nameplate.Text('lvl ' + this._level + ' - ' + this.name);
+                //Handle casting bar
+
+                if (this._castingBar != undefined)
+                    this._castingBar.SIZE.W = this.SIZE.W*lx.GAME.SCALE;
+
+                //Handle healthbar
    
                 if (this._health != undefined)
                 {
-                    if (this._healthbar === undefined) {
-                        this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W*lx.GAME.SCALE, 8).Follows(go);
-                        this._healthbar = new lx.UITexture('#FF4242', 0, -36, this._health.cur/this._health.max*(this.SIZE.W*lx.GAME.SCALE), 8).Follows(go);
+                    if (this._healthbar == undefined) {
+                        this._healthbar = new lx.UIProgressBar('black', '#FF4242', 0, -36, this.SIZE.W*lx.GAME.SCALE, 8)
+                            .Progress(this._health.cur/this._health.max*100)
+                            .Follows(go);
                     } else {
-                        this._healthbarBack.SIZE.W = this.SIZE.W*lx.GAME.SCALE;
-                        this._healthbar.SIZE.W = (this._health.cur/this._health.max)*(this.SIZE.W*lx.GAME.SCALE);
+                        this._healthbar.SIZE.W = this.SIZE.W * lx.GAME.SCALE;
+                        this._healthbar.Progress(this._health.cur/this._health.max*100);
     
                         if (this._health.cur == this._health.max || !tiled.pvp)
-                        {
-                            this._healthbarBack.Hide();
                             this._healthbar.Hide();
-                        }
                         else if (tiled.pvp)
-                        {
-                            this._healthbarBack.Show();
                             this._healthbar.Show();
-                        }
                     }
                 }
             })
             .PreDraws(function() {
+                if (this.SPRITE == undefined)
+                    return;
+
                 //Constants for easier readability
 
                 const main = this._equipment.length-1,
@@ -90,6 +101,9 @@ const game = {
                 }
             })
             .Draws(function() {
+                if (this.SPRITE == undefined)
+                    return;
+
                 //Constants for easier readability
 
                 const main = this._equipment.length-1,
@@ -144,6 +158,35 @@ const game = {
             .Show();
 
         go._nameplate.SetShadow('rgba(0, 0, 0, .85)', 0, .85);
+
+        //Add casting progress bar
+
+        go._castingBar = new lx.UIProgressBar(
+            'rgba(0, 0, 0, .50)',
+            'rgba(255, 255, 255, .75)',
+            0, -6,
+            0, 8
+        )
+            .Loops(function() {
+                this.Progress(this.Progress() + ((1000/60)/this._target) * 100);
+
+                if (this.Progress() >= 100)
+                    this.Hide();
+            })
+            .Follows(go);
+
+        go._castAction = function(targetTime, elapsedTime) {
+            //Set progress
+
+            this._castingBar._target = targetTime * (1000/60);
+            this._castingBar.Progress(
+                elapsedTime / this._castingBar._target * 100
+            );
+
+            //Show casting bar
+
+            this._castingBar.Show();
+        };
 
         //Add context menu
 
@@ -363,11 +406,9 @@ const game = {
         //Hide target GameObject
 
         this.players[id]._nameplate.Hide();
-
-        if (this.players[id]._healthbar != undefined) {
+        if (this.players[id]._healthbar != undefined)
             this.players[id]._healthbar.Hide();
-            this.players[id]._healthbarBack.Hide();
-        }
+
         this.players[id].Hide();
 
         //Remove target
@@ -395,7 +436,11 @@ const game = {
 
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
             .Loops(function() {
+                //Animate
+
                 animation.animateMoving(this);
+
+                //Handle nameplate
 
                 if (this._nameplate != undefined) {
                     if (this._nameplate.Position().X === 0)
@@ -415,35 +460,44 @@ const game = {
                         this._nameplate.Text('lvl ' + this._stats.level + ' - ' + this.name);
                 }
 
+                //Handle healthbar
+
                 if (this._health != undefined)
                 {
                     if (this._healthbar === undefined) {
-                        this._healthbarBack = new lx.UITexture('black', 0, -36, this.SIZE.W*lx.GAME.SCALE, 8).Follows(go);
-                        this._healthbar = new lx.UITexture('#FF4242', 0, -36, (this._health.cur/this._health.max)*(this.SIZE.W*lx.GAME.SCALE), 8).Follows(go);
+                        this._healthbar = new lx.UIProgressBar('black', '#FF4242', 0, -36, this.SIZE.W*lx.GAME.SCALE, 8)
+                            .Progress(this._health.cur/this._health.max*100)
+                            .Follows(go);
                     } else {
-                        this._healthbarBack.SIZE.W = this.SIZE.W*lx.GAME.SCALE;
-                        this._healthbar.SIZE.W = (this._health.cur/this._health.max)*(this.SIZE.W*lx.GAME.SCALE);
+                        this._healthbar.SIZE.W = this.SIZE.W * lx.GAME.SCALE;
+                        this._healthbar.Progress(this._health.cur/this._health.max*100);
     
                         if (this._health.cur == this._health.max)
-                        {
-                            this._healthbarBack.Hide();
                             this._healthbar.Hide();
-                        }
                         else
-                        {
-                            this._healthbarBack.Show();
                             this._healthbar.Show();
-                        }
                     }
                 }
+
+                //Handle casting bar
+
+                if (this._castingBar != undefined)
+                    this._castingBar.SIZE.W = this.SIZE.W*lx.GAME.SCALE;
+
+                //Handle dialog texture
     
                 if (this._dialogTexture != undefined)
                     this._dialogTexture.Hide();
+
+                //Handle extra loops
     
                 for (let cb = 0; cb < this._loops.length; cb++) 
                     this._loops[cb]();
             })
             .PreDraws(function() {
+                if (this.SPRITE == undefined)
+                    return;
+
                 //Draw specific NPC equipment if it exists
 
                 if (this._equipment != undefined) {
@@ -479,6 +533,9 @@ const game = {
                 }
             })
             .Draws(function() {
+                if (this.SPRITE == undefined)
+                    return;
+
                 //Draw NPC equipment if it exists
 
                 if (this._equipment != undefined) {
@@ -532,11 +589,14 @@ const game = {
                 }
             });
 
-        go.name = name;
+        //Set properties
 
+        go.name = name;
         go._loops = [];
         go._moving = false;
         go._direction = 0;
+
+        //Create nameplate
 
         if (name.length > 0) {
             go._nameplate = new lx.UIText(name, 0, 0, 14)
@@ -546,6 +606,37 @@ const game = {
 
             go._nameplate.SetShadow('rgba(0,0,0,.85)', 0, .85);
         }
+
+        //Create casting progress bar
+
+        go._castingBar = new lx.UIProgressBar(
+            'rgba(0, 0, 0, .50)',
+            'rgba(255, 255, 255, .75)',
+            0, -6,
+            0, 8
+        )
+            .Loops(function() {
+                this.Progress(this.Progress() + ((1000/60)/this._target) * 100);
+
+                if (this.Progress() >= 100)
+                    this.Hide();
+            })
+            .Follows(go);
+
+        go._castAction = function(targetTime, elapsedTime) {
+            //Set progress
+
+            this._castingBar._target = targetTime * (1000/60);
+            this._castingBar.Progress(
+                elapsedTime / this._castingBar._target * 100
+            );
+
+            //Show casting bar
+
+            this._castingBar.Show();
+        };
+
+        //Add and show NPC
 
         this.npcs[id] = go.Show(3);
     },
@@ -749,10 +840,7 @@ const game = {
             this.npcs[id]._dialogTexture.Hide();
 
         if (this.npcs[id]._healthbar != undefined)
-        {
-            this.npcs[id]._healthbarBack.Hide();
             this.npcs[id]._healthbar.Hide();
-        }
 
         this.npcs[id] = undefined;
     },
@@ -977,137 +1065,132 @@ const game = {
     {
         //Create action elements
 
-        for (let i = 0; i < data.elements.length; i++)
-        {
-             if (data.elements[i].src.length == 0)
-                 continue;
+        if (data.element.src.length == 0)
+            return;
 
-             if (data.elements[i].type == undefined ||
-                 data.elements[i].type === 'static') {
-                 //Static action
+        if (data.element.type == undefined ||
+            data.element.type === 'static') {
+            //Static action
 
-                 let sprite = new lx.Sprite(data.elements[i].src,
-                     function() {
-                         let sprites = [];
+            cache.getSprite(data.element.src, function(sprite) {
+                let sprites = [];
 
-                         if (data.elements[i].direction === 'horizontal')
-                            sprites = lx.CreateHorizontalTileSheet(sprite, data.elements[i].w, data.elements[i].h);
-                         if (data.elements[i].direction === 'vertical')
-                            sprites = lx.CreateVerticalTileSheet(sprite, data.elements[i].w, data.elements[i].h);
+                if (data.element.direction === 'horizontal')
+                    sprites = lx.CreateHorizontalTileSheet(sprite, data.element.w, data.element.h);
+                if (data.element.direction === 'vertical')
+                    sprites = lx.CreateVerticalTileSheet(sprite, data.element.w, data.element.h);
 
-                         if (sprites.length == 0)
-                             return;
+                if (sprites.length == 0)
+                    return;
 
-                         let action = new lx.Animation(sprites[0], data.elements[i].speed)
-                             .Loops(function() {
-                                if (tiled.current !== this._map ||
-                                    tiled.loading)
-                                    this.Hide();
-                             })
-                             .Position(
-                                data.pos.X+data.elements[i].x,
-                                data.pos.Y+data.elements[i].y
-                             )
-                             .Size(
-                                data.elements[i].w*data.elements[i].scale,
-                                data.elements[i].h*data.elements[i].scale
-                             )
-                             .ShowAmount(4, 0);
+                let action = new lx.Animation(sprites[0], data.element.speed)
+                    .Loops(function() {
+                    if (tiled.current !== this._map ||
+                        tiled.loading)
+                        this.Hide();
+                    })
+                    .Position(
+                        data.pos.X+data.element.x,
+                        data.pos.Y+data.element.y
+                    )
+                    .Size(
+                        data.element.w*data.element.scale,
+                        data.element.h*data.element.scale
+                    )
+                    .ShowAmount(4, 0);
 
-                         action._map = tiled.current;
-                 });
-             }
-             else if (data.elements[i].type === 'projectile') {
-                 //Projectile action
+                action._map = tiled.current;
+            });
+        }
+        else if (data.element.type === 'projectile') {
+            //Projectile action
 
-                 let sprite = new lx.Sprite(data.elements[i].src,
-                     function() {
-                         let angle = 0;
+            cache.getSprite(data.element.src, function(sprite) {
+                let angle = 0;
 
-                         if (data.elements[i].rotates) {
-                             if (data.elements[i].projectileSpeed.y != 0 &&
-                                 data.elements[i].projectileSpeed.x != 0)
-                                     angle = -Math.atan2(data.elements[i].projectileSpeed.x, data.elements[i].projectileSpeed.y);
+                if (data.element.rotates) {
+                    if (data.element.projectileSpeed.y != 0 &&
+                        data.element.projectileSpeed.x != 0)
+                            angle = -Math.atan2(data.element.projectileSpeed.x, data.element.projectileSpeed.y);
 
-                             if (angle == 0) {
-                                 if (data.elements[i].projectileSpeed.x == 0 &&
-                                     data.elements[i].projectileSpeed.y < 0)
-                                     angle = Math.PI;
+                    if (angle == 0) {
+                        if (data.element.projectileSpeed.x == 0 &&
+                            data.element.projectileSpeed.y < 0)
+                            angle = Math.PI;
 
-                                 else if (data.elements[i].projectileSpeed.y == 0) {
-                                     if (data.elements[i].projectileSpeed.x < 0)
-                                         angle = Math.PI/2;
-                                     else if (data.elements[i].projectileSpeed.x > 0)
-                                         angle = -Math.PI/2;
-                                 }
-                             }
+                        else if (data.element.projectileSpeed.y == 0) {
+                            if (data.element.projectileSpeed.x < 0)
+                                angle = Math.PI/2;
+                            else if (data.element.projectileSpeed.x > 0)
+                                angle = -Math.PI/2;
+                        }
+                    }
 
-                             sprite.Rotation(angle);
-                         }
+                    sprite.Rotation(angle);
+                }
 
-                         let projectile = new lx.GameObject(
-                             sprite,
-                             data.pos.X+data.elements[i].x,
-                             data.pos.Y+data.elements[i].y,
-                             data.elements[i].w*data.elements[i].scale,
-                             data.elements[i].h*data.elements[i].scale
-                         );
+                let projectile = new lx.GameObject(
+                    sprite,
+                    data.pos.X+data.element.x,
+                    data.pos.Y+data.element.y,
+                    data.element.w*data.element.scale,
+                    data.element.h*data.element.scale
+                );
 
-                         if (data.elements[i].animated) {
-                             let sprites = [];
+                if (data.element.animated) {
+                    let sprites = [];
 
-                             if (data.elements[i].direction === 'horizontal')
-                                sprites = lx.CreateHorizontalTileSheet(sprite, data.elements[i].w, data.elements[i].h);
-                             if (data.elements[i].direction === 'vertical')
-                                sprites = lx.CreateVerticalTileSheet(sprite, data.elements[i].w, data.elements[i].h);
+                    if (data.element.direction === 'horizontal')
+                        sprites = lx.CreateHorizontalTileSheet(sprite, data.element.w, data.element.h);
+                    if (data.element.direction === 'vertical')
+                        sprites = lx.CreateVerticalTileSheet(sprite, data.element.w, data.element.h);
 
-                             if (sprites.length != 0) {
-                                 sprites = sprites[0];
+                    if (sprites.length != 0) {
+                        sprites = sprites[0];
 
-                                 for (let s = 0; s < sprites.length; s++) {
-                                    sprites[s].Rotation(angle);
-                                     
-                                    if (sprites[s].SIZE == undefined)
-                                        sprites[s].SIZE = sprites[s].Size();
-                                     
-                                    sprites[s].SIZE.W *= data.elements[i].scale;
-                                    sprites[s].SIZE.H *= data.elements[i].scale;
-                                 }
+                        for (let s = 0; s < sprites.length; s++) {
+                            sprites[s].Rotation(angle);
+                            
+                            if (sprites[s].SIZE == undefined)
+                                sprites[s].SIZE = sprites[s].Size();
+                            
+                            sprites[s].SIZE.W *= data.element.scale;
+                            sprites[s].SIZE.H *= data.element.scale;
+                        }
 
-                                 projectile.ShowAnimation(new lx.Animation(sprites, data.elements[i].speed));
-                             }
-                         }
-                         else {
-                             projectile.Clip(0, 0, data.elements[i].w, data.elements[i].h);
-                         }
+                        projectile.ShowAnimation(new lx.Animation(sprites, data.element.speed));
+                    }
+                }
+                else {
+                    projectile.Clip(0, 0, data.element.w, data.element.h);
+                }
 
-                         projectile
-                             .Identifier(data.elements[i].p_id)
-                             .Rotation(angle)
-                             .MovementDecelerates(false)
-                             .Movement(
-                                 data.elements[i].projectileSpeed.x,
-                                 data.elements[i].projectileSpeed.y
-                             )
-                             .Loops(function() {
-                                 this._distance.x += Math.abs(this.MOVEMENT.VX);
-                                 this._distance.y += Math.abs(this.MOVEMENT.VY);
+                projectile
+                    .Identifier(data.element.p_id)
+                    .Rotation(angle)
+                    .MovementDecelerates(false)
+                    .Movement(
+                        data.element.projectileSpeed.x,
+                        data.element.projectileSpeed.y
+                    )
+                    .Loops(function() {
+                        this._distance.x += Math.abs(this.MOVEMENT.VX);
+                        this._distance.y += Math.abs(this.MOVEMENT.VY);
 
-                                 if (this._distance.x > data.elements[i].projectileDistance ||
-                                     this._distance.y > data.elements[i].projectileDistance ||
-                                     tiled.current !== this._map ||
-                                     tiled.loading)
-                                     this.Hide();
-                             })
-                             .Show(4);
+                        if (this._distance.x > data.element.projectileDistance ||
+                            this._distance.y > data.element.projectileDistance ||
+                            tiled.current !== this._map ||
+                            tiled.loading)
+                            this.Hide();
+                    })
+                    .Show(4);
 
-                         projectile._distance = {
-                             x: 0,
-                             y: 0
-                         };
-                         projectile._map = tiled.current;
-                 });
-             }
+                projectile._distance = {
+                    x: 0,
+                    y: 0
+                };
+                projectile._map = tiled.current;
+            });
         }
 
         //Force frame for owner

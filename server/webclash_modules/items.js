@@ -382,20 +382,8 @@ exports.unequipPlayerEquipment = function(id, slot) {
     //Check if equipment has action
 
     if (item.equippableAction !== undefined)
-        for (let a = 0; a < game.players[id].actions.length; a++)
-            if (game.players[id].actions[a] != undefined &&
-                game.players[id].actions[a].name === item.equippableAction)
-                {
-                    //Remove equipped action
-
-                    game.players[id].actions[a] = undefined;
-
-                    //Sync to player
-
-                    server.syncPlayerPartially(id, 'actions', game.players[id].channel, false);
-
-                    break;
-                }
+        if (!actions.removePlayerAction(item.equippableAction, id))
+            return;
 
     //Remove equipped item
 

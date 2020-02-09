@@ -541,6 +541,11 @@ exports.updateNPCCombat = function(map, id)
     if (this.onMap[map][id].preventAttack)
         return;
 
+    //Check if casting
+
+    if (actions.isNPCCasting(map, id))
+        return;
+
     //Check if out of combat for too long
 
     if (this.onMap[map][id].outOfCombatTime >= this.outOfCombatTime*60) {
@@ -844,11 +849,24 @@ exports.updateNPCCombat = function(map, id)
 
     //Perform action
 
-    actions.createNPCAction(
-        this.onMap[map][id].data.actions[nextAction],
+    let action = this.onMap[map][id].data.actions[nextAction];
+    if (actions.performNPCAction(
+        action,
         map,
         id
-    );
+    )) {
+        //Sync casting time
+
+        //TODO: Make it so we don't have to lookup the action
+        //      everytime we sync casting time, this will greatly
+        //      improve performance
+
+        server.syncNPCActionCast(
+            map, 
+            id,
+            actions.getAction(action.action).castingTime
+        );
+    }
 
     //Reset out of combat time
 
@@ -871,7 +889,7 @@ exports.checkNPCFacingCollision = function(map, id)
     //prevents NPCs from getting stuck in
     //unique scenarios
 
-    let deltaFactor = 1.1;
+    let deltaFactor = 1.15;
 
     //Calculate position delta
 
@@ -1018,10 +1036,12 @@ exports.damageNPC = function(owner, map, id, delta)
 
     //Update NPC targets
 
-    if (this.onMap[map][id].targets[owner] == undefined)
-        this.onMap[map][id].targets[owner] = 0
+    if (owner !== id) {
+        if (this.onMap[map][id].targets[owner] == undefined)
+            this.onMap[map][id].targets[owner] = 0
 
-    this.onMap[map][id].targets[owner] -= delta;
+        this.onMap[map][id].targets[owner] -= delta;
+    }
 
     //Set prevent attack to false
 
@@ -1034,7 +1054,8 @@ exports.damageNPC = function(owner, map, id, delta)
 
     //Make sure we update the target
 
-    this.setNPCTarget(map, id, owner);
+    if (owner !== id)
+        this.setNPCTarget(map, id, owner);
 
     //Sync health
 

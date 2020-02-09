@@ -619,6 +619,13 @@ const ui = {
             if (player.actions[slot].mana !== 0)
                 mana = '<font class="info" style="font-size: 10px; margin-top: -3px; display: block;">Mana: ' + (player.actions[slot].mana > 0 ? '+' : '') + player.actions[slot].mana + '</font>';
 
+            //Casting time
+
+            let castingTime = '';
+            
+            if (player.actions[slot].castingTime > 0)
+                castingTime = '<font class="info" style="font-size: 10px; margin-top: -3px; display: block;">Cast: ' + (player.actions[slot].castingTime/60).toFixed(1) + 's</font>'; 
+
             //Create displaybox
 
             let displayBox = document.createElement('div');
@@ -630,7 +637,7 @@ const ui = {
                     '<font class="header" style="font-size: 14px;">' + player.actions[slot].name + '</font><br>' +
                     '<font class="info" style="position: relative; top: 6px;">' + player.actions[slot].description + '</font><br>' +
                     '<font class="info" style="margin-top: 10px; font-size: 10px; display: block;">DPS: ' + dps + '</font>' +
-                    heal + mana +
+                    heal + mana + castingTime +
                     '<font class="info" style="font-size: 10px; margin-top: -3px; display: block;">CD: ' + (player.actions[slot].cooldown/60).toFixed(1) + 's</font>';
 
             //Append

@@ -4,6 +4,7 @@
   "movement": "static",
   "range": 1,
   "facing": 0,
+  "collidesWithinMap": true,
   "type": "friendly",
   "aggressive": false,
   "attackRange": 1,
@@ -26,7 +27,7 @@
     {
       "action": "Swingfest",
       "range": 2,
-      "extraCooldown": 15
+      "extraCooldown": 6
     },
     {
       "action": "Arrow Rain",
@@ -35,7 +36,16 @@
     }
   ],
   "items": [],
-  "equipment": [],
+  "equipment": [
+    {
+      "source": "res/equipment/main/1.png",
+      "type": "main"
+    },
+    {
+      "source": "res/equipment/offhand/1.png",
+      "type": "offhand"
+    }
+  ],
   "dialog": [
     {
       "text": "This village now belongs to me!!",
@@ -61,6 +71,8 @@
       "turnHostileEvent": null,
       "showQuestEvent": null,
       "showShopEvent": null,
+      "showBankEvent": null,
+      "advanceQuestEvent": null,
       "getVariableEvent": null,
       "setVariableEvent": null
     },
@@ -92,6 +104,8 @@
       "turnHostileEvent": null,
       "showQuestEvent": null,
       "showShopEvent": null,
+      "showBankEvent": null,
+      "advanceQuestEvent": null,
       "getVariableEvent": null,
       "setVariableEvent": null
     },
@@ -119,6 +133,8 @@
       "turnHostileEvent": null,
       "showQuestEvent": null,
       "showShopEvent": null,
+      "showBankEvent": null,
+      "advanceQuestEvent": null,
       "getVariableEvent": null,
       "setVariableEvent": null
     },
@@ -148,6 +164,8 @@
         "name": "Village Rescue (Pt. 1)"
       },
       "showShopEvent": null,
+      "showBankEvent": null,
+      "advanceQuestEvent": null,
       "getVariableEvent": null,
       "setVariableEvent": null
     },
@@ -177,6 +195,8 @@
         "name": "Village Rescue (Pt. 2)"
       },
       "showShopEvent": null,
+      "showBankEvent": null,
+      "advanceQuestEvent": null,
       "getVariableEvent": null,
       "setVariableEvent": null
     },
@@ -204,6 +224,8 @@
       "turnHostileEvent": null,
       "showQuestEvent": null,
       "showShopEvent": null,
+      "showBankEvent": null,
+      "advanceQuestEvent": null,
       "getVariableEvent": null,
       "setVariableEvent": null
     },
@@ -231,6 +253,8 @@
       "turnHostileEvent": {},
       "showQuestEvent": null,
       "showShopEvent": null,
+      "showBankEvent": null,
+      "advanceQuestEvent": null,
       "getVariableEvent": null,
       "setVariableEvent": null
     },
@@ -254,6 +278,8 @@
       "turnHostileEvent": null,
       "showQuestEvent": null,
       "showShopEvent": null,
+      "showBankEvent": null,
+      "advanceQuestEvent": null,
       "getVariableEvent": null,
       "setVariableEvent": null
     }

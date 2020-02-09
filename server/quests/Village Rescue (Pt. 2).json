@@ -1,6 +1,6 @@
 {
   "minLevel": 5,
-  "description": "Fight the captain.",
+  "description": "Teach the captain a lesson.",
   "objectives": [
     {
       "type": "kill",
@@ -10,12 +10,98 @@
         "cur": 0,
         "resetOnDeath": true
       },
-      "gatherObjective": null
+      "gatherObjective": null,
+      "talkObjective": null
+    },
+    {
+      "type": "talk",
+      "killObjective": null,
+      "gatherObjective": null,
+      "talkObjective": {
+        "npc": "Captain",
+        "dialog": [
+          {
+            "text": "You did not have to be so rough on me.\nFine, I will leave this town - whatever.",
+            "portrait": "res/portraits/2.png",
+            "entry": true,
+            "isEvent": false,
+            "options": [
+              {
+                "text": "Good",
+                "next": 1
+              }
+            ],
+            "eventType": "",
+            "repeatable": false,
+            "giveItemEvent": null,
+            "loadMapEvent": null,
+            "affectPlayerEvent": null,
+            "spawnNPCEvent": null,
+            "turnHostileEvent": null,
+            "showQuestEvent": null,
+            "showShopEvent": null,
+            "showBankEvent": null,
+            "advanceQuestEvent": null,
+            "getVariableEvent": null,
+            "setVariableEvent": null
+          },
+          {
+            "text": "",
+            "portrait": "",
+            "entry": false,
+            "isEvent": true,
+            "options": [
+              {
+                "text": "",
+                "next": -1
+              },
+              {
+                "text": "",
+                "next": -1
+              }
+            ],
+            "eventType": "AdvanceQuest",
+            "repeatable": true,
+            "giveItemEvent": null,
+            "loadMapEvent": null,
+            "affectPlayerEvent": null,
+            "spawnNPCEvent": null,
+            "turnHostileEvent": null,
+            "showQuestEvent": null,
+            "showShopEvent": null,
+            "showBankEvent": null,
+            "advanceQuestEvent": {
+              "entry": false
+            },
+            "getVariableEvent": null,
+            "setVariableEvent": null
+          }
+        ],
+        "dialogElements": [
+          {
+            "p": "20, 131",
+            "id": 0,
+            "isEvent": false,
+            "size": "100, 80"
+          },
+          {
+            "p": "179, 160",
+            "id": 1,
+            "isEvent": true,
+            "size": "110, 20"
+          }
+        ]
+      }
     }
   ],
   "rewards": {
     "currency": 50,
     "experience": 45,
-    "items": []
+    "items": [
+      {
+        "item": "Captain's Axe",
+        "dropChance": 1
+      }
+    ]
   }
 }

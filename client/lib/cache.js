@@ -70,12 +70,12 @@ const cache = {
             }
         }
 
-        this.tilesets[src].CLIP = undefined;
+        let tilesetCopy = new lx.Sprite(this.tilesets[src].IMG);
 
         if (cb != undefined && canCallback)
-            cb(this.tilesets[src]);
+            cb(tilesetCopy);
 
-        return this.tilesets[src];
+        return tilesetCopy;
     },
 
     sprites: {},
@@ -93,12 +93,12 @@ const cache = {
             }
         }
 
-        this.sprites[src].CLIP = undefined;
+        let spriteCopy = new lx.Sprite(this.sprites[src].IMG);
 
         if (cb != undefined && canCallback)
-            cb(this.sprites[src]);
+            cb(spriteCopy);
 
-        return this.sprites[src];
+        return spriteCopy;
     },
 
     audio: {},

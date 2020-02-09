@@ -1,6 +1,6 @@
 {
   "minLevel": 5,
-  "description": "Terminate one golem on sight and loot the weird greens. ",
+  "description": "Terminate one golem on sight and loot the weird greens. It is advised to take on this monster with friends.",
   "objectives": [
     {
       "type": "kill",
@@ -10,7 +10,8 @@
         "cur": 0,
         "resetOnDeath": false
       },
-      "gatherObjective": null
+      "gatherObjective": null,
+      "talkObjective": null
     },
     {
       "type": "gather",
@@ -19,6 +20,122 @@
         "item": "Weird Greens",
         "amount": 1,
         "cur": 0
+      },
+      "talkObjective": null
+    },
+    {
+      "type": "talk",
+      "killObjective": null,
+      "gatherObjective": null,
+      "talkObjective": {
+        "npc": "Eric",
+        "dialog": [
+          {
+            "text": "Thanks this stuff is amazing.",
+            "portrait": "res/portraits/1.png",
+            "entry": true,
+            "isEvent": false,
+            "options": [
+              {
+                "text": "What is it for?",
+                "next": 1
+              },
+              {
+                "text": "Exit",
+                "next": 2
+              }
+            ],
+            "eventType": "",
+            "repeatable": false,
+            "giveItemEvent": null,
+            "loadMapEvent": null,
+            "affectPlayerEvent": null,
+            "spawnNPCEvent": null,
+            "turnHostileEvent": null,
+            "showQuestEvent": null,
+            "showShopEvent": null,
+            "showBankEvent": null,
+            "advanceQuestEvent": null,
+            "getVariableEvent": null,
+            "setVariableEvent": null
+          },
+          {
+            "text": "I can't say, my superiors would not like me using this stuff.",
+            "portrait": "res/portraits/1.png",
+            "entry": false,
+            "isEvent": false,
+            "options": [
+              {
+                "text": "Exit",
+                "next": 2
+              }
+            ],
+            "eventType": "",
+            "repeatable": false,
+            "giveItemEvent": null,
+            "loadMapEvent": null,
+            "affectPlayerEvent": null,
+            "spawnNPCEvent": null,
+            "turnHostileEvent": null,
+            "showQuestEvent": null,
+            "showShopEvent": null,
+            "showBankEvent": null,
+            "advanceQuestEvent": null,
+            "getVariableEvent": null,
+            "setVariableEvent": null
+          },
+          {
+            "text": "",
+            "portrait": "",
+            "entry": false,
+            "isEvent": true,
+            "options": [
+              {
+                "text": "",
+                "next": -1
+              },
+              {
+                "text": "",
+                "next": -1
+              }
+            ],
+            "eventType": "AdvanceQuest",
+            "repeatable": true,
+            "giveItemEvent": null,
+            "loadMapEvent": null,
+            "affectPlayerEvent": null,
+            "spawnNPCEvent": null,
+            "turnHostileEvent": null,
+            "showQuestEvent": null,
+            "showShopEvent": null,
+            "showBankEvent": null,
+            "advanceQuestEvent": {
+              "entry": false
+            },
+            "getVariableEvent": null,
+            "setVariableEvent": null
+          }
+        ],
+        "dialogElements": [
+          {
+            "p": "28, 107",
+            "id": 0,
+            "isEvent": false,
+            "size": "100, 80"
+          },
+          {
+            "p": "224, 46",
+            "id": 1,
+            "isEvent": false,
+            "size": "100, 80"
+          },
+          {
+            "p": "407, 137",
+            "id": 2,
+            "isEvent": true,
+            "size": "110, 20"
+          }
+        ]
       }
     }
   ],

@@ -11,19 +11,21 @@ namespace WebClashServer.Editors
 {
     public partial class Actions : Form
     {
-        public Action current = null;
-        public Character currentCharacter = null;
-        public Image charImage = null;
-        
-        public int curElement = 0;
+        private Action current = null;
+        private Character currentCharacter = null;
+        private Image charImage = null;
 
-        public bool moving = false;
-        public Point oldMP = default(Point);
+        private int curElement = 0;
 
-        public Dictionary<Element, Frame> elementFrames = new Dictionary<Element, Frame>();
+        private bool moving = false;
+        private Point oldMP = default;
+
+        private Dictionary<Element, Frame> elementFrames = new Dictionary<Element, Frame>();
+        private Dictionary<Element, int> remainingDelays = new Dictionary<Element, int>();
+        private Dictionary<Element, bool> finished = new Dictionary<Element, bool>();
+        private Dictionary<string, Image> savedImages = new Dictionary<string, Image>();
 
         private int oldActionSelection = 0;
-
         private bool dataHasChanged = false;
 
         public Actions()
@@ -55,7 +57,7 @@ namespace WebClashServer.Editors
             if (actionSelect.Items.Count > 0)
                 actionSelect.SelectedItem = actionSelect.Items[0];
             else
-                button4_Click(sender, e);
+                addAction_Click(sender, e);
 
             if (charSelect.Items.Count > 0)
             {
@@ -143,7 +145,12 @@ namespace WebClashServer.Editors
             heal.Value = current.heal;
             mana.Value = current.mana;
 
-            cooldown.Value = current.cooldown * 16;
+            castingTime.Value = (int)Math.Round((double)current.castingTime * (1000d / 60));
+            cooldown.Value = (int)Math.Round((double)current.cooldown * (1000d / 60));
+
+            finished.Clear();
+            remainingDelays.Clear();
+            elementFrames.Clear();
 
             canvas.Invalidate();
         }
@@ -182,10 +189,15 @@ namespace WebClashServer.Editors
 
         private Image GetClientImage(string src)
         {
-            if (!File.Exists(Program.main.serverLocation + "/../client/" + src))
-                return null;
+            if (!savedImages.ContainsKey(src))
+            {
+                if (!File.Exists(Program.main.serverLocation + "/../client/" + src))
+                    return null;
 
-            return Image.FromFile(Program.main.serverLocation + "/../client/" + src);
+                savedImages[src] = Image.FromFile(Program.main.serverLocation + "/../client/" + src);
+            }
+
+            return savedImages[src];
         }
 
         private void paintCanvas(object sender, PaintEventArgs e)
@@ -203,48 +215,86 @@ namespace WebClashServer.Editors
 
                 //Render character
 
-                g.DrawImage(charImage, new Rectangle(sp.X, sp.Y, currentCharacter.width, currentCharacter.height), 0, 0, currentCharacter.width, currentCharacter.height, GraphicsUnit.Pixel);
+                g.DrawImage(
+                    charImage, 
+                    new Rectangle(
+                        sp.X, sp.Y, 
+                        currentCharacter.width, currentCharacter.height), 
+                    0, 0,
+                    currentCharacter.width, currentCharacter.height, 
+                    GraphicsUnit.Pixel
+                );
 
                 //Render elements
 
-                for (int i = 0; i < current.elements.Length; i++)
+                foreach (Element cur in current.elements)
                 {
-                    Element el = current.elements[i];
+                    //Setup element rectangle
 
-                    int w = (int)(el.w * el.scale),
-                        h = (int)(el.h * el.scale);
+                    int w = (int)(cur.w * cur.scale),
+                        h = (int)(cur.h * cur.scale);
 
-                    Rectangle r = new Rectangle(el.x, el.y, w, h);
+                    Rectangle r = new Rectangle(cur.x, cur.y, w, h);
 
-                    if (el.src.Length > 0)
+                    //Check if already finished, if so only draw rectangle
+
+                    if (finished.ContainsKey(cur) && finished[cur])
+                        goto DrawRectangle;
+
+                    //If remaining delay exists, draw delay
+
+                    if (remainingDelays.ContainsKey(cur) && remainingDelays[cur] > 0)
                     {
-                        Image img = GetClientImage(el.src);
+                        //Draw delay in seconds
+
+                        double remainingTime = remainingDelays[cur] * (1000d / 60) / 1000;
+                        StringFormat format = new StringFormat();
+                        format.LineAlignment = StringAlignment.Center;
+                        format.Alignment = StringAlignment.Center;
+                        g.DrawString(
+                            remainingTime.ToString("0.#s"),
+                            new Font("Verdana", 10), 
+                            new SolidBrush(Color.FromArgb(150, 0, 0, 0)), 
+                            cur.x + w / 2, cur.y + h / 2,
+                            format
+                        );
+
+                        goto DrawRectangle;
+                    }
+
+                    //Draw image if possible
+
+                    if (elementFrames.ContainsKey(cur) && cur.src.Length > 0)
+                    {
+                        Image img = GetClientImage(cur.src);
 
                         if (img == null)
                             goto DrawRectangle;
 
-                        if (el.direction == "horizontal")
-                            g.DrawImage(img, r, elementFrames[el].frame * el.w, 0, el.w, el.h, GraphicsUnit.Pixel);
-                        else if (el.direction == "vertical")
-                            g.DrawImage(img, r, 0, elementFrames[el].frame * el.h, el.w, el.h, GraphicsUnit.Pixel);
+                        if (cur.direction == "horizontal")
+                            g.DrawImage(img, r, elementFrames[cur].frame * cur.w, 0, cur.w, cur.h, GraphicsUnit.Pixel);
+                        else if (cur.direction == "vertical")
+                            g.DrawImage(img, r, 0, elementFrames[cur].frame * cur.h, cur.w, cur.h, GraphicsUnit.Pixel);
                     }
 
+                    //Draw rectangle
+
                     DrawRectangle:
-                        if (i == curElement)
+                        if (cur == current.elements[curElement])
                             g.DrawRectangle(Pens.Blue, r);
                         else
                             g.DrawRectangle(Pens.Purple, r);
                     
                     //Draw projectile arrow (if projectile)
 
-                    if (el.type == "projectile")
+                    if (cur.type == "projectile")
                     {
                         Pen p = new Pen(Color.FromArgb(125, Color.Black), 6);
 
                         p.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
 
-                        int x = el.x + el.w / 2,
-                            y = el.y + el.h / 2;
+                        int x = cur.x + cur.w / 2,
+                            y = cur.y + cur.h / 2;
 
                         int dx = (x - current.sw / 2),
                             dy = (y - current.sh / 2);
@@ -324,14 +374,14 @@ namespace WebClashServer.Editors
             LoadCharacter(charSelect.SelectedItem.ToString());
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void addAction_Click(object sender, EventArgs e)
         {
             actionSelect.Items.Add(string.Empty);
 
             actionSelect.SelectedItem = string.Empty;
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void removeAction_Click(object sender, EventArgs e)
         {
             if (!File.Exists(Program.main.serverLocation + "/actions/" + current.name + ".json"))
             {
@@ -374,7 +424,7 @@ namespace WebClashServer.Editors
             current.name = name.Text;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void addElement_Click(object sender, EventArgs e)
         {
             if (current == null)
                 return;
@@ -386,7 +436,7 @@ namespace WebClashServer.Editors
             canvas.Invalidate();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void removeElement_Click(object sender, EventArgs e)
         {
             if (current == null)
                 return;
@@ -431,6 +481,8 @@ namespace WebClashServer.Editors
             scale.Value = (decimal)current.elements[curElement].scale;
 
             source.Text = current.elements[curElement].src;
+
+            delay.Value = (int)Math.Round((double)current.elements[curElement].delay * (1000d / 60));
 
             animationEnabled.Checked = current.elements[curElement].animated;
             speed.Enabled = current.elements[curElement].animated;
@@ -491,51 +543,104 @@ namespace WebClashServer.Editors
 
         private void animationTimer_Tick(object sender, EventArgs e)
         {
-            bool done = false;
-
             if (current == null)
                 return;
 
-            for (int i = 0; i < current.elements.Length; i++)
-            {
-                if (current.elements[i].src.Length == 0)
-                    continue;
+            //Check if all elements have finished
 
-                if (!elementFrames.ContainsKey(current.elements[i]))
-                    elementFrames.Add(current.elements[i], new Frame());
-                
-                if (!current.elements[i].animated)
+            bool allFinished = true;
+            foreach (KeyValuePair<Element, bool> kp in finished)
+                if (!kp.Value)
                 {
-                    elementFrames[current.elements[i]].frame = 0;
-                    done = true;
-
-                    continue;
+                    allFinished = false;
+                    break;
                 }
 
-                elementFrames[current.elements[i]].cur++;
+            //If finished, reset all delays and set unfinished
 
-                if (elementFrames[current.elements[i]].cur >= current.elements[i].speed)
+            if (allFinished)
+            {
+                elementFrames.Clear();
+
+                finished.Clear();
+                remainingDelays.Clear();
+
+                foreach (Element cur in current.elements)
                 {
-                    elementFrames[current.elements[i]].frame++;
-
-                    Image img = GetClientImage(current.elements[i].src);
-                    if (img == null)
-                        continue;
-
-                    if (current.elements[i].direction == "horizontal" &&
-                        elementFrames[current.elements[i]].frame * current.elements[i].w >= img.Width)
-                        elementFrames[current.elements[i]].frame = 0;
-                    if (current.elements[i].direction == "vertical" &&
-                        elementFrames[current.elements[i]].frame * current.elements[i].h >= img.Height)
-                        elementFrames[current.elements[i]].frame = 0;
-
-                    elementFrames[current.elements[i]].cur = 0;
-                    done = true;
+                    finished[cur] = false;
+                    remainingDelays[cur] = cur.delay;
                 }
             }
 
-            if (done)
-                canvas.Invalidate();
+            //Handle all elements
+
+            foreach (Element cur in current.elements)
+            {
+                //Check if already finished
+
+                if (finished[cur])
+                    continue;
+
+                //If the element has no source, set finished and continue
+
+                if (cur.src.Length == 0)
+                {
+                    finished[cur] = true;
+                    continue;
+                }
+
+                //If delay exists, eat away at the delay first
+
+                if (remainingDelays[cur] > 0)
+                {
+                    remainingDelays[cur]--;
+                    continue;
+                }
+
+                //If no frame exists yet, add frame
+
+                if (!elementFrames.ContainsKey(cur))
+                    elementFrames.Add(cur, new Frame());
+                
+                //Check if not animated
+
+                if (!cur.animated)
+                {
+                    elementFrames[cur].frame = 0;
+
+                    continue;
+                }
+
+                //If frame should be advanced, advance frame
+
+                if (elementFrames[cur].cur >= cur.speed)
+                {
+                    elementFrames[cur].frame++;
+
+                    //Check frame boundaries
+
+                    Image img = GetClientImage(cur.src);
+                    if (img == null)
+                        continue;
+
+                    if (cur.direction == "horizontal" &&
+                        elementFrames[cur].frame * cur.w >= img.Width)
+                        finished[cur] = true;
+                    else if (cur.direction == "vertical" &&
+                        elementFrames[cur].frame * cur.h >= img.Height)
+                        finished[cur] = true;
+
+                    //Set animation timer to zero
+
+                    elementFrames[cur].cur = 0;
+                }
+
+                //Increment animation duration
+
+                elementFrames[cur].cur++;
+            }
+
+            canvas.Invalidate();
         }
 
         private void power_ValueChanged(object sender, EventArgs e)
@@ -614,9 +719,14 @@ namespace WebClashServer.Editors
             current.src = icon.Text;
         }
 
+        private void castingTime_ValueChanged(object sender, EventArgs e)
+        {
+            current.castingTime = (int)Math.Round((double)castingTime.Value / (1000d / 60));
+        }
+
         private void cooldown_ValueChanged(object sender, EventArgs e)
         {
-            current.cooldown = (int)(cooldown.Value / 16);
+            current.cooldown = (int)Math.Round((double)cooldown.Value / (1000d / 60));
         }
 
         private void propertyView_SelectedIndexChanged(object sender, EventArgs e)
@@ -631,6 +741,8 @@ namespace WebClashServer.Editors
                 appearancePanel.Visible = false;
                 behaviourPanel.Visible = true;
 
+                delay.Value = (int)Math.Round((double)current.elements[curElement].delay * (1000d/60d));
+
                 propertyType.SelectedItem = char.ToUpper(current.elements[curElement].type[0]) + current.elements[curElement].type.Substring(1, current.elements[curElement].type.Length - 1);
 
                 animationEnabled.Checked = current.elements[curElement].animated;
@@ -640,7 +752,12 @@ namespace WebClashServer.Editors
                 projectileDistance.Value = current.elements[curElement].projectileDistance;
             }
         }
-        
+
+        private void delay_ValueChanged(object sender, EventArgs e)
+        {
+            current.elements[curElement].delay = (int)Math.Round((double)delay.Value / (1000d/60d));
+        }
+
         private void animationEnabled_CheckedChanged(object sender, EventArgs e)
         {
             current.elements[curElement].animated = animationEnabled.Checked;
@@ -727,6 +844,8 @@ namespace WebClashServer.Editors
                 description = temp.description;
 
                 cooldown = temp.cooldown;
+
+                castingTime = temp.castingTime;
             }
             catch (Exception e)
             {
@@ -771,6 +890,7 @@ namespace WebClashServer.Editors
                    mana = 0;
 
         public int cooldown = 0;
+        public int castingTime = 0;
     }
 
     public class Scaling
@@ -800,6 +920,7 @@ namespace WebClashServer.Editors
         public bool animated = true;
         public int speed = 8;
         public string direction = "horizontal";
+        public int delay = 0;
 
         public bool rotates = true;
         public int projectileSpeed = 1;
@@ -808,13 +929,7 @@ namespace WebClashServer.Editors
 
     public class Frame
     {
-        public Frame()
-        {
-
-        }
-
         public int cur = 0;
-
         public int frame = 0;
     }
 }

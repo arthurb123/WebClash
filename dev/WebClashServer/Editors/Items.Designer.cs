@@ -664,9 +664,9 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(172, 28);
+            this.label17.Location = new System.Drawing.Point(158, 28);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(29, 13);
+            this.label17.Size = new System.Drawing.Size(49, 13);
             this.label17.TabIndex = 19;
             this.label17.Text = "Currency";
             // 

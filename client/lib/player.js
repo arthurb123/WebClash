@@ -5,73 +5,6 @@ const player = {
     quests: {},
     inParty: false,
 
-    forceDirection:
-    {
-        start: function(dir) {
-            let target = game.players[game.player];
-
-            target._direction = dir;
-            this.direction = dir;
-
-            this.cur = 0;
-        },
-        reset: function() {
-            this.direction = -1;
-        },
-        direction: -1,
-        cur: 0,
-        standard: 12
-    },
-    propertyInteraction:
-    {
-        cooldown: {
-            update: function() {
-                if (!this.on)
-                    return;
-
-                this.cur++;
-
-                if (this.cur >= this.standard) {
-                    this.cur = 0;
-
-                    this.on = false;
-                }
-            },
-            on: false,
-            cur: 0,
-            standard: 60
-        },
-        interact: function() {
-            if (this.cooldown.on)
-                return;
-
-            channel.emit('CLIENT_INTERACT_PROPERTIES');
-
-            this.cooldown.on = true;
-        }
-    },
-
-    loseFocus: function()
-    {
-        //Check if the player exists
-
-        if (game.player === -1)
-            return;
-
-        //Make sure the player exists
-        //in the buffer
-
-        if (game.players[game.player].BUFFER_ID === -1)
-            game.players[game.player].Show(3);
-
-        //Reset movement
-
-        game.players[game.player].Movement(0, 0);
-
-        //Remove controller targeting
-
-        lx.CONTEXT.CONTROLLER.TARGET = undefined;
-    },
     instantiate: function(name)
     {
         let go = new lx.GameObject(undefined, 0, 0, 0, 0);
@@ -140,6 +73,22 @@ const player = {
             });
         }
 
+        //Create casting progress bar
+
+        go._castingBar = new lx.UIProgressBar(
+            'rgba(0, 0, 0, .50)',
+            'rgba(255, 255, 255, .75)',
+            0, -6,
+            0, 8
+        )
+            .Loops(function() {
+                this.Progress(this.Progress() + ((1000/60)/this._target) * 100);
+
+                if (this.Progress() >= 100)
+                    player.cancelCastAction();
+            })
+            .Follows(go);
+
         //Request xp target
 
         player.requestExpTarget();
@@ -154,6 +103,11 @@ const player = {
 
         if (game.players[game.player] != undefined)
             game.players[game.player].Hide();
+
+        //Stop input
+
+        lx.StopMouse(0);
+        lx.StopMouse(1);
 
         //Hide all UI
 
@@ -185,6 +139,115 @@ const player = {
             ui.show();
         }]);
     },
+
+    forceDirection:
+    {
+        start: function(dir) {
+            let target = game.players[game.player];
+
+            target._direction = dir;
+            this.direction = dir;
+
+            this.cur = 0;
+        },
+        reset: function() {
+            this.direction = -1;
+        },
+        direction: -1,
+        cur: 0,
+        standard: 12
+    },
+    faceMouse: function()
+    {
+        //Calculate center point
+
+        let centerX = lx.GetDimensions().width/2,
+            centerY = lx.GetDimensions().height/2;
+
+        if (properties.lockCamera) {
+            let pos = lx.GAME.TRANSLATE_FROM_FOCUS(game.players[game.player].POS);
+
+            centerX = pos.X+game.players[game.player].SIZE.W/2;
+            centerY = pos.Y+game.players[game.player].SIZE.H/2;
+        }
+
+        //Calculate delta
+
+        let dx = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-centerX,
+            dy = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-centerY;
+
+        //Calculate new direction
+
+        let newDirection;
+        if (Math.abs(dx) > Math.abs(dy))
+            if (dx > 0) 
+                newDirection = 2;
+            else 
+                newDirection = 1;
+        else
+            if (dy > 0) 
+                newDirection = 0;
+            else 
+                newDirection = 3;
+
+        //Only force new direction if possible
+
+        if (game.players[game.player]._moving ||
+            newDirection !== game.players[game.player]._direction) {
+            this.forceDirection.start(newDirection);
+            this.sync('direction');
+        }
+    },
+    loseFocus: function()
+    {
+        //Check if the player exists
+
+        if (game.player === -1)
+            return;
+
+        //Make sure the player exists
+        //in the buffer
+
+        if (game.players[game.player].BUFFER_ID === -1)
+            game.players[game.player].Show(3);
+
+        //Reset movement
+
+        game.players[game.player].Movement(0, 0);
+
+        //Remove controller targeting
+
+        lx.CONTEXT.CONTROLLER.TARGET = undefined;
+    },
+    propertyInteraction:
+    {
+        cooldown: {
+            update: function() {
+                if (!this.on)
+                    return;
+
+                this.cur++;
+
+                if (this.cur >= this.standard) {
+                    this.cur = 0;
+
+                    this.on = false;
+                }
+            },
+            on: false,
+            cur: 0,
+            standard: 60
+        },
+        interact: function() {
+            if (this.cooldown.on)
+                return;
+
+            channel.emit('CLIENT_INTERACT_PROPERTIES');
+
+            this.cooldown.on = true;
+        }
+    },
+
     setCollider: function(collider)
     {
         game.players[game.player].ClearCollider();
@@ -232,18 +295,6 @@ const player = {
         });
 
         game.players[game.player].MaxVelocity(movement.max);
-    },
-    setActions: function(actions)
-    {
-        this.actions = actions;
-
-        ui.actionbar.reload();
-    },
-    removeAction: function(slot)
-    {
-        this.actions[slot] = undefined;
-
-        ui.actionbar.reloadAction(slot);
     },
     setEquipment: function(equipment)
     {
@@ -315,35 +366,67 @@ const player = {
     {
         channel.emit('CLIENT_REQUEST_EXP');
     },
-    faceMouse: function()
+
+    setActions: function(actions)
     {
-        let centerX = lx.GetDimensions().width/2,
-            centerY = lx.GetDimensions().height/2;
+        this.actions = actions;
 
-        if (properties.lockCamera) {
-            let pos = lx.GAME.TRANSLATE_FROM_FOCUS(game.players[game.player].POS);
+        ui.actionbar.reload();
+    },
+    castAction: function(slot, elapsedTime) {
+        //Check if casting time is immediate
 
-            centerX = pos.X+game.players[game.player].SIZE.W/2;
-            centerY = pos.Y+game.players[game.player].SIZE.H/2;
-        }
+        if (this.actions[slot].castingTime === 0)
+            return;
 
-        let dx = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-centerX,
-            dy = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-centerY;
+        //Set currently casting slot
 
-        if (Math.abs(dx) > Math.abs(dy))
-            if (dx > 0) this.forceDirection.start(2);
-            else this.forceDirection.start(1);
-        else
-            if (dy > 0) this.forceDirection.start(0);
-            else this.forceDirection.start(3);
+        this.casting = slot;
 
-        this.sync('direction');
+        //Grab gameobject
+
+        let go = game.players[game.player];
+
+        //Set progress
+
+        go._castingBar._target = this.actions[slot].castingTime * (1000/60);
+        go._castingBar.Progress(
+            elapsedTime / go._castingBar._target * 100
+        );
+
+        //Show casting bar
+
+        go._castingBar.Show();
+    },
+    cancelCastAction: function() {
+        //remove currently casting slot
+
+        player.casting = undefined;
+
+        //Hide casting bar
+
+        game.players[game.player]._castingBar.Hide();
+    },
+    removeAction: function(slot)
+    {
+        this.actions[slot] = undefined;
+
+        ui.actionbar.reloadAction(slot);
     },
     performAction: function(slot)
     {
         //Check if valid
 
         if (player.actions[slot] == undefined)
+            return;
+
+        //Check if already casting another spell,
+        //if so cancel casting - if it is the same
+        //spell simply return
+
+        if (player.casting !== slot)
+            player.cancelCastAction();
+        else if (player.casting === slot)
             return;
 
         //Check if cooldown
@@ -360,6 +443,7 @@ const player = {
 
         channel.emit('CLIENT_PLAYER_ACTION', slot);
     },
+
     unequip: function(equippable)
     {
         if (this.equipment[equippable] === undefined)
@@ -385,9 +469,23 @@ const player = {
 
     update: function()
     {
+        //Update property interaction
+
         player.propertyInteraction.cooldown.update();
 
+        //Update casting bar
+
+        this._castingBar.SIZE.W = this.SIZE.W*lx.GAME.SCALE;
+
+        //Update movement
+
         if (this.MOVEMENT.VX != 0 || this.MOVEMENT.VY != 0) {
+            //Cancel casting
+
+            player.cancelCastAction();
+
+            //Handle movement
+
             if (player.forceDirection.direction == -1) {
                 let oldDir = this._direction;
 
@@ -426,8 +524,9 @@ const player = {
             }
         }
 
-        animation.animateMoving(this);
-                
+        //Animate
+
+        animation.animateMoving(this);   
     },
     //This gets called before rendering the player
     preDraws: function() 
@@ -497,6 +596,7 @@ const player = {
             lx.DrawSprite(equipment[i], this.POS.X, this.POS.Y);
         }
     },
+
     sync: function(type) {
         let data = {};
 

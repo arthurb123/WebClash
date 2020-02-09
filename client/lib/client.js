@@ -580,10 +580,52 @@ const client = {
                 
             game.players[game.player].Show(3);
         });
+        channel.on('GAME_PLAYER_CAST_ACTION', function(data) {
+            if (player.actions[data.slot] != undefined) {
+                //Calculate elapsed time
 
-        //Response events
+                let elapsed = Date.now() - data.beginTime;
 
-        channel.on('CLIENT_PLAYER_ACTION_RESPONSE', function(data) {
+                //Begin casting
+
+                player.castAction(data.slot, elapsed);
+            }
+        });
+        channel.on('GAME_OTHER_PLAYER_CAST_ACTION', function(data) {
+            if (game.players[data.player] != undefined) {
+                //Calculate elapsed time
+
+                let elapsed = Date.now() - data.beginTime;
+
+                //Begin casting 
+
+                game.players[data.player]._castAction(
+                    data.targetTime, 
+                    elapsed
+                );
+            }
+        });
+        channel.on('GAME_OTHER_PLAYER_CANCELLED_CAST', function(data) {
+            //Cancel casting
+
+            if (game.players[data] != undefined) 
+                game.players[data]._castingBar.Hide();
+        });
+        channel.on('GAME_NPC_CAST_ACTION', function(data) {
+            if (game.npcs[data.npc] != undefined) {
+                //Calculate elapsed time
+
+                let elapsed = Date.now() - data.beginTime;
+
+                //Begin casting 
+
+                game.npcs[data.npc]._castAction(
+                    data.targetTime, 
+                    elapsed
+                );
+            }
+        });
+        channel.on('GAME_PLAYER_ACTION_USAGE', function(data) {
             if (player.actions[data] != undefined) {
                 //Action name
 
@@ -608,6 +650,9 @@ const client = {
                         ui.actionbar.setCooldown(a);
             }
         });
+
+        //Response events
+
         channel.on('CLIENT_USE_ITEM_RESPONSE', function(data) {
             if (data.valid) {
                 //Play item sound if possible

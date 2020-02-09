@@ -24,13 +24,14 @@
       "animated": false,
       "speed": 8,
       "direction": "vertical",
+      "delay": 6,
       "rotates": true,
       "projectileSpeed": 5,
       "projectileDistance": 8
     },
     {
-      "x": 138,
-      "y": 189,
+      "x": 131,
+      "y": 185,
       "w": 32,
       "h": 32,
       "scale": 1.0,
@@ -39,13 +40,14 @@
       "animated": false,
       "speed": 8,
       "direction": "vertical",
+      "delay": 0,
       "rotates": true,
       "projectileSpeed": 5,
       "projectileDistance": 8
     },
     {
-      "x": 152,
-      "y": 189,
+      "x": 158,
+      "y": 185,
       "w": 32,
       "h": 32,
       "scale": 1.0,
@@ -54,13 +56,22 @@
       "animated": false,
       "speed": 8,
       "direction": "vertical",
+      "delay": 12,
       "rotates": true,
       "projectileSpeed": 5,
       "projectileDistance": 8
     }
   ],
-  "sounds": [],
+  "sounds": [
+    {
+      "src": "res/sounds/misc/random5.wav"
+    },
+    {
+      "src": "res/sounds/misc/random6.wav"
+    }
+  ],
   "heal": 0,
   "mana": 0,
-  "cooldown": 15
+  "cooldown": 15,
+  "castingTime": 30
 }

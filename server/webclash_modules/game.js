@@ -34,6 +34,14 @@ exports.startLoop = function()
 
         actions.updateCooldowns();
 
+        //Update action casting
+
+        actions.updateCasting();
+
+        //Update actions
+
+        actions.updateActions();
+
         //Update action projectiles
 
         actions.updateProjectiles();
@@ -911,17 +919,6 @@ exports.getPlayerGlobalVariable = function(id, name)
     //Return player global variable
 
     return game.players[id].gvars[name];
-};
-
-exports.checkPlayerForChecks = function(id, checks)
-{
-    //Go over all checks
-
-    for (let c = 0; c < checks.length; c++) {
-        console.log(checks[c]);
-    }
-
-    return true;
 };
 
 exports.loadMap = function(channel, map)

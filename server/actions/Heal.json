@@ -24,6 +24,7 @@
       "animated": true,
       "speed": 4,
       "direction": "horizontal",
+      "delay": 0,
       "rotates": true,
       "projectileSpeed": 1,
       "projectileDistance": 0
@@ -36,5 +37,6 @@
   ],
   "heal": 15,
   "mana": -10,
-  "cooldown": 312
+  "cooldown": 300,
+  "castingTime": 60
 }

@@ -52,6 +52,8 @@
             this.speed = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.behaviourPanel = new System.Windows.Forms.Panel();
+            this.delay = new System.Windows.Forms.NumericUpDown();
+            this.label24 = new System.Windows.Forms.Label();
             this.projectilePanel = new System.Windows.Forms.Panel();
             this.projectileRotates = new System.Windows.Forms.CheckBox();
             this.projectileDistance = new System.Windows.Forms.NumericUpDown();
@@ -62,10 +64,10 @@
             this.propertyType = new System.Windows.Forms.ComboBox();
             this.label18 = new System.Windows.Forms.Label();
             this.propertyView = new System.Windows.Forms.ComboBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.removeElement = new System.Windows.Forms.Button();
+            this.addElement = new System.Windows.Forms.Button();
+            this.removeAction = new System.Windows.Forms.Button();
+            this.addAction = new System.Windows.Forms.Button();
             this.save = new System.Windows.Forms.LinkLabel();
             this.animationTimer = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -84,6 +86,8 @@
             this.heal = new System.Windows.Forms.NumericUpDown();
             this.label14 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.castingTime = new System.Windows.Forms.NumericUpDown();
+            this.label25 = new System.Windows.Forms.Label();
             this.name = new System.Windows.Forms.TextBox();
             this.label22 = new System.Windows.Forms.Label();
             this.editSounds = new System.Windows.Forms.Button();
@@ -107,6 +111,7 @@
             this.animation.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.speed)).BeginInit();
             this.behaviourPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.delay)).BeginInit();
             this.projectilePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.projectileDistance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.projectileSpeed)).BeginInit();
@@ -119,6 +124,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.power)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.heal)).BeginInit();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.castingTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cooldown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.iconImage)).BeginInit();
             this.groupBox4.SuspendLayout();
@@ -147,7 +153,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(408, 66);
+            this.label2.Location = new System.Drawing.Point(408, 70);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(91, 13);
             this.label2.TabIndex = 2;
@@ -157,9 +163,9 @@
             // 
             this.charSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.charSelect.FormattingEnabled = true;
-            this.charSelect.Location = new System.Drawing.Point(596, 60);
+            this.charSelect.Location = new System.Drawing.Point(611, 67);
             this.charSelect.Name = "charSelect";
-            this.charSelect.Size = new System.Drawing.Size(135, 21);
+            this.charSelect.Size = new System.Drawing.Size(120, 21);
             this.charSelect.TabIndex = 3;
             this.charSelect.SelectedIndexChanged += new System.EventHandler(this.charSelect_SelectedIndexChanged);
             // 
@@ -399,15 +405,45 @@
             // behaviourPanel
             // 
             this.behaviourPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.behaviourPanel.Controls.Add(this.delay);
+            this.behaviourPanel.Controls.Add(this.label24);
             this.behaviourPanel.Controls.Add(this.projectilePanel);
             this.behaviourPanel.Controls.Add(this.propertyType);
             this.behaviourPanel.Controls.Add(this.label18);
             this.behaviourPanel.Location = new System.Drawing.Point(9, 49);
             this.behaviourPanel.Margin = new System.Windows.Forms.Padding(0);
             this.behaviourPanel.Name = "behaviourPanel";
-            this.behaviourPanel.Size = new System.Drawing.Size(239, 142);
+            this.behaviourPanel.Size = new System.Drawing.Size(239, 187);
             this.behaviourPanel.TabIndex = 18;
             this.behaviourPanel.Visible = false;
+            // 
+            // delay
+            // 
+            this.delay.Location = new System.Drawing.Point(111, 9);
+            this.delay.Maximum = new decimal(new int[] {
+            1410065407,
+            2,
+            0,
+            0});
+            this.delay.Name = "delay";
+            this.delay.Size = new System.Drawing.Size(91, 21);
+            this.delay.TabIndex = 10;
+            this.delay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.delay.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.delay.ValueChanged += new System.EventHandler(this.delay_ValueChanged);
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(36, 11);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(66, 15);
+            this.label24.TabIndex = 9;
+            this.label24.Text = "Delay (ms)";
             // 
             // projectilePanel
             // 
@@ -417,7 +453,7 @@
             this.projectilePanel.Controls.Add(this.projectileSpeed);
             this.projectilePanel.Controls.Add(this.label20);
             this.projectilePanel.Controls.Add(this.label19);
-            this.projectilePanel.Location = new System.Drawing.Point(9, 43);
+            this.projectilePanel.Location = new System.Drawing.Point(8, 82);
             this.projectilePanel.Name = "projectilePanel";
             this.projectilePanel.Size = new System.Drawing.Size(221, 93);
             this.projectilePanel.TabIndex = 17;
@@ -503,7 +539,7 @@
             this.propertyType.Items.AddRange(new object[] {
             "Static",
             "Projectile"});
-            this.propertyType.Location = new System.Drawing.Point(81, 11);
+            this.propertyType.Location = new System.Drawing.Point(81, 50);
             this.propertyType.Name = "propertyType";
             this.propertyType.Size = new System.Drawing.Size(121, 23);
             this.propertyType.TabIndex = 1;
@@ -512,7 +548,7 @@
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(37, 16);
+            this.label18.Location = new System.Drawing.Point(36, 55);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(33, 15);
             this.label18.TabIndex = 0;
@@ -531,45 +567,45 @@
             this.propertyView.TabIndex = 10;
             this.propertyView.SelectedIndexChanged += new System.EventHandler(this.propertyView_SelectedIndexChanged);
             // 
-            // button2
+            // removeElement
             // 
-            this.button2.Location = new System.Drawing.Point(261, 203);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(100, 23);
-            this.button2.TabIndex = 7;
-            this.button2.Text = "Remove Element";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.removeElement.Location = new System.Drawing.Point(261, 203);
+            this.removeElement.Name = "removeElement";
+            this.removeElement.Size = new System.Drawing.Size(100, 23);
+            this.removeElement.TabIndex = 7;
+            this.removeElement.Text = "Remove Element";
+            this.removeElement.UseVisualStyleBackColor = true;
+            this.removeElement.Click += new System.EventHandler(this.removeElement_Click);
             // 
-            // button1
+            // addElement
             // 
-            this.button1.Location = new System.Drawing.Point(180, 203);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "Add Element";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.addElement.Location = new System.Drawing.Point(180, 203);
+            this.addElement.Name = "addElement";
+            this.addElement.Size = new System.Drawing.Size(75, 23);
+            this.addElement.TabIndex = 6;
+            this.addElement.Text = "Add Element";
+            this.addElement.UseVisualStyleBackColor = true;
+            this.addElement.Click += new System.EventHandler(this.addElement_Click);
             // 
-            // button3
+            // removeAction
             // 
-            this.button3.Location = new System.Drawing.Point(330, 12);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(69, 21);
-            this.button3.TabIndex = 9;
-            this.button3.Text = "Remove Action";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.removeAction.Location = new System.Drawing.Point(330, 12);
+            this.removeAction.Name = "removeAction";
+            this.removeAction.Size = new System.Drawing.Size(69, 21);
+            this.removeAction.TabIndex = 9;
+            this.removeAction.Text = "Remove Action";
+            this.removeAction.UseVisualStyleBackColor = true;
+            this.removeAction.Click += new System.EventHandler(this.removeAction_Click);
             // 
-            // button4
+            // addAction
             // 
-            this.button4.Location = new System.Drawing.Point(286, 12);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(39, 21);
-            this.button4.TabIndex = 8;
-            this.button4.Text = "Add";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.addAction.Location = new System.Drawing.Point(286, 12);
+            this.addAction.Name = "addAction";
+            this.addAction.Size = new System.Drawing.Size(39, 21);
+            this.addAction.TabIndex = 8;
+            this.addAction.Text = "Add";
+            this.addAction.UseVisualStyleBackColor = true;
+            this.addAction.Click += new System.EventHandler(this.addAction_Click);
             // 
             // save
             // 
@@ -788,6 +824,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.castingTime);
+            this.groupBox2.Controls.Add(this.label25);
             this.groupBox2.Controls.Add(this.name);
             this.groupBox2.Controls.Add(this.label22);
             this.groupBox2.Controls.Add(this.editSounds);
@@ -806,9 +844,32 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General Info";
             // 
+            // castingTime
+            // 
+            this.castingTime.Location = new System.Drawing.Point(6, 332);
+            this.castingTime.Maximum = new decimal(new int[] {
+            99999999,
+            0,
+            0,
+            0});
+            this.castingTime.Name = "castingTime";
+            this.castingTime.Size = new System.Drawing.Size(115, 21);
+            this.castingTime.TabIndex = 20;
+            this.castingTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.castingTime.ValueChanged += new System.EventHandler(this.castingTime_ValueChanged);
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(3, 312);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(103, 15);
+            this.label25.TabIndex = 19;
+            this.label25.Text = "Casting time (ms)";
+            // 
             // name
             // 
-            this.name.Location = new System.Drawing.Point(6, 41);
+            this.name.Location = new System.Drawing.Point(6, 38);
             this.name.Name = "name";
             this.name.Size = new System.Drawing.Size(115, 21);
             this.name.TabIndex = 18;
@@ -817,7 +878,7 @@
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(6, 23);
+            this.label22.Location = new System.Drawing.Point(6, 20);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(41, 15);
             this.label22.TabIndex = 17;
@@ -835,7 +896,7 @@
             // 
             // description
             // 
-            this.description.Location = new System.Drawing.Point(6, 229);
+            this.description.Location = new System.Drawing.Point(6, 204);
             this.description.Name = "description";
             this.description.Size = new System.Drawing.Size(115, 102);
             this.description.TabIndex = 4;
@@ -844,7 +905,7 @@
             // 
             // cooldown
             // 
-            this.cooldown.Location = new System.Drawing.Point(6, 362);
+            this.cooldown.Location = new System.Drawing.Point(6, 376);
             this.cooldown.Maximum = new decimal(new int[] {
             99999999,
             0,
@@ -859,7 +920,7 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(3, 206);
+            this.label16.Location = new System.Drawing.Point(3, 181);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(69, 15);
             this.label16.TabIndex = 3;
@@ -868,7 +929,7 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(6, 339);
+            this.label17.Location = new System.Drawing.Point(3, 356);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(90, 15);
             this.label17.TabIndex = 15;
@@ -879,7 +940,7 @@
             this.iconImage.BackColor = System.Drawing.SystemColors.ControlLight;
             this.iconImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.iconImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.iconImage.Location = new System.Drawing.Point(32, 129);
+            this.iconImage.Location = new System.Drawing.Point(29, 109);
             this.iconImage.Name = "iconImage";
             this.iconImage.Size = new System.Drawing.Size(64, 64);
             this.iconImage.TabIndex = 2;
@@ -887,7 +948,7 @@
             // 
             // icon
             // 
-            this.icon.Location = new System.Drawing.Point(7, 94);
+            this.icon.Location = new System.Drawing.Point(6, 82);
             this.icon.Name = "icon";
             this.icon.Size = new System.Drawing.Size(115, 21);
             this.icon.TabIndex = 1;
@@ -896,7 +957,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(7, 76);
+            this.label15.Location = new System.Drawing.Point(6, 64);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(72, 15);
             this.label15.TabIndex = 0;
@@ -953,10 +1014,10 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.save);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button4);
+            this.Controls.Add(this.removeElement);
+            this.Controls.Add(this.addElement);
+            this.Controls.Add(this.removeAction);
+            this.Controls.Add(this.addAction);
             this.Controls.Add(this.properties);
             this.Controls.Add(this.canvas);
             this.Controls.Add(this.charSelect);
@@ -985,6 +1046,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.speed)).EndInit();
             this.behaviourPanel.ResumeLayout(false);
             this.behaviourPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.delay)).EndInit();
             this.projectilePanel.ResumeLayout(false);
             this.projectilePanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.projectileDistance)).EndInit();
@@ -1000,6 +1062,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.heal)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.castingTime)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cooldown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.iconImage)).EndInit();
             this.groupBox4.ResumeLayout(false);
@@ -1018,10 +1081,10 @@
         private System.Windows.Forms.ComboBox charSelect;
         private System.Windows.Forms.PictureBox canvas;
         private System.Windows.Forms.GroupBox properties;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button addElement;
+        private System.Windows.Forms.Button removeElement;
+        private System.Windows.Forms.Button removeAction;
+        private System.Windows.Forms.Button addAction;
         private System.Windows.Forms.LinkLabel save;
         private System.Windows.Forms.TextBox source;
         private System.Windows.Forms.Label label3;
@@ -1079,5 +1142,9 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.NumericUpDown scale;
         private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.NumericUpDown delay;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.NumericUpDown castingTime;
+        private System.Windows.Forms.Label label25;
     }
 }
