@@ -729,17 +729,20 @@ exports.updateMaps = function()
                 if (!this.onMap[m][i].timer.shouldRespawn)
                     continue;
 
-                this.onMap[m][i].timer.cur++;
-
                 //Check if item can be respawned,
-                //if so sync item and reset should
-                //respawn boolean to false
+                //if so sync item and reset values
 
                 if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.respawnTime) {
                     this.onMap[m][i].timer.shouldRespawn = false;
+                    this.onMap[m][i].timer.cur = 0;
 
                     server.syncItem(m, this.onMap[m][i].item);
                 }
+
+                //Otherwise increment timer
+
+                else
+                    this.onMap[m][i].timer.cur++;
             }
         }
     }

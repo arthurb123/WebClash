@@ -125,14 +125,34 @@ const client = {
         //Game update events
 
         channel.on('GAME_SERVER_TIME', function(data) {
-            game.gameTime = data;
+            //Setup game time
 
-            lx.Loops(function() {
-                game.gameTime.current++;
+            game.gameTime = {
+                dayLength: data.dayLength,
+                nightLength: data.nightLength,
+                current: data.current,
+                loopExists: (game.gameTime == undefined ? false : game.gameTime.loopExists)
+            };
+            game.gameTime.prevTick = Date.now();
 
-                if (game.gameTime.current >= game.gameTime.dayLength+game.gameTime.nightLength)
-                    game.gameTime.current = 0;
-            });
+            //If game time loop does not exist yet,
+            //create it (once).
+
+            if (!game.gameTime.loopExists) {
+                game.gameTime.loopExists = true;
+                lx.Loops(function() {
+                    //Get game time tick delta
+
+                    let tickTime = Date.now();
+                    game.gameTime.current += (tickTime - game.gameTime.prevTick) / (1000/60);
+                    game.gameTime.prevTick = tickTime;
+
+                    //Check if the game time exceeds the max time
+
+                    if (game.gameTime.current >= game.gameTime.dayLength+game.gameTime.nightLength)
+                        game.gameTime.current = 0;
+                });
+            }
         }); 
         channel.on('GAME_USER_SETTINGS', function (data) {
             //Check if the recieved data is valid

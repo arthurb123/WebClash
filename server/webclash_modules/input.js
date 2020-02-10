@@ -329,15 +329,17 @@ exports.handleCommand = function(text, channel)
                     
                     let time = args[0];
 
-                    if (isNaN(time)) 
-                        switch(time) {
-                            case 'day':
-                                time = 0;
-                                break;
-                            case 'night':
-                                time = gameplay.dayLength;
-                                break;
-                        }
+                    switch(time) {
+                        case 'day':
+                            time = 0;
+                            break;
+                        case 'night':
+                            time = gameplay.dayLength;
+                            break;
+                        default:
+                            time = parseInt(time);
+                            break;
+                    }
 
                     game.time.current = time;
                     server.syncGameTime();
