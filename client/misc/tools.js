@@ -1,6 +1,6 @@
 //Asynchronous HTTP GET
 
-function httpGetAsync(url, callback)
+function httpGet(url, async, callback)
 {
     let xmlHttp = new XMLHttpRequest();
 
@@ -9,7 +9,7 @@ function httpGetAsync(url, callback)
             callback(xmlHttp.responseText);
     };
 
-    xmlHttp.open("GET", client.fullAddress+url, true);
+    xmlHttp.open("GET", client.fullAddress+url, async);
     xmlHttp.send(null);
 }
 

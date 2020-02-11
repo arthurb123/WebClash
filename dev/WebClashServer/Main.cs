@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using WebClashServer.Editors;
-
+using WebClashServer.Options;
 using Action = System.Action;
 
 namespace WebClashServer
@@ -27,6 +27,7 @@ namespace WebClashServer
         Actions    actions    = new Actions();
         Items      items      = new Items();
         Quests     quests     = new Quests();
+        Plugins    plugins    = new Plugins();
 
         public Main()
         {
@@ -518,6 +519,29 @@ namespace WebClashServer
             };
 
             quests.Show();
+        }
+
+        //Options
+
+        private void managePluginsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!CheckServerLocation())
+                return;
+
+            if (plugins.Visible)
+            {
+                plugins.Focus();
+                return;
+            }
+            else
+                plugins = new Plugins();
+
+            //plugins.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            //    if (plugins.GetChanged())
+            //        RestartServerOnChange("plugins");
+            //};
+
+            plugins.Show();
         }
 
         //Tools

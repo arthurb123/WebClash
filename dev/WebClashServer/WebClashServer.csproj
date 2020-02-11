@@ -39,6 +39,7 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
@@ -55,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\DialogueSystem.cs" />
+    <Compile Include="Classes\PluginSystem.cs" />
     <Compile Include="Editors\Actions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -115,11 +117,35 @@
     <Compile Include="Editors\MapDialogues.Designer.cs">
       <DependentUpon>MapDialogues.cs</DependentUpon>
     </Compile>
+    <Compile Include="Input\BoolInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Input\BoolInput.Designer.cs">
+      <DependentUpon>BoolInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Input\NumberInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Input\NumberInput.Designer.cs">
+      <DependentUpon>NumberInput.cs</DependentUpon>
+    </Compile>
     <Compile Include="Input\TextInput.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Input\TextInput.Designer.cs">
       <DependentUpon>TextInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\PluginProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Options\PluginProperties.Designer.cs">
+      <DependentUpon>PluginProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\Plugins.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Options\Plugins.Designer.cs">
+      <DependentUpon>Plugins.cs</DependentUpon>
     </Compile>
     <Compile Include="Tools\ResetData.cs">
       <SubType>Form</SubType>
@@ -207,8 +233,20 @@
     <EmbeddedResource Include="Editors\MapDialogues.resx">
       <DependentUpon>MapDialogues.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Input\BoolInput.resx">
+      <DependentUpon>BoolInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Input\NumberInput.resx">
+      <DependentUpon>NumberInput.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Input\TextInput.resx">
       <DependentUpon>TextInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\PluginProperties.resx">
+      <DependentUpon>PluginProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\Plugins.resx">
+      <DependentUpon>Plugins.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\ResetData.resx">
       <DependentUpon>ResetData.cs</DependentUpon>
