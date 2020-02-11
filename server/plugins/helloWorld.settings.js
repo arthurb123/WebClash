@@ -2,4 +2,6 @@
 //WebClash binary and should not be modified.
 
 //ENABLED=false
-let message='Hello World'
+
+//@string
+let message = 'Hello World'

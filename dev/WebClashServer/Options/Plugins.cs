@@ -133,6 +133,8 @@ namespace WebClashServer.Options
                     //Read plugin
 
                     Plugin plugin = PluginSystem.ReadPlugin(file);
+                    if (plugin == null)
+                        continue;
 
                     //Create settings location
 
@@ -174,6 +176,9 @@ namespace WebClashServer.Options
             string pluginNames = "";
             for (int p = 0; p < clientPluginsArray.Length; p++)
             {
+                if (clientPluginsArray[p] == null)
+                    continue;
+
                 string name = clientPluginsArray[p].name;
                 bool enabled = ReadEnabledSettings(
                     clientPluginsLocation + name.Substring(0, name.LastIndexOf('.')) + ".settings.js"
@@ -311,6 +316,8 @@ namespace WebClashServer.Options
                     //Read plugin
 
                     Plugin plugin = PluginSystem.ReadPlugin(file);
+                    if (plugin == null)
+                        continue;
 
                     //Create settings location
 

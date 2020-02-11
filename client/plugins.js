@@ -1,3 +1,3 @@
 const plugins = [
- 'helloWorld.js'
+
 ];
