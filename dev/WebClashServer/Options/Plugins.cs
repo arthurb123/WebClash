@@ -174,6 +174,7 @@ namespace WebClashServer.Options
             //Get all plugin names
 
             string pluginNames = "";
+            bool handledOnePlugin = false;
             for (int p = 0; p < clientPluginsArray.Length; p++)
             {
                 if (clientPluginsArray[p] == null)
@@ -187,7 +188,8 @@ namespace WebClashServer.Options
                 if (!enabled)
                     continue;
 
-                pluginNames += (p > 0 ? ",\n" : "") + " '" + clientPluginsArray[p].name + "'";
+                pluginNames += (handledOnePlugin ? ",\n" : "") + " '" + clientPluginsArray[p].name + "'";
+                handledOnePlugin = true;
             }
 
             if (pluginNames != "")

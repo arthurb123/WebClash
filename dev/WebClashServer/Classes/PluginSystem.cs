@@ -122,7 +122,9 @@ namespace WebClashServer.Classes
 
                 //Read property values
 
-                string[] words = line.Replace("//@", "").Split(' ');
+                string[] words = line.Replace("//@", "").Split(
+                    new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries
+                );
 
                 //Check if valid property
 
@@ -153,7 +155,7 @@ namespace WebClashServer.Classes
                     //Bool property
 
                     case "bool":
-                        propertyValue = words[2];
+                        propertyValue = words[2][0].ToString().ToUpper() + words[2].ToLower().Substring(1, words[2].Length - 1);
 
                         result = new PluginBoolProperty(
                             propertyName,
@@ -192,7 +194,9 @@ namespace WebClashServer.Classes
         {
             //Get type and setting data
 
-            string[] words = settingLine.Split(' ');
+            string[] words = settingLine.Split(
+                new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries
+            );
             string settingType = typeLine.Replace("//@", "").Trim();
             string settingName = words[1];
             string settingValue = words[3].Replace(";", "").Trim();
@@ -225,7 +229,8 @@ namespace WebClashServer.Classes
                 //Bool setting property
 
                 case "bool":
-                    pp = new PluginBoolProperty(settingName, bool.Parse(settingValue));
+                    string boolValue = settingValue[0].ToString().ToUpper() + settingValue.ToLower().Substring(1, settingValue.Length - 1);
+                    pp = new PluginBoolProperty(settingName, bool.Parse(boolValue));
                     break;
             }
 

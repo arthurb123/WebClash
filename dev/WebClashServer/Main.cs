@@ -607,7 +607,7 @@ namespace WebClashServer
 
                 AddOutput("Obfuscating client code..");
 
-                int f = 0;
+                int f = -1;
                 Action callback = null;
                 callback = () =>
                 {
@@ -634,13 +634,12 @@ namespace WebClashServer
                     else
                         f++;
 
-                    string file = files[f];
+                    string file = files[f];//.Replace("/server/..", "");
                     AddOutput("Obfuscating '" + file + "'..");
                     StartNodeProcess("node.exe", "misc/obfuscate.js \"" + file + "\" \"" + file + "\"", callback);
                 };
 
-                AddOutput("Obfuscating '" + files[f] + "'..");
-                StartNodeProcess("node.exe", "misc/obfuscate.js \"" + files[f] + "\" \"" + files[f] + "\"", callback);
+                callback();
             }
             catch (Exception exc)
             {
