@@ -1,7 +1,6 @@
 # <img src="https://raw.githubusercontent.com/arthurb123/WebClash/master/client/favicon.ico" width="28" height="28"/>WebClash<br>
-WebClash is an ambitious project that allows for easy top-down ORPG game creation<br>
-for the browser.<br>
-Almost everything in WebClash can be fully customized to your own liking.<br>
+WebClash is an ambitious project that allows for easy top-down ORPG game creation for<br>
+the browser. Almost everything in WebClash can be fully customized to your own liking.<br>
 Create your own dream ORPG game for the browser today!
 
 ### Getting Started<br>
@@ -35,7 +34,7 @@ already present.
   - Create a unique combat experience through "actions", which also feature<br>
     projectile support.
 * Chat with commands<br>
-  - Converse with other players and execute player and/or admin commands with ease.
+  - Converse with other players and execute player and/or admin commands.
 * Party system<br>
   - Have the ability to group up with other players, which rewards the party members<br>
     with adjustable boons.
