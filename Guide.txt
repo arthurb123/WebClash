@@ -119,6 +119,31 @@ To see the list of available commands type
 "/help" in the server or game chat.
 
 
+	       -- Plugins --
+
+WebClash allows for the usage of client and
+server plugins, these can be managed using
+the server binary. Plugin JavaScript files
+allow for some unique comments that get handled
+by the binary;
+
+//@author *Author name here*
+//@description
+//*Multi-line description
+// can be put here*
+//@string name defaultValue
+//@number name defaultValue
+//@bool   name defaultValue
+
+Properties that get declared using the string,
+number or bool types will get automatically
+declared with the set value (from the binary)
+when the plugin code runs, these variables thus
+do not have to be declared in the plugin code.
+In the example project two simple Hello World
+plugins exist for the client and server, do
+look at this code for a better explanation.
+
 	      -- Deployment --
 
 Because WebClash makes use of real-time UDP, it

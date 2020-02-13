@@ -1046,7 +1046,7 @@ const game = {
     {
         //Load map via a GET request
 
-        httpGetAsync('map/' + request_id, function(data) {
+        httpGet('map/' + request_id, true, function(data) {
             //Check if an error occured
 
             if (data === 'error') {

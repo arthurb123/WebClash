@@ -42,6 +42,8 @@
             this.itemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.questsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.managePluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.restartAfterNewChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.obfuscateClientToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -187,10 +189,24 @@
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.managePluginsToolStripMenuItem,
+            this.toolStripSeparator1,
             this.restartAfterNewChangesToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
+            // 
+            // managePluginsToolStripMenuItem
+            // 
+            this.managePluginsToolStripMenuItem.Name = "managePluginsToolStripMenuItem";
+            this.managePluginsToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.managePluginsToolStripMenuItem.Text = "Manage Plugins";
+            this.managePluginsToolStripMenuItem.Click += new System.EventHandler(this.managePluginsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(181, 6);
             // 
             // restartAfterNewChangesToolStripMenuItem
             // 
@@ -214,14 +230,14 @@
             // obfuscateClientToolStripMenuItem
             // 
             this.obfuscateClientToolStripMenuItem.Name = "obfuscateClientToolStripMenuItem";
-            this.obfuscateClientToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.obfuscateClientToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.obfuscateClientToolStripMenuItem.Text = "Obfuscate Client";
             this.obfuscateClientToolStripMenuItem.Click += new System.EventHandler(this.obfuscateClientToolStripMenuItem_Click);
             // 
             // resetDataToolStripMenuItem
             // 
             this.resetDataToolStripMenuItem.Name = "resetDataToolStripMenuItem";
-            this.resetDataToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.resetDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.resetDataToolStripMenuItem.Text = "Reset Data";
             this.resetDataToolStripMenuItem.ToolTipText = "Allows for server data resetting";
             this.resetDataToolStripMenuItem.Click += new System.EventHandler(this.resetDataToolStripMenuItem_Click);
@@ -319,6 +335,8 @@
         private System.Windows.Forms.ToolStripMenuItem restartAfterNewChangesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem obfuscateClientToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem managePluginsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 

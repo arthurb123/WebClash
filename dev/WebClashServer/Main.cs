@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using WebClashServer.Editors;
-
+using WebClashServer.Options;
 using Action = System.Action;
 
 namespace WebClashServer
@@ -27,6 +27,7 @@ namespace WebClashServer
         Actions    actions    = new Actions();
         Items      items      = new Items();
         Quests     quests     = new Quests();
+        Plugins    plugins    = new Plugins();
 
         public Main()
         {
@@ -520,6 +521,29 @@ namespace WebClashServer
             quests.Show();
         }
 
+        //Options
+
+        private void managePluginsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!CheckServerLocation())
+                return;
+
+            if (plugins.Visible)
+            {
+                plugins.Focus();
+                return;
+            }
+            else
+                plugins = new Plugins();
+
+            //plugins.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            //    if (plugins.GetChanged())
+            //        RestartServerOnChange("plugins");
+            //};
+
+            plugins.Show();
+        }
+
         //Tools
 
         private void obfuscateClientToolStripMenuItem_Click(object sender, EventArgs e)
@@ -583,7 +607,7 @@ namespace WebClashServer
 
                 AddOutput("Obfuscating client code..");
 
-                int f = 0;
+                int f = -1;
                 Action callback = null;
                 callback = () =>
                 {
@@ -610,13 +634,12 @@ namespace WebClashServer
                     else
                         f++;
 
-                    string file = files[f];
+                    string file = files[f];//.Replace("/server/..", "");
                     AddOutput("Obfuscating '" + file + "'..");
                     StartNodeProcess("node.exe", "misc/obfuscate.js \"" + file + "\" \"" + file + "\"", callback);
                 };
 
-                AddOutput("Obfuscating '" + files[f] + "'..");
-                StartNodeProcess("node.exe", "misc/obfuscate.js \"" + files[f] + "\" \"" + files[f] + "\"", callback);
+                callback();
             }
             catch (Exception exc)
             {

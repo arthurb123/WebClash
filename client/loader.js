@@ -2,6 +2,7 @@
 
 const scripts = [
     'properties.js',
+    'plugins.js',
 
     'lib/classes/uibox.js',
 
@@ -43,9 +44,21 @@ function loadAllScripts()
 
     let isMobile = mobileAndTabletCheck();
 
-    //Add event listener
+    //Add onload event listener
 
     window.onload = function() {
+        //Load plugins
+
+        for (let p = 0; p < plugins.length; p++) {
+            let plugin = plugins[p];
+            let settings = plugin.substr(0, plugin.lastIndexOf('.js')) + '.settings.js';
+        
+            addScript('plugins/' + settings)
+            addScript('plugins/' + plugin);
+        }
+
+        //Finish loading
+
         finishLoading(isMobile);
     }
 

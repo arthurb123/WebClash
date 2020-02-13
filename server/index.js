@@ -67,6 +67,7 @@ global.logger   = require('./webclash_modules/logger');
 global.input    = require('./webclash_modules/input');
 global.storage  = require('./webclash_modules/storage');
 global.tools    = require('./webclash_modules/tools');
+global.plugins  = require('./webclash_modules/plugins');
 
 //Load and setup geckos.io
 
@@ -93,7 +94,6 @@ rl.on('line', (text) => {
 
 app.use('/', express.static(path.resolve(__dirname +  "/../client/")));
 app.get('/map/:request_id', tiled.requestMap);
-
 
 //Check properties function
 
@@ -156,6 +156,10 @@ game.loadAllCharacters(function() {
                     //First check if the properties are valid
 
                     checkProperties(function() {
+                        //Load plugins
+
+                        plugins.load();
+
                         //Start server
 
                         startServer();
