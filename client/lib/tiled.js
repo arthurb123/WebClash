@@ -1091,11 +1091,7 @@ const tiled = {
             g.globalCompositeOperation = 'source-over';
             g.fillRect(0, 0, c.Size().W, c.Size().H);
 
-            //Blurred map hotspots
-
             g.globalCompositeOperation = 'destination-out';
-            g.filter = 'blur(' + Math.ceil(map.tilewidth/3) + 'px)';
-
             for (let lhs = 0; lhs < tiled.lightHotspots.length; lhs++) {
                 if (tiled.lightHotspots[lhs] == undefined)
                     continue;
@@ -1124,6 +1120,13 @@ const tiled = {
                 }
             }
         });
+
+        //Blur canvas
+
+        stackBlurCanvasRGBA(
+            c.CANVAS,
+            8
+        );
 
         //Return cached shadow canvas
 

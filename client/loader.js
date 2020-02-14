@@ -19,6 +19,7 @@ const scripts = [
     'lib/animation.js',
 
     'misc/tools.js',
+    'misc/stackblur.js',
     'misc/sha256.js',
     'misc/prototypes.js',
 
