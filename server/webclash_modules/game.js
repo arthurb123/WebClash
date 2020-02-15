@@ -1025,9 +1025,16 @@ exports.getPlayerCharacters = function()
             animation: char.animation
         };
     }
-
+    
     return result;
 };
+
+exports.calculateTileDistance = function(pos1, pos2, tilewidth, tileheight) {
+    let dx = Math.abs((pos1.X-pos2.X)/tilewidth),
+        dy = Math.abs((pos1.Y-pos2.Y)/tileheight);
+
+    return { x: dx, y: dy };
+};  
 
 exports.calculateFace = function(pos, width, height, direction)
 {

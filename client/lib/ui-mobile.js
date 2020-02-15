@@ -193,7 +193,7 @@ const ui = {
 
             let boxContent = document.createElement('div');
             boxContent.id = 'chat_box_content';
-            boxContent.style = 'position: relative; overflow-y: auto; width: auto; height: auto; max-height: 139px;';
+            boxContent.style = 'position: relative; overflow-y: auto; word-break: break-word; width: auto; height: auto; max-height: 139px;';
 
             box.appendChild(boxInput);
             box.appendChild(boxContent);

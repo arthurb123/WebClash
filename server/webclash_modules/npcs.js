@@ -623,12 +623,7 @@ exports.updateNPCCombat = function(map, id)
                 if (game.players[p].map_id !== map)
                     continue;
 
-                //Check if in attack range
-
-                //TODO: Create a generic method
-                //      that calculates the tile
-                //      distance between a player
-                //      and NPC (or two characters?)
+                //Calculate the centered positions;
 
                 let ppos = {
                     X: game.players[p].pos.X+game.players[p].character.width/2,
@@ -640,11 +635,19 @@ exports.updateNPCCombat = function(map, id)
                     Y: this.onMap[map][id].pos.Y+this.onMap[map][id].data.character.height/2
                 };
 
-                let dx = Math.abs((ppos.X-npos.X)/tiled.maps[map].tilewidth),
-                    dy = Math.abs((ppos.Y-npos.Y)/tiled.maps[map].tileheight);
+                //Calculate the tile distance
 
-                if (dx <= this.onMap[map][id].data.attackRange &&
-                    dy <= this.onMap[map][id].data.attackRange) {
+                let { x, y } = game.calculateTileDistance(
+                    ppos, 
+                    npos, 
+                    tiled.maps[map].tilewidth,
+                    tiled.maps[map].tileheight
+                );
+
+                //Check if in attack range
+
+                if (x <= this.onMap[map][id].data.attackRange &&
+                    y <= this.onMap[map][id].data.attackRange) {
                         //Set target to that player and break
 
                         this.onMap[map][id].target = p;
@@ -839,10 +842,6 @@ exports.updateNPCCombat = function(map, id)
 
                 return;
             }
-            /*else if
-                (Math.abs(dx) < this.onMap[map][id].data.actions[nextAction].range-Math.round(this.onMap[map][id].data.character.width/tiled.maps[map].tilewidth) ||
-                 Math.abs(dy) < this.onMap[map][id].data.actions[nextAction].range-Math.round(this.onMap[map][id].data.character.height/tiled.maps[map].tileheight))
-                    return;*/
     }
     else
         return;
@@ -856,10 +855,6 @@ exports.updateNPCCombat = function(map, id)
         id
     )) {
         //Sync casting time
-
-        //TODO: Make it so we don't have to lookup the action
-        //      everytime we sync casting time, this will greatly
-        //      improve performance
 
         server.syncNPCActionCast(
             map, 
@@ -1065,6 +1060,27 @@ exports.damageNPC = function(owner, map, id, delta)
 
     if (this.onMap[map][id].data.health.cur <= 0)
         this.killNPC(map, id);
+};
+
+exports.healNPC = function(map, id, delta) {
+    //Check if the NPC exists
+
+    if (this.onMap[map] == undefined ||
+        this.onMap[map][id] == undefined)
+        return;
+
+    //Heal with delta
+
+    this.onMap[map][id].data.health.cur += delta;
+
+    //Make sure not to overheal
+
+    if (this.onMap[map][id].data.health.cur >= this.onMap[map][id].data.health.max)
+        this.onMap[map][id].data.health.cur = this.onMap[map][id].data.health.max;
+
+    //Sync health
+
+    server.syncNPCPartially(map, id, 'health');
 };
 
 exports.setNPCTarget = function(map, id, owner)

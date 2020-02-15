@@ -1,6 +1,6 @@
 //Actions module for WebClash Server
 
-const collection = [];
+const collection = {};
 
 const playerCasting = {};
 const npcCasting = {};
@@ -21,7 +21,8 @@ exports.loadAllActions = function(cb)
         let count = 0;
 
         files.forEach(file => {
-            collection.push(actions.loadAction(location + '/' + file));
+            let action = actions.loadAction(location + '/' + file);
+            collection[action.name] = action;
 
             count++;
         });
@@ -46,20 +47,7 @@ exports.loadAction = function(location)
 
 exports.getAction = function(name)
 {
-    let id = this.getActionIndex(name);
-    if (id == -1)
-        return;
-
-    return collection[id];
-};
-
-exports.getActionIndex = function(name)
-{
-    for (let i = 0; i < collection.length; i++)
-        if (collection[i].name === name)
-            return i;
-
-    return -1;
+    return collection[name];
 };
 
 exports.combat = {
@@ -227,7 +215,7 @@ exports.updateProjectiles = function() {
                         game.players[projectile.playerOwner].stats.attributes,
                         projectile,
                         element,
-                        collection[projectile.a_id]
+                        collection[projectile.action]
                     )) {
                         server.removeActionElement(element.p_id, projectile.map);
 
@@ -250,7 +238,7 @@ exports.updateProjectiles = function() {
                         game.players[projectile.pvpOwner].stats.attributes,
                         projectile,
                         element,
-                        collection[projectile.a_id],
+                        collection[projectile.action],
                         false,
                         projectile.pvpOwner
                     )) {
@@ -269,7 +257,7 @@ exports.updateProjectiles = function() {
                         game.players[projectile.pvpOwner].stats.attributes,
                         projectile,
                         element,
-                        collection[projectile.a_id]
+                        collection[projectile.action]
                     )) {
                         server.removeActionElement(element.p_id, projectile.map);
 
@@ -293,7 +281,7 @@ exports.updateProjectiles = function() {
                         npcs.onMap[projectile.map][projectile.npcOwner].data.stats,
                         projectile,
                         element,
-                        collection[projectile.a_id]
+                        collection[projectile.name]
                     )) {
                         server.removeActionElement(element.p_id, projectile.map);
 
@@ -306,7 +294,7 @@ exports.updateProjectiles = function() {
             }
 };
 
-exports.convertActionData = function(actionData, a_id, direction, character, pvp)
+exports.convertActionData = function(actionData, name, direction, character, pvp)
 {
     //Convert projectiles
 
@@ -315,11 +303,11 @@ exports.convertActionData = function(actionData, a_id, direction, character, pvp
             let w = actionData.elements[e].w*actionData.elements[e].scale,
                 h = actionData.elements[e].h*actionData.elements[e].scale;
 
-            let dx = actionData.elements[e].x+w/2-collection[a_id].sw/2,
-                dy = actionData.elements[e].y+h/2-collection[a_id].sh/2
+            let dx = actionData.elements[e].x+w/2-collection[name].sw/2,
+                dy = actionData.elements[e].y+h/2-collection[name].sh/2
 
-            let wl = collection[a_id].sw/6,
-                hl = collection[a_id].sh/6;
+            let wl = collection[name].sw/6,
+                hl = collection[name].sh/6;
 
             if (dx > wl)
                 dx = wl;
@@ -337,7 +325,8 @@ exports.convertActionData = function(actionData, a_id, direction, character, pvp
             };
 
             actionData.elements[e].projectileDistance =
-                actionData.elements[e].projectileDistance * (tiled.maps[actionData.map].tilewidth+tiled.maps[actionData.map].tileheight)/2;
+                actionData.elements[e].projectileDistance * 
+                (tiled.maps[actionData.map].tilewidth + tiled.maps[actionData.map].tileheight)/2;
         }
 
     //Positional correcting
@@ -352,7 +341,7 @@ exports.convertActionData = function(actionData, a_id, direction, character, pvp
              actionData.elements[e].y = x+character.height;
 
              if (direction == 1) {
-                 actionData.elements[e].x = collection[a_id].sw-actionData.elements[e].x-w+character.width;
+                 actionData.elements[e].x = collection[name].sw-actionData.elements[e].x-w+character.width;
 
                  if (actionData.elements[e].type === 'projectile') {
                      let y = actionData.elements[e].projectileSpeed.y;
@@ -377,7 +366,7 @@ exports.convertActionData = function(actionData, a_id, direction, character, pvp
         for (let e = 0; e < actionData.elements.length; e++) {
             let h = actionData.elements[e].h*actionData.elements[e].scale;
 
-             actionData.elements[e].y = collection[a_id].sh-actionData.elements[e].y-h+character.height*2;
+             actionData.elements[e].y = collection[name].sh-actionData.elements[e].y-h+character.height*2;
 
              if (actionData.elements[e].type === 'projectile')
                  actionData.elements[e].projectileSpeed.y *= -1;
@@ -385,20 +374,20 @@ exports.convertActionData = function(actionData, a_id, direction, character, pvp
 
     //Set action data position
 
-    actionData.pos.X += character.width/2-collection[a_id].sw/2;
-    actionData.pos.Y += -collection[a_id].sh/2-character.height/2;
+    actionData.pos.X += character.width/2-collection[name].sw/2;
+    actionData.pos.Y += -collection[name].sh/2-character.height/2;
 
     //Set action data sounds
 
-    actionData.sounds = collection[a_id].sounds;
+    actionData.sounds = collection[name].sounds;
     actionData.centerPosition = {
-        X: actionData.pos.X+collection[a_id].sw/2,
-        Y: actionData.pos.Y+collection[a_id].sh/2
+        X: actionData.pos.X+collection[name].sw/2,
+        Y: actionData.pos.Y+collection[name].sh/2
     };
 
     //Set action data action
 
-    actionData.action = a_id;
+    actionData.action = name;
 
     //Set action data PvP
 
@@ -523,11 +512,9 @@ exports.removePlayerAction = function(name, id)
 
 exports.createPlayerSlotAction = function(action)
 {
-    //Get action index of action
+    //Shorten action name
 
-    let id = this.getActionIndex(action.name);
-    if (id == -1)
-        return;
+    let name = action.name;
 
     //Format data
 
@@ -535,26 +522,22 @@ exports.createPlayerSlotAction = function(action)
         name: action.name,
         uses: action.uses,
         max: action.max,
-        description: collection[id].description,
-        cooldown: collection[id].cooldown,
-        castingTime: collection[id].castingTime,
-        scaling: collection[id].scaling,
-        sounds: collection[id].sounds,
-        heal: collection[id].heal,
-        mana: collection[id].mana,
-        src: collection[id].src
+        description: collection[name].description,
+        cooldown: collection[name].cooldown,
+        castingTime: collection[name].castingTime,
+        scaling: collection[name].scaling,
+        sounds: collection[name].sounds,
+        heal: collection[name].heal,
+        mana: collection[name].mana,
+        src: collection[name].src
     };
 };
 
-exports.canPlayerPerformAction = function(slot, id, a_id) {
-    //Grab action name
-
-    let name = collection[a_id].name;
-
+exports.canPlayerPerformAction = function(slot, id, name) {
     //Check if already casting the same spell
 
     if (playerCasting[id] != undefined &&
-        playerCasting[id].action === a_id)
+        playerCasting[id].action === name)
         return false;
 
     //Check if the action is on cooldown
@@ -564,8 +547,8 @@ exports.canPlayerPerformAction = function(slot, id, a_id) {
 
     //Check if player has the necessary mana
 
-    if (collection[a_id].mana !== 0)
-        if (game.players[id].mana.cur+collection[a_id].mana < 0)
+    if (collection[name].mana !== 0)
+        if (game.players[id].mana.cur+collection[name].mana < 0)
             return false;
 
     //Check if player has enough usages
@@ -584,10 +567,6 @@ exports.performPlayerAction = function(slot, id, pvp) {
 
         let name = game.players[id].actions[slot].name;
 
-        //Grab action id
-
-        let a_id = this.getActionIndex(name);
-
         //Check if player has the action
 
         if (!this.hasPlayerAction(name, id))
@@ -595,17 +574,17 @@ exports.performPlayerAction = function(slot, id, pvp) {
 
         //Check if player can perform the action
 
-        if (!this.canPlayerPerformAction(slot, id, a_id))
+        if (!this.canPlayerPerformAction(slot, id, name))
             return false;
 
         //Start casting
 
         playerCasting[id] = {
             pvp: (pvp == undefined ? false : pvp),
-            timer: collection[a_id].castingTime,
-            immediate: (collection[a_id].castingTime === 0),
+            timer: collection[name].castingTime,
+            immediate: (collection[name].castingTime === 0),
             slot: slot,
-            action: a_id,
+            action: name,
             pos: {
                 X: game.players[id].pos.X,
                 Y: game.players[id].pos.Y
@@ -623,23 +602,18 @@ exports.performPlayerAction = function(slot, id, pvp) {
 
 exports.performNPCAction = function(possibleAction, map, id) {
     try {
-        let a_id = this.getActionIndex(possibleAction.action);
-
-        //Check if valid
-    
-        if (a_id == -1)
-            return false;
-
         //Start casting
+
+        let name = possibleAction.action;
 
         if (npcCasting[map] == undefined)
             npcCasting[map] = [];
 
         npcCasting[map][id] = {
-            timer: collection[a_id].castingTime,
-            immediate: (collection[a_id].castingTime === 0),
+            timer: collection[name].castingTime,
+            immediate: (collection[name].castingTime === 0),
             possibleAction: possibleAction,
-            action: a_id
+            action: name
         };
 
         return true;
@@ -682,7 +656,7 @@ exports.isNPCCasting = function(map, id) {
             !npcCasting[map][id].immediate);
 };
 
-exports.createPlayerAction = function(slot, id, a_id, pvp)
+exports.createPlayerAction = function(slot, id, name, pvp)
 {
     try {
         //Check if player still exists
@@ -690,13 +664,9 @@ exports.createPlayerAction = function(slot, id, a_id, pvp)
         if (game.players[id] == undefined) 
             return;
 
-        //Get action name
-
-        let name = collection[a_id].name;
-
         //Delta player mana usage
 
-        game.deltaManaPlayer(id, collection[a_id].mana);
+        game.deltaManaPlayer(id, collection[name].mana);
 
         //Decrement action usage if possible
 
@@ -718,11 +688,11 @@ exports.createPlayerAction = function(slot, id, a_id, pvp)
                     game.players[id].direction
                 ),
                 map: game.players[id].map_id,
-                elements: deepcopy(collection[a_id].elements),
+                elements: deepcopy(collection[name].elements),
                 ownerType: 'player',
                 owner: id
             },
-            a_id,
+            name,
             game.players[id].direction,
             game.players[id].character,
             pvp
@@ -737,7 +707,7 @@ exports.createPlayerAction = function(slot, id, a_id, pvp)
         if (game.players[id].actions_cooldown === undefined)
             game.players[id].actions_cooldown = {};
 
-        game.players[id].actions_cooldown[name] = collection[a_id].cooldown;
+        game.players[id].actions_cooldown[name] = collection[name].cooldown;
 
         //Emit action usage package
 
@@ -753,14 +723,9 @@ exports.createPlayerAction = function(slot, id, a_id, pvp)
     }
 };
 
-exports.createNPCAction = function(map, id, possibleAction, a_id)
+exports.createNPCAction = function(map, id, possibleAction, name)
 {
     try {
-        //Check if valid
-
-        if (a_id == -1)
-            return false;
-        
         //Check if NPC still exists
 
         if (npcs.onMap[map][id] == undefined)
@@ -777,11 +742,11 @@ exports.createNPCAction = function(map, id, possibleAction, a_id)
                     npcs.onMap[map][id].direction
                 ),
                 map: map,
-                elements: deepcopy(collection[a_id].elements),
+                elements: deepcopy(collection[name].elements),
                 ownerType: 'npc',
                 owner: id
             },
-            a_id,
+            name,
             npcs.onMap[map][id].direction,
             npcs.onMap[map][id].data.character
         );
@@ -793,8 +758,8 @@ exports.createNPCAction = function(map, id, possibleAction, a_id)
         //Set NPC cooldown
 
         npcs.onMap[map][id].combat_cooldown.start(
-            collection[a_id].name, 
-            collection[a_id].cooldown + possibleAction.extraCooldown
+            name,
+            collection[name].cooldown + possibleAction.extraCooldown
         );
     }
     catch (err) {
@@ -805,33 +770,33 @@ exports.createNPCAction = function(map, id, possibleAction, a_id)
 
 exports.instantiatePlayerActionElement = function(actionData, actionElement) {
     let id = actionData.owner,
-        a_id = actionData.action;
+        name = actionData.action;
 
     //Damage NPCs (and players if PvP)
 
-    this.damageNPCs(id, game.players[id].attributes, actionData, actionElement, collection[a_id], true);
+    this.damageNPCs(id, game.players[id].attributes, actionData, actionElement, collection[name], true);
     if (actionData.pvp)
-        this.damagePlayers(game.players[id].attributes, actionData, actionElement, collection[a_id], true, id);
+        this.damagePlayers(game.players[id].attributes, actionData, actionElement, collection[name], true, id);
 
     //Check for healing
 
-    if (collection[a_id].heal > 0) {
+    if (collection[name].heal > 0) {
         if (actionData.pvp) {
-            game.healPlayer(id, collection[a_id].heal);
-            this.healPartyPlayers(actionData, actionElement, collection[a_id].heal, id);
+            game.healPlayer(id, collection[name].heal);
+            this.healPartyPlayers(actionData, actionElement, collection[name].heal, id);
         } else 
-            this.healPlayers(actionData, actionElement, collection[a_id].heal);
+            this.healPlayers(actionData, actionElement, collection[name].heal);
     }
-    else if (collection[a_id].heal < 0)
-        game.damagePlayer(id, collection[a_id].heal);
+    else if (collection[name].heal < 0)
+        game.damagePlayer(id, collection[name].heal);
 
     //Add projectile
 
     if (actionElement.type === 'projectile') {
         if (actionData.pvp)
-            actionElement.p_id = this.createPvpProjectile(id, actionData, actionElement, a_id);
+            actionElement.p_id = this.createPvpProjectile(id, actionData, actionElement);
         else
-            actionElement.p_id = this.createPlayerProjectile(id, actionData, actionElement, a_id);
+            actionElement.p_id = this.createPlayerProjectile(id, actionData, actionElement);
     }
 
     //Sync action
@@ -842,23 +807,23 @@ exports.instantiatePlayerActionElement = function(actionData, actionElement) {
 exports.instantiateNPCActionElement = function(actionData, actionElement) {
     let map = actionData.map,
         id = actionData.owner,
-        a_id = actionData.action;
+        name = actionData.action;
 
     //Damage players
 
-    this.damagePlayers(npcs.onMap[map][id].data.stats, actionData, actionElement, collection[a_id], true);
+    this.damagePlayers(npcs.onMap[map][id].data.stats, actionData, actionElement, collection[name], true);
 
     //Check for healing
 
-    if (collection[a_id].heal > 0)
-        this.healNPCs(actionData, actionElement, collection[a_id]);
-    else if (collection[a_id].heal < 0)
-        npcs.damageNPC(id, actionData.map, id, collection[a_id].heal);
+    if (collection[name].heal > 0)
+        this.healNPCs(actionData, actionElement, collection[name]);
+    else if (collection[name].heal < 0)
+        npcs.damageNPC(id, actionData.map, id, collection[name].heal);
 
     //Add projectile
 
     if (actionElement.type === 'projectile')
-        actionElement.p_id = this.createNPCProjectile(id, actionData, actionElement, a_id);
+        actionElement.p_id = this.createNPCProjectile(id, actionData, actionElement);
 
     //Sync action
 
@@ -977,18 +942,7 @@ exports.healNPCs = function(actionData, actionElement, action)
             //heal the NPC
 
             if (tiled.checkRectangularCollision(actionRect, npcRect))
-            {
-                //TODO: Write a generic NPC healing method
-
-                npcs.onMap[actionData.map][n].data.health.cur += action.heal;
-
-                //Make sure not to overheal
-
-                if (npcs.onMap[actionData.map][n].data.health.cur >= npcs.onMap[actionData.map][n].data.health.max)
-                    npcs.onMap[actionData.map][n].data.health.cur = npcs.onMap[actionData.map][n].data.health.max;
-
-                server.syncNPCPartially(actionData.map, n, 'health');
-            }
+                npcs.healNPC(actionData.map, n, action.heal);
         }
     }
     catch (err) {
@@ -1170,7 +1124,7 @@ exports.healPartyPlayers = function(actionData, actionElement, heal, owner)
     }
 };
 
-exports.createProjectile = function(type, id, actionData, actionElement, a_id)
+exports.createProjectile = function(type, id, actionData, actionElement)
 {
     try {
         let p_id;
@@ -1202,7 +1156,7 @@ exports.createProjectile = function(type, id, actionData, actionElement, a_id)
 
                 //Set action id
 
-                projectiles[actionData.map][p].a_id = a_id;
+                projectiles[actionData.map][p].action = actionData.action;
 
                 //Set the owner identifier according
                 //to it's type
@@ -1229,19 +1183,19 @@ exports.createProjectile = function(type, id, actionData, actionElement, a_id)
     }
 };
 
-exports.createPlayerProjectile = function(id, actionData, actionElement, a_id)
+exports.createPlayerProjectile = function(id, actionData, actionElement)
 {
-    return this.createProjectile('player', id, actionData, actionElement, a_id)
+    return this.createProjectile('player', id, actionData, actionElement)
 };
 
-exports.createPvpProjectile = function(id, actionData, actionElement, a_id)
+exports.createPvpProjectile = function(id, actionData, actionElement)
 {
-    return this.createProjectile('pvp', id, actionData, actionElement, a_id)
+    return this.createProjectile('pvp', id, actionData, actionElement)
 };
 
-exports.createNPCProjectile = function(id, actionData, actionElement, a_id)
+exports.createNPCProjectile = function(id, actionData, actionElement)
 {
-    return this.createProjectile('npc', id, actionData, actionElement, a_id)
+    return this.createProjectile('npc', id, actionData, actionElement)
 };
 
 exports.calculateDamage = function(stats, scaling)

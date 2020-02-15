@@ -601,10 +601,6 @@ exports.handleChannel = function(channel)
             if (!isInGame() || data == undefined)
                 return;
 
-            //Shorten channel name
-
-            let id = channel.name;
-
             //Handle client input text
 
             let msg = '';
@@ -1562,10 +1558,6 @@ exports.removeNPC = function(map, id, channel)
 exports.syncPlayerActionCast = function(slot, id, channel, broadcast)
 {
     //Check if casting time is immediate
-
-    //TODO: Make it so we don't have to lookup the action
-    //      everytime we sync casting time, this will greatly
-    //      improve performance
 
     let targetTime = actions.getAction(game.players[id].actions[slot].name).castingTime;
     if (targetTime === 0)

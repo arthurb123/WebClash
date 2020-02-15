@@ -91,7 +91,7 @@ const ui = {
             let boxContent = document.createElement('div');
             boxContent.id = 'chat_box_content';
             boxContent.classList.add('content');
-            boxContent.style = 'overflow-y: auto; height: calc(100% - 26px);';
+            boxContent.style = 'overflow-y: auto; word-break: break-word; height: calc(100% - 26px);';
 
             let boxInput = document.createElement('input');
             boxInput.id = 'chat_box_message';
