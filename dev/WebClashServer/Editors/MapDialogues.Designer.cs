@@ -35,6 +35,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.dialogueName = new System.Windows.Forms.TextBox();
             this.editDialogue = new System.Windows.Forms.Button();
+            this.dialogueTitle = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // dialogueList
@@ -78,7 +80,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(117, 24);
+            this.label1.Location = new System.Drawing.Point(117, 20);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(80, 13);
             this.label1.TabIndex = 9;
@@ -86,7 +88,7 @@
             // 
             // dialogueName
             // 
-            this.dialogueName.Location = new System.Drawing.Point(120, 40);
+            this.dialogueName.Location = new System.Drawing.Point(120, 36);
             this.dialogueName.Name = "dialogueName";
             this.dialogueName.Size = new System.Drawing.Size(169, 20);
             this.dialogueName.TabIndex = 10;
@@ -94,7 +96,7 @@
             // 
             // editDialogue
             // 
-            this.editDialogue.Location = new System.Drawing.Point(120, 85);
+            this.editDialogue.Location = new System.Drawing.Point(120, 113);
             this.editDialogue.Name = "editDialogue";
             this.editDialogue.Size = new System.Drawing.Size(169, 23);
             this.editDialogue.TabIndex = 11;
@@ -102,11 +104,30 @@
             this.editDialogue.UseVisualStyleBackColor = true;
             this.editDialogue.Click += new System.EventHandler(this.editDialogue_Click);
             // 
+            // dialogueTitle
+            // 
+            this.dialogueTitle.Location = new System.Drawing.Point(120, 79);
+            this.dialogueTitle.Name = "dialogueTitle";
+            this.dialogueTitle.Size = new System.Drawing.Size(169, 20);
+            this.dialogueTitle.TabIndex = 13;
+            this.dialogueTitle.TextChanged += new System.EventHandler(this.dialogueTitle_TextChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(117, 63);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(72, 13);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "Dialogue Title";
+            // 
             // MapDialogues
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(301, 158);
+            this.Controls.Add(this.dialogueTitle);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.editDialogue);
             this.Controls.Add(this.dialogueName);
             this.Controls.Add(this.label1);
@@ -123,6 +144,7 @@
             this.Load += new System.EventHandler(this.MapDialogues_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion
@@ -133,5 +155,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox dialogueName;
         private System.Windows.Forms.Button editDialogue;
+        private System.Windows.Forms.TextBox dialogueTitle;
+        private System.Windows.Forms.Label label2;
     }
 }

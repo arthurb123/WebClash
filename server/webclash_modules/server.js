@@ -872,7 +872,7 @@ exports.handleChannel = function(channel)
                 case 'map':
                     //Map
 
-                    dialogEvent = tiled.maps_dialogs[map][data.owner][data.id];
+                    dialogEvent = tiled.maps_dialogs[map][data.owner].dialog[data.id];
 
                     eventName =
                         map.toString() +                    //Map to make sure the event can occur on other maps
@@ -950,7 +950,7 @@ exports.handleChannel = function(channel)
                     dialogEvent = npcs.onMap[game.players[id].map_id][data.owner].data.dialog[data.id];
                     break;
                 case 'map':
-                    dialogEvent = tiled.maps_dialogs[map][data.owner][data.id];
+                    dialogEvent = tiled.maps_dialogs[map][data.owner].dialog[data.id];
                     break;
             }
 
@@ -1120,7 +1120,11 @@ exports.handleChannel = function(channel)
             if (tiled.inDialogRange(id, map, data))
                 channel.emit('CLIENT_REQUEST_MAP_DIALOG_RESPONSE', {
                     name: data,
-                    dialog: dialog.createUnique(id, tiled.maps_dialogs[map][data])
+                    title: tiled.maps_dialogs[map][data].title,
+                    dialog: dialog.createUnique(
+                        id, 
+                        tiled.maps_dialogs[map][data].dialog
+                    )
                 });  
         }
         catch (err) {

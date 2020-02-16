@@ -400,7 +400,10 @@ exports.cacheMap = function(map)
 
     if (map.mapDialogs != undefined) {
         for (let d = 0; d < map.mapDialogs.length; d++) 
-            this.maps_dialogs[id][map.mapDialogs[d].name] = map.mapDialogs[d].dialog;
+            this.maps_dialogs[id][map.mapDialogs[d].name] = {
+                title: map.mapDialogs[d].title === "" ? map.mapDialogs[d].name : map.mapDialogs[d].title,
+                dialog: map.mapDialogs[d].dialog
+            };
 
         //Remove unnecessary map data
 

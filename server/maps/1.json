@@ -1,12 +1,4 @@
-{ "compressionlevel":0,
- "editorsettings":
-    {
-     "export":
-        {
-         "target":"."
-        }
-    },
- "height":60,
+{ "height":60,
  "infinite":false,
  "layers":[
         {
@@ -70,7 +62,7 @@
                         {
                          "name":"mapDialogue",
                          "type":"string",
-                         "value":"Stone Structure"
+                         "value":"stoneStructure"
                         }],
                  "rotation":0,
                  "type":"",
@@ -87,7 +79,7 @@
                         {
                          "name":"mapDialogue",
                          "type":"string",
-                         "value":"Wooden Chest"
+                         "value":"woodenChest"
                         }],
                  "rotation":0,
                  "type":"",
@@ -1275,8 +1267,8 @@
                  "type":"",
                  "visible":true,
                  "width":50.6666666666666,
-                 "x":870.666666666667,
-                 "y":429.333333333333
+                 "x":870.916666666667,
+                 "y":429.583333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1505,7 +1497,7 @@
  "nextobjectid":151,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.3.2",
+ "tiledversion":"1.2.1",
  "tileheight":32,
  "tilesets":[
         {

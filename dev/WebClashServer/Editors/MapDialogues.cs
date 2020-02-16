@@ -34,11 +34,13 @@ namespace WebClashServer.Editors
                 if (dialogs.Count == 0)
                 {
                     dialogueName.Enabled = false;
+                    dialogueTitle.Enabled = false;
                     editDialogue.Enabled = false;
                 }
                 else
                 {
                     dialogueName.Enabled = true;
+                    dialogueTitle.Enabled = true;
                     editDialogue.Enabled = true;
                 }
 
@@ -67,6 +69,7 @@ namespace WebClashServer.Editors
             current = dialogueList.SelectedIndex;
 
             dialogueName.Text = dialogs[current].name;
+            dialogueTitle.Text = dialogs[current].title;
         }
 
         private void newLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -96,6 +99,14 @@ namespace WebClashServer.Editors
             dialogs[current].name = dialogueName.Text;
 
             ReloadDialogueList();
+        }
+
+        private void dialogueTitle_TextChanged(object sender, EventArgs e)
+        {
+            if (current == -1)
+                return;
+
+            dialogs[current].title = dialogueTitle.Text;
         }
 
         private void editDialogue_Click(object sender, EventArgs e)
@@ -128,6 +139,7 @@ namespace WebClashServer.Editors
     public class MapDialogue
     {
         public string name = "";
+        public string title = "";
 
         public DialogueItem[] dialog = new DialogueItem[0];
         public CanvasElement[] dialogElements = new CanvasElement[0];

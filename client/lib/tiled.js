@@ -316,6 +316,7 @@ const tiled = {
 
                     //Set animation properties and show
 
+                    let layer = map.mapLayers[layer_id].hover ? 4 : 0;
                     animation
                         .Position(
                             tp.x+this.offset.width+offset_width,
@@ -325,7 +326,7 @@ const tiled = {
                             map.animatedTiles[actual].size.w,
                             map.animatedTiles[actual].size.h
                         )
-                        .Show(layer_id);
+                        .Show(layer);
 
                     //Add to animations
 

@@ -760,7 +760,7 @@ const client = {
 
             //Start dialog
 
-            ui.dialog.startDialog(data.name, 'map', data.name, data.quest, data.dialog);
+            ui.dialog.startDialog(data.name, 'map', data.title, data.quest, data.dialog);
         });
         channel.on('CLIENT_DIALOG_EVENT_RESPONSE', function(data) {
             //Handle dialog event
