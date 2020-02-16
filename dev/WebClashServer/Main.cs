@@ -73,6 +73,7 @@ namespace WebClashServer
             StartNodeProcess(
                 "npm.cmd", 
                 "install package.json", 
+                false,
                 FinishInstallingDependencies
             );
         }
@@ -119,7 +120,7 @@ namespace WebClashServer
 
             //Start server
 
-            StartNodeProcess("node.exe", "index.js");
+            StartNodeProcess("node.exe", "index.js", true);
 
             running          = true;
             startButton.Text = "Stop";
@@ -127,7 +128,7 @@ namespace WebClashServer
             status.Text      = "Server has been started.";
         }
 
-        private void StartNodeProcess(string target, string arguments, Action exitCallback = null)
+        private void StartNodeProcess(string target, string arguments, bool checkDependencies = true, Action exitCallback = null)
         {
             //Check if NodeJS is present
 
@@ -149,7 +150,7 @@ namespace WebClashServer
 
             //Check if NodeJS modules exist
 
-            if (!Directory.Exists(serverLocation + "/node_modules"))
+            if (checkDependencies && !Directory.Exists(serverLocation + "/node_modules"))
             {
                 DialogResult installDependencies = MessageBox.Show(
                     "The server dependencies could not be found, do you want to install these now?",
@@ -636,7 +637,7 @@ namespace WebClashServer
 
                     string file = files[f];//.Replace("/server/..", "");
                     AddOutput("Obfuscating '" + file + "'..");
-                    StartNodeProcess("node.exe", "misc/obfuscate.js \"" + file + "\" \"" + file + "\"", callback);
+                    StartNodeProcess("node.exe", "misc/obfuscate.js \"" + file + "\" \"" + file + "\"", false, callback);
                 };
 
                 callback();
