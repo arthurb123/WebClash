@@ -5,9 +5,13 @@ const creationScene = new lx.Scene(function() {
 
     //Create tilesheets for all player characters
 
-    let maxHeight = 0;
+    let maxHeight = 0,
+        scale = (game.isMobile ? properties.mobileRenderScale : properties.computerRenderScale);
+    
     for (let p = 0; p < playerCharacters.length; p++) {
         let char = playerCharacters[p];
+        char.width  *= scale;
+        char.height *= scale;
 
         //Wait for sprite to load, when done
         //create a tilesheet from the loaded sprite
@@ -16,9 +20,9 @@ const creationScene = new lx.Scene(function() {
 
         new lx.Sprite(char.src, function(sprite) {
             if (char.animation.direction === 'horizontal')
-                char.sprite = lx.CreateHorizontalTileSheet(sprite, char.width, char.height);
+                char.sprite = lx.CreateHorizontalTileSheet(sprite, char.width/scale, char.height/scale);
             else
-                char.sprite = lx.CreateVerticalTileSheet(sprite, char.width, char.height);
+                char.sprite = lx.CreateVerticalTileSheet(sprite, char.width/scale, char.height/scale);
 
             char.animation = new lx.Animation(char.sprite[0], char.animation.speed);
         });
@@ -30,7 +34,6 @@ const creationScene = new lx.Scene(function() {
         if (char.height > maxHeight)
             maxHeight = char.height;
     }
-
     //Create current character
 
     let currentCharacter = 0;
