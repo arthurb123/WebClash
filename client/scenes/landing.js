@@ -54,7 +54,7 @@ const landingScene = new lx.Scene(function() {
     let passwordTitle = document.createElement('p');
     passwordTitle.classList.add('info');
     passwordTitle.style = 'font-size: 14px;';
-    passwordTitle.innerHTML = 'Username';
+    passwordTitle.innerHTML = 'Password';
     let password = document.createElement('input');
     password.id = 'windowPassword';
     password.autocomplete = 'current-password';
