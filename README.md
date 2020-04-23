@@ -31,13 +31,13 @@ already present.
 * Item editor<br>
   - Create items with unique uses or effects.
 * Combat editor<br>
-  - Create a unique combat experience through "actions", which also feature<br>
+  - Create a unique combat experience through "actions", which also features<br>
     projectile support.
 * Chat with commands<br>
   - Converse with other players and execute player and/or admin commands.
 * Party system<br>
   - Have the ability to group up with other players, which rewards the party members<br>
-    with adjustable boons.
+    based on adjustable settings.
 * Banking system<br>
   - The ability to store and retrieve a players items anywhere, accessible from dialog.
 * Day and night system<br>
