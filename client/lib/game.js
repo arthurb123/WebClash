@@ -29,7 +29,9 @@ const game = {
                 //Handle nameplate
 
                 if (this._nameplate != undefined) {
-                    this._nameplate.Position(this.Size().W/2, -Math.floor(this.Size().H/5));
+                    let size = this.Size();
+
+                    this._nameplate.Offset(size.W/2, -Math.floor(size.H/5));
                     if (this._level !== undefined)
                         this._nameplate.Text('lvl ' + this._level + ' - ' + this.name);
                 }
@@ -92,7 +94,7 @@ const game = {
                 }
 
                 for (let i = 0; i < equipment.length; i++) {
-                    if (equipment[i] == undefined)
+                    if (equipment[i] == undefined || this.SPRITE == undefined)
                         continue;
 
                     equipment[i].CLIP = this.SPRITE.CLIP;
@@ -134,7 +136,7 @@ const game = {
                 }
 
                 for (let i = 0; i < equipment.length; i++) {
-                    if (equipment[i] == undefined)
+                    if (equipment[i] == undefined || this.SPRITE == undefined)
                         continue;
 
                     equipment[i].CLIP = this.SPRITE.CLIP;
@@ -443,8 +445,8 @@ const game = {
                 //Handle nameplate
 
                 if (this._nameplate != undefined) {
-                    if (this._nameplate.Position().X === 0)
-                      this._nameplate.Position(this.Size().W/2, -12);
+                    if (this._nameplate.Offset().X === 0)
+                        this._nameplate.Offset(this.Size().W/2, -12);
     
                     if (this._type === 'friendly')
                         this._nameplate.Color('black');
@@ -789,10 +791,21 @@ const game = {
             //Create dialog texture
 
             target._dialogTexture = new lx.UITexture(
-                sprite, 
-                target.Size().W/2,
-                -sprite.Size().H/2
-            ).Follows(target);
+                sprite
+            ).Loops(function() {
+                //Handle offset for when the
+                //sprite size has loaded
+
+                let pos = this.Offset();
+
+                if (pos.X === 0 && pos.Y === 0) {
+                    this.Offset(
+                        target.Size().W/2,
+                        -sprite.Size().H/2
+                    );
+                } else
+                    this.ClearLoops();
+            }).Follows(target);
             
             //Check if mobile
 
@@ -990,7 +1003,7 @@ const game = {
 
         //Create item sprite
 
-        let sprite = new lx.Sprite(data.source, undefined, undefined, undefined, undefined, function() {
+        cache.getSprite(data.source, function(sprite) {
             //Create lynx gameobject
 
             let worldItem = new lx.GameObject(

@@ -18,9 +18,11 @@ const camera = {
 
             //Create viewport object
 
+            let targetPos  = target.Position();
+            let targetSize = target.Size();
             let viewport = {
-                X: target.Position().X+target.Size().W/2-scaledWidth/2,
-                Y: target.Position().Y+target.Size().H/2-scaledHeight/2,
+                X: targetPos.X+targetSize.W/2-scaledWidth/2,
+                Y: targetPos.Y+targetSize.H/2-scaledHeight/2,
                 W: scaledWidth,
                 H: scaledHeight,
                 safe: true,

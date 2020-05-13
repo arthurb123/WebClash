@@ -545,7 +545,7 @@ const player = {
         }
 
         for (let i = 0; i < equipment.length; i++) {
-            if (equipment[i] == undefined)
+            if (equipment[i] == undefined || this.SPRITE == undefined)
                 continue;
 
             equipment[i].CLIP = this.SPRITE.CLIP;
@@ -588,7 +588,7 @@ const player = {
         //Render all equipment
 
         for (let i = 0; i < equipment.length; i++) {
-            if (equipment[i] == undefined)
+            if (equipment[i] == undefined || this.SPRITE == undefined)
                 continue;
 
             equipment[i].CLIP = this.SPRITE.CLIP;

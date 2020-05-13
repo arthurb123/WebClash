@@ -67,6 +67,7 @@ const cache = {
                 canCallback = false;
 
                 this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s), cb);
+                return;
             }
         }
 
@@ -90,6 +91,7 @@ const cache = {
                 canCallback = false;
 
                 this.sprites[src] = new lx.Sprite(src, cb);
+                return;
             }
         }
 

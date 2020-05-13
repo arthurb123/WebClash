@@ -243,21 +243,23 @@ const client = {
                      ui.inventory.setCurrency(data.currency);
              }
              if (data.character !== undefined) {
-                 game.players[id].SPRITE = new lx.Sprite(data.character.src);
-                 game.players[id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
-
-                 game.players[id].SIZE = game.players[id].SPRITE.Size();
-
-                 if (data.isPlayer)
-                 {
-                     player.setCollider(data.character.collider);
-                     player.setMovement(game.players[id], data.character.movement);
-                 }
-
-                 game.players[id]._animation = data.character.animation;
-                 game.players[id]._animation.cur = 0;
-
-                 game.players[id]._sounds = data.character.sounds;
+                 cache.getSprite(data.character.src, function (sprite) {
+                    game.players[id].SPRITE = sprite;
+                    game.players[id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
+   
+                    game.players[id].SIZE = game.players[id].SPRITE.Size();
+   
+                    if (data.isPlayer)
+                    {
+                        player.setCollider(data.character.collider);
+                        player.setMovement(game.players[id], data.character.movement);
+                    }
+   
+                    game.players[id]._animation = data.character.animation;
+                    game.players[id]._animation.cur = 0;
+   
+                    game.players[id]._sounds = data.character.sounds;
+                 });
              }
         });
         channel.on('GAME_PLAYER_KILLED', function (data) {
@@ -329,15 +331,17 @@ const client = {
             if (data.inCombat != undefined)
                 game.npcs[data.id]._inCombat = data.inCombat;
             if (data.character !== undefined) {
-                game.npcs[data.id].SPRITE = new lx.Sprite(data.character.src);
-                game.npcs[data.id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
-
-                game.npcs[data.id].SIZE = game.npcs[data.id].SPRITE.Size();
-
-                game.npcs[data.id]._animation = data.character.animation;
-                game.npcs[data.id]._animation.cur = 0;
-
-                game.npcs[data.id]._sounds = data.character.sounds;
+                cache.getSprite(data.character.src, function(sprite) {
+                    game.npcs[data.id].SPRITE = sprite;
+                    game.npcs[data.id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
+    
+                    game.npcs[data.id].SIZE = game.npcs[data.id].SPRITE.Size();
+    
+                    game.npcs[data.id]._animation = data.character.animation;
+                    game.npcs[data.id]._animation.cur = 0;
+    
+                    game.npcs[data.id]._sounds = data.character.sounds;
+                });
             }
         });
         channel.on('GAME_ACTION_UPDATE', function (data) {
