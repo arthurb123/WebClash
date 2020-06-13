@@ -7,14 +7,14 @@ const landingScene = new lx.Scene(function() {
 
     //Add a title logo
 
-    let logo_sprite = new lx.Sprite('res/ui/title.png');
-
-    lx.OnLayerDraw(0, function() {
-        lx.DrawSprite(
-            logo_sprite,
-            lx.GetDimensions().width/2-logo_sprite.Size().W/2,
-            lx.GetDimensions().height*.175-logo_sprite.Size().H/2
-        );
+    let logo_sprite = new lx.Sprite('res/ui/title.png', () => {
+        lx.OnLayerDraw(0, function() {
+            lx.DrawSprite(
+                logo_sprite,
+                lx.GetDimensions().width/2-logo_sprite.Size().W/2,
+                lx.GetDimensions().height*.175-logo_sprite.Size().H/2
+            );
+        });
     });
 
     //Add a server name text and
