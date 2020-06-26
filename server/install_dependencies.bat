@@ -1,5 +1,9 @@
 @echo off
 title Install Dependencies
 
-npm install package.json
+echo Prematurely installing needle globally..
+CALL npm install needle -g
+echo Installing dependencies..
+CALL npm install pkg.json
+echo Finished!
 pause

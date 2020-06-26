@@ -64,18 +64,31 @@ namespace WebClashServer
 
         private void InstallDependencies()
         {
+            string dependenciesBat = Application.StartupPath + "/" +  serverLocation + "/install_dependencies.bat";
+
+            if (!File.Exists(serverLocation + "/install_dependencies.bat"))
+            {
+                MessageBox.Show(
+                    "Could not install the server dependencies, " +
+                    "as the 'install_dependencies.bat' file is missing from " +
+                    "the server directory. Please restore this file.", 
+                    "WebClash - Error"
+                );
+
+                return;
+            }
+
             output.Text = "";
             status.Text = "Installing dependencies..";
             startButton.Enabled = false;
 
+            AddOutput("Found installer: " + @dependenciesBat);
             AddOutput("Installing dependencies, this may take a while..");
 
-            StartNodeProcess(
-                "npm.cmd", 
-                "install package.json", 
-                false,
-                FinishInstallingDependencies
-            );
+            StartProcess("cmd.exe", "/c " + @dependenciesBat, () =>
+            {
+                FinishInstallingDependencies();
+            });
         }
 
         private void FinishInstallingDependencies()
@@ -91,7 +104,7 @@ namespace WebClashServer
 
                     MessageBox.Show(
                         "Could not install the server dependencies, " +
-                        "please try again or use 'npm install package.json' in the console.",
+                        "please try again or run 'install_dependencies.bat' located in the server folder.",
                         "WebClash - Error"
                     );
                 }
