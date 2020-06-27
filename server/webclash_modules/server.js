@@ -385,12 +385,27 @@ exports.handleChannel = function(channel)
 
                     let collider = game.players[id].character.collider;
 
-                    if (tiled.checkCollisionWithRectangle(game.players[id].map_id, {
+                    //Create collider rectangle
+
+                    let rect = {
                         x: data.pos.X + collider.x + (1-factor) * collider.width,
                         y: data.pos.Y + collider.y + (1-factor) * collider.height,
                         w: collider.width  * factor,
                         h: collider.height * factor
-                    }, id))
+                    };
+
+                    //Check for collider violation or outside of the map
+
+                    let map = game.players[id].map_id;
+
+                    //TODO: For the checking if the player is inside the
+                    //      map, the collider rect should not be used.
+                    //      Instead the normal bounding box of the character could
+                    //      be used? It might just not be necessary but it
+                    //      requires some further looking into!
+
+                    if (!tiled.checkRectangleInMap(map, rect) ||
+                        tiled.checkCollisionWithRectangle(map, rect, id))
                         valid = false;
                 }
 

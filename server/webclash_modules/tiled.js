@@ -288,11 +288,19 @@ exports.cacheMap = function(map)
 
     //Cache collider zones
 
-    for (let z_x = 0; z_x < map.width; z_x += colliderZoneSize)
-        for (let z_y = 0; z_y < map.height; z_y += colliderZoneSize) {
+    map.colliderZoneWidth  = Math.ceil(map.width  / colliderZoneSize);
+    map.colliderZoneHeight = Math.ceil(map.height / colliderZoneSize);
+
+    for (let x = 0; x < map.colliderZoneWidth; x++)
+        for (let y = 0; y < map.colliderZoneHeight; y++) {
+            //Calculate zone positions
+
+            let z_x = x * colliderZoneSize;
+            let z_y = y * colliderZoneSize;
+
             //Create new zone entry
 
-            let zoneId = this.maps_collider_zones[id].length;
+            let zoneId = x * map.colliderZoneHeight + y;
             this.maps_collider_zones[id][zoneId] = {
                 x: z_x * map.tilewidth + offset_width,
                 y: z_y * map.tileheight + offset_height,
@@ -563,62 +571,89 @@ exports.getPropertiesFromObject = function(map, object)
 
 exports.findCollisionZone = function(map, rectangle)
 {
-    //Go over all collider zones, check for the first found
-    //collided zone - as it does not matter which zone the
-    //target resides in the most
+    //Grab the map
 
-    for (let zone = 0; zone < this.maps_collider_zones[map].length; zone++)
-        if (this.checkRectangularCollision(this.maps_collider_zones[map][zone], rectangle))
-            return zone;
+    let m = this.maps[map];
 
-    //No zone was found
+    //Get the tile position of the rectangle
 
-    return -1;
+    let tx = Math.round((rectangle.x + m.width  * m.tilewidth  / 2) / m.tilewidth);
+    let ty = Math.round((rectangle.y + m.height * m.tileheight / 2) / m.tileheight);
+
+    //Estimate the collider zone through zone size
+    //rounding
+
+    let zx = Math.floor(tx / colliderZoneSize);
+    let zy = Math.floor(ty / colliderZoneSize);
+
+    //Check if bounds have been exceeded,
+    //return invalid zone
+
+    if (zx < 0                    ||
+        zy < 0                    ||
+        zx >= m.colliderZoneWidth ||
+        zy >= m.colliderZoneHeight)
+        return -1;
+
+    //Calculate the zone
+
+    let z = zx * m.colliderZoneHeight + zy;
+
+    //Return the zone
+
+    return z;
 };
 
 exports.checkCollisionWithRectangle = function(map, rectangle, playerOverride)
 {
-    //Check if the map does not exist or the map has no collider zones
+    try {
+        //Check if the map does not exist or the map has no collider zones
 
-    if (map === -1 ||
-        this.maps_collider_zones[map] == undefined)
-        return false;
+        if (map === -1 ||
+            this.maps_collider_zones[map] == undefined)
+            return false;
 
-    //Grab the current collider zone
+        //Grab the current collider zone
 
-    let zone = this.findCollisionZone(map, rectangle);
+        let zone = this.findCollisionZone(map, rectangle);
 
-    //Check if the zone is valid
+        //Check if the zone is invalid
 
-    if (zone === -1)
-        return false;
+        if (zone === -1)
+            return true;
 
-    //For all colliders in the zone, check if the target collides with any
+        //For all colliders in the zone, check if the target collides with any
 
-    let colliders = this.maps_collider_zones[map][zone].colliders;
-    for (let c = 0; c < colliders.length; c++) {
-        //Skip any invalid colliders
+        let colliders = this.maps_collider_zones[map][zone].colliders;
+        for (let c = 0; c < colliders.length; c++) {
+            //Skip any invalid colliders
 
-        if (colliders[c] == undefined)
-            continue;
-            
-        //If player override (identifier) is specified,
-        //check player against the collider checks.
-        //If not eligible (false result), skip the collider.
-
-        if (playerOverride != undefined)
-            if (!game.checkPlayerForChecks(playerOverride, colliders[c].checks))
+            if (colliders[c] == undefined)
                 continue;
 
-        //Check for collision
+            //If player override (identifier) is specified,
+            //check player against the collider checks.
+            //If not eligible (false result), skip the collider.
 
-        if (this.checkRectangularCollision(colliders[c].collider, rectangle))
-            return true;
+            if (playerOverride != undefined)
+                if (!game.checkPlayerForChecks(playerOverride, colliders[c].checks))
+                    continue;
+
+            //Check for collision
+
+            if (this.checkRectangularCollision(colliders[c].collider, rectangle))
+                return true;
+        }
+
+        //No collision with any colliders in the target's zone
+
+        return false;
     }
+    catch (err) {
+        output.giveError('Could not handle map collision: ', err);
 
-    //No collision with any colliders in the target's zone
-
-    return false;
+        return false;
+    }
 };
 
 exports.checkRectangleInMap = function(map, rect)
