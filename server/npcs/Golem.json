@@ -1,55 +1,60 @@
 {
   "name": "Golem",
-  "showNameplate": true,
-  "movement": "free",
-  "range": 6,
-  "facing": 0,
-  "type": "hostile",
-  "aggressive": false,
-  "attackRange": 1,
-  "character": "golem",
-  "stats": {
-    "level": 8,
-    "exp": 20,
-    "power": 0,
-    "toughness": 3,
-    "agility": 1,
-    "wisdom": 2,
-    "intelligence": 5,
-    "vitality": 0
-  },
-  "health": {
-    "cur": 85,
-    "max": 85
-  },
-  "actions": [
+  "profiles": [
     {
-      "action": "Heal",
-      "range": 0,
-      "extraCooldown": 0
-    },
-    {
-      "action": "Combust",
-      "range": 2,
-      "extraCooldown": 21
-    },
-    {
-      "action": "Hydrate",
-      "range": 2,
-      "extraCooldown": 18
+      "showNameplate": true,
+      "movement": "free",
+      "range": 6,
+      "facing": 0,
+      "collidesWithinMap": true,
+      "type": "hostile",
+      "aggressive": false,
+      "attackRange": 1,
+      "character": "golem",
+      "stats": {
+        "level": 8,
+        "exp": 20,
+        "power": 0,
+        "toughness": 3,
+        "agility": 1,
+        "wisdom": 2,
+        "intelligence": 5,
+        "vitality": 0
+      },
+      "health": {
+        "cur": 85,
+        "max": 85
+      },
+      "actions": [
+        {
+          "action": "Heal",
+          "range": 0,
+          "extraCooldown": 0
+        },
+        {
+          "action": "Combust",
+          "range": 2,
+          "extraCooldown": 21
+        },
+        {
+          "action": "Hydrate",
+          "range": 2,
+          "extraCooldown": 18
+        }
+      ],
+      "items": [
+        {
+          "item": "Healing Slab",
+          "dropChance": 2
+        },
+        {
+          "item": "Weird Greens",
+          "dropChance": 1
+        }
+      ],
+      "equipment": [],
+      "dialog": [],
+      "dialogElements": []
     }
-  ],
-  "items": [
-    {
-      "item": "Healing Slab",
-      "dropChance": 2
-    },
-    {
-      "item": "Weird Greens",
-      "dropChance": 1
-    }
-  ],
-  "equipment": [],
-  "dialog": [],
-  "dialogElements": []
+  ]
 }

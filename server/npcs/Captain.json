@@ -1,337 +1,342 @@
 {
   "name": "Captain",
-  "showNameplate": true,
-  "movement": "static",
-  "range": 1,
-  "facing": 0,
-  "collidesWithinMap": true,
-  "type": "friendly",
-  "aggressive": false,
-  "attackRange": 1,
-  "character": "captain",
-  "stats": {
-    "level": 6,
-    "exp": 15,
-    "power": 3,
-    "toughness": 4,
-    "agility": 2,
-    "wisdom": 0,
-    "intelligence": 0,
-    "vitality": 0
-  },
-  "health": {
-    "cur": 75,
-    "max": 75
-  },
-  "actions": [
+  "profiles": [
     {
-      "action": "Swingfest",
-      "range": 2,
-      "extraCooldown": 6
-    },
-    {
-      "action": "Arrow Rain",
-      "range": 6,
-      "extraCooldown": 53
-    }
-  ],
-  "items": [],
-  "equipment": [
-    {
-      "source": "res/equipment/main/1.png",
-      "type": "main"
-    },
-    {
-      "source": "res/equipment/offhand/1.png",
-      "type": "offhand"
-    }
-  ],
-  "dialog": [
-    {
-      "text": "This village now belongs to me!!",
-      "portrait": "res/portraits/2.png",
-      "entry": true,
-      "isEvent": false,
-      "options": [
-        {
-          "text": "No",
-          "next": 3
-        },
-        {
-          "text": "Whatever",
-          "next": -1
-        }
-      ],
-      "eventType": "",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "showBankEvent": null,
-      "advanceQuestEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "",
-      "portrait": "",
-      "entry": false,
-      "isEvent": true,
-      "options": [
-        {
-          "text": "",
-          "next": -1
-        },
-        {
-          "text": "",
-          "next": -1
-        }
-      ],
-      "eventType": "SpawnNPC",
-      "repeatable": true,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": {
-        "name": "Soldier",
-        "amount": 4,
-        "hostile": true
+      "showNameplate": true,
+      "movement": "static",
+      "range": 1,
+      "facing": 0,
+      "collidesWithinMap": true,
+      "type": "friendly",
+      "aggressive": false,
+      "attackRange": 1,
+      "character": "captain",
+      "stats": {
+        "level": 6,
+        "exp": 15,
+        "power": 3,
+        "toughness": 4,
+        "agility": 2,
+        "wisdom": 0,
+        "intelligence": 0,
+        "vitality": 0
       },
-      "turnHostileEvent": null,
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "showBankEvent": null,
-      "advanceQuestEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "Have fun with my soldiers!",
-      "portrait": "res/portraits/2.png",
-      "entry": false,
-      "isEvent": false,
-      "options": [
-        {
-          "text": "Come at me!",
-          "next": 1
-        },
-        {
-          "text": "No thanks",
-          "next": -1
-        }
-      ],
-      "eventType": "",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "showBankEvent": null,
-      "advanceQuestEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "",
-      "portrait": "",
-      "entry": false,
-      "isEvent": true,
-      "options": [
-        {
-          "text": "",
-          "next": 2
-        },
-        {
-          "text": "",
-          "next": 4
-        }
-      ],
-      "eventType": "ShowQuest",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": {
-        "name": "Village Rescue (Pt. 1)"
+      "health": {
+        "cur": 75,
+        "max": 75
       },
-      "showShopEvent": null,
-      "showBankEvent": null,
-      "advanceQuestEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "",
-      "portrait": "",
-      "entry": false,
-      "isEvent": true,
-      "options": [
+      "actions": [
         {
-          "text": "",
-          "next": 5
+          "action": "Swingfest",
+          "range": 2,
+          "extraCooldown": 6
+        },
+        {
+          "action": "Arrow Rain",
+          "range": 6,
+          "extraCooldown": 53
+        }
+      ],
+      "items": [],
+      "equipment": [
+        {
+          "source": "res/equipment/main/1.png",
+          "type": "main"
+        },
+        {
+          "source": "res/equipment/offhand/1.png",
+          "type": "offhand"
+        }
+      ],
+      "dialog": [
+        {
+          "text": "This village now belongs to me!!",
+          "portrait": "res/portraits/2.png",
+          "entry": true,
+          "isEvent": false,
+          "options": [
+            {
+              "text": "No",
+              "next": 3
+            },
+            {
+              "text": "Whatever",
+              "next": -1
+            }
+          ],
+          "eventType": "",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
         },
         {
           "text": "",
-          "next": 7
-        }
-      ],
-      "eventType": "ShowQuest",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": {
-        "name": "Village Rescue (Pt. 2)"
-      },
-      "showShopEvent": null,
-      "showBankEvent": null,
-      "advanceQuestEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "You are making a mistake here!!",
-      "portrait": "res/portraits/2.png",
-      "entry": false,
-      "isEvent": false,
-      "options": [
-        {
-          "text": "Fight me!",
-          "next": 6
+          "portrait": "",
+          "entry": false,
+          "isEvent": true,
+          "options": [
+            {
+              "text": "",
+              "next": -1
+            },
+            {
+              "text": "",
+              "next": -1
+            }
+          ],
+          "eventType": "SpawnNPC",
+          "repeatable": true,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": {
+            "name": "Soldier",
+            "profile": 0,
+            "amount": 4,
+            "hostile": true
+          },
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
         },
         {
-          "text": "Maybe I am",
-          "next": -1
-        }
-      ],
-      "eventType": "",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "showBankEvent": null,
-      "advanceQuestEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "",
-      "portrait": "",
-      "entry": false,
-      "isEvent": true,
-      "options": [
-        {
-          "text": "",
-          "next": -1
+          "text": "Have fun with my soldiers!",
+          "portrait": "res/portraits/2.png",
+          "entry": false,
+          "isEvent": false,
+          "options": [
+            {
+              "text": "Come at me!",
+              "next": 1
+            },
+            {
+              "text": "No thanks",
+              "next": -1
+            }
+          ],
+          "eventType": "",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
         },
         {
           "text": "",
-          "next": -1
-        }
-      ],
-      "eventType": "TurnHostile",
-      "repeatable": true,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": {},
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "showBankEvent": null,
-      "advanceQuestEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "Yeah maybe not..",
-      "portrait": "res/portraits/2.png",
-      "entry": false,
-      "isEvent": false,
-      "options": [
+          "portrait": "",
+          "entry": false,
+          "isEvent": true,
+          "options": [
+            {
+              "text": "",
+              "next": 2
+            },
+            {
+              "text": "",
+              "next": 4
+            }
+          ],
+          "eventType": "ShowQuest",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": {
+            "name": "Village Rescue (Pt. 1)"
+          },
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
         {
-          "text": "Lol loser",
-          "next": -1
+          "text": "",
+          "portrait": "",
+          "entry": false,
+          "isEvent": true,
+          "options": [
+            {
+              "text": "",
+              "next": 5
+            },
+            {
+              "text": "",
+              "next": 7
+            }
+          ],
+          "eventType": "ShowQuest",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": {
+            "name": "Village Rescue (Pt. 2)"
+          },
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "You are making a mistake here!!",
+          "portrait": "res/portraits/2.png",
+          "entry": false,
+          "isEvent": false,
+          "options": [
+            {
+              "text": "Fight me!",
+              "next": 6
+            },
+            {
+              "text": "Maybe I am",
+              "next": -1
+            }
+          ],
+          "eventType": "",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "",
+          "portrait": "",
+          "entry": false,
+          "isEvent": true,
+          "options": [
+            {
+              "text": "",
+              "next": -1
+            },
+            {
+              "text": "",
+              "next": -1
+            }
+          ],
+          "eventType": "TurnHostile",
+          "repeatable": true,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": {},
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "Yeah maybe not..",
+          "portrait": "res/portraits/2.png",
+          "entry": false,
+          "isEvent": false,
+          "options": [
+            {
+              "text": "Lol loser",
+              "next": -1
+            }
+          ],
+          "eventType": "",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
         }
       ],
-      "eventType": "",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "showBankEvent": null,
-      "advanceQuestEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    }
-  ],
-  "dialogElements": [
-    {
-      "p": "33, 102",
-      "id": 0,
-      "isEvent": false,
-      "size": "100, 80"
-    },
-    {
-      "p": "576, 23",
-      "id": 1,
-      "isEvent": true,
-      "size": "95, 20"
-    },
-    {
-      "p": "384, 6",
-      "id": 2,
-      "isEvent": false,
-      "size": "100, 80"
-    },
-    {
-      "p": "173, 88",
-      "id": 3,
-      "isEvent": true,
-      "size": "95, 20"
-    },
-    {
-      "p": "383, 145",
-      "id": 4,
-      "isEvent": true,
-      "size": "95, 20"
-    },
-    {
-      "p": "585, 138",
-      "id": 5,
-      "isEvent": false,
-      "size": "100, 80"
-    },
-    {
-      "p": "755, 129",
-      "id": 6,
-      "isEvent": true,
-      "size": "95, 20"
-    },
-    {
-      "p": "566, 247",
-      "id": 7,
-      "isEvent": false,
-      "size": "100, 80"
+      "dialogElements": [
+        {
+          "p": "33, 102",
+          "id": 0,
+          "isEvent": false,
+          "size": "100, 80"
+        },
+        {
+          "p": "576, 23",
+          "id": 1,
+          "isEvent": true,
+          "size": "95, 20"
+        },
+        {
+          "p": "384, 6",
+          "id": 2,
+          "isEvent": false,
+          "size": "100, 80"
+        },
+        {
+          "p": "173, 88",
+          "id": 3,
+          "isEvent": true,
+          "size": "95, 20"
+        },
+        {
+          "p": "383, 145",
+          "id": 4,
+          "isEvent": true,
+          "size": "95, 20"
+        },
+        {
+          "p": "585, 138",
+          "id": 5,
+          "isEvent": false,
+          "size": "100, 80"
+        },
+        {
+          "p": "755, 129",
+          "id": 6,
+          "isEvent": true,
+          "size": "95, 20"
+        },
+        {
+          "p": "566, 247",
+          "id": 7,
+          "isEvent": false,
+          "size": "100, 80"
+        }
+      ]
     }
   ]
 }

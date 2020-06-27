@@ -152,9 +152,21 @@ exports.createNPCs = function(npc_property, map_id)
         if (npc_property.rectangles[i].h != undefined)
             pos.y += npc_property.rectangles[i].h/2;
 
+        //Extract name and profile
+
+        let profile = 0;
+        let name    = npc_property.value;
+        let hashId  = name.indexOf('#');
+
+        if (hashId !== -1) {
+            profile = parseInt(name.substr(hashId+1, name.length-1));
+            name    = name.substr(0, hashId);
+        } else
+            output.give('Created the NPC \'' + name + '\' without a specified profile, defaults to profile #0.');
+
         //Create NPC
 
-        let npc = this.createNPC(map_id, npc_property.value, pos.x, pos.y, false);
+        let npc = this.createNPC(map_id, name, profile, pos.x, pos.y, false);
 
         //Set checks on the newly created NPC
 
@@ -162,18 +174,21 @@ exports.createNPCs = function(npc_property, map_id)
     }
 };
 
-exports.createNPC = function(map, name, x, y, isEvent)
+exports.createNPC = function(map, name, profile, x, y, isEvent)
 {
     //Get specified NPC
 
     let npc = {
         name: name,
-        data: this.loadNPC(name),
+        data: this.loadNPC(name, profile),
         isEvent: isEvent
     };
 
-    if (npc.data === undefined)
+    if (npc.data === undefined) {
+        output.give('Could not create NPC \'' + name + '\' with profile #' + profile);
+
         return -1;
+    }
 
     //Setup NPC
 
@@ -241,9 +256,9 @@ exports.createNPC = function(map, name, x, y, isEvent)
     return npc.id;
 };
 
-exports.createEventNPC = function(map, name, x, y, owner, hostile, resetCallback)
+exports.createEventNPC = function(map, name, profile, x, y, owner, hostile, resetCallback)
 {
-    let npc_id = this.createNPC(map, name, x, y, true);
+    let npc_id = this.createNPC(map, name, profile, x, y, true);
 
     //Check if valid
 
@@ -323,18 +338,40 @@ exports.ownsEventNPC = function(map, name, player) {
     return false;
 };
 
-exports.loadNPC = function(name)
+exports.loadNPC = function(name, profile)
 {
     try
     {
         let npc = JSON.parse(fs.readFileSync('npcs/' + name + '.json', 'utf-8'));
+
+        //Check if the specified profile is valid
+
+        if (npc.profiles[profile] == undefined) {
+            output.give('Tried to load the NPC \'' + name + '\' with an invalid profile #' + profile);
+
+            return;
+        }
+
+        //Append the profile properties to the NPC itself,
+        //and delete the profiles array
+
+        npc = Object.assign(npc.profiles[profile], npc);
+        delete npc.profiles;
+
+        //Assign the profile identifier
+
+        npc.profile = profile;
+
+        //Replace the character identifier with the
+        //actual character
+
         npc.character = game.characters[npc.character];
 
         return npc;
     }
     catch(err)
     {
-        output.giveError('Could not load NPC: ', err);
+        output.giveError('Could not load NPC \'' + name + '\' with profile #' + profile + ': ', err);
     }
 };
 

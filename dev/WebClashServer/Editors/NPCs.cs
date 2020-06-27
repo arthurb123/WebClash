@@ -11,6 +11,7 @@ namespace WebClashServer.Editors
     public partial class NPCs : Form
     {
         private NPC current;
+        private NPCProfile currentProfile;
 
         private bool dataHasChanged = false;
 
@@ -76,17 +77,112 @@ namespace WebClashServer.Editors
             }
         }
 
+        private void ReloadNPCProfiles()
+        {
+            profileSelect.Items.Clear();
+
+            for (int p = 0; p < current.profiles.Length; p++)
+                if (current.profiles[p] != null)
+                    profileSelect.Items.Add(p);
+        }
+
         private void LoadNPC(string npcName)
         {
-            if (npcName == string.Empty)
-                current = new NPC();
-            else
-                current = new NPC(Program.main.serverLocation + "/npcs/" + npcName + ".json");
+            try
+            {
+                string loc = Program.main.serverLocation + "/npcs/" + npcName + ".json";
 
-            name.Text = current.name;
-            showNameplate.Checked = current.showNameplate;
+                if (npcName == string.Empty)
+                    current = new NPC();
+                else
+                    current = new NPC(loc);
 
-            switch (current.movement)
+                //Check if the NPC makes use of the
+                //profile system or not, if not ask
+                //upgrade the NPC
+
+                if (current.profiles.Length == 0)
+                {
+                    string text = File.ReadAllText(loc);
+                    List<string> lines = text.Split('\n').ToList();
+
+                    lines.Insert(3, "\"profiles\": [{\n");
+                    lines.Insert(lines.Count - 1, "}]\n");
+
+                    text = String.Join(string.Empty, lines);
+                    File.WriteAllText(loc, text);
+
+                    //Reload the NPC
+
+                    LoadNPC(npcName);
+                    return;
+                }
+
+                //Else open the first profile
+                //by default, and set the name
+
+                else
+                {
+                    name.Text = npcName;
+
+                    ReloadNPCProfiles();
+
+                    profileSelect.SelectedItem = FindFirstNPCProfile();
+                }
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message, "WebClash - Error");
+            }
+        }
+
+        private int FindFirstNPCProfile()
+        {
+            for (int p = 0; p < current.profiles.Length; p++)
+                if (current.profiles[p] != null)
+                    return p;
+
+            //No profile was found, thus create one
+            //and use that
+
+            addProfile_Click(null, new EventArgs());
+
+            MessageBox.Show(
+                "A new profile was created for the NPC '" + current.name + "', as no other profiles were found.", 
+                "WebClash - Message"
+            );
+
+            return FindFirstNPCProfile();
+        }
+
+        private void LoadNPCProfile(int profile)
+        {
+            //Check if the profile is valid
+
+            if (profile >= current.profiles.Length ||
+                current.profiles[profile] == null)
+            {
+                MessageBox.Show(
+                    "The profile #" + profile + " is invalid for the NPC '" + current.name + "'!", 
+                    "WebClash - Error"
+                );
+
+                return;
+            }
+
+            //Load the profile
+
+            currentProfile = current.profiles[profile];
+
+            //Set the NPC#Profile string
+
+            npcProfileName.Text = "(Tiled property: " + current.name + "#" + profile + ")";
+
+            //Set values
+
+            showNameplate.Checked = currentProfile.showNameplate;
+
+            switch (currentProfile.movement)
             {
                 case "free":
                     movementFree.Checked = true;
@@ -96,11 +192,11 @@ namespace WebClashServer.Editors
                     break;
             }
 
-            range.Value = current.range;
-            facing.SelectedIndex = current.facing;
-            collidesWithinMap.Checked = current.collidesWithinMap;
+            range.Value = currentProfile.range;
+            facing.SelectedIndex = currentProfile.facing;
+            collidesWithinMap.Checked = currentProfile.collidesWithinMap;
 
-            switch (current.type)
+            switch (currentProfile.type)
             {
                 case "friendly":
                     typeFriendly.Checked = true;
@@ -110,30 +206,30 @@ namespace WebClashServer.Editors
                     break;
             }
 
-            aggressive.Checked = current.aggressive;
-            attackRange.Value = current.attackRange;
-            attackRange.Enabled = current.aggressive;
+            aggressive.Checked = currentProfile.aggressive;
+            attackRange.Value = currentProfile.attackRange;
+            attackRange.Enabled = currentProfile.aggressive;
 
-            if (current.stats == null)
-                current.stats = new Stats();
+            if (currentProfile.stats == null)
+                currentProfile.stats = new Stats();
 
-            level.Value = current.stats.level;
+            level.Value = currentProfile.stats.level;
 
-            exp.Value = current.stats.exp;
+            exp.Value = currentProfile.stats.exp;
 
-            power.Value = current.stats.power;
-            agility.Value = current.stats.agility;
-            intelligence.Value = current.stats.intelligence;
-            wisdom.Value = current.stats.wisdom;
-            toughness.Value = current.stats.toughness;
-            vitality.Value = current.stats.vitality;
+            power.Value = currentProfile.stats.power;
+            agility.Value = currentProfile.stats.agility;
+            intelligence.Value = currentProfile.stats.intelligence;
+            wisdom.Value = currentProfile.stats.wisdom;
+            toughness.Value = currentProfile.stats.toughness;
+            vitality.Value = currentProfile.stats.vitality;
 
-            if (current.health != null)
-                health.Value = current.health.max;
+            if (currentProfile.health != null)
+                health.Value = currentProfile.health.max;
 
             checkTypeEnabled();
 
-            charSelect.SelectedItem = current.character;
+            charSelect.SelectedItem = currentProfile.character;
         }
 
         private void npcSelect_SelectedIndexChanged(object sender, EventArgs e)
@@ -146,7 +242,7 @@ namespace WebClashServer.Editors
             if (current == null)
                 return;
 
-            current.character = charSelect.SelectedItem.ToString();
+            currentProfile.character = charSelect.SelectedItem.ToString();
         }
 
         private void save_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -171,8 +267,9 @@ namespace WebClashServer.Editors
 
         private void add_Click(object sender, EventArgs e)
         {
-            npcSelect.Items.Add(string.Empty);
+            //Create empty NPC
 
+            npcSelect.Items.Add(string.Empty);
             npcSelect.SelectedItem = string.Empty;
         }
 
@@ -193,24 +290,116 @@ namespace WebClashServer.Editors
                 npcSelect.SelectedItem = npcSelect.Items[0];
         }
 
+        private void addProfile_Click(object sender, EventArgs e)
+        {
+            //Convert the current profile array to a list
+
+            List<NPCProfile> profiles = current.profiles.ToList();
+
+            //Create a profile with some default values
+
+            NPCProfile profile = new NPCProfile()
+            {
+                character = currentProfile.character
+            };
+
+            //Find the first empty spot, or append a new one
+            //if this is not available
+
+            bool added = false;
+            int nextProfile = 0;
+            for (int p = 0; p < profiles.Count; p++)
+            {
+                if (profiles[p] == null)
+                {
+                    added = true;
+
+                    profiles[p] = profile;
+                    nextProfile = p;
+
+                    break;
+                }
+            }
+
+            if (!added)
+            {
+                profiles.Add(profile);
+
+                nextProfile = profiles.Count - 1;
+            }
+
+            //Convert the list back to an array
+
+            current.profiles = profiles.ToArray();
+
+            //Reload the profiles
+
+            ReloadNPCProfiles();
+
+            //Load the new (next) profile
+
+            profileSelect.SelectedItem = nextProfile;
+        }
+
+        private void removeProfile_Click(object sender, EventArgs e)
+        {
+            int profile = (int)profileSelect.SelectedItem;
+
+            //Make sure that atleast one profile is available
+
+            int amount = 0;
+            for (int p = 0; p < current.profiles.Length; p++)
+                if (current.profiles[p] != null)
+                    amount++;
+
+            if (amount <= 1)
+            {
+                MessageBox.Show(
+                    "Profile #" + profile + " could not be deleted, as a NPC should have atleast one profile available at all time.", 
+                    "WebClash - Error"
+                );
+
+                return;
+            }
+
+            //"Remove" the profile at the index
+
+            current.profiles[profile] = null;
+
+            //Reload the profiles
+
+            ReloadNPCProfiles();
+
+            //Open the first found profile
+
+            profileSelect.SelectedItem = FindFirstNPCProfile();
+        }
+
+        private void profile_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadNPCProfile((int)profileSelect.SelectedItem);
+        }
+
         private void checkTypeEnabled()
         {
-            if (current.type != "friendly")
+            if (currentProfile.type != "friendly")
             {
                 dialogueButton.Enabled = false;
                 aggressive.Enabled = true;
+                attackRange.Enabled = true;
             }
             else
             {
                 dialogueButton.Enabled = true;
                 aggressive.Enabled = false;
+                attackRange.Enabled = false;
             }
         }
 
         private void typeFriendly_CheckedChanged(object sender, EventArgs e)
         {
             if (typeFriendly.Checked)
-                current.type = "friendly";
+                currentProfile.type = "friendly";
 
             checkTypeEnabled();
         }
@@ -218,7 +407,7 @@ namespace WebClashServer.Editors
         private void typeHostile_CheckedChanged(object sender, EventArgs e)
         {
             if (typeHostile.Checked)
-                current.type = "hostile";
+                currentProfile.type = "hostile";
 
             checkTypeEnabled();
         }
@@ -227,12 +416,12 @@ namespace WebClashServer.Editors
         {
             attackRange.Enabled = aggressive.Checked;
 
-            current.aggressive = aggressive.Checked;
+            currentProfile.aggressive = aggressive.Checked;
         }
 
         private void attackRange_ValueChanged(object sender, EventArgs e)
         {
-            current.attackRange = (int)attackRange.Value;
+            currentProfile.attackRange = (int)attackRange.Value;
         }
 
         private void name_TextChanged(object sender, EventArgs e)
@@ -242,14 +431,14 @@ namespace WebClashServer.Editors
         
         private void showNameplate_CheckedChanged(object sender, EventArgs e)
         {
-            current.showNameplate = showNameplate.Checked;
+            currentProfile.showNameplate = showNameplate.Checked;
         }
 
         private void movementFree_CheckedChanged(object sender, EventArgs e)
         {
             if (movementFree.Checked)
             {
-                current.movement = "free";
+                currentProfile.movement = "free";
 
                 range.Enabled = true;
                 facing.Enabled = false;
@@ -260,7 +449,7 @@ namespace WebClashServer.Editors
         {
             if (movementStatic.Checked)
             {
-                current.movement = "static";
+                currentProfile.movement = "static";
 
                 range.Enabled = false;
                 facing.Enabled = true;
@@ -269,70 +458,70 @@ namespace WebClashServer.Editors
 
         private void range_ValueChanged(object sender, EventArgs e)
         {
-            current.range = (int)range.Value;
+            currentProfile.range = (int)range.Value;
         }
 
         private void collidesWithinMap_CheckedChanged(object sender, EventArgs e)
         {
-            current.collidesWithinMap = collidesWithinMap.Checked;
+            currentProfile.collidesWithinMap = collidesWithinMap.Checked;
         }
 
         private void facing_SelectedIndexChanged(object sender, EventArgs e)
         {
-            current.facing = facing.SelectedIndex;
+            currentProfile.facing = facing.SelectedIndex;
         }
 
         private void level_ValueChanged(object sender, EventArgs e)
         {
-            current.stats.level = (int)level.Value;
+            currentProfile.stats.level = (int)level.Value;
         }
 
         private void power_ValueChanged(object sender, EventArgs e)
         {
-            current.stats.power = (int)power.Value;
+            currentProfile.stats.power = (int)power.Value;
         }
 
         private void agility_ValueChanged(object sender, EventArgs e)
         {
-            current.stats.agility = (int)agility.Value;
+            currentProfile.stats.agility = (int)agility.Value;
         }
 
         private void toughness_ValueChanged(object sender, EventArgs e)
         {
-            current.stats.toughness = (int)toughness.Value;
+            currentProfile.stats.toughness = (int)toughness.Value;
         }
 
         private void intelligence_ValueChanged(object sender, EventArgs e)
         {
-            current.stats.intelligence = (int)intelligence.Value;
+            currentProfile.stats.intelligence = (int)intelligence.Value;
         }
 
         private void wisdom_ValueChanged(object sender, EventArgs e)
         {
-            current.stats.wisdom = (int)wisdom.Value;
+            currentProfile.stats.wisdom = (int)wisdom.Value;
         }
 
         private void vitality_ValueChanged(object sender, EventArgs e)
         {
-            current.stats.vitality = (int)vitality.Value;
+            currentProfile.stats.vitality = (int)vitality.Value;
         }
 
         private void health_ValueChanged(object sender, EventArgs e)
         {
-            current.health.cur = current.health.max = (int)health.Value;
+            currentProfile.health.cur = currentProfile.health.max = (int)health.Value;
         }
 
         private void exp_ValueChanged(object sender, EventArgs e)
         {
-            current.stats.exp = (int)exp.Value;
+            currentProfile.stats.exp = (int)exp.Value;
         }
 
         private void editActions_Click(object sender, EventArgs e)
         {
-            ActionSelection actionSelection = new ActionSelection("Set actions for '" + current.name + "'", current.actions);
+            ActionSelection actionSelection = new ActionSelection("Set actions for '" + current.name + "'", currentProfile.actions);
 
             actionSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
-                current.actions = actionSelection.GetSelection();
+                currentProfile.actions = actionSelection.GetSelection();
             };
 
             actionSelection.ShowDialog();
@@ -340,10 +529,10 @@ namespace WebClashServer.Editors
 
         private void editLootTable_Click(object sender, EventArgs e)
         {
-            ItemSelection itemSelection = new ItemSelection("Set items for '" + current.name + "'", current.items);
+            ItemSelection itemSelection = new ItemSelection("Set items for '" + current.name + "'", currentProfile.items);
 
             itemSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
-                current.items = itemSelection.GetSelection();
+                currentProfile.items = itemSelection.GetSelection();
             };
 
             itemSelection.ShowDialog();
@@ -352,16 +541,16 @@ namespace WebClashServer.Editors
         private void dialogButton_Click(object sender, EventArgs e)
         {
             Dialogue npcDialogue = new Dialogue(
-                current.dialog.ToList(), 
-                current.dialogElements.ToList(), 
+                currentProfile.dialog.ToList(), 
+                currentProfile.dialogElements.ToList(), 
                 DialogueType.NPC
             );
 
             npcDialogue.Text = "Edit dialogue for '" + current.name + "'";
 
             npcDialogue.FormClosed += (object s, FormClosedEventArgs fcea) => {
-                current.dialog = npcDialogue.dialogSystem.items.ToArray();
-                current.dialogElements = npcDialogue.elements.ToArray();
+                currentProfile.dialog = npcDialogue.dialogSystem.items.ToArray();
+                currentProfile.dialogElements = npcDialogue.elements.ToArray();
             };
 
             npcDialogue.ShowDialog();
@@ -371,12 +560,12 @@ namespace WebClashServer.Editors
         {
             NPCEquipment npcEquipment = new NPCEquipment(
                 "Edit equipment for '" + current.name + "'", 
-                current.character, 
-                current.equipment
+                currentProfile.character, 
+                currentProfile.equipment
             );
 
             npcEquipment.FormClosed += (object s, FormClosedEventArgs fcea) => {
-                current.equipment = npcEquipment.GetSelection();
+                currentProfile.equipment = npcEquipment.GetSelection();
             };
 
             npcEquipment.ShowDialog();
@@ -400,37 +589,7 @@ namespace WebClashServer.Editors
 
                 name = temp.name;
 
-                showNameplate = temp.showNameplate;
-
-                movement = temp.movement;
-
-                health = temp.health;
-
-                type = temp.type;
-
-                character = temp.character;
-
-                aggressive = temp.aggressive;
-
-                attackRange = temp.attackRange;
-
-                stats = temp.stats;
-
-                range = temp.range;
-
-                facing = temp.facing;
-
-                collidesWithinMap = temp.collidesWithinMap;
-
-                actions = temp.actions;
-
-                items = temp.items;
-
-                equipment = temp.equipment;
-
-                dialog = temp.dialog;
-
-                dialogElements = temp.dialogElements;
+                profiles = temp.profiles;
             }
             catch (Exception e)
             {
@@ -439,6 +598,11 @@ namespace WebClashServer.Editors
         }
 
         public string name = "New NPC";
+        public NPCProfile[] profiles = new NPCProfile[0];
+    }
+
+    public class NPCProfile
+    {
         public bool showNameplate = true;
 
         public string movement = "free";

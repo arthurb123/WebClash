@@ -1,34 +1,41 @@
 {
   "name": "Soldier",
-  "showNameplate": true,
-  "movement": "free",
-  "range": 10,
-  "facing": 0,
-  "type": "hostile",
-  "character": "soldier",
-  "stats": {
-    "level": 4,
-    "exp": 9,
-    "power": 2,
-    "toughness": 1,
-    "agility": 1,
-    "wisdom": 0,
-    "intelligence": 0,
-    "vitality": 1
-  },
-  "health": {
-    "cur": 60,
-    "max": 60
-  },
-  "actions": [
+  "profiles": [
     {
-      "action": "Slash",
-      "range": 1,
-      "extraCooldown": 12
+      "showNameplate": true,
+      "movement": "free",
+      "range": 10,
+      "facing": 0,
+      "collidesWithinMap": true,
+      "type": "hostile",
+      "aggressive": false,
+      "attackRange": 1,
+      "character": "soldier",
+      "stats": {
+        "level": 4,
+        "exp": 9,
+        "power": 2,
+        "toughness": 1,
+        "agility": 1,
+        "wisdom": 0,
+        "intelligence": 0,
+        "vitality": 1
+      },
+      "health": {
+        "cur": 60,
+        "max": 60
+      },
+      "actions": [
+        {
+          "action": "Slash",
+          "range": 1,
+          "extraCooldown": 12
+        }
+      ],
+      "items": [],
+      "equipment": [],
+      "dialog": [],
+      "dialogElements": []
     }
-  ],
-  "items": [],
-  "equipment": [],
-  "dialog": [],
-  "dialogElements": []
+  ]
 }

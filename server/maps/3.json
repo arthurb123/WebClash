@@ -1,4 +1,12 @@
-{ "height":13,
+{ "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"."
+        }
+    },
+ "height":13,
  "infinite":false,
  "layers":[
         {
@@ -161,7 +169,7 @@
         {
          "draworder":"topdown",
          "id":4,
-         "name":"NPC",
+         "name":"NPCs",
          "objects":[
                 {
                  "height":0,
@@ -172,7 +180,7 @@
                         {
                          "name":"NPC",
                          "type":"string",
-                         "value":"Golem"
+                         "value":"Golem#0"
                         }],
                  "rotation":0,
                  "type":"",
@@ -191,7 +199,7 @@
  "nextobjectid":11,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.2.1",
+ "tiledversion":"1.4.1",
  "tileheight":32,
  "tilesets":[
         {
@@ -243,6 +251,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":1.2,
+ "version":1.4,
  "width":13
 }

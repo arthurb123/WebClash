@@ -71,6 +71,8 @@
             this.advanceQuestPanel = new System.Windows.Forms.Panel();
             this.advanceQuestEntryPoint = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.npcProfileList = new System.Windows.Forms.ComboBox();
             this.loadMapPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.positionY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.positionX)).BeginInit();
@@ -357,7 +359,7 @@
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(12, 63);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(63, 13);
+            this.label11.Size = new System.Drawing.Size(83, 13);
             this.label11.TabIndex = 7;
             this.label11.Text = "Currency (Delta)";
             // 
@@ -419,6 +421,8 @@
             // 
             // spawnNPCPanel
             // 
+            this.spawnNPCPanel.Controls.Add(this.npcProfileList);
+            this.spawnNPCPanel.Controls.Add(this.label5);
             this.spawnNPCPanel.Controls.Add(this.npcHostile);
             this.spawnNPCPanel.Controls.Add(this.npcAmount);
             this.spawnNPCPanel.Controls.Add(this.label12);
@@ -433,7 +437,7 @@
             // npcHostile
             // 
             this.npcHostile.AutoSize = true;
-            this.npcHostile.Location = new System.Drawing.Point(15, 84);
+            this.npcHostile.Location = new System.Drawing.Point(15, 94);
             this.npcHostile.Name = "npcHostile";
             this.npcHostile.Size = new System.Drawing.Size(134, 17);
             this.npcHostile.TabIndex = 5;
@@ -443,7 +447,7 @@
             // 
             // npcAmount
             // 
-            this.npcAmount.Location = new System.Drawing.Point(156, 47);
+            this.npcAmount.Location = new System.Drawing.Point(156, 61);
             this.npcAmount.Maximum = new decimal(new int[] {
             1215752191,
             23,
@@ -468,7 +472,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(12, 47);
+            this.label12.Location = new System.Drawing.Point(12, 63);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(43, 13);
             this.label12.TabIndex = 2;
@@ -604,14 +608,30 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Advances the current \'Talk\' quest objective.";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(12, 36);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(36, 13);
+            this.label5.TabIndex = 6;
+            this.label5.Text = "Profile";
+            // 
+            // npcProfileList
+            // 
+            this.npcProfileList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.npcProfileList.FormattingEnabled = true;
+            this.npcProfileList.Location = new System.Drawing.Point(212, 33);
+            this.npcProfileList.Name = "npcProfileList";
+            this.npcProfileList.Size = new System.Drawing.Size(64, 21);
+            this.npcProfileList.TabIndex = 7;
+            this.npcProfileList.SelectedIndexChanged += new System.EventHandler(this.npcProfileList_SelectedIndexChanged);
+            // 
             // DialogueEventProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(312, 215);
-            this.Controls.Add(this.advanceQuestPanel);
-            this.Controls.Add(this.playerVariablePanel);
-            this.Controls.Add(this.showQuestPanel);
             this.Controls.Add(this.spawnNPCPanel);
             this.Controls.Add(this.affectPlayerPanel);
             this.Controls.Add(this.nextIndex1);
@@ -622,6 +642,9 @@
             this.Controls.Add(this.nextIndex);
             this.Controls.Add(this.succesText);
             this.Controls.Add(this.loadMapPanel);
+            this.Controls.Add(this.advanceQuestPanel);
+            this.Controls.Add(this.playerVariablePanel);
+            this.Controls.Add(this.showQuestPanel);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -702,5 +725,7 @@
         private System.Windows.Forms.Panel advanceQuestPanel;
         private System.Windows.Forms.CheckBox advanceQuestEntryPoint;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox npcProfileList;
+        private System.Windows.Forms.Label label5;
     }
 }

@@ -9,7 +9,7 @@ Admin commands:<br>
 /showmaps<br> 
 /loadmap <i>map</i><br>
 /sendmap <i>player</i> <i>map</i><br>
-/spawnnpc <i>name</i><br>
+/spawnnpc <i>name</i> <i>profile</i><br>
 /giveitem <i>name</i><br>
 /givecurrency <i>amount</i><br>
 /setvariable <i>name</i> <i>value</i><br>

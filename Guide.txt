@@ -65,7 +65,9 @@ objects are as follows:
 [Design]
 
 * "NPC"		      -> Spawns a NPC with the specified 
-		         name. (string value)
+		         name and profile. This should be
+			 specified as "Name#Profile", for
+			 example: "Eric#0". (string value)
 
 * "item"	      -> Spawns an item with the specified
 			 name, which respawns after 60

@@ -128,6 +128,8 @@ namespace WebClashServer.Classes
     {
         public string name = "";
 
+        public int profile = 0;
+
         public int amount = 1;
 
         public bool hostile = false;

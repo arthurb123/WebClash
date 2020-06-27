@@ -1368,7 +1368,7 @@
                         {
                          "name":"NPC",
                          "type":"string",
-                         "value":"Eric"
+                         "value":"Eric#0"
                         }],
                  "rotation":0,
                  "type":"",
@@ -1386,7 +1386,7 @@
                         {
                          "name":"NPC",
                          "type":"string",
-                         "value":"Butterfly"
+                         "value":"Butterfly#0"
                         }],
                  "rotation":0,
                  "type":"",
@@ -1404,7 +1404,7 @@
                         {
                          "name":"NPC",
                          "type":"string",
-                         "value":"Butterfly"
+                         "value":"Butterfly#0"
                         }],
                  "rotation":0,
                  "type":"",
@@ -1422,7 +1422,7 @@
                         {
                          "name":"NPC",
                          "type":"string",
-                         "value":"Butterfly"
+                         "value":"Butterfly#0"
                         }],
                  "rotation":0,
                  "type":"",
@@ -1440,7 +1440,7 @@
                         {
                          "name":"NPC",
                          "type":"string",
-                         "value":"Captain"
+                         "value":"Captain#0"
                         }, 
                         {
                          "name":"getVariableFalse",
@@ -1463,7 +1463,7 @@
                         {
                          "name":"NPC",
                          "type":"string",
-                         "value":"Tom"
+                         "value":"Tom#0"
                         }, 
                         {
                          "name":"getVariableTrue",

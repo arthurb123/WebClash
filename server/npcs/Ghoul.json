@@ -1,43 +1,50 @@
 {
   "name": "Ghoul",
-  "showNameplate": true,
-  "movement": "free",
-  "range": 10,
-  "facing": 0,
-  "type": "hostile",
-  "character": "ghoul",
-  "stats": {
-    "level": 1,
-    "exp": 4,
-    "power": 1,
-    "toughness": 0,
-    "agility": 1,
-    "wisdom": 0,
-    "intelligence": 0,
-    "vitality": 0
-  },
-  "health": {
-    "cur": 18,
-    "max": 18
-  },
-  "actions": [
+  "profiles": [
     {
-      "action": "Slash",
-      "range": 1,
-      "extraCooldown": 14
+      "showNameplate": true,
+      "movement": "free",
+      "range": 10,
+      "facing": 0,
+      "collidesWithinMap": true,
+      "type": "hostile",
+      "aggressive": false,
+      "attackRange": 1,
+      "character": "ghoul",
+      "stats": {
+        "level": 1,
+        "exp": 4,
+        "power": 1,
+        "toughness": 0,
+        "agility": 1,
+        "wisdom": 0,
+        "intelligence": 0,
+        "vitality": 0
+      },
+      "health": {
+        "cur": 18,
+        "max": 18
+      },
+      "actions": [
+        {
+          "action": "Slash",
+          "range": 1,
+          "extraCooldown": 14
+        }
+      ],
+      "items": [
+        {
+          "item": "Iron Helm",
+          "dropChance": 3
+        },
+        {
+          "item": "Healing Slab",
+          "dropChance": 2
+        }
+      ],
+      "equipment": [],
+      "dialog": [],
+      "dialogElements": []
     }
-  ],
-  "items": [
-    {
-      "item": "Iron Helm",
-      "dropChance": 3
-    },
-    {
-      "item": "Healing Slab",
-      "dropChance": 2
-    }
-  ],
-  "equipment": [],
-  "dialog": [],
-  "dialogElements": []
+  ]
 }

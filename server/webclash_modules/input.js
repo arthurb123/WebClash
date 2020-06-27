@@ -250,14 +250,15 @@ exports.handleCommand = function(text, channel)
                     return 'success';
                 //Spawn NPC command
                 case 'spawnnpc':
-                    if (args.length < 1 ||
+                    if (args.length < 2 ||
                         channel == undefined)
                         return 'wrong';
 
                     let count = 1;
+                    let profile = parseInt(args[1]);
 
-                    if (args.length == 2)
-                        count = parseInt(args[1]);
+                    if (args.length == 3)
+                        count = parseInt(args[2]);
 
                     let pos = {
                         x: game.players[p].pos.X+game.players[p].character.width/2,
@@ -268,6 +269,7 @@ exports.handleCommand = function(text, channel)
                         npcs.createEventNPC(
                             game.players[p].map_id,
                             args[0],
+                            profile,
                             pos.x,
                             pos.y,
                             undefined,

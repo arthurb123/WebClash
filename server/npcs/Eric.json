@@ -1,413 +1,442 @@
 {
   "name": "Eric",
-  "showNameplate": true,
-  "movement": "free",
-  "range": 1,
-  "facing": 0,
-  "type": "friendly",
-  "character": "knight",
-  "stats": {
-    "level": 1,
-    "exp": 0,
-    "power": 0,
-    "toughness": 0,
-    "agility": 0,
-    "wisdom": 0,
-    "intelligence": 0,
-    "vitality": 0
-  },
-  "health": {
-    "cur": 100,
-    "max": 100
-  },
-  "actions": [],
-  "items": [],
-  "equipment": [
+  "profiles": [
     {
-      "source": "res/equipment/main/2.png",
-      "type": "main"
-    },
-    {
-      "source": "res/equipment/offhand/2.png",
-      "type": "offhand"
+      "showNameplate": true,
+      "movement": "free",
+      "range": 1,
+      "facing": 0,
+      "collidesWithinMap": true,
+      "type": "friendly",
+      "aggressive": false,
+      "attackRange": 1,
+      "character": "knight",
+      "stats": {
+        "level": 1,
+        "exp": 0,
+        "power": 0,
+        "toughness": 0,
+        "agility": 0,
+        "wisdom": 0,
+        "intelligence": 0,
+        "vitality": 0
+      },
+      "health": {
+        "cur": 100,
+        "max": 100
+      },
+      "actions": [],
+      "items": [],
+      "equipment": [
+        {
+          "source": "res/equipment/main/2.png",
+          "type": "main"
+        },
+        {
+          "source": "res/equipment/offhand/2.png",
+          "type": "offhand"
+        }
+      ],
+      "dialog": [
+        {
+          "text": "Hello there adventurer.\nHow can I help you?",
+          "portrait": "res/portraits/1.png",
+          "entry": true,
+          "isEvent": false,
+          "options": [
+            {
+              "text": "Where am I?",
+              "next": 2
+            },
+            {
+              "text": "Can I do something?",
+              "next": 3
+            },
+            {
+              "text": "Sup bro",
+              "next": 1
+            }
+          ],
+          "eventType": "",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "Wow this got boring quickly.\nCan you move on now?",
+          "portrait": "res/portraits/1.png",
+          "entry": false,
+          "isEvent": false,
+          "options": [
+            {
+              "text": "Give me something",
+              "next": 4
+            },
+            {
+              "text": "Hell no",
+              "next": 7
+            },
+            {
+              "text": "Exit",
+              "next": -1
+            }
+          ],
+          "eventType": "",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "You are currently in an example world of WebClash.\nWebClash is an ORPG suite for the browser!\n\nWhy don't you take a look around?",
+          "portrait": "res/portraits/1.png",
+          "entry": false,
+          "isEvent": false,
+          "options": [
+            {
+              "text": "Tell me more",
+              "next": 1
+            },
+            {
+              "text": "Sure",
+              "next": -1
+            }
+          ],
+          "eventType": "",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "",
+          "portrait": "",
+          "entry": false,
+          "isEvent": true,
+          "options": [
+            {
+              "text": "",
+              "next": -1
+            },
+            {
+              "text": "",
+              "next": 9
+            }
+          ],
+          "eventType": "ShowQuest",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": {
+            "name": "Eric's Cleanup"
+          },
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "",
+          "portrait": "",
+          "entry": false,
+          "isEvent": true,
+          "options": [
+            {
+              "text": "",
+              "next": 6
+            },
+            {
+              "text": "",
+              "next": 5
+            }
+          ],
+          "eventType": "GiveItem",
+          "repeatable": false,
+          "giveItemEvent": {
+            "item": "Magic Axe",
+            "amount": 1
+          },
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "I already gave you something?!",
+          "portrait": "res/portraits/1.png",
+          "entry": false,
+          "isEvent": false,
+          "options": [
+            {
+              "text": "Oh shit ye",
+              "next": -1
+            }
+          ],
+          "eventType": "",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "Ugh, here you go.\nNow leave!",
+          "portrait": "res/portraits/1.png",
+          "entry": false,
+          "isEvent": false,
+          "options": [
+            {
+              "text": "Exit",
+              "next": -1
+            }
+          ],
+          "eventType": "",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "",
+          "portrait": "",
+          "entry": false,
+          "isEvent": true,
+          "options": [
+            {
+              "text": "",
+              "next": 8
+            },
+            {
+              "text": "",
+              "next": -1
+            }
+          ],
+          "eventType": "AffectPlayer",
+          "repeatable": true,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": {
+            "healthDifference": -5,
+            "manaDifference": 0,
+            "currencyDifference": 0
+          },
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "I will slap you again if you don't leave right now!",
+          "portrait": "res/portraits/1.png",
+          "entry": false,
+          "isEvent": false,
+          "options": [
+            {
+              "text": "Thanks for that",
+              "next": -1
+            }
+          ],
+          "eventType": "",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "",
+          "portrait": "",
+          "entry": false,
+          "isEvent": true,
+          "options": [
+            {
+              "text": "",
+              "next": -1
+            },
+            {
+              "text": "",
+              "next": 10
+            }
+          ],
+          "eventType": "ShowQuest",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": {
+            "name": "Big Bastard"
+          },
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "Thanks m8, you did great.",
+          "portrait": "res/portraits/1.png",
+          "entry": false,
+          "isEvent": false,
+          "options": [
+            {
+              "text": "No probs",
+              "next": -1
+            }
+          ],
+          "eventType": "",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "dialogElements": [
+        {
+          "p": "62, 129",
+          "id": 0,
+          "isEvent": false,
+          "size": "100, 80"
+        },
+        {
+          "p": "356, 130",
+          "id": 1,
+          "isEvent": false,
+          "size": "100, 80"
+        },
+        {
+          "p": "208, 241",
+          "id": 2,
+          "isEvent": false,
+          "size": "100, 80"
+        },
+        {
+          "p": "216, 89",
+          "id": 3,
+          "isEvent": true,
+          "size": "85, 25"
+        },
+        {
+          "p": "579, 253",
+          "id": 4,
+          "isEvent": true,
+          "size": "80, 20"
+        },
+        {
+          "p": "765, 276",
+          "id": 5,
+          "isEvent": false,
+          "size": "100, 80"
+        },
+        {
+          "p": "768, 162",
+          "id": 6,
+          "isEvent": false,
+          "size": "100, 80"
+        },
+        {
+          "p": "520, 341",
+          "id": 7,
+          "isEvent": true,
+          "size": "80, 20"
+        },
+        {
+          "p": "712, 398",
+          "id": 8,
+          "isEvent": false,
+          "size": "100, 80"
+        },
+        {
+          "p": "365, 32",
+          "id": 9,
+          "isEvent": true,
+          "size": "95, 20"
+        },
+        {
+          "p": "567, 74",
+          "id": 10,
+          "isEvent": false,
+          "size": "100, 80"
+        },
+        null,
+        null,
+        null,
+        null
+      ]
     }
-  ],
-  "dialog": [
-    {
-      "text": "Hello there adventurer.\nHow can I help you?",
-      "portrait": "res/portraits/1.png",
-      "entry": true,
-      "isEvent": false,
-      "options": [
-        {
-          "text": "Where am I?",
-          "next": 2
-        },
-        {
-          "text": "Can I do something?",
-          "next": 3
-        },
-        {
-          "text": "Sup bro",
-          "next": 1
-        }
-      ],
-      "eventType": "",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "Wow this got boring quickly.\nCan you move on now?",
-      "portrait": "res/portraits/1.png",
-      "entry": false,
-      "isEvent": false,
-      "options": [
-        {
-          "text": "Give me something",
-          "next": 4
-        },
-        {
-          "text": "Hell no",
-          "next": 7
-        },
-        {
-          "text": "Exit",
-          "next": -1
-        }
-      ],
-      "eventType": "",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "You are currently in an example world of WebClash.\nWebClash is an ORPG suite for the browser!\n\nWhy don't you take a look around?",
-      "portrait": "res/portraits/1.png",
-      "entry": false,
-      "isEvent": false,
-      "options": [
-        {
-          "text": "Tell me more",
-          "next": 1
-        },
-        {
-          "text": "Sure",
-          "next": -1
-        }
-      ],
-      "eventType": "",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "",
-      "portrait": "",
-      "entry": false,
-      "isEvent": true,
-      "options": [
-        {
-          "text": "",
-          "next": -1
-        },
-        {
-          "text": "",
-          "next": 9
-        }
-      ],
-      "eventType": "ShowQuest",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": {
-        "name": "Eric's Cleanup"
-      },
-      "showShopEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "",
-      "portrait": "",
-      "entry": false,
-      "isEvent": true,
-      "options": [
-        {
-          "text": "",
-          "next": 6
-        },
-        {
-          "text": "",
-          "next": 5
-        }
-      ],
-      "eventType": "GiveItem",
-      "repeatable": false,
-      "giveItemEvent": {
-        "item": "Magic Axe",
-        "amount": 1
-      },
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "I already gave you something?!",
-      "portrait": "res/portraits/1.png",
-      "entry": false,
-      "isEvent": false,
-      "options": [
-        {
-          "text": "Oh shit ye",
-          "next": -1
-        }
-      ],
-      "eventType": "",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "Ugh, here you go.\nNow leave!",
-      "portrait": "res/portraits/1.png",
-      "entry": false,
-      "isEvent": false,
-      "options": [
-        {
-          "text": "Exit",
-          "next": -1
-        }
-      ],
-      "eventType": "",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "",
-      "portrait": "",
-      "entry": false,
-      "isEvent": true,
-      "options": [
-        {
-          "text": "",
-          "next": 8
-        },
-        {
-          "text": "",
-          "next": -1
-        }
-      ],
-      "eventType": "AffectPlayer",
-      "repeatable": true,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": {
-        "healthDifference": -5,
-        "manaDifference": 0,
-        "currencyDifference": 0
-      },
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "I will slap you again if you don't leave right now!",
-      "portrait": "res/portraits/1.png",
-      "entry": false,
-      "isEvent": false,
-      "options": [
-        {
-          "text": "Thanks for that",
-          "next": -1
-        }
-      ],
-      "eventType": "",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "",
-      "portrait": "",
-      "entry": false,
-      "isEvent": true,
-      "options": [
-        {
-          "text": "",
-          "next": -1
-        },
-        {
-          "text": "",
-          "next": 10
-        }
-      ],
-      "eventType": "ShowQuest",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": {
-        "name": "Big Bastard"
-      },
-      "showShopEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    {
-      "text": "Thanks m8, you did great.",
-      "portrait": "res/portraits/1.png",
-      "entry": false,
-      "isEvent": false,
-      "options": [
-        {
-          "text": "No probs",
-          "next": -1
-        }
-      ],
-      "eventType": "",
-      "repeatable": false,
-      "giveItemEvent": null,
-      "loadMapEvent": null,
-      "affectPlayerEvent": null,
-      "spawnNPCEvent": null,
-      "turnHostileEvent": null,
-      "showQuestEvent": null,
-      "showShopEvent": null,
-      "getVariableEvent": null,
-      "setVariableEvent": null
-    },
-    null,
-    null,
-    null,
-    null
-  ],
-  "dialogElements": [
-    {
-      "p": "62, 129",
-      "id": 0,
-      "isEvent": false,
-      "size": "100, 80"
-    },
-    {
-      "p": "356, 130",
-      "id": 1,
-      "isEvent": false,
-      "size": "100, 80"
-    },
-    {
-      "p": "208, 241",
-      "id": 2,
-      "isEvent": false,
-      "size": "100, 80"
-    },
-    {
-      "p": "216, 89",
-      "id": 3,
-      "isEvent": true,
-      "size": "85, 25"
-    },
-    {
-      "p": "579, 253",
-      "id": 4,
-      "isEvent": true,
-      "size": "80, 20"
-    },
-    {
-      "p": "765, 276",
-      "id": 5,
-      "isEvent": false,
-      "size": "100, 80"
-    },
-    {
-      "p": "768, 162",
-      "id": 6,
-      "isEvent": false,
-      "size": "100, 80"
-    },
-    {
-      "p": "520, 341",
-      "id": 7,
-      "isEvent": true,
-      "size": "80, 20"
-    },
-    {
-      "p": "712, 398",
-      "id": 8,
-      "isEvent": false,
-      "size": "100, 80"
-    },
-    {
-      "p": "365, 32",
-      "id": 9,
-      "isEvent": true,
-      "size": "95, 20"
-    },
-    {
-      "p": "567, 74",
-      "id": 10,
-      "isEvent": false,
-      "size": "100, 80"
-    },
-    null,
-    null,
-    null,
-    null
   ]
 }

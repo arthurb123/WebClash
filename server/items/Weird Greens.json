@@ -55,6 +55,8 @@
       "turnHostileEvent": null,
       "showQuestEvent": null,
       "showShopEvent": null,
+      "showBankEvent": null,
+      "advanceQuestEvent": null,
       "getVariableEvent": null,
       "setVariableEvent": null
     },
@@ -86,6 +88,8 @@
       "turnHostileEvent": null,
       "showQuestEvent": null,
       "showShopEvent": null,
+      "showBankEvent": null,
+      "advanceQuestEvent": null,
       "getVariableEvent": null,
       "setVariableEvent": null
     },
@@ -109,6 +113,8 @@
       "turnHostileEvent": null,
       "showQuestEvent": null,
       "showShopEvent": null,
+      "showBankEvent": null,
+      "advanceQuestEvent": null,
       "getVariableEvent": null,
       "setVariableEvent": null
     },
@@ -132,6 +138,8 @@
       "turnHostileEvent": null,
       "showQuestEvent": null,
       "showShopEvent": null,
+      "showBankEvent": null,
+      "advanceQuestEvent": null,
       "getVariableEvent": null,
       "setVariableEvent": null
     },
@@ -157,12 +165,15 @@
       "affectPlayerEvent": null,
       "spawnNPCEvent": {
         "name": "Slime",
+        "profile": 0,
         "amount": 1,
         "hostile": true
       },
       "turnHostileEvent": null,
       "showQuestEvent": null,
       "showShopEvent": null,
+      "showBankEvent": null,
+      "advanceQuestEvent": null,
       "getVariableEvent": null,
       "setVariableEvent": null
     },

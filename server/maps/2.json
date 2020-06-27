@@ -1,4 +1,12 @@
-{ "height":12,
+{ "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"."
+        }
+    },
+ "height":12,
  "infinite":false,
  "layers":[
         {
@@ -190,7 +198,18 @@
                  "width":65,
                  "x":192,
                  "y":327
-                }, 
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":12,
+         "name":"NPCs",
+         "objects":[
                 {
                  "height":0,
                  "id":17,
@@ -200,7 +219,7 @@
                         {
                          "name":"NPC",
                          "type":"string",
-                         "value":"Ghoul"
+                         "value":"Ghoul#0"
                         }],
                  "rotation":0,
                  "type":"",
@@ -218,7 +237,7 @@
                         {
                          "name":"NPC",
                          "type":"string",
-                         "value":"Ghoul"
+                         "value":"Ghoul#0"
                         }],
                  "rotation":0,
                  "type":"",
@@ -236,7 +255,7 @@
                         {
                          "name":"NPC",
                          "type":"string",
-                         "value":"Ghoul"
+                         "value":"Ghoul#0"
                         }],
                  "rotation":0,
                  "type":"",
@@ -244,6 +263,24 @@
                  "width":0,
                  "x":293,
                  "y":228
+                }, 
+                {
+                 "height":0,
+                 "id":22,
+                 "name":"",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"lightHotspot",
+                         "type":"float",
+                         "value":0.5
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":304,
+                 "y":272
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -291,24 +328,6 @@
                  "width":0,
                  "x":78,
                  "y":149.333333333333
-                }, 
-                {
-                 "height":0,
-                 "id":22,
-                 "name":"",
-                 "point":true,
-                 "properties":[
-                        {
-                         "name":"lightHotspot",
-                         "type":"float",
-                         "value":0.5
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":304,
-                 "y":272
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -316,11 +335,11 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":12,
+ "nextlayerid":13,
  "nextobjectid":23,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.2.1",
+ "tiledversion":"1.4.1",
  "tileheight":32,
  "tilesets":[
         {
@@ -338,6 +357,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":1.2,
+ "version":1.4,
  "width":12
 }

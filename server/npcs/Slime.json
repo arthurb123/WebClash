@@ -1,34 +1,41 @@
 {
   "name": "Slime",
-  "showNameplate": true,
-  "movement": "free",
-  "range": 10,
-  "facing": 0,
-  "type": "hostile",
-  "character": "slime",
-  "stats": {
-    "level": 4,
-    "exp": 7,
-    "power": 0,
-    "toughness": 0,
-    "agility": 0,
-    "wisdom": 0,
-    "intelligence": 3,
-    "vitality": 0
-  },
-  "health": {
-    "cur": 50,
-    "max": 50
-  },
-  "actions": [
+  "profiles": [
     {
-      "action": "Hydrate",
-      "range": 1,
-      "extraCooldown": 0
+      "showNameplate": true,
+      "movement": "free",
+      "range": 10,
+      "facing": 0,
+      "collidesWithinMap": true,
+      "type": "hostile",
+      "aggressive": false,
+      "attackRange": 1,
+      "character": "slime",
+      "stats": {
+        "level": 4,
+        "exp": 7,
+        "power": 0,
+        "toughness": 0,
+        "agility": 0,
+        "wisdom": 0,
+        "intelligence": 3,
+        "vitality": 0
+      },
+      "health": {
+        "cur": 50,
+        "max": 50
+      },
+      "actions": [
+        {
+          "action": "Hydrate",
+          "range": 1,
+          "extraCooldown": 0
+        }
+      ],
+      "items": [],
+      "equipment": [],
+      "dialog": [],
+      "dialogElements": []
     }
-  ],
-  "items": [],
-  "equipment": [],
-  "dialog": [],
-  "dialogElements": []
+  ]
 }

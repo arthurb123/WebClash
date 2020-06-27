@@ -34,11 +34,16 @@
             this.add = new System.Windows.Forms.Button();
             this.delete = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.removeProfile = new System.Windows.Forms.Button();
+            this.addProfile = new System.Windows.Forms.Button();
+            this.profileSelect = new System.Windows.Forms.ComboBox();
+            this.npcProfileName = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.name = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.equipmentButton = new System.Windows.Forms.Button();
             this.showNameplate = new System.Windows.Forms.CheckBox();
             this.dialogueButton = new System.Windows.Forms.Button();
-            this.name = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.charSelect = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.typeFriendly = new System.Windows.Forms.RadioButton();
@@ -77,6 +82,8 @@
             this.attackRange = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.profileGroupBox = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.range)).BeginInit();
@@ -92,13 +99,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.level)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.attackRange)).BeginInit();
             this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.profileGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(12, 15);
+            this.label1.Location = new System.Drawing.Point(225, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(75, 15);
             this.label1.TabIndex = 0;
@@ -108,7 +117,7 @@
             // 
             this.npcSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.npcSelect.FormattingEnabled = true;
-            this.npcSelect.Location = new System.Drawing.Point(93, 13);
+            this.npcSelect.Location = new System.Drawing.Point(306, 13);
             this.npcSelect.Name = "npcSelect";
             this.npcSelect.Size = new System.Drawing.Size(137, 21);
             this.npcSelect.TabIndex = 1;
@@ -116,9 +125,9 @@
             // 
             // add
             // 
-            this.add.Location = new System.Drawing.Point(288, 12);
+            this.add.Location = new System.Drawing.Point(518, 12);
             this.add.Name = "add";
-            this.add.Size = new System.Drawing.Size(39, 21);
+            this.add.Size = new System.Drawing.Size(39, 23);
             this.add.TabIndex = 2;
             this.add.Text = "Add";
             this.add.UseVisualStyleBackColor = true;
@@ -126,9 +135,9 @@
             // 
             // delete
             // 
-            this.delete.Location = new System.Drawing.Point(333, 12);
+            this.delete.Location = new System.Drawing.Point(563, 12);
             this.delete.Name = "delete";
-            this.delete.Size = new System.Drawing.Size(75, 21);
+            this.delete.Size = new System.Drawing.Size(58, 23);
             this.delete.TabIndex = 3;
             this.delete.Text = "Remove";
             this.delete.UseVisualStyleBackColor = true;
@@ -136,26 +145,92 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.equipmentButton);
-            this.groupBox1.Controls.Add(this.showNameplate);
-            this.groupBox1.Controls.Add(this.dialogueButton);
+            this.groupBox1.Controls.Add(this.removeProfile);
+            this.groupBox1.Controls.Add(this.addProfile);
+            this.groupBox1.Controls.Add(this.profileSelect);
+            this.groupBox1.Controls.Add(this.npcProfileName);
+            this.groupBox1.Controls.Add(this.label16);
             this.groupBox1.Controls.Add(this.name);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.charSelect);
-            this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(12, 43);
+            this.groupBox1.Location = new System.Drawing.Point(191, 49);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(394, 111);
+            this.groupBox1.Size = new System.Drawing.Size(458, 74);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "General";
             // 
+            // removeProfile
+            // 
+            this.removeProfile.Location = new System.Drawing.Point(379, 20);
+            this.removeProfile.Name = "removeProfile";
+            this.removeProfile.Size = new System.Drawing.Size(68, 23);
+            this.removeProfile.TabIndex = 14;
+            this.removeProfile.Text = "Remove";
+            this.removeProfile.UseVisualStyleBackColor = true;
+            this.removeProfile.Click += new System.EventHandler(this.removeProfile_Click);
+            // 
+            // addProfile
+            // 
+            this.addProfile.Location = new System.Drawing.Point(334, 20);
+            this.addProfile.Name = "addProfile";
+            this.addProfile.Size = new System.Drawing.Size(39, 23);
+            this.addProfile.TabIndex = 13;
+            this.addProfile.Text = "Add";
+            this.addProfile.UseVisualStyleBackColor = true;
+            this.addProfile.Click += new System.EventHandler(this.addProfile_Click);
+            // 
+            // profileSelect
+            // 
+            this.profileSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.profileSelect.FormattingEnabled = true;
+            this.profileSelect.Location = new System.Drawing.Point(272, 20);
+            this.profileSelect.Name = "profileSelect";
+            this.profileSelect.Size = new System.Drawing.Size(52, 23);
+            this.profileSelect.TabIndex = 18;
+            this.profileSelect.SelectedIndexChanged += new System.EventHandler(this.profile_SelectedIndexChanged);
+            // 
+            // npcProfileName
+            // 
+            this.npcProfileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.npcProfileName.Location = new System.Drawing.Point(13, 46);
+            this.npcProfileName.Name = "npcProfileName";
+            this.npcProfileName.Size = new System.Drawing.Size(434, 21);
+            this.npcProfileName.TabIndex = 17;
+            this.npcProfileName.Text = "(Tiled property: Name#Profile)";
+            this.npcProfileName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(224, 23);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(42, 15);
+            this.label16.TabIndex = 15;
+            this.label16.Text = "Profile";
+            // 
+            // name
+            // 
+            this.name.Location = new System.Drawing.Point(57, 21);
+            this.name.Name = "name";
+            this.name.Size = new System.Drawing.Size(137, 21);
+            this.name.TabIndex = 14;
+            this.name.TextChanged += new System.EventHandler(this.name_TextChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(10, 23);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(41, 15);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Name";
+            // 
             // equipmentButton
             // 
-            this.equipmentButton.Location = new System.Drawing.Point(13, 79);
+            this.equipmentButton.Location = new System.Drawing.Point(220, 20);
             this.equipmentButton.Name = "equipmentButton";
-            this.equipmentButton.Size = new System.Drawing.Size(181, 23);
+            this.equipmentButton.Size = new System.Drawing.Size(160, 23);
             this.equipmentButton.TabIndex = 17;
             this.equipmentButton.Text = "Edit Equipment";
             this.equipmentButton.UseVisualStyleBackColor = true;
@@ -164,7 +239,7 @@
             // showNameplate
             // 
             this.showNameplate.AutoSize = true;
-            this.showNameplate.Location = new System.Drawing.Point(35, 51);
+            this.showNameplate.Location = new System.Drawing.Point(132, 49);
             this.showNameplate.Name = "showNameplate";
             this.showNameplate.Size = new System.Drawing.Size(121, 19);
             this.showNameplate.TabIndex = 16;
@@ -174,30 +249,13 @@
             // 
             // dialogueButton
             // 
-            this.dialogueButton.Location = new System.Drawing.Point(200, 79);
+            this.dialogueButton.Location = new System.Drawing.Point(57, 57);
             this.dialogueButton.Name = "dialogueButton";
-            this.dialogueButton.Size = new System.Drawing.Size(181, 23);
+            this.dialogueButton.Size = new System.Drawing.Size(119, 23);
             this.dialogueButton.TabIndex = 15;
             this.dialogueButton.Text = "Edit Dialogue";
             this.dialogueButton.UseVisualStyleBackColor = true;
             this.dialogueButton.Click += new System.EventHandler(this.dialogButton_Click);
-            // 
-            // name
-            // 
-            this.name.Location = new System.Drawing.Point(57, 24);
-            this.name.Name = "name";
-            this.name.Size = new System.Drawing.Size(116, 21);
-            this.name.TabIndex = 14;
-            this.name.TextChanged += new System.EventHandler(this.name_TextChanged);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(10, 26);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(41, 15);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Name";
             // 
             // charSelect
             // 
@@ -205,7 +263,7 @@
             this.charSelect.FormattingEnabled = true;
             this.charSelect.Items.AddRange(new object[] {
             "Horizontal"});
-            this.charSelect.Location = new System.Drawing.Point(248, 24);
+            this.charSelect.Location = new System.Drawing.Point(76, 20);
             this.charSelect.Name = "charSelect";
             this.charSelect.Size = new System.Drawing.Size(133, 23);
             this.charSelect.TabIndex = 12;
@@ -214,7 +272,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(182, 27);
+            this.label2.Location = new System.Drawing.Point(10, 24);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(60, 15);
             this.label2.TabIndex = 11;
@@ -224,7 +282,7 @@
             // 
             this.typeFriendly.AutoSize = true;
             this.typeFriendly.Checked = true;
-            this.typeFriendly.Location = new System.Drawing.Point(125, 19);
+            this.typeFriendly.Location = new System.Drawing.Point(81, 20);
             this.typeFriendly.Name = "typeFriendly";
             this.typeFriendly.Size = new System.Drawing.Size(68, 19);
             this.typeFriendly.TabIndex = 1;
@@ -236,7 +294,7 @@
             // typeHostile
             // 
             this.typeHostile.AutoSize = true;
-            this.typeHostile.Location = new System.Drawing.Point(206, 19);
+            this.typeHostile.Location = new System.Drawing.Point(252, 20);
             this.typeHostile.Name = "typeHostile";
             this.typeHostile.Size = new System.Drawing.Size(63, 19);
             this.typeHostile.TabIndex = 0;
@@ -250,7 +308,7 @@
             this.save.AutoSize = true;
             this.save.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.save.LinkColor = System.Drawing.Color.Blue;
-            this.save.Location = new System.Drawing.Point(236, 17);
+            this.save.Location = new System.Drawing.Point(449, 18);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(32, 13);
             this.save.TabIndex = 7;
@@ -269,7 +327,7 @@
             this.groupBox2.Controls.Add(this.movementFree);
             this.groupBox2.Controls.Add(this.movementStatic);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(13, 228);
+            this.groupBox2.Location = new System.Drawing.Point(10, 202);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(394, 103);
             this.groupBox2.TabIndex = 8;
@@ -384,9 +442,9 @@
             this.statistics.Controls.Add(this.level);
             this.statistics.Controls.Add(this.label5);
             this.statistics.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.statistics.Location = new System.Drawing.Point(413, 43);
+            this.statistics.Location = new System.Drawing.Point(409, 21);
             this.statistics.Name = "statistics";
-            this.statistics.Size = new System.Drawing.Size(373, 288);
+            this.statistics.Size = new System.Drawing.Size(373, 284);
             this.statistics.TabIndex = 9;
             this.statistics.TabStop = false;
             this.statistics.Text = "Hostile Statistics";
@@ -416,7 +474,7 @@
             // 
             // editLootTable
             // 
-            this.editLootTable.Location = new System.Drawing.Point(189, 257);
+            this.editLootTable.Location = new System.Drawing.Point(189, 195);
             this.editLootTable.Name = "editLootTable";
             this.editLootTable.Size = new System.Drawing.Size(172, 23);
             this.editLootTable.TabIndex = 26;
@@ -459,7 +517,7 @@
             // 
             // vitality
             // 
-            this.vitality.Location = new System.Drawing.Point(251, 168);
+            this.vitality.Location = new System.Drawing.Point(244, 142);
             this.vitality.Name = "vitality";
             this.vitality.Size = new System.Drawing.Size(61, 21);
             this.vitality.TabIndex = 23;
@@ -469,7 +527,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(197, 170);
+            this.label11.Location = new System.Drawing.Point(190, 144);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(41, 15);
             this.label11.TabIndex = 22;
@@ -477,7 +535,7 @@
             // 
             // wisdom
             // 
-            this.wisdom.Location = new System.Drawing.Point(251, 141);
+            this.wisdom.Location = new System.Drawing.Point(244, 115);
             this.wisdom.Name = "wisdom";
             this.wisdom.Size = new System.Drawing.Size(61, 21);
             this.wisdom.TabIndex = 21;
@@ -487,7 +545,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(197, 143);
+            this.label12.Location = new System.Drawing.Point(190, 117);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(52, 15);
             this.label12.TabIndex = 20;
@@ -495,7 +553,7 @@
             // 
             // intelligence
             // 
-            this.intelligence.Location = new System.Drawing.Point(251, 112);
+            this.intelligence.Location = new System.Drawing.Point(244, 86);
             this.intelligence.Name = "intelligence";
             this.intelligence.Size = new System.Drawing.Size(61, 21);
             this.intelligence.TabIndex = 19;
@@ -505,7 +563,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(197, 114);
+            this.label13.Location = new System.Drawing.Point(190, 88);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(46, 15);
             this.label13.TabIndex = 18;
@@ -513,7 +571,7 @@
             // 
             // toughness
             // 
-            this.toughness.Location = new System.Drawing.Point(110, 168);
+            this.toughness.Location = new System.Drawing.Point(103, 142);
             this.toughness.Name = "toughness";
             this.toughness.Size = new System.Drawing.Size(61, 21);
             this.toughness.TabIndex = 17;
@@ -523,7 +581,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(61, 170);
+            this.label10.Location = new System.Drawing.Point(54, 144);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(45, 15);
             this.label10.TabIndex = 16;
@@ -531,7 +589,7 @@
             // 
             // agility
             // 
-            this.agility.Location = new System.Drawing.Point(110, 141);
+            this.agility.Location = new System.Drawing.Point(103, 115);
             this.agility.Name = "agility";
             this.agility.Size = new System.Drawing.Size(61, 21);
             this.agility.TabIndex = 15;
@@ -541,7 +599,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(61, 143);
+            this.label9.Location = new System.Drawing.Point(54, 117);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(38, 15);
             this.label9.TabIndex = 14;
@@ -549,7 +607,7 @@
             // 
             // power
             // 
-            this.power.Location = new System.Drawing.Point(110, 112);
+            this.power.Location = new System.Drawing.Point(103, 86);
             this.power.Name = "power";
             this.power.Size = new System.Drawing.Size(61, 21);
             this.power.TabIndex = 13;
@@ -559,7 +617,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(61, 114);
+            this.label8.Location = new System.Drawing.Point(54, 88);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(42, 15);
             this.label8.TabIndex = 12;
@@ -567,7 +625,7 @@
             // 
             // editActions
             // 
-            this.editActions.Location = new System.Drawing.Point(11, 257);
+            this.editActions.Location = new System.Drawing.Point(11, 195);
             this.editActions.Name = "editActions";
             this.editActions.Size = new System.Drawing.Size(172, 23);
             this.editActions.TabIndex = 2;
@@ -611,7 +669,7 @@
             // aggressive
             // 
             this.aggressive.AutoSize = true;
-            this.aggressive.Location = new System.Drawing.Point(105, 46);
+            this.aggressive.Location = new System.Drawing.Point(241, 49);
             this.aggressive.Name = "aggressive";
             this.aggressive.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.aggressive.Size = new System.Drawing.Size(85, 19);
@@ -622,7 +680,7 @@
             // 
             // attackRange
             // 
-            this.attackRange.Location = new System.Drawing.Point(276, 44);
+            this.attackRange.Location = new System.Drawing.Point(297, 74);
             this.attackRange.Maximum = new decimal(new int[] {
             9999999,
             0,
@@ -647,7 +705,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(191, 47);
+            this.label6.Location = new System.Drawing.Point(212, 76);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(79, 15);
             this.label6.TabIndex = 30;
@@ -657,25 +715,52 @@
             // 
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.typeHostile);
+            this.groupBox3.Controls.Add(this.dialogueButton);
             this.groupBox3.Controls.Add(this.attackRange);
             this.groupBox3.Controls.Add(this.typeFriendly);
             this.groupBox3.Controls.Add(this.aggressive);
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(12, 154);
+            this.groupBox3.Location = new System.Drawing.Point(10, 93);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(394, 75);
+            this.groupBox3.Size = new System.Drawing.Size(394, 103);
             this.groupBox3.TabIndex = 10;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Behaviour";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.showNameplate);
+            this.groupBox4.Controls.Add(this.equipmentButton);
+            this.groupBox4.Controls.Add(this.label2);
+            this.groupBox4.Controls.Add(this.charSelect);
+            this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox4.Location = new System.Drawing.Point(10, 21);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(394, 74);
+            this.groupBox4.TabIndex = 11;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Appearance";
+            // 
+            // profileGroupBox
+            // 
+            this.profileGroupBox.Controls.Add(this.groupBox4);
+            this.profileGroupBox.Controls.Add(this.groupBox2);
+            this.profileGroupBox.Controls.Add(this.groupBox3);
+            this.profileGroupBox.Controls.Add(this.statistics);
+            this.profileGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.profileGroupBox.Location = new System.Drawing.Point(12, 129);
+            this.profileGroupBox.Name = "profileGroupBox";
+            this.profileGroupBox.Size = new System.Drawing.Size(792, 320);
+            this.profileGroupBox.TabIndex = 12;
+            this.profileGroupBox.TabStop = false;
+            this.profileGroupBox.Text = "NPC Profile";
             // 
             // NPCs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(796, 341);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.statistics);
-            this.Controls.Add(this.groupBox2);
+            this.ClientSize = new System.Drawing.Size(816, 461);
+            this.Controls.Add(this.profileGroupBox);
             this.Controls.Add(this.save);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.delete);
@@ -685,7 +770,7 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(812, 380);
+            this.MaximumSize = new System.Drawing.Size(832, 500);
             this.MinimumSize = new System.Drawing.Size(812, 380);
             this.Name = "NPCs";
             this.Text = "WebClash - NPCs";
@@ -709,6 +794,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.attackRange)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.profileGroupBox.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -764,5 +852,12 @@
         private System.Windows.Forms.CheckBox aggressive;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox collidesWithinMap;
+        private System.Windows.Forms.Label npcProfileName;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.GroupBox profileGroupBox;
+        private System.Windows.Forms.Button removeProfile;
+        private System.Windows.Forms.Button addProfile;
+        private System.Windows.Forms.ComboBox profileSelect;
     }
 }

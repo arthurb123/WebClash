@@ -215,6 +215,10 @@ namespace WebClashServer.Editors
             LoadNPCList();
 
             npcList.SelectedItem = current.spawnNPCEvent.name;
+
+            LoadNPCProfileList();
+
+            npcProfileList.SelectedItem = current.spawnNPCEvent.profile;
             npcAmount.Value = current.spawnNPCEvent.amount;
             npcHostile.Checked = current.spawnNPCEvent.hostile;
         }
@@ -246,9 +250,45 @@ namespace WebClashServer.Editors
             }
         }
 
+        private void LoadNPCProfileList()
+        {
+            npcProfileList.Items.Clear();
+
+            try
+            {
+                //Check if the NPC is valid
+
+                if (current.spawnNPCEvent.name == "" ||
+                    current.spawnNPCEvent.name == null)
+                    return;
+
+                //Load the NPC
+
+                NPC npc = new NPC(Program.main.serverLocation + "/npcs/" + current.spawnNPCEvent.name + ".json");
+
+                //Construct the profile list
+
+                for (int p = 0; p < npc.profiles.Length; p++)
+                    if (npc.profiles[p] != null)
+                        npcProfileList.Items.Add(p);
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message, "WebClash - Error");
+            }
+        }
+
         private void npcList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            current.spawnNPCEvent.name = npcList.SelectedItem.ToString();
+            current.spawnNPCEvent.name    = npcList.SelectedItem.ToString();
+            npcProfileList.SelectedItem   = 0;
+
+            LoadNPCProfileList();
+        }
+
+        private void npcProfileList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            current.spawnNPCEvent.profile = (int)npcProfileList.SelectedItem;
         }
 
         private void npcAmount_ValueChanged(object sender, EventArgs e)
