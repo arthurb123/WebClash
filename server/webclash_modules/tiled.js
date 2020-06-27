@@ -718,7 +718,7 @@ exports.createPlayerMap = function(id, map_id) {
             //TODO: For some reason all variable checks are
             //      duplicated, this probably is caused by
             //      the Tiled caching process somewhere
-            //      in the property caching process.
+            //      during the property caching.
             //      Reproduce with: console.log(check);
 
             if (vars[check.name] == undefined) {

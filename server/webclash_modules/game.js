@@ -66,7 +66,7 @@ exports.startLoop = function()
 
         actions.combat.update();
 
-        //Update banks cache
+        //Update banks manager
 
         banks.updateCache();
     }, 1000);

@@ -6,7 +6,7 @@ const ui = {
 
     initialize: function()
     {
-        cache.progress.create();
+        manager.progress.create();
 
         //Create UI boxes
 
@@ -83,7 +83,7 @@ const ui = {
 
     chat:
     {
-        cache: [],
+        manager: [],
         create: function() {
             this.box = new UIBox('chat', 'chat_box', 30, lx.GetDimensions().height-222, 340, 182);
             this.box.setMinimumSize(148, 25);
@@ -141,12 +141,12 @@ const ui = {
             if (this.dom === undefined)
                 return;
 
-            this.cache.push('<font style="display: inline;" class="info">' + this.timeformat() + content + '</font><br>');
+            this.manager.push('<font style="display: inline;" class="info">' + this.timeformat() + content + '</font><br>');
 
-            if (this.cache.length > 16)
-                this.cache.splice(0, 1);
+            if (this.manager.length > 16)
+                this.manager.splice(0, 1);
 
-            this.dom.content.innerHTML = this.cache.join('');
+            this.dom.content.innerHTML = this.manager.join('');
             this.dom.content.scrollTo(0, this.dom.content.scrollHeight);
         },
         sendMessage: function() {

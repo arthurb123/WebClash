@@ -12,7 +12,7 @@ const scripts = [
     'lib/camera.js',
     'lib/game.js',
     'lib/audio.js',
-    'lib/cache.js',
+    'lib/manager.js',
     'lib/client.js',
     'lib/player.js',
     'lib/view.js',

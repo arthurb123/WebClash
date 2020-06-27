@@ -3,7 +3,7 @@ const ui = {
 
     initialize: function()
     {
-        cache.progress.create();
+        manager.progress.create();
 
         this.controller.create();
 
@@ -180,7 +180,7 @@ const ui = {
     },
     chat:
     {
-        cache: [],
+        manager: [],
         create: function() {
             let box = document.createElement('div');
             box.id = 'chat_box';
@@ -223,12 +223,12 @@ const ui = {
             if (this.dom === undefined)
                 return;
 
-            this.cache.push('<font style="display: inline;" class="info">' + this.timeformat() + content + '</font><br>');
+            this.manager.push('<font style="display: inline;" class="info">' + this.timeformat() + content + '</font><br>');
 
-            if (this.cache.length > 12)
-                this.cache.splice(0, 1);
+            if (this.manager.length > 12)
+                this.manager.splice(0, 1);
 
-            this.dom.content.innerHTML = this.cache.join('');
+            this.dom.content.innerHTML = this.manager.join('');
 
             this.dom.content.scrollTo(0, this.dom.content.scrollHeight);
         },

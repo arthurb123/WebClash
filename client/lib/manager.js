@@ -1,4 +1,4 @@
-const cache = {
+const manager = {
     progress: {
         visible: false,
         create: function() {
@@ -31,22 +31,30 @@ const cache = {
         }
     },
 
-    tilesets: {},
     cacheTilesets: function(tilesets, cb)
     {
-        let t = 0;
+        //Set progress
 
         this.progress.start('Building map - 0%');
 
+        //Recursive tileset caching
+
+        let t = 0;
         let cacheTileset = function() {
-            cache.getTileset(tilesets[t].image, function() {
+            manager.getTileset(tilesets[t].image, function() {
                 t++;
 
+                //Cache tileset and adjust
+                //progress
+
                 if (t < tilesets.length) {
-                    cache.progress.update('Building map - ' + ((t/(tilesets.length-1))*100).toFixed(0) + '%');
+                    manager.progress.update('Building map - ' + ((t/(tilesets.length-1))*100).toFixed(0) + '%');
 
                     cacheTileset();
                 }
+
+                //Callback if finished
+
                 else
                     cb();
             });
@@ -56,51 +64,53 @@ const cache = {
     },
     getTileset: function(src, cb)
     {
-        let canCallback = true;
+        //Adjust source of tileset
 
-        if (this.tilesets[src] === undefined) {
-            let s = src.lastIndexOf('/')+1;
+        let s   = src.lastIndexOf('/')+1;
+        let loc = 'res/tilesets/' + src.substr(s, src.length-s);
 
-            if (cb == undefined)
-                this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s));
-            else {
-                canCallback = false;
+        //Get through getSprite
 
-                this.tilesets[src] = new lx.Sprite('res/tilesets/' + src.substr(s, src.length-s), cb);
-                return;
-            }
-        }
-
-        let tilesetCopy = new lx.Sprite(this.tilesets[src].IMG);
-
-        if (cb != undefined && canCallback)
-            cb(tilesetCopy);
-
-        return tilesetCopy;
+        if (cb == undefined)
+            return this.getSprite(loc);
+        else
+            this.getSprite(loc, cb);
     },
 
     sprites: {},
     getSprite: function(src, cb)
     {
-        let canCallback = true;
+        //Cache the sprite normally
 
         if (this.sprites[src] === undefined) {
-            if (cb == undefined)
-                this.sprites[src] = new lx.Sprite(src);
-            else {
-                canCallback = false;
+            //Direct result (unsafe!)
 
+            if (cb == undefined) {
+                this.sprites[src] = new lx.Sprite(src);
+                return this.sprites[src];
+            }
+
+            //Callback result (preferred way)
+
+            else {
                 this.sprites[src] = new lx.Sprite(src, cb);
                 return;
             }
         }
 
-        let spriteCopy = new lx.Sprite(this.sprites[src].IMG);
+        //If already cached, create an identical
+        //copy and use that (this avoids same usage of
+        //one sprite, which can conflict with rotation and
+        //other manipulations)
 
-        if (cb != undefined && canCallback)
-            cb(spriteCopy);
+        else {
+            let copy = new lx.Sprite(this.sprites[src].IMG);
 
-        return spriteCopy;
+            if (cb == undefined)
+                return copy;
+            else
+                cb(copy)
+        }
     },
 
     audio: {},

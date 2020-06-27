@@ -362,9 +362,11 @@ const game = {
     {
         let result = [];
 
+        //Get the equipment sprites
+
         let getEquipment = function(equippable) {
             if (equipment[equippable] !== undefined)
-                result.push(cache.getSprite(equipment[equippable]));
+                result.push(manager.getSprite(equipment[equippable]));
             else
                 result.push(undefined);
         }
@@ -730,12 +732,19 @@ const game = {
         this.npcs[id]._offHands = [];
 
         for (let e = 0; e < equipment.length; e++) {
-            if (equipment[e].type === 'generic')
-                this.npcs[id]._equipment.push(new lx.Sprite(equipment[e].source));
-            else if (equipment[e].type === 'main')
-                this.npcs[id]._mainHands.push(new lx.Sprite(equipment[e].source));
-            else if (equipment[e].type === 'offhand')
-                this.npcs[id]._offHands.push(new lx.Sprite(equipment[e].source));
+            manager.getSprite(equipment[e].source, (sprite) => {
+                switch (equipment[e].type) {
+                    case 'generic':
+                        this.npcs[id]._equipment.push(sprite);
+                        break;
+                    case 'main':
+                        this.npcs[id]._mainHands.push(sprite);
+                        break;
+                    case 'offhand':
+                        this.npcs[id]._offHands.push(sprite);
+                        break;
+                }
+            });
         }
     },
     removeNPC: function(id)
@@ -787,7 +796,7 @@ const game = {
     giveDialogTexture: function(target, callback) {
         //Load dialog texture
 
-        cache.getSprite('res/ui/dialog.png', function(sprite) {
+        manager.getSprite('res/ui/dialog.png', function(sprite) {
             //Create dialog texture
 
             target._dialogTexture = new lx.UITexture(
@@ -837,8 +846,7 @@ const game = {
                     let pos = {
                         X: player.POS.X+player.SIZE.W/2,
                         Y: player.POS.Y+player.SIZE.H/2
-                    },
-                    pos1 = {
+                    },  pos1 = {
                         X: target.POS.X+target.SIZE.W/2,
                         Y: target.POS.Y+target.SIZE.H/2
                     };
@@ -863,13 +871,13 @@ const game = {
 
                 if (target._loops != undefined)
                     target._loops[0] = function() {
-                        if (this._dialogTexture != undefined)
-                            this._dialogTexture.Hide();
+                        if (target._dialogTexture != undefined)
+                            target._dialogTexture.Hide();
                     };
                 else
                     target.Loops(function() {
-                        if (this._dialogTexture != undefined)
-                            this._dialogTexture.Hide();
+                        if (target._dialogTexture != undefined)
+                            target._dialogTexture.Hide();
                     });
             } else {
                 //Add map dialog specific loops that checks if 
@@ -887,8 +895,8 @@ const game = {
                         Y: player.POS.Y+player.SIZE.H/2
                     },
                     pos1 = {
-                        X: this.POS.X+this.SIZE.W/2,
-                        Y: this.POS.Y+this.SIZE.H/2
+                        X: target.POS.X+target.SIZE.W/2,
+                        Y: target.POS.Y+target.SIZE.H/2
                     };
 
                     let dx = Math.abs(pos.X-pos1.X),
@@ -903,9 +911,9 @@ const game = {
 
                     if (dx > tiled.tile.width*proximity ||
                         dy > tiled.tile.height*proximity) 
-                        this._dialogTexture.Hide();
+                        target._dialogTexture.Hide();
                     else
-                        this._dialogTexture.Show();
+                        target._dialogTexture.Show();
                 };
 
                 if (target._loops != undefined)
@@ -1003,7 +1011,7 @@ const game = {
 
         //Create item sprite
 
-        cache.getSprite(data.source, function(sprite) {
+        manager.getSprite(data.source, function(sprite) {
             //Create lynx gameobject
 
             let worldItem = new lx.GameObject(
@@ -1133,7 +1141,7 @@ const game = {
             data.element.type === 'static') {
             //Static action
 
-            cache.getSprite(data.element.src, function(sprite) {
+            manager.getSprite(data.element.src, function(sprite) {
                 let sprites = [];
 
                 if (data.element.direction === 'horizontal')
@@ -1166,7 +1174,7 @@ const game = {
         else if (data.element.type === 'projectile') {
             //Projectile action
 
-            cache.getSprite(data.element.src, function(sprite) {
+            manager.getSprite(data.element.src, function(sprite) {
                 let angle = 0;
 
                 if (data.element.rotates) {
@@ -1295,31 +1303,41 @@ const game = {
         if (target == undefined)
             return;
 
-        for (let i = 0; i < count; i++) {
-            let size = 4+Math.round(Math.random()*4);
+        //Get the blood sprite
 
-            let blood = new lx.GameObject(
-                new lx.Sprite('res/particles/blood.png'),
-                target.POS.X+Math.round(Math.random()*target.SIZE.W),
-                target.POS.Y+target.SIZE.H-4-Math.round(Math.random()*6),
-                size,
-                size
-            );
+        manager.getSprite('res/particles/blood.png', (sprite) => { 
+            //Spawn blood particles
 
-            blood._timer = {
-                cur: 0,
-                standard: 60
-            };
+            for (let i = 0; i < count; i++) {
+                let size = 4+Math.round(Math.random()*4);
 
-            blood.Loops(function() {
-                if (this._timer.cur >= this._timer.standard)
-                    blood.Hide();
-                else
-                    this._timer.cur++;
-            });
+                let blood = new lx.GameObject(
+                    sprite,
+                    target.POS.X+Math.round(Math.random()*target.SIZE.W),
+                    target.POS.Y+target.SIZE.H-4-Math.round(Math.random()*6),
+                    size,
+                    size
+                );
 
-            blood.Show(2);
-        }
+                //Setup dissipation timer
+
+                blood._timer = {
+                    cur: 0,
+                    standard: Math.round(60 + Math.random() * 30)
+                };
+
+                blood.Loops(function() {
+                    if (this._timer.cur >= this._timer.standard)
+                        blood.Hide();
+                    else
+                        this._timer.cur++;
+                });
+
+                //Show the particle
+
+                blood.Show(2);
+            }
+        });
     },
 
     initialize: function(isMobile)

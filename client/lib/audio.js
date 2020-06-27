@@ -27,7 +27,7 @@ const audio = {
             return;
         }
 
-        this.currentBGM = cache.getAudio(src, 0);
+        this.currentBGM = manager.getAudio(src, 0);
         this.currentBGM._mainVolume = this.actualMainVolume;
         this.currentBGM._bgmVolume = this.actualBGMVolume;
 
@@ -52,7 +52,7 @@ const audio = {
         if (this.actualMainVolume == 0)
             return;
 
-        let sound = cache.getAudio(src, 1);
+        let sound = manager.getAudio(src, 1);
 
         if (sound.PLAY_ID != undefined)
             sound.PLAY_ID = undefined;
@@ -63,7 +63,7 @@ const audio = {
         if (this.actualMainVolume == 0)
             return;
 
-        let sound = cache.getAudio(src, 1);
+        let sound = manager.getAudio(src, 1);
 
         if (sound.PLAY_ID != undefined)
             sound.PLAY_ID = undefined;

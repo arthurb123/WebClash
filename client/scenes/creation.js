@@ -18,7 +18,7 @@ const creationScene = new lx.Scene(function() {
         //This tilesheet will then be converted to
         //an animation for easier usage
 
-        new lx.Sprite(char.src, function(sprite) {
+        manager.getSprite(char.src, function(sprite) {
             if (char.animation.direction === 'horizontal')
                 char.sprite = lx.CreateHorizontalTileSheet(sprite, char.width/scale, char.height/scale);
             else

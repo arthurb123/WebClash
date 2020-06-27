@@ -1,22 +1,22 @@
 //Banks module for WebClash
 
-const cache = {};
+const manager = {};
 const maxLifetime = 60; //Max lifetime in seconds
 
 const bankingPositions = {};
 
 const loadBank = function(id, cb) {
-    //Check if cache entry exists
+    //Check if manager entry exists
 
-    if (cache[id] != undefined) {
-        cb(cache[id].bank);
+    if (manager[id] != undefined) {
+        cb(manager[id].bank);
         return;
     }
 
     //Load bank from storage
 
     storage.load('banks', id, function(bank) {
-        cache[id] = {
+        manager[id] = {
             bank: bank,
             lifetime: 0
         };
@@ -26,9 +26,9 @@ const loadBank = function(id, cb) {
 };
 
 const saveBank = function(id, bank) {
-    //Set cache
+    //Set manager
 
-    cache[id] = {
+    manager[id] = {
         bank: bank,
         lifetime: 0
     };
@@ -60,17 +60,17 @@ exports.updateCache = function() {
     try {
         //Check lifetime of each cached bank
 
-        for (let player in cache) {
-            cache[player].lifetime++;
+        for (let player in manager) {
+            manager[player].lifetime++;
 
-            //Exceeds max lifetime, clear cache
+            //Exceeds max lifetime, clear manager
 
-            if (cache[player].lifetime >= maxLifetime)
-                delete cache[player];
+            if (manager[player].lifetime >= maxLifetime)
+                delete manager[player];
         }
     }
     catch (err) {
-        output.giveError('Could not update bank cache: ', err);
+        output.giveError('Could not update bank manager: ', err);
     }
 };
 

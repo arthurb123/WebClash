@@ -22,7 +22,7 @@ const tiled = {
 
         //Start progress
 
-        cache.progress.start('Building map...');
+        manager.progress.start('Building map...');
 
         //Change map name
 
@@ -90,14 +90,14 @@ const tiled = {
 
         //Cache all tilesets
 
-        cache.cacheTilesets(map.tilesets, function() {
+        manager.cacheTilesets(map.tilesets, function() {
             //Check all tile objects (colliders, properties, animations, etc.)
 
             tiled.checkObjects(map);
 
             //Update progress
 
-            cache.progress.update('Building map - 0%');
+            manager.progress.update('Building map - 0%');
 
             //Create base and hovering cached canvases
 
@@ -115,7 +115,7 @@ const tiled = {
             for (let l = 0; l < map.mapLayers.length; l++) {
                 //Update progress
 
-                cache.progress.update('Building map - ' + (l/(map.layers.length-1)*100).toFixed(0) + '%');
+                manager.progress.update('Building map - ' + (l/(map.layers.length-1)*100).toFixed(0) + '%');
 
                 //Grab the layer
 
@@ -136,7 +136,7 @@ const tiled = {
                 if (layer.offsety !== undefined)
                     offset_height += layer.offsety;
 
-                //Prerender/cache layer for easier drawing
+                //Prerender/manager layer for easier drawing
 
                 const cachedLayer = tiled.cacheLayer(map, l, offset_width, offset_height),
                       cachedLayerSprite = new lx.Sprite(cachedLayer);
@@ -253,7 +253,7 @@ const tiled = {
 
             //Set new progress
 
-            cache.progress.start('Joining map..');
+            manager.progress.start('Joining map..');
 
             //Send map content request
 
@@ -342,7 +342,7 @@ const tiled = {
                 for (let i = 0; i < map.tilesets.length; i++)
                     if (layer.data[t] >= map.tilesets[i].firstgid) {
                         tileset = map.tilesets[i];
-                        sprite = cache.getTileset(tileset.image);
+                        sprite = manager.getTileset(tileset.image);
 
                         if (i != 0)
                             actual = layer.data[t] - tileset.firstgid + 1;
@@ -632,7 +632,7 @@ const tiled = {
 
                     //Grab tileset sprite
 
-                    let sprite = cache.getTileset(tileset.image);
+                    let sprite = manager.getTileset(tileset.image);
 
                     //Check if sprite has a tilewidth specified
 
@@ -851,11 +851,11 @@ const tiled = {
 
                             tiled.loading = true;
 
-                            //Start cache progress
+                            //Start manager progress
 
-                            cache.progress.start('Loading map...');
+                            manager.progress.start('Loading map...');
 
-                            //Emit request map package                    
+                            //Emit request map package
 
                             channel.emit('CLIENT_REQUEST_MAP', property.value);
                         }

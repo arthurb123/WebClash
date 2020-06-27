@@ -7,7 +7,7 @@ const landingScene = new lx.Scene(function() {
 
     //Add a title logo
 
-    let logo_sprite = new lx.Sprite('res/ui/title.png', () => {
+    new lx.Sprite('res/ui/title.png', (logo_sprite) => {
         lx.OnLayerDraw(0, function() {
             lx.DrawSprite(
                 logo_sprite,

@@ -78,6 +78,8 @@ exports.handleCommand = function(text, channel)
         if (command === 'help') {
             //Check if origin is game client or server
 
+            //Game client
+
             if (channel != undefined) {
                 //Check if admin and handle
                 //acordingly
@@ -89,6 +91,9 @@ exports.handleCommand = function(text, channel)
                 else
                     server.syncChatMessage(commandsUser, channel);
             }
+
+            //Server
+
             else
                 output.give(commandsAdmin + '\nNote that some commands are not supported on the server-side.', true);
 
@@ -196,6 +201,17 @@ exports.handleCommand = function(text, channel)
                     }
 
                     return 'success';
+                //Kill command
+                case 'kill':
+                    if (args.length == 0)
+                        return 'wrong';
+
+                    if (game.players[args[0]])
+                        game.killPlayer(args[0], p);
+                    else
+                        server.syncChatMessage('Player \'' + args[0] + '\' is not available.', channel);
+
+                    return 'success';
                 //Show map list command
                 case 'showmaps':
                     let msg = 'Available maps:<br>';
@@ -228,6 +244,8 @@ exports.handleCommand = function(text, channel)
                     let s = server.getChannelWithName(args[0]);
                     if (s !== undefined)
                         game.loadMap(s, args[1]);
+                    else
+                        server.syncChatMessage('Player \'' + args[0] + '\' is not available.', channel);
 
                     return 'success';
                 //Spawn NPC command

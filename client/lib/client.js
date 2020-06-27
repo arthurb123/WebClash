@@ -86,7 +86,7 @@ const client = {
 
         //Show progress view
 
-        cache.progress.start('Joining game...');
+        manager.progress.start('Joining game...');
 
         //Send join game package
 
@@ -243,7 +243,7 @@ const client = {
                      ui.inventory.setCurrency(data.currency);
              }
              if (data.character !== undefined) {
-                 cache.getSprite(data.character.src, function (sprite) {
+                 manager.getSprite(data.character.src, function (sprite) {
                     game.players[id].SPRITE = sprite;
                     game.players[id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
    
@@ -331,7 +331,7 @@ const client = {
             if (data.inCombat != undefined)
                 game.npcs[data.id]._inCombat = data.inCombat;
             if (data.character !== undefined) {
-                cache.getSprite(data.character.src, function(sprite) {
+                manager.getSprite(data.character.src, function(sprite) {
                     game.npcs[data.id].SPRITE = sprite;
                     game.npcs[data.id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
     
@@ -591,7 +591,7 @@ const client = {
         channel.on('GAME_MAP_FINISHED', function() {
             //Hide progress
 
-            cache.progress.hide();
+            manager.progress.hide();
 
             //Set loading to false
 
