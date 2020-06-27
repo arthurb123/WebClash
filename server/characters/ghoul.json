@@ -4,7 +4,8 @@
   "height": 56,
   "animation": {
     "direction": "horizontal",
-    "speed": 11
+    "speed": 11,
+    "alwaysAnimate": false
   },
   "collider": {
     "x": 6,
@@ -38,5 +39,7 @@
         "src": "res/sounds/characters/ghoul/ghoul9.wav"
       }
     ]
-  }
+  },
+  "damageParticles": true,
+  "particleSrc": "res/particles/blood.png"
 }

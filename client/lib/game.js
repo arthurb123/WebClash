@@ -72,7 +72,7 @@ const game = {
                 }
             })
             .PreDraws(function() {
-                if (this.SPRITE == undefined)
+                if (this.Sprite() == undefined)
                     return;
 
                 //Constants for easier readability
@@ -94,16 +94,16 @@ const game = {
                 }
 
                 for (let i = 0; i < equipment.length; i++) {
-                    if (equipment[i] == undefined || this.SPRITE == undefined)
+                    if (equipment[i] == undefined || this.Sprite() == undefined)
                         continue;
 
-                    equipment[i].CLIP = this.SPRITE.CLIP;
+                    equipment[i].CLIP = this.Sprite().CLIP;
                     
                     lx.DrawSprite(equipment[i], this.POS.X, this.POS.Y);
                 }
             })
             .Draws(function() {
-                if (this.SPRITE == undefined)
+                if (this.Sprite() == undefined)
                     return;
 
                 //Constants for easier readability
@@ -136,10 +136,10 @@ const game = {
                 }
 
                 for (let i = 0; i < equipment.length; i++) {
-                    if (equipment[i] == undefined || this.SPRITE == undefined)
+                    if (equipment[i] == undefined || this.Sprite() == undefined)
                         continue;
 
-                    equipment[i].CLIP = this.SPRITE.CLIP;
+                    equipment[i].CLIP = this.Sprite().CLIP;
 
                     lx.DrawSprite(equipment[i], this.POS.X, this.POS.Y);
                 }
@@ -289,13 +289,21 @@ const game = {
 
                this.players[id].ShowColorOverlay('rgba(228, 63, 63, 0.46)', 5);
 
-               //Blood particles
+               //Check if damage particle exist
 
-               let count = -delta;
-               if (count > 10)
-                   count = 10;
+               if (this.players[id]._damageParticles.exists) {
+                    //Handle damage particles
 
-               this.createBlood(this.players[id], count);
+                    let count = -delta;
+                    if (count > 10)
+                        count = 10;
+
+                    this.createDamageParticles(
+                        this.players[id], 
+                        this.players[id]._damageParticles.src, 
+                        count
+                    );
+               }
             }
             else if (delta == 0) {
                 //Miss floaty
@@ -494,7 +502,7 @@ const game = {
                     this._loops[cb]();
             })
             .PreDraws(function() {
-                if (this.SPRITE == undefined)
+                if (this.Sprite() == undefined)
                     return;
 
                 //Draw specific NPC equipment if it exists
@@ -532,7 +540,7 @@ const game = {
                 }
             })
             .Draws(function() {
-                if (this.SPRITE == undefined)
+                if (this.Sprite() == undefined)
                     return;
 
                 //Draw NPC equipment if it exists
@@ -715,13 +723,21 @@ const game = {
             if(this.npcs[id] == undefined)
                 return;
 
-            //Blood particles
+            //Check if damage particle exist
 
-            let count = -delta;
-            if (count > 10)
-                count = 10;
+            if (this.npcs[id]._damageParticles.exists) {
+                //Handle damage particles
 
-            this.createBlood(this.npcs[id], count);
+                let count = -delta;
+                if (count > 10)
+                    count = 10;
+
+                this.createDamageParticles(
+                    this.npcs[id], 
+                    this.npcs[id]._damageParticles.src,
+                    count
+                );
+            }
         }
         else if (this.npcs[id] != undefined)
             this.npcs[id]._health = health;
@@ -1298,20 +1314,20 @@ const game = {
 
         return Math.round(total);
     },
-    createBlood: function(target, count)
+    createDamageParticles: function(target, source, count)
     {
         if (target == undefined)
             return;
 
-        //Get the blood sprite
+        //Get the damage particle sprite
 
-        manager.getSprite('res/particles/blood.png', (sprite) => { 
-            //Spawn blood particles
+        manager.getSprite(source, (sprite) => { 
+            //Spawn damage particles
 
             for (let i = 0; i < count; i++) {
                 let size = 4+Math.round(Math.random()*4);
 
-                let blood = new lx.GameObject(
+                let damageParticle = new lx.GameObject(
                     sprite,
                     target.POS.X+Math.round(Math.random()*target.SIZE.W),
                     target.POS.Y+target.SIZE.H-4-Math.round(Math.random()*6),
@@ -1321,21 +1337,21 @@ const game = {
 
                 //Setup dissipation timer
 
-                blood._timer = {
+                damageParticle._timer = {
                     cur: 0,
                     standard: Math.round(60 + Math.random() * 30)
                 };
 
-                blood.Loops(function() {
+                damageParticle.Loops(function() {
                     if (this._timer.cur >= this._timer.standard)
-                        blood.Hide();
+                        damageParticle.Hide();
                     else
                         this._timer.cur++;
                 });
 
                 //Show the particle
 
-                blood.Show(2);
+                damageParticle.Show(2);
             }
         });
     },

@@ -244,10 +244,10 @@ const client = {
              }
              if (data.character !== undefined) {
                  manager.getSprite(data.character.src, function (sprite) {
-                    game.players[id].SPRITE = sprite;
-                    game.players[id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
+                    game.players[id].Sprite(sprite);
+                    game.players[id].Sprite().Clip(0, 0, data.character.width, data.character.height);
    
-                    game.players[id].SIZE = game.players[id].SPRITE.Size();
+                    game.players[id].SIZE = game.players[id].Sprite().Size();
    
                     if (data.isPlayer)
                     {
@@ -259,6 +259,11 @@ const client = {
                     game.players[id]._animation.cur = 0;
    
                     game.players[id]._sounds = data.character.sounds;
+
+                    game.players[id]._damageParticles = {
+                        exists: data.character.damageParticles,
+                        src: data.character.particleSrc
+                    };
                  });
              }
         });
@@ -332,15 +337,20 @@ const client = {
                 game.npcs[data.id]._inCombat = data.inCombat;
             if (data.character !== undefined) {
                 manager.getSprite(data.character.src, function(sprite) {
-                    game.npcs[data.id].SPRITE = sprite;
-                    game.npcs[data.id].SPRITE.Clip(0, 0, data.character.width, data.character.height);
+                    game.npcs[data.id].Sprite(sprite);
+                    game.npcs[data.id].Sprite().Clip(0, 0, data.character.width, data.character.height);
     
-                    game.npcs[data.id].SIZE = game.npcs[data.id].SPRITE.Size();
+                    game.npcs[data.id].SIZE = game.npcs[data.id].Sprite().Size();
     
                     game.npcs[data.id]._animation = data.character.animation;
                     game.npcs[data.id]._animation.cur = 0;
     
                     game.npcs[data.id]._sounds = data.character.sounds;
+
+                    game.npcs[data.id]._damageParticles = {
+                        exists: data.character.damageParticles,
+                        src: data.character.particleSrc
+                    };
                 });
             }
         });

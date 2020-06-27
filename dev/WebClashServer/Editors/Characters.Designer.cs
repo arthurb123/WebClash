@@ -67,6 +67,10 @@
             this.soundGroupBox = new System.Windows.Forms.GroupBox();
             this.onDeathSounds = new System.Windows.Forms.Button();
             this.onHitSounds = new System.Windows.Forms.Button();
+            this.miscGroupBox = new System.Windows.Forms.GroupBox();
+            this.particleSource = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.damageParticles = new System.Windows.Forms.CheckBox();
             this.generalGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).BeginInit();
@@ -81,6 +85,7 @@
             this.movementGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxVelocity)).BeginInit();
             this.soundGroupBox.SuspendLayout();
+            this.miscGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -325,7 +330,7 @@
             // 
             this.canvas.BackColor = System.Drawing.SystemColors.ControlLight;
             this.canvas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.canvas.Location = new System.Drawing.Point(105, 383);
+            this.canvas.Location = new System.Drawing.Point(105, 434);
             this.canvas.Name = "canvas";
             this.canvas.Size = new System.Drawing.Size(200, 200);
             this.canvas.TabIndex = 6;
@@ -343,7 +348,7 @@
             this.save.AutoSize = true;
             this.save.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.save.LinkColor = System.Drawing.Color.Blue;
-            this.save.Location = new System.Drawing.Point(360, 570);
+            this.save.Location = new System.Drawing.Point(360, 621);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(32, 13);
             this.save.TabIndex = 7;
@@ -537,7 +542,8 @@
             // 
             this.soundGroupBox.Controls.Add(this.onDeathSounds);
             this.soundGroupBox.Controls.Add(this.onHitSounds);
-            this.soundGroupBox.Location = new System.Drawing.Point(15, 318);
+            this.soundGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.soundGroupBox.Location = new System.Drawing.Point(15, 320);
             this.soundGroupBox.Name = "soundGroupBox";
             this.soundGroupBox.Size = new System.Drawing.Size(373, 46);
             this.soundGroupBox.TabIndex = 19;
@@ -564,11 +570,53 @@
             this.onHitSounds.UseVisualStyleBackColor = true;
             this.onHitSounds.Click += new System.EventHandler(this.onHitSounds_Click);
             // 
+            // miscGroupBox
+            // 
+            this.miscGroupBox.Controls.Add(this.particleSource);
+            this.miscGroupBox.Controls.Add(this.label13);
+            this.miscGroupBox.Controls.Add(this.damageParticles);
+            this.miscGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.miscGroupBox.Location = new System.Drawing.Point(15, 372);
+            this.miscGroupBox.Name = "miscGroupBox";
+            this.miscGroupBox.Size = new System.Drawing.Size(373, 46);
+            this.miscGroupBox.TabIndex = 20;
+            this.miscGroupBox.TabStop = false;
+            this.miscGroupBox.Text = "Misc";
+            // 
+            // particleSource
+            // 
+            this.particleSource.Location = new System.Drawing.Point(197, 16);
+            this.particleSource.Name = "particleSource";
+            this.particleSource.Size = new System.Drawing.Size(162, 21);
+            this.particleSource.TabIndex = 2;
+            this.particleSource.TextChanged += new System.EventHandler(this.particleSource_TextChanged);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(166, 19);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(25, 15);
+            this.label13.TabIndex = 1;
+            this.label13.Text = "Src";
+            // 
+            // damageParticles
+            // 
+            this.damageParticles.AutoSize = true;
+            this.damageParticles.Location = new System.Drawing.Point(27, 18);
+            this.damageParticles.Name = "damageParticles";
+            this.damageParticles.Size = new System.Drawing.Size(124, 19);
+            this.damageParticles.TabIndex = 0;
+            this.damageParticles.Text = "Damage Particles";
+            this.damageParticles.UseVisualStyleBackColor = true;
+            this.damageParticles.CheckedChanged += new System.EventHandler(this.damageParticles_CheckedChanged);
+            // 
             // Characters
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 596);
+            this.ClientSize = new System.Drawing.Size(404, 646);
+            this.Controls.Add(this.miscGroupBox);
             this.Controls.Add(this.soundGroupBox);
             this.Controls.Add(this.movementGroupBox);
             this.Controls.Add(this.colliderGroupBox);
@@ -583,7 +631,7 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(420, 635);
+            this.MaximumSize = new System.Drawing.Size(420, 685);
             this.MinimumSize = new System.Drawing.Size(420, 635);
             this.Name = "Characters";
             this.Text = "WebClash - Characters";
@@ -606,6 +654,8 @@
             this.movementGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxVelocity)).EndInit();
             this.soundGroupBox.ResumeLayout(false);
+            this.miscGroupBox.ResumeLayout(false);
+            this.miscGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -650,5 +700,9 @@
         private System.Windows.Forms.Button onHitSounds;
         private System.Windows.Forms.Button onDeathSounds;
         private System.Windows.Forms.CheckBox alwaysAnimate;
+        private System.Windows.Forms.GroupBox miscGroupBox;
+        private System.Windows.Forms.TextBox particleSource;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.CheckBox damageParticles;
     }
 }

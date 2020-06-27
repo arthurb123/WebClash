@@ -4,7 +4,8 @@
   "height": 96,
   "animation": {
     "direction": "horizontal",
-    "speed": 10
+    "speed": 10,
+    "alwaysAnimate": false
   },
   "collider": {
     "x": 16,
@@ -32,5 +33,7 @@
         "src": "res/sounds/characters/giant/giant2.wav"
       }
     ]
-  }
+  },
+  "damageParticles": false,
+  "particleSrc": ""
 }

@@ -29,5 +29,7 @@
       }
     ],
     "deathSounds": []
-  }
+  },
+  "damageParticles": true,
+  "particleSrc": "res/particles/blood.png"
 }

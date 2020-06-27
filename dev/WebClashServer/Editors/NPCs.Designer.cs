@@ -474,7 +474,7 @@
             // 
             // editLootTable
             // 
-            this.editLootTable.Location = new System.Drawing.Point(189, 195);
+            this.editLootTable.Location = new System.Drawing.Point(189, 252);
             this.editLootTable.Name = "editLootTable";
             this.editLootTable.Size = new System.Drawing.Size(172, 23);
             this.editLootTable.TabIndex = 26;
@@ -517,7 +517,7 @@
             // 
             // vitality
             // 
-            this.vitality.Location = new System.Drawing.Point(244, 142);
+            this.vitality.Location = new System.Drawing.Point(244, 163);
             this.vitality.Name = "vitality";
             this.vitality.Size = new System.Drawing.Size(61, 21);
             this.vitality.TabIndex = 23;
@@ -527,7 +527,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(190, 144);
+            this.label11.Location = new System.Drawing.Point(190, 165);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(41, 15);
             this.label11.TabIndex = 22;
@@ -535,7 +535,7 @@
             // 
             // wisdom
             // 
-            this.wisdom.Location = new System.Drawing.Point(244, 115);
+            this.wisdom.Location = new System.Drawing.Point(244, 136);
             this.wisdom.Name = "wisdom";
             this.wisdom.Size = new System.Drawing.Size(61, 21);
             this.wisdom.TabIndex = 21;
@@ -545,7 +545,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(190, 117);
+            this.label12.Location = new System.Drawing.Point(190, 138);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(52, 15);
             this.label12.TabIndex = 20;
@@ -553,7 +553,7 @@
             // 
             // intelligence
             // 
-            this.intelligence.Location = new System.Drawing.Point(244, 86);
+            this.intelligence.Location = new System.Drawing.Point(244, 107);
             this.intelligence.Name = "intelligence";
             this.intelligence.Size = new System.Drawing.Size(61, 21);
             this.intelligence.TabIndex = 19;
@@ -563,7 +563,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(190, 88);
+            this.label13.Location = new System.Drawing.Point(190, 109);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(46, 15);
             this.label13.TabIndex = 18;
@@ -571,7 +571,7 @@
             // 
             // toughness
             // 
-            this.toughness.Location = new System.Drawing.Point(103, 142);
+            this.toughness.Location = new System.Drawing.Point(103, 163);
             this.toughness.Name = "toughness";
             this.toughness.Size = new System.Drawing.Size(61, 21);
             this.toughness.TabIndex = 17;
@@ -581,7 +581,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(54, 144);
+            this.label10.Location = new System.Drawing.Point(54, 165);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(45, 15);
             this.label10.TabIndex = 16;
@@ -589,7 +589,7 @@
             // 
             // agility
             // 
-            this.agility.Location = new System.Drawing.Point(103, 115);
+            this.agility.Location = new System.Drawing.Point(103, 136);
             this.agility.Name = "agility";
             this.agility.Size = new System.Drawing.Size(61, 21);
             this.agility.TabIndex = 15;
@@ -599,7 +599,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(54, 117);
+            this.label9.Location = new System.Drawing.Point(54, 138);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(38, 15);
             this.label9.TabIndex = 14;
@@ -607,7 +607,7 @@
             // 
             // power
             // 
-            this.power.Location = new System.Drawing.Point(103, 86);
+            this.power.Location = new System.Drawing.Point(103, 107);
             this.power.Name = "power";
             this.power.Size = new System.Drawing.Size(61, 21);
             this.power.TabIndex = 13;
@@ -617,7 +617,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(54, 88);
+            this.label8.Location = new System.Drawing.Point(54, 109);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(42, 15);
             this.label8.TabIndex = 12;
@@ -625,7 +625,7 @@
             // 
             // editActions
             // 
-            this.editActions.Location = new System.Drawing.Point(11, 195);
+            this.editActions.Location = new System.Drawing.Point(11, 252);
             this.editActions.Name = "editActions";
             this.editActions.Size = new System.Drawing.Size(172, 23);
             this.editActions.TabIndex = 2;

@@ -4,7 +4,8 @@
   "height": 48,
   "animation": {
     "direction": "horizontal",
-    "speed": 8
+    "speed": 8,
+    "alwaysAnimate": false
   },
   "collider": {
     "x": 8,
@@ -32,5 +33,7 @@
         "src": "res/sounds/characters/slime/slime6.wav"
       }
     ]
-  }
+  },
+  "damageParticles": true,
+  "particleSrc": "res/particles/water.png"
 }

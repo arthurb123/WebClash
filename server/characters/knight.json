@@ -4,7 +4,8 @@
   "height": 48,
   "animation": {
     "direction": "horizontal",
-    "speed": 11
+    "speed": 11,
+    "alwaysAnimate": false
   },
   "collider": {
     "x": 6,
@@ -13,7 +14,12 @@
     "height": 12
   },
   "movement": {
-    "acceleration": 0.03,
     "max": 0.8
-  }
+  },
+  "sounds": {
+    "hitSounds": [],
+    "deathSounds": []
+  },
+  "damageParticles": true,
+  "particleSrc": "res/particles/blood.png"
 }

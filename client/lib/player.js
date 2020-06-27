@@ -545,10 +545,10 @@ const player = {
         }
 
         for (let i = 0; i < equipment.length; i++) {
-            if (equipment[i] == undefined || this.SPRITE == undefined)
+            if (equipment[i] == undefined || this.Sprite() == undefined)
                 continue;
 
-            equipment[i].CLIP = this.SPRITE.CLIP;
+            equipment[i].CLIP = this.Sprite().CLIP;
             
             lx.DrawSprite(equipment[i], this.POS.X, this.POS.Y);
         }
@@ -588,10 +588,10 @@ const player = {
         //Render all equipment
 
         for (let i = 0; i < equipment.length; i++) {
-            if (equipment[i] == undefined || this.SPRITE == undefined)
+            if (equipment[i] == undefined || this.Sprite() == undefined)
                 continue;
 
-            equipment[i].CLIP = this.SPRITE.CLIP;
+            equipment[i].CLIP = this.Sprite().CLIP;
 
             lx.DrawSprite(equipment[i], this.POS.X, this.POS.Y);
         }

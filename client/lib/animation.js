@@ -6,15 +6,15 @@ const animation = {
         if (target._animation === undefined ||
             target._direction === undefined ||
             target._moving === undefined ||
-            target.SPRITE === undefined)
+            target.Sprite() === undefined)
             return;
 
         //Check facing direction
 
         if (target._animation.direction === 'horizontal')
-            target.SPRITE.CLIP.Y = target._direction*target.SIZE.H;
+            target.Sprite().CLIP.Y = target._direction*target.SIZE.H;
         else if (target._animation.direction === 'vertical')
-            target.SPRITE.CLIP.X = target._direction*target.SIZE.W;
+            target.Sprite().CLIP.X = target._direction*target.SIZE.W;
 
         //Check if a forced frame is active
         //If so handle the forced frame
@@ -33,9 +33,9 @@ const animation = {
         if (!target._moving && !target._animation.alwaysAnimate)
         {
             if (target._animation.direction === 'horizontal')
-                target.SPRITE.CLIP.X = 0;
+                target.Sprite().CLIP.X = 0;
             else if (target._animation.direction === 'vertical')
-                target.SPRITE.CLIP.Y = 0;
+                target.Sprite().CLIP.Y = 0;
 
             return;
         }
@@ -50,20 +50,20 @@ const animation = {
 
             if (target._animation.direction === 'horizontal')
             {
-                target.SPRITE.CLIP.X+=target.SIZE.W;
+                target.Sprite().CLIP.X+=target.SIZE.W;
 
-                if (target.SPRITE.CLIP.X >= target.SPRITE.IMG.width)
-                    target.SPRITE.CLIP.X = 0;
+                if (target.Sprite().CLIP.X >= target.Sprite().IMG.width)
+                    target.Sprite().CLIP.X = 0;
             }
 
             //Vertical animating
 
             else if (target._animation.direction === 'vertical')
             {
-                target.SPRITE.CLIP.Y+=target.SIZE.H;
+                target.Sprite().CLIP.Y+=target.SIZE.H;
 
-                if (target.SPRITE.CLIP.Y >= target.SPRITE.IMG.height)
-                    target.SPRITE.CLIP.Y = 0;
+                if (target.Sprite().CLIP.Y >= target.Sprite().IMG.height)
+                    target.Sprite().CLIP.Y = 0;
             }
 
             //Reset
@@ -83,9 +83,9 @@ const animation = {
 
             if (target._moving && !target._animation.forced) {
                 if (target._animation.direction === 'horizontal')
-                    target.SPRITE.CLIP.X = 0;
+                    target.Sprite().CLIP.X = 0;
                 else if (target._animation.direction === 'vertical')
-                    target.SPRITE.CLIP.Y = 0;
+                    target.Sprite().CLIP.Y = 0;
             }
 
             //Set forced frame to true
@@ -99,26 +99,26 @@ const animation = {
             let frame;
             
             if (target._animation.direction === 'horizontal') {
-                if (target.SPRITE.CLIP.X === 0)
+                if (target.Sprite().CLIP.X === 0)
                     frame = 1;
                 else 
                     frame = 2;
 
-                target.SPRITE.CLIP.X += frame * target.SIZE.W;
+                target.Sprite().CLIP.X += frame * target.SIZE.W;
 
-                if (target.SPRITE.CLIP.X >= target.SPRITE.IMG.width)
-                        target.SPRITE.CLIP.X -= target.SPRITE.IMG.width;
+                if (target.Sprite().CLIP.X >= target.Sprite().IMG.width)
+                        target.Sprite().CLIP.X -= target.Sprite().IMG.width;
             }
             else if (target._animation.direction === 'vertical') {
-                if (target.SPRITE.CLIP.Y === 0)
+                if (target.Sprite().CLIP.Y === 0)
                     frame = 1;
                 else 
                     frame = 2;
                     
-                target.SPRITE.CLIP.Y += frame * target.SIZE.H;
+                target.Sprite().CLIP.Y += frame * target.SIZE.H;
 
-                if (target.SPRITE.CLIP.Y >= target.SPRITE.IMG.height)
-                        target.SPRITE.CLIP.Y -= target.SPRITE.IMG.height;
+                if (target.Sprite().CLIP.Y >= target.Sprite().IMG.height)
+                        target.Sprite().CLIP.Y -= target.Sprite().IMG.height;
             }
 
             //Reset timer

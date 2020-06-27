@@ -69,6 +69,7 @@ namespace WebClashServer.Editors
                 colliderGroupBox.Enabled = false;
                 animationGroupBox.Enabled = false;
                 soundGroupBox.Enabled = false;
+                miscGroupBox.Enabled = false;
             }
             else
             {
@@ -77,6 +78,7 @@ namespace WebClashServer.Editors
                 colliderGroupBox.Enabled = true;
                 animationGroupBox.Enabled = true;
                 soundGroupBox.Enabled = true;
+                miscGroupBox.Enabled = true;
             }
         }
 
@@ -105,6 +107,10 @@ namespace WebClashServer.Editors
             collHeight.Value = current.collider.height;
 
             maxVelocity.Value = (decimal)current.movement.max;
+
+            damageParticles.Checked = current.damageParticles;
+            particleSource.Enabled = current.damageParticles;
+            particleSource.Text = current.particleSrc;
 
             canvas.Invalidate();
         }
@@ -330,7 +336,19 @@ namespace WebClashServer.Editors
 
             soundSelection.ShowDialog();
         }
-        
+
+        private void damageParticles_CheckedChanged(object sender, EventArgs e)
+        {
+            particleSource.Enabled = damageParticles.Checked;
+
+            current.damageParticles = damageParticles.Checked;
+        }
+
+        private void particleSource_TextChanged(object sender, EventArgs e)
+        {
+            current.particleSrc = particleSource.Text;
+        }
+
         public bool GetChanged()
         {
             return dataHasChanged;
@@ -360,6 +378,9 @@ namespace WebClashServer.Editors
                 movement = temp.movement;
 
                 sounds = temp.sounds;
+
+                damageParticles = temp.damageParticles;
+                particleSrc = temp.particleSrc;
             }
             catch (Exception e)
             {
@@ -389,6 +410,11 @@ namespace WebClashServer.Editors
         //Audio
 
         public CharacterSounds sounds = new CharacterSounds();
+
+        //Misc
+
+        public bool damageParticles = false;
+        public string particleSrc = "";
     }
 
     public class Animation
