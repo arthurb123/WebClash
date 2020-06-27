@@ -322,6 +322,29 @@ exports.handleCommand = function(text, channel)
                     game.deltaCurrencyPlayer(p, parseInt(args[0]));
 
                     return 'success';
+                //Set player variable command
+                case 'setvariable':
+                    if (args.length < 2             ||
+                        channel == undefined        ||
+                        typeof args[0] !== 'string')
+                        return 'wrong';
+
+                    //Parse the value to a boolean
+
+                    let val = args[1];
+                    if (val === 'true' || val === 'false')
+                        val = (val === 'true');
+                    else {
+                        server.syncChatMessage('Variable value should be \'true\' or \'false\'.', channel);
+                        return;
+                    }
+
+                    //Set the variable value
+                    
+                    game.setPlayerGlobalVariable(p, args[0], val);
+                    server.syncChatMessage('Set the variable \'' + args[0] + '\' to ' + val + '.', channel);
+
+                    return 'success';
                 //Change character command
                 case 'setcharacter':
                     if (args.length < 1 ||
@@ -336,7 +359,7 @@ exports.handleCommand = function(text, channel)
                     game.players[p].char_name = char;
                     game.players[p].character = game.characters[game.players[p].char_name];
 
-                    server.syncPlayerPartially(p, 'character', game.players[p].channel, false);
+                    server.syncPlayerPartially(p, 'character', channel, false);
                     server.syncPlayerPartially(p, 'character');
 
                     return 'success';

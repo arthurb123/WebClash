@@ -921,6 +921,27 @@ exports.getPlayerGlobalVariable = function(id, name)
     return game.players[id].gvars[name];
 };
 
+exports.checkPlayerForChecks = function(id, checks)
+{
+    //Go over all the checks and see
+    //if the player is eligible
+
+    for (let c = 0; c < checks.length; c++) {
+        //Get value of player variable
+
+        let val = this.getPlayerGlobalVariable(id, checks[c].name);
+
+        //If they do not match, not eligible
+
+        if (val !== checks[c].value)
+            return false;
+    }
+
+    //Eligible for all checks, return true
+
+    return true;
+};
+
 exports.loadMap = function(channel, map)
 {
     //Check if valid

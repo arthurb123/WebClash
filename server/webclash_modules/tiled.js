@@ -601,12 +601,14 @@ exports.checkCollisionWithRectangle = function(map, rectangle, playerOverride)
 
         if (colliders[c] == undefined)
             continue;
+            
+        //If player override (identifier) is specified,
+        //check player against the collider checks.
+        //If not eligible (false result), skip the collider.
 
-        //TODO: If not an NPC, make sure to check checks;
-        //      do this with something like:
-        //      if (playerOverride != undefined)
-        //          if (!game.checkPlayerForChecks(playerOverride, colliders[c].checks))
-        //              continue;
+        if (playerOverride != undefined)
+            if (!game.checkPlayerForChecks(playerOverride, colliders[c].checks))
+                continue;
 
         //Check for collision
 
