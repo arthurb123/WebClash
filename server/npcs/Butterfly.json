@@ -2,7 +2,7 @@
   "name": "Butterfly",
   "profiles": [
     {
-      "showNameplate": true,
+      "showNameplate": false,
       "movement": "free",
       "range": 4,
       "facing": 0,

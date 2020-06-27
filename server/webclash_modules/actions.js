@@ -281,7 +281,7 @@ exports.updateProjectiles = function() {
                         npcs.onMap[projectile.map][projectile.npcOwner].data.stats,
                         projectile,
                         element,
-                        collection[projectile.name]
+                        collection[projectile.action]
                     )) {
                         server.removeActionElement(element.p_id, projectile.map);
 
@@ -962,6 +962,11 @@ exports.damagePlayers = function(stats, actionData, actionElement, action, onlyS
 
         if (actionElement.type === 'projectile' &&
             onlyStatic)
+            return false;
+
+        //Check if the action is undefined
+
+        if (action == undefined)
             return false;
 
         //Except indicates a pvp action,
