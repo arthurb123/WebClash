@@ -50,7 +50,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load NPCs: ", exc);
             }
         }
 
@@ -73,7 +73,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load characters: ", exc);
             }
         }
 
@@ -132,7 +132,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load NPC: ", exc);
             }
         }
 
@@ -148,9 +148,8 @@ namespace WebClashServer.Editors
             addProfile_Click(null, new EventArgs());
 
             if (current.name != string.Empty)
-                MessageBox.Show(
-                    "A new profile was created for the NPC '" + current.name + "', as no other profiles were found.", 
-                    "WebClash - Message"
+                Logger.Message(
+                    "A new profile was created for the NPC '" + current.name + "', as no other profiles were found."
                 );
 
             return FindFirstNPCProfile();
@@ -163,10 +162,7 @@ namespace WebClashServer.Editors
             if (profile >= current.profiles.Length ||
                 current.profiles[profile] == null)
             {
-                MessageBox.Show(
-                    "The profile #" + profile + " is invalid for the NPC '" + current.name + "'!", 
-                    "WebClash - Error"
-                );
+                Logger.Error("The profile #" + profile + " is invalid for the NPC '" + current.name + "'!");
 
                 return;
             }
@@ -250,14 +246,14 @@ namespace WebClashServer.Editors
         {
             if (name.Text.Length == 0)
             {
-                MessageBox.Show("This NPC cannot be saved as it has an invalid name.", "WebClash - Error");
+                Logger.Error("This NPC cannot be saved as it has an invalid name.");
 
                 return;
             }
 
             File.WriteAllText(Program.main.serverLocation + "/npcs/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
-            MessageBox.Show("NPC has been saved!", "WebClash - Message");
+            Logger.Message("NPC has been saved!");
 
             ReloadNPCs();
 
@@ -278,7 +274,7 @@ namespace WebClashServer.Editors
         {
             if (!File.Exists(Program.main.serverLocation + "/npcs/" + name.Text + ".json"))
             {
-                MessageBox.Show("This character cannot be deleted as it does not exist yet.", "WebClash - Error");
+                Logger.Error("This character cannot be deleted as it does not exist yet.");
 
                 return;
             }
@@ -355,9 +351,8 @@ namespace WebClashServer.Editors
 
             if (amount <= 1)
             {
-                MessageBox.Show(
-                    "Profile #" + profile + " could not be deleted, as a NPC should have atleast one profile available at all time.", 
-                    "WebClash - Error"
+                Logger.Error(
+                    "Profile #" + profile + " could not be deleted, as a NPC should have atleast one profile available at all time."
                 );
 
                 return;
@@ -592,9 +587,9 @@ namespace WebClashServer.Editors
 
                 profiles = temp.profiles;
             }
-            catch (Exception e)
+            catch (Exception exc)
             {
-                MessageBox.Show(e.Message, "WebClash - Error");
+                Logger.Error("Could not construct NPC instance: ", exc);
             }
         }
 

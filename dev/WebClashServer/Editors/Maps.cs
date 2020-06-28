@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using WebClashServer.Classes;
 
 namespace WebClashServer.Editors
 {
@@ -48,7 +49,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load map list: ", exc);
             }
         }
 
@@ -174,7 +175,7 @@ namespace WebClashServer.Editors
 
         private bool CheckTileset(Tileset ts)
         {
-            string clientLocation = Program.main.serverLocation + "/../client/res/tilesets/";
+            string clientLocation = Program.main.clientLocation + "/res/tilesets/";
 
             int s = ts.image.LastIndexOf("/") + 1;
 
@@ -216,7 +217,7 @@ namespace WebClashServer.Editors
                 }
                 catch (Exception exc)
                 {
-                    MessageBox.Show(exc.Message, "WebClash - Error");
+                    Logger.Error("Could not import map: ", exc);
                 }
             }
         }
@@ -309,7 +310,7 @@ namespace WebClashServer.Editors
                                 temp = Image.FromFile(ofd.FileName);
                             else
                             {
-                                MessageBox.Show("Tileset '" + name + "' could not be imported.", "WebClash - Error");
+                                Logger.Error("Tileset '" + name + "' could not be imported.");
 
                                 continue;
                             }
@@ -317,12 +318,12 @@ namespace WebClashServer.Editors
                         }
 
                         if (temp == null) {
-                            MessageBox.Show("Tileset '" + name + "' could not be imported.", "WebClash - Error");
+                            Logger.Error("Tileset '" + name + "' could not be imported.");
 
                             continue;
                         }
 
-                        string clientLocation = Program.main.serverLocation + "/../client/res/tilesets/";
+                        string clientLocation = Program.main.clientLocation + "/res/tilesets/";
 
                         temp.Save(clientLocation + name);
 
@@ -331,9 +332,9 @@ namespace WebClashServer.Editors
 
                 CheckTilesets();
             }
-            catch (Exception e)
+            catch (Exception exc)
             {
-                MessageBox.Show(e.Message, "WebClash - Error");
+                Logger.Error("Could not import tilesets: ", exc);
             }
         }
 
@@ -526,9 +527,9 @@ namespace WebClashServer.Editors
                 tilesets = temp.tilesets;
                 layers = temp.layers;
             }
-            catch (Exception e)
+            catch (Exception exc)
             {
-                MessageBox.Show(e.Message, "WebClash - Error");
+                Logger.Error("Could not construct map instance: ", exc);
             }
         }
 
@@ -558,9 +559,9 @@ namespace WebClashServer.Editors
                 mapLayers = temp.mapLayers;
                 mapDialogs = temp.mapDialogs;
             }
-            catch (Exception e)
+            catch (Exception exc)
             {
-                MessageBox.Show(e.Message, "WebClash - Error");
+                Logger.Error("Could not construct map metadata instance: ", exc);
             }
         }
 

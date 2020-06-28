@@ -1,6 +1,8 @@
 {
     "accessAddress": "",
     "port": 5315,
+    "clientLocation": "../client",
+    "allowExternalClients": false,
     "maxPlayers": 0,
 
     "serverName": "WebClash Server",

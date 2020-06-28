@@ -49,7 +49,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load dialog list", exc);
             }
             
             if (current == -1 &&

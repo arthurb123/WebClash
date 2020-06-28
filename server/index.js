@@ -90,11 +90,6 @@ rl.on('line', (text) => {
         output.give('Wrong syntax or the command is not supported.');
 });
 
-//Setup Express
-
-app.use('/', express.static(path.resolve(__dirname +  "/../client/")));
-app.get('/map/:request_id', tiled.requestMap);
-
 //Check properties function
 
 function checkProperties(cb) {
@@ -103,7 +98,7 @@ function checkProperties(cb) {
     if (properties.playerCharacters.length === 0) {
         output.give('No player characters available.');
 
-        return;
+        process.exit();
     }
 
     for (let p = 0; p < properties.playerCharacters.length; p++)
@@ -111,7 +106,7 @@ function checkProperties(cb) {
         {
             output.give('Player character \'' + properties.playerCharacters[p] + '\' could not be found!');
 
-            return;
+            process.exit();
         }
 
     //Check if starting map is present
@@ -120,7 +115,17 @@ function checkProperties(cb) {
     {
         output.give('Starting map could not be found!');
 
-        return;
+        process.exit();
+    }
+
+    //Check if the client location is valid
+
+    let clientLocation = __dirname + '/' + properties.clientLocation;
+    if (!fs.existsSync(clientLocation))
+    {   
+        output.give('The client location \'' + clientLocation + '\' is invalid!');
+
+        process.exit();
     }
 
     //Callback
@@ -131,6 +136,11 @@ function checkProperties(cb) {
 //Start server function
 
 function startServer() {
+    //Setup Express
+
+    app.use('/', express.static(path.resolve(__dirname + '/' + properties.clientLocation)));
+    app.get('/map/:request_id', tiled.requestMap);
+
     //Setup channel interaction
 
     io.onConnection(server.handleChannel);

@@ -118,7 +118,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load maps: ", exc);
             }
         }
 
@@ -170,7 +170,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load items: ", exc);
             }
         }
 
@@ -246,7 +246,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load NPCs: ", exc);
             }
         }
 
@@ -274,7 +274,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load NPC profile list: ", exc);
             }
         }
 
@@ -333,7 +333,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load quests: ", exc);
             }
         }
 

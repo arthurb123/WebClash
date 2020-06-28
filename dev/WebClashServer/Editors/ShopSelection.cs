@@ -57,7 +57,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load item list: ", exc);
             }
 
             if (current == -1 &&
@@ -87,7 +87,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load items: ", exc);
             }
         }
 

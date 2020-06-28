@@ -109,7 +109,7 @@ namespace WebClashServer.Editors
                             {
                                 dp.current.entry = false;
 
-                                MessageBox.Show("The dialog item could not be set as the entry point, as an entry point already exists.", "WebClash - Error");
+                                Logger.Error("The dialog item could not be set as the entry point, as an entry point already exists.");
 
                                 break;
                             }
@@ -127,7 +127,7 @@ namespace WebClashServer.Editors
 
                 if (dialogSystem.items[elements[item].id].eventType == "TurnHostile")
                 {
-                    MessageBox.Show("The 'Turn Hostile' event has no event properties.", "WebClash - Message");
+                    Logger.Message("The 'Turn Hostile' event has no event properties.");
 
                     return;
                 }
@@ -185,7 +185,7 @@ namespace WebClashServer.Editors
                             {
                                 dep.current.entry = false;
 
-                                MessageBox.Show("The dialog event could not be set as the entry point, as an entry point already exists.", "WebClash - Error");
+                                Logger.Error("The dialog event could not be set as the entry point, as an entry point already exists.");
 
                                 break;
                             }

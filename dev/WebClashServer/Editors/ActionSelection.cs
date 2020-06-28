@@ -4,6 +4,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using WebClashServer.Classes;
 
 namespace WebClashServer.Editors
 {
@@ -55,7 +56,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not create actions list: ", exc);
             }
 
             if (current == -1 &&
@@ -85,7 +86,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load actions: ", exc);
             }
         }
 

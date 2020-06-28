@@ -58,7 +58,7 @@ namespace WebClashServer
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load items: ", exc);
             }
         }
 
@@ -89,7 +89,7 @@ namespace WebClashServer
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load actions: ", exc);
             }
         }
 
@@ -181,7 +181,7 @@ namespace WebClashServer
         {
             if (current == null || name.Text.Length == 0)
             {
-                MessageBox.Show("Could not save item as it is invalid.", "WebClash - Error");
+                Logger.Error("Could not save item as it is invalid.");
                 return;
             }
 
@@ -196,7 +196,7 @@ namespace WebClashServer
 
             File.WriteAllText(Program.main.serverLocation + "/items/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
-            MessageBox.Show("Item has been saved!", "WebClash - Message");
+            Logger.Message("Item has been saved!");
 
             ReloadItems();
 
@@ -238,7 +238,7 @@ namespace WebClashServer
 
         private void AttemptSetIcon()
         {
-            string serverLocation = Program.main.serverLocation + "/../client/" + src.Text;
+            string serverLocation = Program.main.clientLocation + src.Text;
 
             if (!File.Exists(serverLocation))
             {
@@ -313,7 +313,7 @@ namespace WebClashServer
         {
             if (current == null)
             {
-                MessageBox.Show("Could not remove item as it is invalid.", "WebClash - Error");
+                Logger.Error("Could not remove item as it is invalid.");
                 return;
             }
 
@@ -532,9 +532,9 @@ namespace WebClashServer
 
                 consumableDialog = temp.consumableDialog;
             }
-            catch (Exception e)
+            catch (Exception exc)
             {
-                MessageBox.Show(e.Message, "WebClash - Error");
+                Logger.Error("Could not construct item instance: ", exc);
             }
         }
 

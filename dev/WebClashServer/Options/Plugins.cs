@@ -21,7 +21,7 @@ namespace WebClashServer.Options
 
         private void Plugins_Load(object sender, EventArgs e)
         {
-            clientPluginsLocation = Program.main.serverLocation + "/../client/plugins/";
+            clientPluginsLocation = Program.main.clientLocation + "/plugins/";
             serverPluginsLocation = Program.main.serverLocation + "/plugins/";
 
             ReloadClientPlugins();
@@ -53,7 +53,7 @@ namespace WebClashServer.Options
             }
             catch (Exception exc)
             {
-                MessageBox.Show("Could not set plugin enabled: " + exc.Message, "WebClash - Error");
+                Logger.Error("Could not set plugin enabled: ", exc);
             }
         }
 
@@ -90,7 +90,7 @@ namespace WebClashServer.Options
             }
             catch (Exception exc)
             {
-                MessageBox.Show("Could not check if plugin was enabled: " + exc.Message, "WebClash - Error");
+                Logger.Error("Could not check if plugin was enabled: ", exc);
                 return false;
             }
         }
@@ -165,7 +165,7 @@ namespace WebClashServer.Options
             }
             catch (Exception exc)
             {
-                MessageBox.Show("Could not reload client plugins: " + exc.Message, "WebClash - Error");
+                Logger.Error("Could not reload client plugins: ", exc);
             }
         }
 
@@ -351,7 +351,7 @@ namespace WebClashServer.Options
             }
             catch (Exception exc)
             {
-                MessageBox.Show("Could not reload server plugins: " + exc.Message, "WebClash - Error");
+                Logger.Error("Could not reload server plugins: ", exc);
             }
         }
 

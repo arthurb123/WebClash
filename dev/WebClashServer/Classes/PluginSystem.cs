@@ -109,7 +109,7 @@ namespace WebClashServer.Classes
             }
             catch (Exception exc)
             {
-                MessageBox.Show("Could not read plugin: " + exc.Message, "WebClash - Error");
+                Logger.Error("Could not read plugin: ", exc);
                 return null;
             }
         }
@@ -185,7 +185,7 @@ namespace WebClashServer.Classes
             }
             catch (Exception exc)
             {
-                MessageBox.Show("Could not load plugin property: " + exc.Message, "WebClash - Error");
+                Logger.Error("Could not load plugin property: ", exc);
                 return null;
             }
         }
@@ -278,7 +278,7 @@ namespace WebClashServer.Classes
             }
             catch (Exception exc)
             {
-                MessageBox.Show("Could not save plugin settings: " + exc.Message, "WebClash - Error");
+                Logger.Error("Could not save plugin settings: ", exc);
             }
         }
     }

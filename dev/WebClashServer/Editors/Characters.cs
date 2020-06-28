@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using WebClashServer.Classes;
 
 namespace WebClashServer.Editors
 {
@@ -56,7 +57,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load characters: ", exc);
             }
         }
 
@@ -147,22 +148,22 @@ namespace WebClashServer.Editors
         {
             try
             {
-                if (!File.Exists(Program.main.serverLocation + "/../client/" + src))
+                if (!File.Exists(Program.main.clientLocation + src))
                 {
                     charImage = null;
 
                     return;
                 }
 
-                charImage = Image.FromFile(Program.main.serverLocation + "/../client/" + src);
+                charImage = Image.FromFile(Program.main.clientLocation + src);
 
                 animation.Interval = (1000 / 60) * current.animation.speed;
 
                 current.src = src;
             }
-            catch (Exception e)
+            catch (Exception exc)
             {
-                MessageBox.Show(e.Message, "WebClash - Error");
+                Logger.Error("Could not load the character image: ", exc);
             }
 
             canvas.Invalidate();
@@ -223,14 +224,14 @@ namespace WebClashServer.Editors
         {
             if (name.Text.Length == 0)
             {
-                MessageBox.Show("This character cannot be saved as it has an invalid name.", "WebClash - Error");
+                Logger.Error("This character cannot be saved as it has an invalid name.");
 
                 return;
             }
 
             File.WriteAllText(Program.main.serverLocation + "/characters/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
-            MessageBox.Show("Character has been saved!", "WebClash - Message");
+            Logger.Message("Character has been saved!");
 
             ReloadCharacters();
 
@@ -255,7 +256,7 @@ namespace WebClashServer.Editors
         {
             if (!File.Exists(Program.main.serverLocation + "/characters/" + name.Text + ".json"))
             {
-                MessageBox.Show("This character cannot be deleted as it does not exist yet.", "WebClash - Error");
+                Logger.Error("This character cannot be deleted as it does not exist yet.");
 
                 return;
             }
@@ -382,9 +383,9 @@ namespace WebClashServer.Editors
                 damageParticles = temp.damageParticles;
                 particleSrc = temp.particleSrc;
             }
-            catch (Exception e)
+            catch (Exception exc)
             {
-                MessageBox.Show(e.Message, "WebClash - Error");
+                Logger.Error("Could not construct character instance: ", exc);
             }
         }
 

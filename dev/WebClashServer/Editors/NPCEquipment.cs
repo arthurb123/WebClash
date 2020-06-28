@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using WebClashServer.Classes;
 
 namespace WebClashServer.Editors
 {
@@ -88,7 +89,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load equipment list: ", exc);
             }
 
             if (current == -1 &&
@@ -103,7 +104,7 @@ namespace WebClashServer.Editors
         {
             for (int i = 0; i < equipment.Count; i++)
             {
-                string serverLocation = Program.main.serverLocation + "/../client/" + equipment[i].source;
+                string serverLocation = Program.main.clientLocation + equipment[i].source;
 
                 if (!File.Exists(serverLocation))
                     continue;
@@ -223,22 +224,22 @@ namespace WebClashServer.Editors
         {
             try
             {
-                if (!File.Exists(Program.main.serverLocation + "/../client/" + src))
+                if (!File.Exists(Program.main.clientLocation + src))
                 {
                     charImage = null;
 
                     return;
                 }
 
-                charImage = Image.FromFile(Program.main.serverLocation + "/../client/" + src);
+                charImage = Image.FromFile(Program.main.clientLocation + src);
 
                 animation.Interval = (1000 / 60) * character.animation.speed;
 
                 character.src = src;
             }
-            catch (Exception e)
+            catch (Exception exc)
             {
-                MessageBox.Show(e.Message, "WebClash - Error");
+                Logger.Error("Could not load character image: ", exc);
             }
 
             canvas.Invalidate();

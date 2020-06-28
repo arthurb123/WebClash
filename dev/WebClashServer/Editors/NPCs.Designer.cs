@@ -771,7 +771,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(832, 500);
-            this.MinimumSize = new System.Drawing.Size(812, 380);
+            this.MinimumSize = new System.Drawing.Size(832, 500);
             this.Name = "NPCs";
             this.Text = "WebClash - NPCs";
             this.Load += new System.EventHandler(this.NPCs_Load);

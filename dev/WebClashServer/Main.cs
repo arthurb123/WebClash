@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using WebClashServer.Classes;
 using WebClashServer.Editors;
 using WebClashServer.Options;
 using Action = System.Action;
@@ -16,8 +18,10 @@ namespace WebClashServer
         private bool    shouldRestart = false;
         private Process p             = null;
 
-        public string serverLocation = "server";
-        public string nodeLocation   = "";
+        public string serverLocation       = Application.StartupPath + "/server";
+        public string clientLocation       { get { return serverLocation + "/" + properties.clientLocation + "/"; } }
+        public string nodeLocation         = "";
+        public ServerProperties properties = null;
 
         //Forms
 
@@ -68,11 +72,10 @@ namespace WebClashServer
 
             if (!File.Exists(serverLocation + "/install_dependencies.bat"))
             {
-                MessageBox.Show(
+                Logger.Error(
                     "Could not install the server dependencies, " +
                     "as the 'install_dependencies.bat' file is missing from " +
-                    "the server directory. Please restore this file.", 
-                    "WebClash - Error"
+                    "the server directory. Please restore this file."
                 );
 
                 return;
@@ -102,10 +105,9 @@ namespace WebClashServer
                 {
                     status.Text = "Dependencies failed.";
 
-                    MessageBox.Show(
+                    Logger.Error(
                         "Could not install the server dependencies, " +
-                        "please try again or run 'install_dependencies.bat' located in the server folder.",
-                        "WebClash - Error"
+                        "please try again or run 'install_dependencies.bat' located in the server folder."
                     );
                 }
                 else
@@ -151,10 +153,9 @@ namespace WebClashServer
 
                 if (nodeLocation == "")
                 {
-                    MessageBox.Show(
+                    Logger.Error(
                         "Could not locate NodeJS, the server could not be started. " +
-                        "\nNodeJS can be downloaded from https://www.nodejs.org/",
-                        "WebClash - Error"
+                        "\nNodeJS can be downloaded from https://www.nodejs.org/"
                     );
 
                     return;
@@ -221,9 +222,9 @@ namespace WebClashServer
                         exitCallback();
                     };
             }
-            catch (Exception e)
+            catch (Exception exc)
             {
-                MessageBox.Show(e.Message, "WebClash - Error");
+                Logger.Error("Could not start a process: ", exc);
             }
         }
 
@@ -275,20 +276,41 @@ namespace WebClashServer
 
         private bool CheckServerLocation()
         {
+            //Check if the server location is valid
+
             if (Directory.Exists(serverLocation) ||
                 File.Exists(serverLocation + "/index.js"))
                 return true;
+
+            //While the server location does not exist,
+            //request server location
 
             while (!Directory.Exists(serverLocation) ||
                 !File.Exists(serverLocation + "/index.js"))
             {
                 status.Text = "Server folder not located.";
 
-                MessageBox.Show("Server folder could not be located, please select the server location.", "WebClash - Error");
+                Logger.Error("Server folder could not be located, please select the server location.");
+
+                //Request and check server location
 
                 if (RequestServerLocation())
                 {
                     status.Text = "Server folder located.";
+
+                    //Read properties
+
+                    properties = new ServerProperties(serverLocation + "/properties.json");
+
+                    //Check if the client location is valid
+
+                    if (!Directory.Exists(clientLocation))
+                    {
+                        Logger.Error(
+                            "The client location \"" + clientLocation + "\" is invalid!" +
+                            "Please make sure the client location in the server properties file is valid."
+                        );
+                    }
 
                     return true;
                 }
@@ -355,7 +377,7 @@ namespace WebClashServer
             {
                 DialogResult manuallySelect = MessageBox.Show(
                     "NodeJS could not be found, do you want to manually select the installation folder?", 
-                    "WebClash - Error", 
+                    "WebClash - Question", 
                     MessageBoxButtons.YesNo
                 );
                 
@@ -387,7 +409,7 @@ namespace WebClashServer
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not open properties: ", exc);
             }
         }
 
@@ -405,7 +427,7 @@ namespace WebClashServer
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not open permissions: ", exc);
             }
         }
 
@@ -589,7 +611,7 @@ namespace WebClashServer
 
                 //Check if obfuscated client already exists
 
-                string obfClientLocation = serverLocation + "/../obf_client/";
+                string obfClientLocation = clientLocation + "/../obf_client";
 
                 if (Directory.Exists(obfClientLocation))
                 {
@@ -601,15 +623,15 @@ namespace WebClashServer
 
                 AddOutput("Copying client..");
                 CopyFilesRecursively(
-                    new DirectoryInfo(serverLocation + "/../client/"),
+                    new DirectoryInfo(clientLocation),
                     new DirectoryInfo(obfClientLocation)
                 );
 
                 //Get all files that can be obfuscated
 
-                string libLocation = obfClientLocation + "lib/";
-                string scenesLocation = obfClientLocation + "scenes/";
-                string miscLocation = obfClientLocation + "misc/";
+                string libLocation = obfClientLocation + "/lib/";
+                string scenesLocation = obfClientLocation + "/scenes/";
+                string miscLocation = obfClientLocation + "/misc/";
                 string[] libFiles = Directory.GetFiles(libLocation, "*.js", SearchOption.AllDirectories);
                 string[] sceneFiles = Directory.GetFiles(scenesLocation, "*.js", SearchOption.AllDirectories);
                 string[] miscFiles = Directory.GetFiles(miscLocation, "*.js", SearchOption.AllDirectories);
@@ -648,9 +670,9 @@ namespace WebClashServer
                     else
                         f++;
 
-                    string file = files[f];//.Replace("/server/..", "");
-                    AddOutput("Obfuscating '" + file + "'..");
-                    StartNodeProcess("node.exe", "misc/obfuscate.js \"" + file + "\" \"" + file + "\"", false, callback);
+                    string file = files[f];
+                    AddOutput("Obfuscating '" + @file + "'..");
+                    StartNodeProcess("node.exe", "misc/obfuscate.js " + @file + " " + @file, false, callback);
                 };
 
                 callback();
@@ -661,7 +683,7 @@ namespace WebClashServer
                 status.Text = "Obfuscation failed.";
                 startButton.Enabled = true;
 
-                MessageBox.Show("Could not obfuscate client: " + exc.Message, "WebClash - Error");
+                Logger.Error("Could not obfuscate client: ", exc);
             }
         }
 
@@ -686,5 +708,29 @@ namespace WebClashServer
                 MessageBoxIcon.Information
             );
         }
+    }
+
+    public class ServerProperties
+    {
+        public ServerProperties()
+        {
+
+        }
+
+        public ServerProperties(string source)
+        {
+            try
+            {
+                ServerProperties temp = JsonConvert.DeserializeObject<ServerProperties>(File.ReadAllText(source));
+
+                clientLocation = temp.clientLocation;
+            }
+            catch (Exception exc)
+            {
+                Logger.Error("Could not read server properties: ", exc);
+            }
+        }
+
+        public string clientLocation = "";
     }
 }

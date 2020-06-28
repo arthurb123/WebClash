@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using WebClashServer.Classes;
 
 namespace WebClashServer.Editors
 {
@@ -89,7 +90,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load actions: ", exc);
             }
         }
 
@@ -112,7 +113,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load characters: ", exc);
             }
         }
 
@@ -170,18 +171,18 @@ namespace WebClashServer.Editors
         {
             try
             {
-                if (!File.Exists(Program.main.serverLocation + "/../client/" + src))
+                if (!File.Exists(Program.main.clientLocation + src))
                 {
                     charImage = null;
 
                     return;
                 }
 
-                charImage = Image.FromFile(Program.main.serverLocation + "/../client/" + src);
+                charImage = Image.FromFile(Program.main.clientLocation + src);
             }
-            catch (Exception e)
+            catch (Exception exc)
             {
-                MessageBox.Show(e.Message, "WebClash - Error");
+                Logger.Error("Could not set character image: ", exc);
             }
 
             canvas.Invalidate();
@@ -191,10 +192,10 @@ namespace WebClashServer.Editors
         {
             if (!savedImages.ContainsKey(src))
             {
-                if (!File.Exists(Program.main.serverLocation + "/../client/" + src))
+                if (!File.Exists(Program.main.clientLocation + src))
                     return null;
 
-                savedImages[src] = Image.FromFile(Program.main.serverLocation + "/../client/" + src);
+                savedImages[src] = Image.FromFile(Program.main.clientLocation + src);
             }
 
             return savedImages[src];
@@ -385,7 +386,7 @@ namespace WebClashServer.Editors
         {
             if (!File.Exists(Program.main.serverLocation + "/actions/" + current.name + ".json"))
             {
-                MessageBox.Show("This action cannot be deleted as it does not exist yet.", "WebClash - Error");
+                Logger.Error("This action cannot be deleted as it does not exist yet.");
 
                 return;
             }
@@ -407,7 +408,7 @@ namespace WebClashServer.Editors
 
             File.WriteAllText(Program.main.serverLocation + "/actions/" + current.name + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
-            MessageBox.Show("Action has been saved!", "WebClash - Message");
+            Logger.Message("Action has been saved!");
 
             ReloadActions();
 
@@ -706,7 +707,7 @@ namespace WebClashServer.Editors
 
         private void AttemptSetIcon()
         {
-            string serverLocation = Program.main.serverLocation + "/../client/" + icon.Text;
+            string serverLocation = Program.main.clientLocation + icon.Text;
 
             if (!File.Exists(serverLocation))
             {
@@ -847,9 +848,9 @@ namespace WebClashServer.Editors
 
                 castingTime = temp.castingTime;
             }
-            catch (Exception e)
+            catch (Exception exc)
             {
-                MessageBox.Show(e.Message, "WebClash - Error");
+                Logger.Error("Could not construct action instance: ", exc);
             }
         }
 

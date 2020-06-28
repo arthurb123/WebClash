@@ -632,7 +632,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(420, 685);
-            this.MinimumSize = new System.Drawing.Size(420, 635);
+            this.MinimumSize = new System.Drawing.Size(420, 685);
             this.Name = "Characters";
             this.Text = "WebClash - Characters";
             this.Load += new System.EventHandler(this.Characters_Load);

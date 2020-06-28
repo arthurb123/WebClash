@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using WebClashServer.Classes;
 
 namespace WebClashServer.Editors
 {
@@ -50,7 +51,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load layer list: ", exc);
             }
             
             if (current == -1 &&
@@ -91,7 +92,7 @@ namespace WebClashServer.Editors
             {
                 if (!layers[current].hover && layers[current+1].hover)
                 {
-                    MessageBox.Show("Could not move layer down, as hover layers should always be on top.", "WebClash - Error");
+                    Logger.Error("Could not move layer down, as hover layers should always be on top.");
                     return;
                 }
 
@@ -108,7 +109,7 @@ namespace WebClashServer.Editors
             if (current > 0) {
                 if (layers[current].hover && !layers[current - 1].hover)
                 {
-                    MessageBox.Show("Could not move layer up, as hover layers should always be on top.", "WebClash - Error");
+                    Logger.Error("Could not move layer up, as hover layers should always be on top.");
                     return;
                 }
 

@@ -40,20 +40,20 @@ namespace WebClashServer.Editors
         {
             try
             {
-                if (!File.Exists(Program.main.serverLocation + "/../client/" + src))
+                if (!File.Exists(Program.main.clientLocation + src))
                 {
                     current.portrait = null;
 
                     return;
                 }
 
-                portrait.BackgroundImage = Image.FromFile(Program.main.serverLocation + "/../client/" + src);
+                portrait.BackgroundImage = Image.FromFile(Program.main.clientLocation + src);
 
                 current.portrait = src;
             }
-            catch (Exception e)
+            catch (Exception exc)
             {
-                MessageBox.Show(e.Message, "WebClash - Error");
+                Logger.Error("Could not load portrait image: ", exc);
             }
         }
 

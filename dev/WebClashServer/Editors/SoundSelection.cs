@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Media;
 using System.Windows.Forms;
+using WebClashServer.Classes;
 
 namespace WebClashServer.Editors
 {
@@ -49,7 +50,7 @@ namespace WebClashServer.Editors
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "WebClash - Error");
+                Logger.Error("Could not load sound list: ", exc);
             }
             
             if (current == -1 &&
@@ -105,16 +106,16 @@ namespace WebClashServer.Editors
             if (current == -1)
                 return;
 
-            string serverLocation = Program.main.serverLocation + "/../client/" + sounds[current].src;
+            string serverLocation = Program.main.clientLocation + sounds[current].src;
 
             if (!File.Exists(serverLocation)) {
-                MessageBox.Show("The sound file could not be found, make sure it refers to an existing sound file.", "WebClash - Error");
+                Logger.Error("The sound file could not be found, make sure it refers to an existing sound file.");
 
                 return;
             }
             if (!serverLocation.Contains(".wav"))
             {
-                MessageBox.Show("Unfortunately only .wav files can be played as of right now, however it will work in-game.", "WebClash - Error");
+                Logger.Error("Unfortunately only .wav files can be played as of right now, however it will work in-game.");
 
                 return;
             }
@@ -124,9 +125,9 @@ namespace WebClashServer.Editors
                 SoundPlayer player = new SoundPlayer(serverLocation);
                 player.Play();
             }
-            catch (Exception ex)
+            catch (Exception exc)
             {
-                MessageBox.Show(ex.Message, "WebClash - Error");
+                Logger.Error("Could not play sound: ", exc);
             }
         }
 
