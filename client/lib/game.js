@@ -639,9 +639,10 @@ const game = {
             .Loops(function() {
                 this.Progress(this.Progress() + ((1000/60)/this._target) * 100);
 
-                if (this.Progress() >= 100)
+                if (this.Progress() >= 100) {
                     this.Hide();
                     go._castingIcon.Hide();
+                }
             })
             .Follows(go);
 

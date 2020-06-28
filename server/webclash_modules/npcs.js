@@ -885,9 +885,11 @@ exports.updateNPCCombat = function(map, id)
 
     //Perform action
 
-    let action = this.onMap[map][id].data.actions[nextAction];
+    let actionData = this.onMap[map][id].data.actions[nextAction];
+    let action = actions.getAction(actionData.action);
+
     if (actions.performNPCAction(
-        action,
+        actionData,
         map,
         id
     )) {
@@ -896,7 +898,8 @@ exports.updateNPCCombat = function(map, id)
         server.syncNPCActionCast(
             map, 
             id,
-            actions.getAction(action.action).castingTime
+            action.src,
+            action.castingTime
         );
     }
 

@@ -1629,23 +1629,19 @@ exports.syncPlayerCancelCast = function(id, channel, broadcast)
 
 //Sync NPC action casting function, if channel is undefined it will be globally emitted
 
-exports.syncNPCActionCast = function(map, id, targetTime, channel, broadcast)
+exports.syncNPCActionCast = function(map, id, icon, targetTime, channel, broadcast)
 {
     //Check if casting time is immediate
 
     if (targetTime === 0)
         return;
 
-    //Get the action
-
-    let action = actions.getAction(game.players[id].actions[slot].name);
-
     //Setup data
 
     const data = {
         npc: id,
         targetTime: targetTime,
-        icon: action.src,
+        icon: icon,
         beginTime: Date.now()
     };
     
