@@ -101,7 +101,7 @@ namespace WebClashServer.Editors
                 //profile system or not, if not ask
                 //upgrade the NPC
 
-                if (current.profiles.Length == 0)
+                if (npcName != string.Empty && current.profiles.Length == 0)
                 {
                     string text = File.ReadAllText(loc);
                     List<string> lines = text.Split('\n').ToList();
@@ -147,10 +147,11 @@ namespace WebClashServer.Editors
 
             addProfile_Click(null, new EventArgs());
 
-            MessageBox.Show(
-                "A new profile was created for the NPC '" + current.name + "', as no other profiles were found.", 
-                "WebClash - Message"
-            );
+            if (current.name != string.Empty)
+                MessageBox.Show(
+                    "A new profile was created for the NPC '" + current.name + "', as no other profiles were found.", 
+                    "WebClash - Message"
+                );
 
             return FindFirstNPCProfile();
         }

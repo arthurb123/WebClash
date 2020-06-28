@@ -886,13 +886,16 @@ exports.updateNPCCombat = function(map, id)
     //Perform action
 
     let actionData = this.onMap[map][id].data.actions[nextAction];
-    let action = actions.getAction(actionData.action);
 
     if (actions.performNPCAction(
         actionData,
         map,
         id
     )) {
+        //Grab the actual action
+
+        let action = actions.getAction(actionData.action);
+
         //Sync casting time
 
         server.syncNPCActionCast(
