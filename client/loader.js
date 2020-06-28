@@ -32,8 +32,13 @@ const scripts = [
 
 function addScript(src)
 {
+    //Use the current date
+    //for forced recaching
+
+    let date = Date.now();
+
     let s = document.createElement('script');
-    s.src = src;
+    s.src = src + "?" + date;
     s.async = false;
 
     document.head.appendChild(s);

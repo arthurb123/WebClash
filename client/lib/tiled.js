@@ -1020,7 +1020,7 @@ const tiled = {
 
         stackBlurCanvasRGBA(
             c.CANVAS,
-            8
+            24
         );
 
         //Return cached shadow canvas

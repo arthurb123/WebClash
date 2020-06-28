@@ -1576,10 +1576,13 @@ exports.removeNPC = function(map, id, channel)
 
 exports.syncPlayerActionCast = function(slot, id, channel, broadcast)
 {
+    //Get the action
+
+    let action = actions.getAction(game.players[id].actions[slot].name);
+
     //Check if casting time is immediate
 
-    let targetTime = actions.getAction(game.players[id].actions[slot].name).castingTime;
-    if (targetTime === 0)
+    if (action.castingTime === 0)
         return;
 
     //Setup base data
@@ -1591,8 +1594,10 @@ exports.syncPlayerActionCast = function(slot, id, channel, broadcast)
 
     //Set data based on syncing type
 
-    if (channel === undefined || broadcast)
-        data.targetTime = targetTime;
+    if (channel === undefined || broadcast) {
+        data.targetTime = action.castingTime;
+        data.icon       = action.src;
+    }
     else
         data.slot = slot;
 
@@ -1631,11 +1636,16 @@ exports.syncNPCActionCast = function(map, id, targetTime, channel, broadcast)
     if (targetTime === 0)
         return;
 
+    //Get the action
+
+    let action = actions.getAction(game.players[id].actions[slot].name);
+
     //Setup data
 
     const data = {
         npc: id,
         targetTime: targetTime,
+        icon: action.src,
         beginTime: Date.now()
     };
     

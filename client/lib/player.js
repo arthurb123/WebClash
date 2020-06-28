@@ -89,6 +89,15 @@ const player = {
             })
             .Follows(go);
 
+        go._castingIcon = new lx.UITexture(
+            'transparent',
+            -18,
+            -6,
+            16,
+            16
+        )
+            .Follows(go._castingBar);
+
         //Request xp target
 
         player.requestExpTarget();
@@ -387,25 +396,37 @@ const player = {
 
         let go = game.players[game.player];
 
-        //Set progress
+        //Set progress and icon
 
         go._castingBar._target = this.actions[slot].castingTime * (1000/60);
         go._castingBar.Progress(
             elapsedTime / go._castingBar._target * 100
         );
 
+        go._castingIcon.SPRITE = manager.getSprite(this.actions[slot].src);
+
         //Show casting bar
 
         go._castingBar.Show();
+        go._castingIcon.Show();
+
+        //Set UI
+
+        ui.actionbar.setCasting(slot);
     },
     cancelCastAction: function() {
         //remove currently casting slot
 
         player.casting = undefined;
 
-        //Hide casting bar
+        //Hide casting bar and icon
 
         game.players[game.player]._castingBar.Hide();
+        game.players[game.player]._castingIcon.Hide();
+
+        //Remove UI
+
+        ui.actionbar.removeCasting(this.casting);
     },
     removeAction: function(slot)
     {
@@ -431,8 +452,7 @@ const player = {
 
         //Check if cooldown
 
-        if (game.players[game.player].actions_cooldown != undefined &&
-            game.players[game.player].actions_cooldown[slot] > 0)
+        if (ui.actionbar.onCooldown[slot])
             return;
 
         //Face mouse

@@ -172,22 +172,36 @@ const game = {
             .Loops(function() {
                 this.Progress(this.Progress() + ((1000/60)/this._target) * 100);
 
-                if (this.Progress() >= 100)
+                if (this.Progress() >= 100) {
                     this.Hide();
+                    go._castingIcon.Hide();
+                }
             })
             .Follows(go);
 
-        go._castAction = function(targetTime, elapsedTime) {
-            //Set progress
+        go._castingIcon = new lx.UITexture(
+            'transparent',
+            -18,
+            -6,
+            16,
+            16
+        )
+            .Follows(go._castingBar);
+
+        go._castAction = function(targetTime, icon, elapsedTime) {
+            //Set progress and icon
 
             this._castingBar._target = targetTime * (1000/60);
             this._castingBar.Progress(
                 elapsedTime / this._castingBar._target * 100
             );
 
-            //Show casting bar
+            this._castingIcon.SPRITE = manager.getSprite(icon);
+
+            //Show casting bar and icon
 
             this._castingBar.Show();
+            this._castingIcon.Show();
         };
 
         //Add context menu
@@ -627,20 +641,33 @@ const game = {
 
                 if (this.Progress() >= 100)
                     this.Hide();
+                    go._castingIcon.Hide();
             })
             .Follows(go);
 
-        go._castAction = function(targetTime, elapsedTime) {
-            //Set progress
+        go._castingIcon = new lx.UITexture(
+            'transparent',
+            -18,
+            -6,
+            16,
+            16
+        )
+            .Follows(go._castingBar);
+
+        go._castAction = function(targetTime, icon, elapsedTime) {
+            //Set progress and icon
 
             this._castingBar._target = targetTime * (1000/60);
             this._castingBar.Progress(
                 elapsedTime / this._castingBar._target * 100
             );
 
-            //Show casting bar
+            this._castingIcon.SPRITE = manager.getSprite(icon);
+
+            //Show casting bar and icon
 
             this._castingBar.Show();
+            this._castingIcon.Show();
         };
 
         //Add and show NPC

@@ -442,7 +442,8 @@ const ui = {
     },
     actionbar:
     {
-        cooldowns: [],
+        onCooldown: [],
+        loops: [],
         create: function() {
             this.slots = [];
 
@@ -453,14 +454,26 @@ const ui = {
             {
                 this.slots[i] = 'actionbar_slot' + i;
 
+                //Create slot itself
+
                 let slot = document.createElement('div');
                 slot.id = this.slots[i];
                 slot.classList.add('slot');
+
+                //Add slot to the housing
                 
                 this.box.addElement(slot);
 
+                //Append action event listener to the slot
+
                 this.appendActionEventListener(slot, i);
             }
+
+            lx.Loops(() => {
+                for (let l = 0; l < ui.actionbar.loops.length; l++)
+                    if (ui.actionbar.loops[l])
+                        ui.actionbar.loops[l]();
+            });
         },
         reload: function() {
             if (this.slots === undefined)
@@ -477,14 +490,14 @@ const ui = {
                 this.reloadAction(a);
         },
         reloadAction: function(a) {
-            document.getElementById(this.slots[a]).clear();
+            let slot = document.getElementById(this.slots[a]);
+            slot.clear();
 
             let indicator = document.createElement('font');
             indicator.classList.add('info');
             indicator.style = 'position: absolute; top: -1px; left: 2px; font-size: 9px; z-index: 1;';
             indicator.innerHTML = (a > 1 ? (a-1).toString() : (a === 0 ? 'LMB' : 'RMB'));
 
-            let slot = document.getElementById(this.slots[a]);
             slot.appendChild(indicator);
 
             if (player.actions[a] == undefined)
@@ -514,6 +527,13 @@ const ui = {
                 ui.actionbar.removeBox();
             });
         },
+        addLoops: function(cb) {
+            for (let l = 0; l < this.loops.length+1; l++)
+                if (this.loops[l] == undefined) {
+                    this.loops[l] = cb;
+                    return l;
+                }
+        },
         setCooldown: function(slot) {
             if (this.slots === undefined)
                 return;
@@ -522,9 +542,10 @@ const ui = {
 
             let el = document.getElementById(this.slots[slot]);
 
-            //Remove cooldown element, just to be sure
+            //Remove cooldown and casting element, just to be sure
 
             ui.actionbar.removeCooldown(slot);
+            ui.actionbar.removeCasting(slot);
 
             //Create cooldown element
 
@@ -548,39 +569,41 @@ const ui = {
 
             el.appendChild(cd);
 
-            //Add to cooldowns
+            //Set on cooldown
 
-            this.cooldowns[slot] = player.actions[slot].cooldown;
+            this.onCooldown[slot] = true;
 
-            //Create loop
+            //Setup cooldown loop
 
-            let cdLoopID = lx.GAME.ADD_LOOPS(function() {
+            let remaining = player.actions[slot].cooldown;
+
+            let cdLoopID = this.addLoops(function() {
                  if (player.actions[slot] == undefined) {
-                     ui.actionbar.cooldowns[slot] = undefined;
-                     ui.actionbar.removeCooldown(slot);
+                    ui.actionbar.removeCooldown(slot);
+                    ui.actionbar.onCooldown[slot] = false;
 
-                     lx.GAME.LOOPS[cdLoopID] = undefined;
+                    ui.actionbar.loops[cdLoopID] = undefined;
 
-                     return;
+                    return;
                  }
 
-                 cd.style.width = (ui.actionbar.cooldowns[slot]/player.actions[slot].cooldown)*100 + '%';
+                 cd.style.width = (remaining/player.actions[slot].cooldown)*100 + '%';
 
-                 let time = ui.actionbar.cooldowns[slot]/60;
+                 let time = remaining/60;
                  if (time > 1)
-                     time = Math.round(time);
+                    time = Math.round(time);
                  else
-                     time = time.toFixed(1);
+                    time = time.toFixed(1);
 
                  cdTime.innerHTML = time + 's';
 
-                 if (ui.actionbar.cooldowns[slot] <= 0) {
-                     ui.actionbar.cooldowns[slot] = undefined;
-                     ui.actionbar.removeCooldown(slot);
+                 if (remaining <= 0) {
+                    ui.actionbar.removeCooldown(slot);
+                    ui.actionbar.onCooldown[slot] = false;
 
-                     lx.GAME.LOOPS[cdLoopID] = undefined;
+                    ui.actionbar.loops[cdLoopID] = undefined;
                  } else
-                     ui.actionbar.cooldowns[slot]--;
+                    remaining--;
             });
         },
         removeCooldown: function(slot) {
@@ -591,6 +614,81 @@ const ui = {
 
             if (cd != undefined)
                 cd.remove();
+        },
+        setCasting: function(slot) {
+            if (this.slots === undefined)
+                return;
+
+            //Get slot element
+
+            let el = document.getElementById(this.slots[slot]);
+
+            //Remove casting and cooldown element, just to be sure
+
+            ui.actionbar.removeCooldown(slot);
+            ui.actionbar.removeCasting(slot);
+
+            //Create cooldown element
+
+            let c = document.createElement('div');
+            c.id = this.slots[slot] + '_casting';
+            c.classList.add('cooldown');
+
+            //Add time label to cooldown element
+
+            let cTime = document.createElement('p');
+
+            cTime.classList.add('info');
+            cTime.style.fontSize = '10px';
+            cTime.style.position = 'relative';
+            cTime.style.top = '9px';
+            cTime.style.left = '4px';
+
+            c.appendChild(cTime);
+
+            //Append cooldown elements
+
+            el.appendChild(c);
+
+            //Setup casting loop
+
+            let remaining = player.actions[slot].castingTime;
+
+            let cLoopID = this.addLoops(function() {
+                if (player.actions[slot] == undefined) {
+                    ui.actionbar.removeCooldown(slot);
+
+                    ui.actionbar.loops[cLoopID] = undefined;
+
+                    return;
+                }
+
+                c.style.width = (100 - (remaining/player.actions[slot].castingTime)*100) + '%';
+
+                let time = (player.actions[slot].castingTime - remaining)/60;
+                if (time > 1)
+                    time = Math.round(time);
+                else
+                    time = time.toFixed(1);
+
+                cTime.innerHTML = time + 's';
+
+                if (remaining <= 0) {
+                    ui.actionbar.removeCooldown(slot);
+
+                    ui.actionbar.loops[cLoopID] = undefined;
+                } else
+                    remaining--;
+            });
+        },
+        removeCasting: function(slot) {
+            if (this.slots === undefined)
+                return;
+
+            let c = document.getElementById(this.slots[slot] + '_casting');
+
+            if (c != undefined)
+                c.remove();
         },
         displayBox: function(slot) {
             if (player.actions[slot] == undefined)

@@ -634,7 +634,8 @@ const client = {
                 //Begin casting 
 
                 game.players[data.player]._castAction(
-                    data.targetTime, 
+                    data.targetTime,
+                    data.icon,
                     elapsed
                 );
             }
@@ -655,6 +656,7 @@ const client = {
 
                 game.npcs[data.npc]._castAction(
                     data.targetTime, 
+                    data.icon,
                     elapsed
                 );
             }
@@ -676,12 +678,17 @@ const client = {
                         ui.actionbar.reloadAction(data);
                 }
 
-                //Set cooldown
+                //Set cooldown, we use a small timeout for this
+                //to make sure the cooldown UI creation does
+                //not get caught in the crossfire of the
+                //reload action used above
 
-                for (let a = 0; a < player.actions.length; a++)
-                    if (player.actions[a] != undefined &&
-                        player.actions[a].name === name)
-                        ui.actionbar.setCooldown(a);
+                setTimeout(() => {
+                    for (let a = 0; a < player.actions.length; a++)
+                        if (player.actions[a] != undefined &&
+                            player.actions[a].name === name)
+                                ui.actionbar.setCooldown(a);
+                }, 50);
             }
         });
 
