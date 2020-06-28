@@ -230,14 +230,14 @@
             // obfuscateClientToolStripMenuItem
             // 
             this.obfuscateClientToolStripMenuItem.Name = "obfuscateClientToolStripMenuItem";
-            this.obfuscateClientToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.obfuscateClientToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.obfuscateClientToolStripMenuItem.Text = "Obfuscate Client";
             this.obfuscateClientToolStripMenuItem.Click += new System.EventHandler(this.obfuscateClientToolStripMenuItem_Click);
             // 
             // resetDataToolStripMenuItem
             // 
             this.resetDataToolStripMenuItem.Name = "resetDataToolStripMenuItem";
-            this.resetDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.resetDataToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.resetDataToolStripMenuItem.Text = "Reset Data";
             this.resetDataToolStripMenuItem.ToolTipText = "Allows for server data resetting";
             this.resetDataToolStripMenuItem.Click += new System.EventHandler(this.resetDataToolStripMenuItem_Click);

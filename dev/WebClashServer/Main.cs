@@ -280,7 +280,13 @@ namespace WebClashServer
 
             if (Directory.Exists(serverLocation) ||
                 File.Exists(serverLocation + "/index.js"))
+            {
+                //Read the server properties
+
+                ReadProperties();
+
                 return true;
+            }
 
             //While the server location does not exist,
             //request server location
@@ -298,19 +304,9 @@ namespace WebClashServer
                 {
                     status.Text = "Server folder located.";
 
-                    //Read properties
+                    //Read the server properties
 
-                    properties = new ServerProperties(serverLocation + "/properties.json");
-
-                    //Check if the client location is valid
-
-                    if (!Directory.Exists(clientLocation))
-                    {
-                        Logger.Error(
-                            "The client location \"" + clientLocation + "\" is invalid!" +
-                            "Please make sure the client location in the server properties file is valid."
-                        );
-                    }
+                    ReadProperties();
 
                     return true;
                 }
@@ -319,6 +315,23 @@ namespace WebClashServer
             }
 
             return false;
+        }
+
+        private void ReadProperties()
+        {
+            //Read properties
+
+            properties = new ServerProperties(serverLocation + "/properties.json");
+
+            //Check if the client location is valid
+
+            if (!Directory.Exists(clientLocation))
+            {
+                Logger.Error(
+                    "The client location \"" + clientLocation + "\" is invalid!" +
+                    "Please make sure the client location in the server properties file is valid."
+                );
+            }
         }
 
         private bool RequestServerLocation()
