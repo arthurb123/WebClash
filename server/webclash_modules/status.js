@@ -2,7 +2,7 @@
 
 exports.collection = {};
 
-const players = [];
+const players = {};
 const npcs    = [];
 
 let elapsed = 0;
@@ -86,7 +86,7 @@ exports.givePlayerStatusEffect = function(id, casterName, statusEffectName) {
 
         //Add player to the watch list
 
-        players.push(id);
+        players[id] = true;
     }
     catch (err) {
         output.giveError('Could not give player status effect: ', err);
@@ -115,9 +115,9 @@ exports.giveNPCStatusEffect = function(map, id, statusEffectName) {
         //Add NPC to the watchlist
 
         if (npcs[map] == undefined)
-            npcs[map] = [];
+            npcs[map] = {};
 
-        npcs[map].push(id);
+        npcs[map][id] = true;
     }
     catch (err) {
         output.giveError('Could not give NPC status effect: ', err);
@@ -132,18 +132,19 @@ exports.updateStatusEffects = function(dt) {
 
         //Update status effects for all players
 
-        for (let p = 0; p < players.length; p++) {
-            let id = players[p];
+        for (let id in players) {
+            //Grab data
+
             let player = game.players[id];
 
-            //Check if dead or offline
+            //Check if already handled,
+            //dead or offline
 
             if (player == undefined ||
                 player.killed) {
                     //Remove from watch list
 
-                    players.splice(p, 1);
-                    p--;
+                    delete players[id];
                     continue;
                 }
 
@@ -190,22 +191,32 @@ exports.updateStatusEffects = function(dt) {
                     server.syncPlayerPartially(id, 'statusEffects', player.channel, false);
                 }
             }
+
+            //Check if the player has no status effects left
+
+            if (Object.keys(player.statusEffects).length === 0) {
+                //Remove player from watch list
+
+                delete players[id];
+            }
         }
 
         //Update status effects for all NPCs
 
-        for (let m = 0; m < npcs.length; m++) {
-            for (let n = 0; n < npcs[m].length; n++) {
-                let npc = npcs[m][n];
+        for (let m = 0; m < npcs.length; m++)
+            for (let n in npcs[m]) {
+                //Grab data
 
-                //Check if dead or offline
+                let npc = npcs.onMap[m][n];
+
+                //Check if already handled,
+                //dead or offline
 
                 if (npc == undefined ||
                     npc.killed) {
                         //Remove from watch list
 
-                        npcs[m].splice(n, 1);
-                        n--;
+                        delete npcs[m][n];
                         continue;
                     }
 
@@ -216,7 +227,7 @@ exports.updateStatusEffects = function(dt) {
                     
                     let healthTickDelta = npc.statusEffectsMatrix['healthTickDelta'];
                     if (healthTickDelta !== 0)
-                        healthTickDelta < 0 ? npcs.damageNPC(undefined, m, n, healthTickDelta) : npcs.healNPC(map, id, healthTickDelta);
+                        healthTickDelta < 0 ? npcs.damageNPC(undefined, m, n, healthTickDelta) : npcs.healNPC(m, n, healthTickDelta);
 
                     //Mana tick
 
@@ -246,8 +257,15 @@ exports.updateStatusEffects = function(dt) {
                         npc.statusEffectsMatrix = this.calculateStatusEffectsMatrix(npc.statusEffects);
                     }
                 }
+
+                //Check if the NPC has no status effects left
+
+                if (Object.keys(npc.statusEffects).length === 0) {
+                    //Remove NPC from watch list
+
+                    delete npcs[m][n];
+                }
             }
-        }
 
         //Handle elapsed
 
