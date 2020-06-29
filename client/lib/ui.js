@@ -15,6 +15,7 @@ const ui = {
         this.inventory.create();
         this.equipment.create();
         this.quests.create();
+        this.statusEffects.create();
         this.chat.create();
         this.party.create();
 
@@ -1648,6 +1649,7 @@ const ui = {
                     ui.status.box.reset();
                     ui.inventory.box.reset();
                     ui.quests.box.reset();
+                    ui.statusEffects.box.reset();
                     ui.actionbar.box.reset();
                     ui.equipment.box.reset();
                     ui.party.box.reset();
@@ -2536,6 +2538,28 @@ const ui = {
                 document.getElementById('quests_box').style.visibility = 'hidden';
             else
                 document.getElementById('quests_box').style.visibility = 'visible';
+        }
+    },
+    statusEffects:
+    {
+        create: function() {
+            this.box = new UIBox('status_effects', 'status_effects_box', lx.GetDimensions().width/2, 20, undefined, undefined);
+            this.box.setResizable(false);
+            this.box.setTextAlign('center');
+
+            this.box.hide();
+        },
+        reload: function() {
+            document.getElementById('status_effects_box').clear();
+
+            for (let effect in player.statusEffects) {
+                //...
+            }
+
+            if (player.statusEffects.length === 0)
+                document.getElementById('status_effects_box').style.visibility = 'hidden';
+            else
+                document.getElementById('status_effects_box').style.visibility = 'visible';
         }
     },
     party: {

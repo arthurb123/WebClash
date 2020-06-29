@@ -9,7 +9,7 @@
     "itemFindFactor": 1.0,
     "experienceGainFactor": 1.0,
     "damageFactor": 2.0,
-    "movementSpeedFactor": 2.0,
+    "movementSpeedFactor": 1.0,
     "castingTimeFactor": 0.25,
     "cooldownTimeFactor": 0.25
   }

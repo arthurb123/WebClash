@@ -1,5 +1,5 @@
 {
-  "description": "You are hasted, gaining 20% movement speed.",
+  "description": "You are hasted, gaining 150% movement speed.",
   "icon": "res/icons/5.png",
   "duration": 10000,
   "sounds": [],
@@ -9,7 +9,7 @@
     "itemFindFactor": 1.0,
     "experienceGainFactor": 1.0,
     "damageFactor": 1.0,
-    "movementSpeedFactor": 1.2,
+    "movementSpeedFactor": 2.5,
     "castingTimeFactor": 1.0,
     "cooldownTimeFactor": 1.0
   }
