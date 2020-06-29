@@ -367,8 +367,22 @@ exports.handleChannel = function(channel)
 
                 //Check if position delta is within limit
 
-                if (Math.abs(game.players[id].pos.X-data.pos.X) > game.players[id].character.movement.max*2 ||
-                    Math.abs(game.players[id].pos.Y-data.pos.Y) > game.players[id].character.movement.max*2)
+                let dX = Math.abs(game.players[id].pos.X-data.pos.X);
+                let dY = Math.abs(game.players[id].pos.Y-data.pos.Y);
+
+                //Higher banding factor allows for more inconsistencies
+                //in movement, this is useful for people with slower
+                //connections or when the server is congested to prevent
+                //rubber banding. However this also raises the risk of 
+                //exploitation. Adjust carefully!
+
+                let bandingFactor = 2;
+                
+                let dMax = game.players[id].character.movement.max*bandingFactor;
+                dMax *= game.players[id].statusEffectsMatrix['movementSpeedFactor'];
+
+                if (dX > dMax ||
+                    dY > dMax)
                     valid = false;
 
                 //Check for collider violation if enabled
@@ -1382,6 +1396,9 @@ exports.syncPlayerPartially = function(id, type, channel, broadcast)
                 data.actions[a] = actions.createPlayerSlotAction(game.players[id].actions[a]);
             }
             break;
+        case 'statusEffects':
+            data.statusEffects = game.players[id].statusEffects;
+            break;
         case 'equipment':
             data.equipment = {};
 
@@ -1580,9 +1597,15 @@ exports.syncPlayerActionCast = function(slot, id, channel, broadcast)
 
     let action = actions.getAction(game.players[id].actions[slot].name);
 
+    //Get casting time and adjust based on
+    //status effects matrix
+
+    let castingTime = action.castingTime;
+    castingTime *= game.players[id].statusEffectsMatrix['castingTimeFactor'];
+
     //Check if casting time is immediate
 
-    if (action.castingTime === 0)
+    if (castingTime === 0)
         return;
 
     //Setup base data
@@ -1595,7 +1618,7 @@ exports.syncPlayerActionCast = function(slot, id, channel, broadcast)
     //Set data based on syncing type
 
     if (channel === undefined || broadcast) {
-        data.targetTime = action.castingTime;
+        data.targetTime = castingTime;
         data.icon       = action.src;
     }
     else

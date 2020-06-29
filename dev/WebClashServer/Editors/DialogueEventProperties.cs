@@ -114,7 +114,11 @@ namespace WebClashServer.Editors
                     .Where(s => ext.Contains(Path.GetExtension(s)) && !s.Contains(".metadata")).ToArray();
 
                 foreach (string m in maps)
-                    mapList.Items.Add(m.Substring(m.LastIndexOf('\\') + 1, m.LastIndexOf('.') - m.LastIndexOf('\\') - 1));
+                {
+                    string map = m.Replace('\\', '/');
+
+                    mapList.Items.Add(map.Substring(map.LastIndexOf('/') + 1, map.LastIndexOf('.') - map.LastIndexOf('/') - 1));
+                }
             }
             catch (Exception exc)
             {
@@ -163,9 +167,9 @@ namespace WebClashServer.Editors
 
                 for (int i = 0; i < items.Length; i++)
                 {
-                    string it = items[i];
+                    string it = items[i].Replace('\\', '/');
 
-                    itemList.Items.Add(it.Substring(it.LastIndexOf('\\') + 1, it.LastIndexOf('.') - it.LastIndexOf('\\') - 1));
+                    itemList.Items.Add(it.Substring(it.LastIndexOf('/') + 1, it.LastIndexOf('.') - it.LastIndexOf('/') - 1));
                 }
             }
             catch (Exception exc)
@@ -234,14 +238,14 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] items = Directory.GetFiles(Program.main.serverLocation + "/npcs", "*.*", SearchOption.AllDirectories)
+                string[] npcs = Directory.GetFiles(Program.main.serverLocation + "/npcs", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
-                for (int i = 0; i < items.Length; i++)
+                for (int i = 0; i < npcs.Length; i++)
                 {
-                    string it = items[i];
+                    string npc = npcs[i].Replace('\\', '/');
 
-                    npcList.Items.Add(it.Substring(it.LastIndexOf('\\') + 1, it.LastIndexOf('.') - it.LastIndexOf('\\') - 1));
+                    npcList.Items.Add(npc.Substring(npc.LastIndexOf('/') + 1, npc.LastIndexOf('.') - npc.LastIndexOf('/') - 1));
                 }
             }
             catch (Exception exc)
@@ -326,9 +330,9 @@ namespace WebClashServer.Editors
 
                 for (int i = 0; i < quests.Length; i++)
                 {
-                    string it = quests[i];
+                    string q = quests[i].Replace('\\', '/');
 
-                    questList.Items.Add(it.Substring(it.LastIndexOf('\\') + 1, it.LastIndexOf('.') - it.LastIndexOf('\\') - 1));
+                    questList.Items.Add(q.Substring(q.LastIndexOf('/') + 1, q.LastIndexOf('.') - q.LastIndexOf('/') - 1));
                 }
             }
             catch (Exception exc)

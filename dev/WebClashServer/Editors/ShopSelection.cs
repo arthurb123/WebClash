@@ -83,7 +83,11 @@ namespace WebClashServer.Editors
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 foreach (string i in items)
-                    itemSelect.Items.Add(i.Substring(i.LastIndexOf('\\') + 1, i.LastIndexOf('.') - i.LastIndexOf('\\') - 1));
+                {
+                    string item = i.Replace('\\', '/');
+
+                    itemSelect.Items.Add(item.Substring(item.LastIndexOf('/') + 1, item.LastIndexOf('.') - item.LastIndexOf('/') - 1));
+                }
             }
             catch (Exception exc)
             {

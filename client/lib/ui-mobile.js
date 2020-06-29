@@ -647,7 +647,7 @@ const ui = {
                     return l;
                 }
         },
-        setCooldown: function(slot) {
+        setCooldown: function(slot, cooldownTime) {
             if (this.slots === undefined)
                 return;
 
@@ -692,7 +692,7 @@ const ui = {
 
             //Setup cooldown loop
 
-            let remaining = player.actions[slot].cooldown;
+            let remaining = cooldownTime;
 
             let cdLoopID = this.addLoops(function() {
                  if (player.actions[slot] == undefined) {
@@ -704,7 +704,7 @@ const ui = {
                     return;
                  }
 
-                 cd.style.width = (remaining/player.actions[slot].cooldown)*100 + '%';
+                 cd.style.width = (remaining/cooldownTime)*100 + '%';
 
                  let time = remaining/60;
                  if (time > 1)
@@ -732,7 +732,7 @@ const ui = {
             if (cd != undefined)
                 cd.remove();
         },
-        setCasting: function(slot) {
+        setCasting: function(slot, castingTime) {
             if (this.slots === undefined)
                 return;
 
@@ -773,7 +773,7 @@ const ui = {
 
             //Setup casting loop
 
-            let remaining = player.actions[slot].castingTime;
+            let remaining = castingTime;
 
             let cLoopID = this.addLoops(function() {
                 if (player.actions[slot] == undefined) {
@@ -784,9 +784,9 @@ const ui = {
                     return;
                 }
 
-                c.style.width = (100 - (remaining/player.actions[slot].castingTime)*100) + '%';
+                c.style.width = (100 - (remaining/castingTime)*100) + '%';
 
-                let time = (player.actions[slot].castingTime - remaining)/60;
+                let time = (castingTime - remaining)/60;
                 if (time > 1)
                     time = Math.round(time);
                 else

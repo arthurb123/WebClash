@@ -13,11 +13,11 @@ exports.playerConstraints = {
 
 exports.time = {
     current: 0,
-    update: function() {
+    update: function(dt) {
         if (this.current >= gameplay.dayLength+gameplay.nightLength)
             this.current = 0;
         else
-            this.current++;
+            this.current+=dt;
     }
 };
 
@@ -25,30 +25,46 @@ exports.startLoop = function()
 {
     //Start game logics loop
 
+    let prevUpdate = Date.now();
     setInterval(function() {
+        //Calculate frame delta time
+
+        let now = Date.now();
+        let dt = now - prevUpdate;
+        prevUpdate = now;
+
+        //Convert frame delta time to
+        //actual frame time from milliseconds
+
+        dt = dt / (1000 / 60);
+
         //Update NPCs
 
-        npcs.updateMaps();
+        npcs.updateMaps(dt);
 
         //Update action cooldowns
 
-        actions.updateCooldowns();
+        actions.updateCooldowns(dt);
 
         //Update action casting
 
-        actions.updateCasting();
+        actions.updateCasting(dt);
 
         //Update actions
 
-        actions.updateActions();
+        actions.updateActions(dt);
+
+        //Update status effects
+
+        status.updateStatusEffects(dt);
 
         //Update action projectiles
 
-        actions.updateProjectiles();
+        actions.updateProjectiles(dt);
 
         //Update game time
 
-        game.time.update();
+        game.time.update(dt);
     }, 1000/60);
 
     //Start real time loop
@@ -126,6 +142,7 @@ exports.refreshPlayer = function(channel, id)
             server.syncPlayerPartially(id, 'exp', channel, false);
             server.syncPlayerPartially(id, 'points', channel, false);
             server.syncPlayerPartially(id, 'attributes', channel, false);
+            server.syncPlayerPartially(id, 'statusEffects', channel, false);
             server.syncPlayerPartially(id, 'health', channel, false);
             server.syncPlayerPartially(id, 'mana', channel, false);
             server.syncPlayerPartially(id, 'actions', channel, false);
@@ -211,6 +228,10 @@ exports.addPlayer = function(channel)
 
                 game.calculatePlayerStats(id);
 
+                //Calculate status effect matrix
+
+                player.statusEffectsMatrix = status.calculateStatusEffectsMatrix(player.statusEffects);
+
                 //Set requires setup for player
 
                 game.players[id].setup = false;
@@ -248,6 +269,7 @@ exports.setupPlayer = function(channel)
         server.syncPlayerPartially(id, 'exp', channel, false);
         server.syncPlayerPartially(id, 'points', channel, false);
         server.syncPlayerPartially(id, 'attributes', channel, false);
+        server.syncPlayerPartially(id, 'statusEffects', channel, false);
         server.syncPlayerPartially(id, 'actions', channel, false);
         server.syncPlayerPartially(id, 'quests', channel, false);
         server.syncPlayerPartially(id, 'currency', channel, false);
@@ -406,6 +428,7 @@ exports.savePlayer = function(name, data, cb)
             killed: false,
             gvars: {},
             actions: [],
+            statusEffects: {},
             equipment: {},
             quests: {},
             inventory: properties.playerStartingItems,
@@ -428,6 +451,7 @@ exports.savePlayer = function(name, data, cb)
         stats: player.stats,
         killed: player.killed,
         actions: player.actions,
+        statusEffects: player.statusEffects,
         inventory: player.inventory,
         equipment: player.equipment,
         quests: player.quests,
@@ -680,11 +704,16 @@ exports.deltaCurrencyPlayer = function(id, delta)
 exports.deltaExperiencePlayer = function(id, exp)
 {
     //Make sure we only delta if
-    //possible
+    //possible - subtraction is not allowed!
 
     if (this.players[id].stats.exp === 0 &&
         exp < 0)
         return;
+
+    //Adjust experience according to
+    //the status effect matrix
+
+    exp *= this.players[id].statusEffectsMatrix['experienceGainFactor'];
 
     //Delta experience
 
@@ -702,7 +731,7 @@ exports.deltaExperiencePlayer = function(id, exp)
     {
         //Level up and reset xp
 
-        this.players[id].stats.exp = 0; //this.players[id].stats.exp-exptable[this.players[id].level-1];
+        this.players[id].stats.exp = 0;
         this.players[id].level++;
 
         //Give one player point to spend

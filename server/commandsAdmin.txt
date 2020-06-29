@@ -12,6 +12,7 @@ Admin commands:<br>
 /spawnnpc <i>name</i> <i>profile</i><br>
 /giveitem <i>name</i><br>
 /givecurrency <i>amount</i><br>
+/giveeffect <i>effect</i><br>
 /setvariable <i>name</i> <i>value</i><br>
 /setcharacter <i>name</i><br>
 /settime <i>time</i><br>

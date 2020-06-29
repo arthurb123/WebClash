@@ -170,28 +170,28 @@ const client = {
             ui.settings.loadFromSettings(data);
         });
         channel.on('GAME_PLAYER_UPDATE', function (data) {
-             //Check if the recieved data is valid
+            //Check if the recieved data is valid
 
-             if (data == undefined || data.name == undefined)
-                 return;
+            if (data == undefined || data.name == undefined)
+                return;
 
-             //Check if in-game or loading map
+            //Check if in-game or loading map
 
-             if (!client.inGame)
-                 return;
+            if (!client.inGame)
+                return;
 
-             //Get the id of the player's data
+            //Get the id of the player's data
 
-             let id;
+            let id;
 
-             if (data.isPlayer)
+            if (data.isPlayer)
                 id = game.player;
-             else
+            else
                 id = data.name;
 
-             //If the player does not yet exist, create it
+            //If the player does not yet exist, create it
 
-             if (game.players[id] == undefined) {
+            if (game.players[id] == undefined) {
                 if (data.isPlayer) {
                     game.instantiatePlayer(data.name);
 
@@ -202,70 +202,72 @@ const client = {
 
                     id = data.name;
                 }
-             }
+            }
 
-             //Check what data is present
-             if (data.remove) 
+            //Check what data is present
+            if (data.remove) 
                 game.removePlayer(id);
-             if (data.pos !== undefined) {
-                 game.players[id].POS = data.pos;
+            if (data.pos !== undefined) {
+                game.players[id].POS = data.pos;
 
-                //If player make sure to stop movement
-                if (data.isPlayer)
-                    game.players[id].Movement(0, 0);
-             }
-             if (data.moving !== undefined)
-                 game.players[id]._moving = data.moving;
-             if (data.direction !== undefined)
-                 game.players[id]._direction = data.direction;
-             if (data.level !== undefined)
-                 game.setPlayerLevel(id, data.level);
-             if (data.exp !== undefined)
-                 player.setExperience(data.exp);
-             if (data.points !== undefined)
-                 player.setPoints(data.points);
-             if (data.attributes !== undefined)
-                 player.setAttributes(data.attributes);
-             if (data.health !== undefined)
-                 game.setPlayerHealth(id, data.health);
-             if (data.mana !== undefined)
-                 game.setPlayerMana(id, data.mana);
-             if (data.equipment !== undefined)
-                 game.setPlayerEquipment(id, data.equipment);
-             if (data.actions !== undefined)
-                 player.setActions(data.actions);
-             if (data.quests !== undefined)
-                 player.setQuests(data.quests);
-             if (data.currency !== undefined) {
-                 game.players[id]._currency = data.currency;
+            //If player make sure to stop movement
+            if (data.isPlayer)
+                game.players[id].Movement(0, 0);
+            }
+            if (data.moving !== undefined)
+                game.players[id]._moving = data.moving;
+            if (data.direction !== undefined)
+                game.players[id]._direction = data.direction;
+            if (data.level !== undefined)
+                game.setPlayerLevel(id, data.level);
+            if (data.exp !== undefined)
+                player.setExperience(data.exp);
+            if (data.points !== undefined)
+                player.setPoints(data.points);
+            if (data.attributes !== undefined)
+                player.setAttributes(data.attributes);
+            if (data.health !== undefined)
+                game.setPlayerHealth(id, data.health);
+            if (data.mana !== undefined)
+                game.setPlayerMana(id, data.mana);
+            if (data.equipment !== undefined)
+                game.setPlayerEquipment(id, data.equipment);
+            if (data.actions !== undefined)
+                player.setActions(data.actions);
+            if (data.statusEffects !== undefined)
+                player.setStatusEffects(data.statusEffects);
+            if (data.quests !== undefined)
+                player.setQuests(data.quests);
+            if (data.currency !== undefined) {
+                game.players[id]._currency = data.currency;
 
-                 if (id === game.player)
-                     ui.inventory.setCurrency(data.currency);
-             }
-             if (data.character !== undefined) {
-                 manager.getSprite(data.character.src, function (sprite) {
+                if (id === game.player)
+                    ui.inventory.setCurrency(data.currency);
+            }
+            if (data.character !== undefined) {
+                manager.getSprite(data.character.src, function (sprite) {
                     game.players[id].Sprite(sprite);
                     game.players[id].Sprite().Clip(0, 0, data.character.width, data.character.height);
-   
+
                     game.players[id].SIZE = game.players[id].Sprite().Size();
-   
+
                     if (data.isPlayer)
                     {
                         player.setCollider(data.character.collider);
                         player.setMovement(game.players[id], data.character.movement);
                     }
-   
+
                     game.players[id]._animation = data.character.animation;
                     game.players[id]._animation.cur = 0;
-   
+
                     game.players[id]._sounds = data.character.sounds;
 
                     game.players[id]._damageParticles = {
                         exists: data.character.damageParticles,
                         src: data.character.particleSrc
                     };
-                 });
-             }
+                });
+            }
         });
         channel.on('GAME_PLAYER_KILLED', function (data) {
             //Check if data is valid
@@ -643,8 +645,11 @@ const client = {
         channel.on('GAME_OTHER_PLAYER_CANCELLED_CAST', function(data) {
             //Cancel casting
 
-            if (game.players[data] != undefined) 
+            if (game.players[data] != undefined) {
                 game.players[data]._castingBar.Hide();
+                game.players[data]._castingIcon.Hide();
+            }
+
         });
         channel.on('GAME_NPC_CAST_ACTION', function(data) {
             if (game.npcs[data.npc] != undefined) {
@@ -686,8 +691,12 @@ const client = {
                 setTimeout(() => {
                     for (let a = 0; a < player.actions.length; a++)
                         if (player.actions[a] != undefined &&
-                            player.actions[a].name === name)
-                                ui.actionbar.setCooldown(a);
+                            player.actions[a].name === name) {
+                                let cooldownTime = player.actions[a].cooldown;
+                                cooldownTime *= player.statusEffectsMatrix['cooldownTimeFactor'];
+
+                                ui.actionbar.setCooldown(a, cooldownTime);
+                            }
                 }, 50);
             }
         });

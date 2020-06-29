@@ -72,7 +72,7 @@ exports.combat = {
     timeout: 5 //Combat timeout in seconds
 };
 
-exports.updateCasting = function() {
+exports.updateCasting = function(dt) {
     //Check player casting timers
 
     for (let p in playerCasting) {
@@ -94,7 +94,7 @@ exports.updateCasting = function() {
             delete playerCasting[p];
         }
         else
-            playerCasting[p].timer--;
+            playerCasting[p].timer-=dt;
     };
 
     //Check NPC casting timers
@@ -116,12 +116,12 @@ exports.updateCasting = function() {
                 delete npcCasting[map][npc];
             }
             else
-                npcCasting[map][npc].timer--;
+                npcCasting[map][npc].timer-=dt;
         }
     };
 };
 
-exports.updateActions = function() {
+exports.updateActions = function(dt) {
     //Go over all active actions
 
     for (let a = 0; a < activeActions.length; a++) {
@@ -149,12 +149,12 @@ exports.updateActions = function() {
                 e--;
             }
             else
-                activeActions[a].elements[e].delay--;
+                activeActions[a].elements[e].delay-=dt;
         }
     }
 };
 
-exports.updateCooldowns = function() {
+exports.updateCooldowns = function(dt) {
     //For all players go over the active action cooldowns
 
     for (let p in game.players)
@@ -167,7 +167,7 @@ exports.updateCooldowns = function() {
 
                 //Decrement action cooldown for player
 
-                game.players[p].actions_cooldown[action]--;
+                game.players[p].actions_cooldown[action]-=dt;
 
                 //Remove cooldown timer if cooldown is accounted for
 
@@ -176,7 +176,7 @@ exports.updateCooldowns = function() {
             }
 };
 
-exports.updateProjectiles = function() {
+exports.updateProjectiles = function(dt) {
     for (let m = 0; m < projectiles.length; m++)
         if (projectiles[m] != undefined)
             for (let p = 0; p < projectiles[m].length; p++) {
@@ -188,11 +188,14 @@ exports.updateProjectiles = function() {
 
                 //Move projectiles
 
-                element.x += element.projectileSpeed.x;
-                element.y += element.projectileSpeed.y;
+                let xVel = element.projectileSpeed.x * dt;
+                let yVel = element.projectileSpeed.y * dt;
 
-                projectile.distance.x += Math.abs(element.projectileSpeed.x);
-                projectile.distance.y += Math.abs(element.projectileSpeed.y);
+                element.x += xVel;
+                element.y += yVel;
+
+                projectile.distance.x += Math.abs(xVel);
+                projectile.distance.y += Math.abs(yVel);
 
                 if (projectile.distance.x >= element.projectileDistance ||
                     projectile.distance.y >= element.projectileDistance) {
@@ -212,7 +215,6 @@ exports.updateProjectiles = function() {
 
                     if (this.damageNPCs(
                         projectile.playerOwner,
-                        game.players[projectile.playerOwner].stats.attributes,
                         projectile,
                         element,
                         collection[projectile.action]
@@ -236,6 +238,7 @@ exports.updateProjectiles = function() {
 
                     if (this.damagePlayers(
                         game.players[projectile.pvpOwner].stats.attributes,
+                        game.players[projectile.pvpOwner].statusEffectsMatrix['damageFactor'],
                         projectile,
                         element,
                         collection[projectile.action],
@@ -254,7 +257,6 @@ exports.updateProjectiles = function() {
 
                     if (this.damageNPCs(
                         projectile.pvpOwner,
-                        game.players[projectile.pvpOwner].stats.attributes,
                         projectile,
                         element,
                         collection[projectile.action]
@@ -279,6 +281,7 @@ exports.updateProjectiles = function() {
 
                     if (this.damagePlayers(
                         npcs.onMap[projectile.map][projectile.npcOwner].data.stats,
+                        npcs.onMap[projectile.map][projectile.npcOwner].statusEffectsMatrix['damageFactor'],
                         projectile,
                         element,
                         collection[projectile.action]
@@ -579,10 +582,11 @@ exports.performPlayerAction = function(slot, id, pvp) {
 
         //Start casting
 
+        let castingTime = collection[name].castingTime * game.players[id].statusEffectsMatrix['castingTimeFactor'];
         playerCasting[id] = {
             pvp: (pvp == undefined ? false : pvp),
-            timer: collection[name].castingTime,
-            immediate: (collection[name].castingTime === 0),
+            timer: castingTime,
+            immediate: (castingTime === 0),
             slot: slot,
             action: name,
             pos: {
@@ -609,9 +613,10 @@ exports.performNPCAction = function(possibleAction, map, id) {
         if (npcCasting[map] == undefined)
             npcCasting[map] = [];
 
+        let castingTime = collection[name].castingTime * npcs.onMap[map][id].statusEffectsMatrix['castingTimeFactor'];
         npcCasting[map][id] = {
-            timer: collection[name].castingTime,
-            immediate: (collection[name].castingTime === 0),
+            timer: castingTime,
+            immediate: (castingTime === 0),
             possibleAction: possibleAction,
             action: name
         };
@@ -707,7 +712,10 @@ exports.createPlayerAction = function(slot, id, name, pvp)
         if (game.players[id].actions_cooldown === undefined)
             game.players[id].actions_cooldown = {};
 
-        game.players[id].actions_cooldown[name] = collection[name].cooldown;
+        let cooldown = collection[name].cooldown;
+        cooldown *= game.players[id].statusEffectsMatrix['cooldownTimeFactor'];
+
+        game.players[id].actions_cooldown[name] = cooldown;
 
         //Emit action usage package
 
@@ -757,9 +765,12 @@ exports.createNPCAction = function(map, id, possibleAction, name)
 
         //Set NPC cooldown
 
+        let cooldown = (collection[name].cooldown + possibleAction.extraCooldown);
+        cooldown *= npcs.onMap[map][id].statusEffectsMatrix['cooldownTimeFactor'];
+
         npcs.onMap[map][id].combat_cooldown.start(
             name,
-            collection[name].cooldown + possibleAction.extraCooldown
+            cooldown
         );
     }
     catch (err) {
@@ -774,9 +785,22 @@ exports.instantiatePlayerActionElement = function(actionData, actionElement) {
 
     //Damage NPCs (and players if PvP)
 
-    this.damageNPCs(id, game.players[id].attributes, actionData, actionElement, collection[name], true);
+    this.damageNPCs(
+        id,
+        actionData, 
+        actionElement, 
+        collection[name], 
+        true
+    );
     if (actionData.pvp)
-        this.damagePlayers(game.players[id].attributes, actionData, actionElement, collection[name], true, id);
+        this.damagePlayers(
+            game.players[id].attributes,
+            game.players[id].statusEffectsMatrix['damageFactor'],
+            actionData, actionElement, 
+            collection[name], 
+            true, 
+            id
+        );
 
     //Check for healing
 
@@ -787,8 +811,12 @@ exports.instantiatePlayerActionElement = function(actionData, actionElement) {
         } else 
             this.healPlayers(actionData, actionElement, collection[name].heal);
     }
-    else if (collection[name].heal < 0)
+    else if (collection[name].heal < 0) {
+        let heal = collection[name].heal;
+        heal *= game.players[id].statusEffectsMatrix['damageFactor'];
+
         game.damagePlayer(id, collection[name].heal);
+    }
 
     //Add projectile
 
@@ -811,14 +839,21 @@ exports.instantiateNPCActionElement = function(actionData, actionElement) {
 
     //Damage players
 
-    this.damagePlayers(npcs.onMap[map][id].data.stats, actionData, actionElement, collection[name], true);
+    this.damagePlayers(
+        npcs.onMap[map][id].data.stats, 
+        npcs.onMap[map][id].statusEffectsMatrix['damageFactor'],
+        actionData, 
+        actionElement, 
+        collection[name], 
+        true
+    );
 
     //Check for healing
 
     if (collection[name].heal > 0)
         this.healNPCs(actionData, actionElement, collection[name]);
     else if (collection[name].heal < 0)
-        npcs.damageNPC(id, actionData.map, id, collection[name].heal);
+        npcs.damageNPC(undefined, actionData.map, id, collection[name].heal);
 
     //Add projectile
 
@@ -830,7 +865,7 @@ exports.instantiateNPCActionElement = function(actionData, actionElement) {
     server.syncActionElement(actionData, actionElement);
 };
 
-exports.damageNPCs = function(owner, stats, actionData, actionElement, action, onlyStatic)
+exports.damageNPCs = function(owner, actionData, actionElement, action, onlyStatic)
 {
     try {
         //Check if NPCs on map exist
@@ -885,7 +920,17 @@ exports.damageNPCs = function(owner, stats, actionData, actionElement, action, o
 
             if (tiled.checkRectangularCollision(actionRect, npcRect) &&
                 !npcs.isInvisible(owner, n)) {
-                npcs.damageNPC(owner, actionData.map, n, this.calculateDamage(stats, action.scaling));
+                //Calculate damage
+
+                let damage = this.calculateDamage(game.players[owner].attributes, action.scaling);
+
+                //Adjust damage based on damage factor
+
+                damage *= game.players[owner].statusEffectsMatrix['damageFactor'];
+
+                //Damage NPC
+
+                npcs.damageNPC(owner, actionData.map, n, damage);
 
                 result = true;
             }
@@ -950,7 +995,7 @@ exports.healNPCs = function(actionData, actionElement, action)
     }
 };
 
-exports.damagePlayers = function(stats, actionData, actionElement, action, onlyStatic, except)
+exports.damagePlayers = function(stats, damageFactor, actionData, actionElement, action, onlyStatic, except)
 {
     try {
         //Make sure only static is provided correctly
@@ -1020,9 +1065,17 @@ exports.damagePlayers = function(stats, actionData, actionElement, action, onlyS
 
                 this.combat.add(p);
 
+                //Calculate damage
+
+                let damage = this.calculateDamage(stats, action.scaling);
+
+                //Adjust damage based on status effect matrix
+
+                damage *= damageFactor;
+
                 //Damage player
 
-                game.damagePlayer(p, this.calculateDamage(stats, action.scaling), except);
+                game.damagePlayer(p, damage, except);
 
                 done = true;
             }

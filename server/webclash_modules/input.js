@@ -324,6 +324,15 @@ exports.handleCommand = function(text, channel)
                     game.deltaCurrencyPlayer(p, parseInt(args[0]));
 
                     return 'success';
+                //Give status effect command
+                case 'giveeffect':
+                    if (args.length < 1 ||
+                        channel == undefined)
+                        return 'wrong';
+
+                    status.givePlayerStatusEffect(p, channel.name, args[0]);
+
+                    return 'success';
                 //Set player variable command
                 case 'setvariable':
                     if (args.length < 2             ||

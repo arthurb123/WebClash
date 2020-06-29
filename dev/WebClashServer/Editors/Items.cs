@@ -46,14 +46,15 @@ namespace WebClashServer
                     ".json"
                 };
 
-                string[] items = Directory.GetFiles(Program.main.serverLocation + "/items", "*.*", SearchOption.AllDirectories)
+                string[] items = 
+                    Directory.GetFiles(Program.main.serverLocation + "/items", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 for (int i = 0; i < items.Length; i++)
                 {
-                    string it = items[i];
+                    string it = items[i].Replace('\\', '/');
 
-                    itemList.Items.Add((i+1) + ". " + it.Substring(it.LastIndexOf('\\') + 1, it.LastIndexOf('.') - it.LastIndexOf('\\') - 1));
+                    itemList.Items.Add((i+1) + ". " + it.Substring(it.LastIndexOf('/') + 1, it.LastIndexOf('.') - it.LastIndexOf('/') - 1));
                 }
             }
             catch (Exception exc)
@@ -81,7 +82,8 @@ namespace WebClashServer
 
                 foreach (string c in actions)
                 {
-                    string a = c.Substring(c.LastIndexOf('\\') + 1, c.LastIndexOf('.') - c.LastIndexOf('\\') - 1);
+                    string a = c.Replace('\\', '/');
+                    a = a.Substring(a.LastIndexOf('/') + 1, a.LastIndexOf('.') - a.LastIndexOf('/') - 1);
 
                     equippableAction.Items.Add(a);
                     consumableAction.Items.Add(a);
@@ -169,7 +171,7 @@ namespace WebClashServer
 
         private void newLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string i = itemList.Items.Count + ". " + string.Empty;
+            string i = (itemList.Items.Count+1) + ". " + string.Empty;
 
             itemList.Items.Add(i);
             itemList.SelectedItem = i;

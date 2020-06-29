@@ -14,9 +14,10 @@ namespace WebClashServer
     {
         //Server variables
 
-        private bool    running       = false;
-        private bool    shouldRestart = false;
-        private Process p             = null;
+        private bool    running             = false;
+        private bool    shouldRestart       = false;
+        private bool    serverLocationValid = false;
+        private Process p                   = null;
 
         public string serverLocation       = Application.StartupPath + "/server";
         public string clientLocation       { get { return serverLocation + "/" + properties.clientLocation + "/"; } }
@@ -25,13 +26,14 @@ namespace WebClashServer
 
         //Forms
 
-        Characters characters = new Characters();
-        Maps       maps       = new Maps();
-        NPCs       npcs       = new NPCs();
-        Actions    actions    = new Actions();
-        Items      items      = new Items();
-        Quests     quests     = new Quests();
-        Plugins    plugins    = new Plugins();
+        Characters    characters    = new Characters();
+        Maps          maps          = new Maps();
+        NPCs          npcs          = new NPCs();
+        Actions       actions       = new Actions();
+        Items         items         = new Items();
+        Quests        quests        = new Quests();
+        StatusEffects effects = new StatusEffects();
+        Plugins       plugins       = new Plugins();
 
         public Main()
         {
@@ -264,8 +266,6 @@ namespace WebClashServer
                 AddOutput("The " + changedData + " have changed, changes will be visible after a server restart.");
             else if (running)
             {
-                //AddOutput("The " + changedData + " have changed, restarting server..");
-
                 status.Text = "Restarting server..";
 
                 shouldRestart = true;
@@ -276,14 +276,23 @@ namespace WebClashServer
 
         private bool CheckServerLocation()
         {
+            if (serverLocationValid)
+                return true;
+
             //Check if the server location is valid
 
             if (Directory.Exists(serverLocation) ||
                 File.Exists(serverLocation + "/index.js"))
             {
+                ReformatServerLocation();
+
                 //Read the server properties
 
                 ReadProperties();
+
+                //Set server location valid
+
+                serverLocationValid = true;
 
                 return true;
             }
@@ -304,9 +313,15 @@ namespace WebClashServer
                 {
                     status.Text = "Server folder located.";
 
+                    ReformatServerLocation();
+
                     //Read the server properties
 
                     ReadProperties();
+
+                    //Set server location valid
+
+                    serverLocationValid = true;
 
                     return true;
                 }
@@ -315,6 +330,11 @@ namespace WebClashServer
             }
 
             return false;
+        }
+
+        private void ReformatServerLocation()
+        {
+            serverLocation = serverLocation.Replace('\\', '/');
         }
 
         private void ReadProperties()
@@ -328,7 +348,7 @@ namespace WebClashServer
             if (!Directory.Exists(clientLocation))
             {
                 Logger.Error(
-                    "The client location \"" + clientLocation + "\" is invalid!" +
+                    "The client location \"" + clientLocation + "\" is invalid! " +
                     "Please make sure the client location in the server properties file is valid."
                 );
             }
@@ -410,13 +430,10 @@ namespace WebClashServer
 
         private void settings_Click(object sender, EventArgs e)
         {
-            if (!CheckServerLocation())
-                return;
-
             try
             {
-                if (serverLocation.IndexOf("\\") == -1)
-                    serverLocation = Application.StartupPath + "/" + serverLocation;
+                if (!CheckServerLocation())
+                    return;
 
                 Process.Start(new ProcessStartInfo(serverLocation + "/properties.json"));
             }
@@ -428,13 +445,10 @@ namespace WebClashServer
 
         private void permissions_Click(object sender, EventArgs e)
         {
-            if (!CheckServerLocation())
-                return;
-
             try
             {
-                if (serverLocation.IndexOf("\\") == -1)
-                    serverLocation = Application.StartupPath + "/" + serverLocation;
+                if (!CheckServerLocation())
+                    return;
 
                 Process.Start(new ProcessStartInfo(serverLocation + "/permissions.json"));
             }
@@ -568,6 +582,27 @@ namespace WebClashServer
             };
 
             quests.Show();
+        }
+
+        private void effectsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!CheckServerLocation())
+                return;
+
+            if (effects.Visible)
+            {
+                effects.Focus();
+                return;
+            }
+            else
+                effects = new StatusEffects();
+
+            effects.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                if (effects.GetChanged())
+                    RestartServerOnChange("status effects");
+            };
+
+            effects.Show();
         }
 
         //Options

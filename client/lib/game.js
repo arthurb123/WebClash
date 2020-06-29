@@ -24,6 +24,11 @@ const game = {
             .Loops(function() {
                 //Animate
 
+                //TODO: Animation speed of other players
+                //      does not use a status effect matrix yet,
+                //      but we do not even have the status effects
+                //      of other players on the clientside...
+
                 animation.animateMoving(this);
 
                 //Handle nameplate
@@ -435,6 +440,9 @@ const game = {
         if (this.players[id]._healthbar != undefined)
             this.players[id]._healthbar.Hide();
 
+        this.players[id]._castingBar.Hide();
+        this.players[id]._castingIcon.Hide();
+
         this.players[id].Hide();
 
         //Remove target
@@ -462,7 +470,12 @@ const game = {
 
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
             .Loops(function() {
-                //Animate
+                //Animate moving
+
+                //TODO: Animation speed of NPCs
+                //      does not use a status effect matrix yet,
+                //      but we do not even have the status effects
+                //      of NPCs on the clientside...
 
                 animation.animateMoving(this);
 

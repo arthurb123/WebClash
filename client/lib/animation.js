@@ -1,5 +1,5 @@
 const animation = {
-    animateMoving: function(target)
+    animateMoving: function(target, statusEffectsMatrix)
     {
         //Check if valid
 
@@ -42,7 +42,12 @@ const animation = {
 
         //Evaluate
 
-        target._animation.cur++;
+        let delta = 1;
+
+        if (statusEffectsMatrix != undefined)
+            delta *= statusEffectsMatrix['movementSpeedFactor'];
+
+        target._animation.cur+=delta;
 
         if (target._animation.cur >= target._animation.speed)
         {

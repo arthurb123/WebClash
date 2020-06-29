@@ -2,6 +2,7 @@ const player = {
     actions: [],
     inventory: [],
     equipment: {},
+    statusEffects: {},
     quests: {},
     inParty: false,
 
@@ -101,6 +102,10 @@ const player = {
         //Request xp target
 
         player.requestExpTarget();
+
+        //Calculate status effect matrix by default
+
+        player.calculateStatusEffectsMatrix();
 
         //Check if a camera should be created
 
@@ -293,17 +298,19 @@ const player = {
                             lx.CONTEXT.CONTROLLER.TARGET.MOVEMENT.VY = 0;
                         return;
                     }
+
+                    let maxVel = movement.max * player.statusEffectsMatrix['movementSpeedFactor'];
+
+                    game.players[game.player].MaxVelocity(maxVel);
     
                     if (ui === undefined || !ui.chat.isTyping())
                         lx.CONTEXT.CONTROLLER.TARGET.AddVelocity(
-                            key.v.x*movement.max, 
-                            key.v.y*movement.max
+                            key.v.x*maxVel, 
+                            key.v.y*maxVel
                         );
                 }
             });
         });
-
-        game.players[game.player].MaxVelocity(movement.max);
     },
     setEquipment: function(equipment)
     {
@@ -383,9 +390,14 @@ const player = {
         ui.actionbar.reload();
     },
     castAction: function(slot, elapsedTime) {
+        //Apply status effects matrix to the casting time
+
+        let castingTime = this.actions[slot].castingTime;
+        castingTime *= this.statusEffectsMatrix['castingTimeFactor'];
+
         //Check if casting time is immediate
 
-        if (this.actions[slot].castingTime === 0)
+        if (castingTime === 0)
             return;
 
         //Set currently casting slot
@@ -398,7 +410,7 @@ const player = {
 
         //Set progress and icon
 
-        go._castingBar._target = this.actions[slot].castingTime * (1000/60);
+        go._castingBar._target = castingTime * (1000/60);
         go._castingBar.Progress(
             elapsedTime / go._castingBar._target * 100
         );
@@ -412,7 +424,7 @@ const player = {
 
         //Set UI
 
-        ui.actionbar.setCasting(slot);
+        ui.actionbar.setCasting(slot, castingTime);
     },
     cancelCastAction: function() {
         //remove currently casting slot
@@ -462,6 +474,88 @@ const player = {
         //Send action request
 
         channel.emit('CLIENT_PLAYER_ACTION', slot);
+    },
+
+    setStatusEffects: function(statusEffects) {
+        //Set player status effects,
+        //check if effects have been
+        //added or removed
+
+        for (let effect in statusEffects) {
+            if (this.statusEffects[effect] == undefined) {
+                //Status effect addition
+
+                this.statusEffects[effect] = statusEffects[effect];
+
+                //Play a possible sound effect,
+                //if available
+
+                if (statusEffects[effect].sounds.length > 0) {
+                    let sound = Math.round(Math.random() * (statusEffects[effect].sounds.length - 1));
+                    sound = statusEffects[effect].sounds[sound];
+
+                    audio.playSound(sound);
+                }
+
+                //Add effect to UI
+
+                //...
+            }
+        }
+
+        for (let effect in this.statusEffects) {
+            if (this.statusEffects[effect] &&
+                statusEffects[effect] == undefined) {
+                //Status effect removal
+
+                delete this.statusEffects[effect];
+
+                //Remove effect from UI
+
+                //...
+            }
+        }
+
+        //Calculate status effect matrix
+
+        this.calculateStatusEffectsMatrix();
+    },
+    calculateStatusEffectsMatrix: function() {
+        //Calculates the status effect matrix
+        //from all possible status effects
+
+        //Setup base matrix
+
+        let matrix = {
+            healthTickDelta: 0,
+            manaTickDelta: 0,
+            itemFindFactor: 1.0,
+            experienceGainFactor: 1.0,
+            damageFactor: 1.0,
+            movementSpeedFactor: 1.0,
+            castingTimeFactor: 1.0,
+            cooldownTimeFactor: 1.0
+        };
+
+        for (let se in this.statusEffects) {
+            let effects = this.statusEffects[se].effects;
+
+            //Normal numerical values (delta ticks)
+
+            matrix['healthTickDelta'] += effects['healthTickDelta'];
+            matrix['manaTickDelta']   += effects['manaTickDelta'];
+
+            //Procentual changes (multiplication factors)
+
+            matrix['itemFindFactor']       += effects['itemFindFactor']       - 1;
+            matrix['experienceGainFactor'] += effects['experienceGainFactor'] - 1;
+            matrix['damageFactor']         += effects['damageFactor']         - 1;
+            matrix['movementSpeedFactor']  += effects['movementSpeedFactor']  - 1;
+            matrix['castingTimeFactor']    += effects['castingTimeFactor']    - 1;
+            matrix['cooldownTimeFactor']   += effects['cooldownTimeFactor']   - 1;
+        }
+
+        this.statusEffectsMatrix = matrix;
     },
 
     unequip: function(equippable)
@@ -546,7 +640,7 @@ const player = {
 
         //Animate
 
-        animation.animateMoving(this);   
+        animation.animateMoving(this, player.statusEffectsMatrix);   
     },
     //This gets called before rendering the player
     preDraws: function() 
