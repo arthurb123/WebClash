@@ -1272,6 +1272,10 @@ exports.killNPC = function(map, id)
 
     server.removeNPC(map, id);
 
+    //Remove all NPC status effects
+
+    this.onMap[map][id].statusEffects = {};
+
     //Set NPC to killed
 
     this.onMap[map][id].killed = true;

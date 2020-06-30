@@ -54,6 +54,7 @@ namespace WebClashServer.Editors
 
             ReloadActions();
             ReloadCharacters();
+            ReloadStatusEffects();
 
             if (actionSelect.Items.Count > 0)
                 actionSelect.SelectedItem = actionSelect.Items[0];
@@ -122,6 +123,35 @@ namespace WebClashServer.Editors
             catch (Exception exc)
             {
                 Logger.Error("Could not load characters: ", exc);
+            }
+        }
+
+        private void ReloadStatusEffects()
+        {
+            statusEffectSelect.Items.Clear();
+
+            try
+            {
+                List<string> ext = new List<string>()
+                {
+                    ".json"
+                };
+
+                string[] effects = Directory.GetFiles(Program.main.serverLocation + "/effects", "*.*", SearchOption.AllDirectories)
+                    .Where(e => ext.Contains(Path.GetExtension(e))).ToArray();
+
+                statusEffectSelect.Items.Add("");
+
+                foreach (string e in effects)
+                {
+                    string effect = e.Replace('\\', '/');
+
+                    statusEffectSelect.Items.Add(effect.Substring(effect.LastIndexOf('/') + 1, effect.LastIndexOf('.') - effect.LastIndexOf('/') - 1));
+                }
+            }
+            catch (Exception exc)
+            {
+                Logger.Error("Could not load status effects: ", exc);
             }
         }
 
@@ -491,6 +521,8 @@ namespace WebClashServer.Editors
 
             source.Text = current.elements[curElement].src;
 
+            //Appearance
+
             delay.Value = (int)Math.Round((double)current.elements[curElement].delay * (1000d / 60));
 
             animationEnabled.Checked = current.elements[curElement].animated;
@@ -505,6 +537,22 @@ namespace WebClashServer.Editors
                 direction.SelectedItem = "Horizontal";
             else if (current.elements[curElement].direction == "vertical")
                 direction.SelectedItem = "Vertical";
+
+            //Behaviour
+
+            delay.Value = (int)Math.Round((double)current.elements[curElement].delay * (1000d / 60d));
+
+            propertyType.SelectedItem = char.ToUpper(current.elements[curElement].type[0]) + current.elements[curElement].type.Substring(1, current.elements[curElement].type.Length - 1);
+
+            animationEnabled.Checked = current.elements[curElement].animated;
+            projectileRotates.Checked = current.elements[curElement].rotates;
+
+            projectileSpeed.Value = current.elements[curElement].projectileSpeed;
+            projectileDistance.Value = current.elements[curElement].projectileDistance;
+
+            //Status effects
+
+            statusEffectSelect.SelectedItem = current.elements[curElement].statusEffect;
 
             canvas.Invalidate();
         }
@@ -740,27 +788,30 @@ namespace WebClashServer.Editors
 
         private void propertyView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (propertyView.SelectedItem.ToString() == "Appearance")
+            switch (propertyView.SelectedItem.ToString())
             {
-                appearancePanel.Visible = true;
-                behaviourPanel.Visible = false;
-            }
-            else if (propertyView.SelectedItem.ToString() == "Behaviour")
-            {
-                appearancePanel.Visible = false;
-                behaviourPanel.Visible = true;
+                case "Appearance":
+                    appearancePanel.Visible = true;
+                    behaviourPanel.Visible = false;
+                    statusEffectsPanel.Visible = false;
 
-                delay.Value = (int)Math.Round((double)current.elements[curElement].delay * (1000d/60d));
+                    break;
+                case "Behaviour":
+                    appearancePanel.Visible = false;
+                    behaviourPanel.Visible = true;
+                    statusEffectsPanel.Visible = false;
 
-                propertyType.SelectedItem = char.ToUpper(current.elements[curElement].type[0]) + current.elements[curElement].type.Substring(1, current.elements[curElement].type.Length - 1);
+                    break;
+                case "Status Effects":
+                    appearancePanel.Visible = false;
+                    behaviourPanel.Visible = false;
+                    statusEffectsPanel.Visible = true;
 
-                animationEnabled.Checked = current.elements[curElement].animated;
-                projectileRotates.Checked = current.elements[curElement].rotates;
-
-                projectileSpeed.Value = current.elements[curElement].projectileSpeed;
-                projectileDistance.Value = current.elements[curElement].projectileDistance;
+                    break;
             }
         }
+
+        //Behaviour panel
 
         private void delay_ValueChanged(object sender, EventArgs e)
         {
@@ -815,6 +866,16 @@ namespace WebClashServer.Editors
             }
 
             canvas.Invalidate();
+        }
+
+        //Status effects panel
+
+        private void statusEffectSelect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (current.elements[curElement] == null)
+                return;
+
+            current.elements[curElement].statusEffect = statusEffectSelect.SelectedItem.ToString();
         }
 
         public bool GetChanged()
@@ -921,9 +982,7 @@ namespace WebClashServer.Editors
                    h = 64;
 
         public float scale = 1.0f;
-
         public string type = "static";
-
         public string src = "";
 
         public bool animated = true;
@@ -934,6 +993,8 @@ namespace WebClashServer.Editors
         public bool rotates = true;
         public int projectileSpeed = 1;
         public int projectileDistance = 0;
+
+        public string statusEffect = "";
     }
 
     public class Frame

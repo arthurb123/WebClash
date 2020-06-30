@@ -758,7 +758,8 @@ const ui = {
                this.displayBoxLoopID === undefined)
                 return;
 
-            delete lx.GAME.LOOPS[this.displayBoxLoopID];
+            if (this.displayBoxLoopID != undefined)
+                delete lx.GAME.LOOPS[this.displayBoxLoopID];
 
             document.getElementById('displayBox').remove();
         }
@@ -1213,7 +1214,8 @@ const ui = {
                this.displayBoxLoopID === undefined)
                 return;
 
-            delete lx.GAME.LOOPS[this.displayBoxLoopID];
+            if (this.displayBoxLoopID != undefined)
+                delete lx.GAME.LOOPS[this.displayBoxLoopID];
 
             document.getElementById('displayBox').remove();
         },
@@ -2638,7 +2640,9 @@ const ui = {
 
                 if (remaining <= 0) {
                     slot.remove();
-                    delete this.loops[loopsId];
+
+                    if (loopsId != undefined)
+                        delete ui.statusEffects.loops[loopsId];
 
                     return;
                 }
@@ -2709,7 +2713,8 @@ const ui = {
                 this.displayBoxLoopID === undefined)
                 return;
 
-            delete lx.GAME.LOOPS[this.displayBoxLoopID];
+            if (this.displayBoxLoopID != undefined)
+                delete lx.GAME.LOOPS[this.displayBoxLoopID];
 
             document.getElementById('displayBox').remove();
         }

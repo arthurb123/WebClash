@@ -3,7 +3,7 @@
 exports.collection = {};
 
 const players = {};
-const npcs    = [];
+const onMap   = [];
 
 let elapsed = 0;
 
@@ -59,6 +59,12 @@ exports.checkPlayer = function(id) {
 
 exports.givePlayerStatusEffect = function(id, casterName, hostile, statusEffectName) {
     try {
+        //Check if status effect name is valid
+
+        if (statusEffectName == undefined ||
+            statusEffectName === '')
+            return;
+
         //Get the status effect
 
         let statusEffect = this.collection[statusEffectName];
@@ -104,13 +110,24 @@ exports.givePlayerStatusEffect = function(id, casterName, hostile, statusEffectN
 
 exports.giveNPCStatusEffect = function(map, id, statusEffectName) {
     try {
+        //Check if status effect name is valid
+
+        if (statusEffectName == undefined ||
+            statusEffectName === '')
+            return;
+
         //Get the status effect
 
         let statusEffect = this.collection[statusEffectName];
 
+        //Check if status effect is valid
+
+        if (statusEffect == undefined)
+            return;
+
         //Grab the NPC for easier use
 
-        let npc = npc.onMap[map][id];
+        let npc = npcs.onMap[map][id];
 
         //Set status effect
 
@@ -123,10 +140,10 @@ exports.giveNPCStatusEffect = function(map, id, statusEffectName) {
 
         //Add NPC to the watchlist
 
-        if (npcs[map] == undefined)
-            npcs[map] = {};
+        if (onMap[map] == undefined)
+            onMap[map] = {};
 
-        npcs[map][id] = true;
+        onMap[map][id] = true;
     }
     catch (err) {
         output.giveError('Could not give NPC status effect: ', err);
@@ -212,8 +229,8 @@ exports.updateStatusEffects = function(dt) {
 
         //Update status effects for all NPCs
 
-        for (let m = 0; m < npcs.length; m++)
-            for (let n in npcs[m]) {
+        for (let m = 0; m < onMap.length; m++)
+            for (let n in onMap[m]) {
                 //Grab data
 
                 let npc = npcs.onMap[m][n];
@@ -225,7 +242,7 @@ exports.updateStatusEffects = function(dt) {
                     npc.killed) {
                         //Remove from watch list
 
-                        delete npcs[m][n];
+                        delete onMap[m][n];
                         continue;
                     }
 
@@ -272,7 +289,7 @@ exports.updateStatusEffects = function(dt) {
                 if (Object.keys(npc.statusEffects).length === 0) {
                     //Remove NPC from watch list
 
-                    delete npcs[m][n];
+                    delete onMap[m][n];
                 }
             }
 

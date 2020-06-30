@@ -1,0 +1,43 @@
+{
+  "sw": 320,
+  "sh": 320,
+  "name": "Dehydrate",
+  "src": "res/icons/4.png",
+  "description": "Give me that moisture.",
+  "scaling": {
+    "power": 0.0,
+    "agility": 0.0,
+    "intelligence": 0.25,
+    "wisdom": 0.0,
+    "toughness": 0.0,
+    "vitality": 0.0
+  },
+  "elements": [
+    {
+      "x": 136,
+      "y": 192,
+      "w": 47,
+      "h": 48,
+      "scale": 1.0,
+      "type": "static",
+      "src": "res/actions/13.png",
+      "animated": true,
+      "speed": 2,
+      "direction": "horizontal",
+      "delay": 0,
+      "rotates": true,
+      "projectileSpeed": 1,
+      "projectileDistance": 0,
+      "statusEffect": "Dehydrated"
+    }
+  ],
+  "sounds": [
+    {
+      "src": "res/sounds/actions/magic/water1.wav"
+    }
+  ],
+  "heal": 0,
+  "mana": -5,
+  "cooldown": 30,
+  "castingTime": 30
+}

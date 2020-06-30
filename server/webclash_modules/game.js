@@ -573,6 +573,23 @@ exports.killPlayer = function(id, pvpKiller)
 
     server.removePlayer(game.players[id].channel, false);
 
+    //Remove all status effects
+
+    this.players[id].statusEffects = {};
+
+    //Sync status effects
+
+    //TODO: When a player gets killed, the
+    //      status effects UI does not get
+    //      hidden. A good practice in general
+    //      is sending the updated empty list
+    //      of status effects, this will also
+    //      hide the UI on the clientside.
+    //      But the UI issue should be looked into
+    //      in general.
+
+    server.syncPlayerPartially(id, 'statusEffects', this.players[id].channel, false);
+
     //Set player killed variable
 
     this.players[id].killed = true;

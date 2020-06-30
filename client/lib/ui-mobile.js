@@ -2535,7 +2535,9 @@ const ui = {
 
                 if (remaining <= 0) {
                     slot.remove();
-                    delete this.loops[loopsId];
+
+                    if (loopsId != undefined)
+                        delete ui.statusEffects.loops[loopsId];
                     
                     return;
                 }

@@ -14,8 +14,8 @@
   },
   "elements": [
     {
-      "x": 138,
-      "y": 199,
+      "x": 137,
+      "y": 198,
       "w": 48,
       "h": 48,
       "scale": 1.0,
@@ -27,7 +27,8 @@
       "delay": 0,
       "rotates": true,
       "projectileSpeed": 1,
-      "projectileDistance": 0
+      "projectileDistance": 0,
+      "statusEffect": "Burning"
     }
   ],
   "sounds": [

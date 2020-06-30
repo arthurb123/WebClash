@@ -815,7 +815,7 @@ exports.instantiatePlayerActionElement = function(actionData, actionElement) {
         let heal = collection[name].heal;
         heal *= game.players[id].statusEffectsMatrix['damageFactor'];
 
-        game.damagePlayer(id, collection[name].heal);
+        game.damagePlayer(id, heal);
     }
 
     //Add projectile
@@ -932,6 +932,11 @@ exports.damageNPCs = function(owner, actionData, actionElement, action, onlyStat
 
                 npcs.damageNPC(owner, actionData.map, n, damage);
 
+                //If buff is available, apply that buff
+
+                if (actionElement.statusEffect !== '')
+                    status.giveNPCStatusEffect(actionData.map, n, actionElement.statusEffect);
+
                 result = true;
             }
         }
@@ -986,8 +991,16 @@ exports.healNPCs = function(actionData, actionElement, action)
             //Check for rectangular collision, if so;
             //heal the NPC
 
-            if (tiled.checkRectangularCollision(actionRect, npcRect))
+            if (tiled.checkRectangularCollision(actionRect, npcRect)) {
+                //Heal NPC
+
                 npcs.healNPC(actionData.map, n, action.heal);
+
+                //If buff is available, apply that buff
+
+                if (actionElement.statusEffect !== '')
+                    status.giveNPCStatusEffect(actionData.map, n, actionElement.statusEffect);
+            }
         }
     }
     catch (err) {
@@ -1077,6 +1090,16 @@ exports.damagePlayers = function(stats, damageFactor, actionData, actionElement,
 
                 game.damagePlayer(p, damage, except);
 
+                //If buff is available, apply that buff
+
+                if (actionElement.statusEffect !== '') {
+                    let owner = actionData.owner;
+                    if (actionData.ownerType === 'npc')
+                        owner = npcs.onMap[actionData.map][owner].name;
+
+                    status.givePlayerStatusEffect(p, owner, true, actionElement.statusEffect);
+                }
+
                 done = true;
             }
         }
@@ -1123,8 +1146,21 @@ exports.healPlayers = function(actionData, actionElement, heal)
             //Check for rectangular collision, if so;
             //heal the player
 
-            if (tiled.checkRectangularCollision(actionRect, playerRect))
+            if (tiled.checkRectangularCollision(actionRect, playerRect)) {
+                //Heal the player
+
                 game.healPlayer(p, heal);
+
+                //If buff is available, apply that buff
+
+                if (actionElement.statusEffect !== '') {
+                    let owner = actionData.owner;
+                    if (actionData.ownerType === 'npc')
+                        owner = npcs.onMap[actionData.map][owner].name;
+
+                    status.givePlayerStatusEffect(p, owner, false, actionElement.statusEffect);
+                }
+            }
         }
     }
     catch (err) {
@@ -1173,8 +1209,16 @@ exports.healPartyPlayers = function(actionData, actionElement, heal, owner)
             //Check for rectangular collision, if so;
             //heal the player
 
-            if (tiled.checkRectangularCollision(actionRect, playerRect))
+            if (tiled.checkRectangularCollision(actionRect, playerRect)) {
+                //Heal the player
+
                 game.healPlayer(p, heal);
+
+                //If buff is available, apply that buff
+
+                if (actionElement.statusEffect !== '')
+                    status.givePlayerStatusEffect(p, owner, false, actionElement.statusEffect);
+            }
         }
     }
     catch (err) {

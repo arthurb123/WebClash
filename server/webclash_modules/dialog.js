@@ -1,6 +1,10 @@
+//Dialog module for WebClash Server
+
 exports.createUnique = function(id, dialogData) {
     try {
         let start = -1;
+
+        //Find the entry dialog element
 
         for (let i = 0; i < dialogData.length; i++) {
             if (dialogData[i] == undefined)
@@ -13,11 +17,17 @@ exports.createUnique = function(id, dialogData) {
             }
         }
 
+        //If no entry was found, abort
+
         if (start === -1) {
             output.give("Could not create unique dialog, dialog has no entry.");
 
             return [];
         }
+
+        //Deepcopy the dialog elements,
+        //and start scanning for valid
+        //dialog options from the entry
 
         let result = deepcopy(dialogData);
 
@@ -33,8 +43,15 @@ exports.createUnique = function(id, dialogData) {
 };
 
 exports.inspectItem = function(id, itemId, dialogData) {
+    //Recursive method that checks if certain dialog
+    //elements are available for the player (id)
+
+    //Check if already inspected
+
     if (dialogData[itemId].inspected)
         return;
+
+    //Set inspected and grab the dialog data
 
     dialogData[itemId].inspected = true;
     let current = dialogData[itemId];
@@ -42,10 +59,20 @@ exports.inspectItem = function(id, itemId, dialogData) {
     if (current == undefined)
         return;
 
+    //Check if the dialog data is a get
+    //variable event, this can be used
+    //for variable matching
+
     if (current.getVariableEvent != undefined) {
         dialogData[itemId] = undefined;
 
         let next = -1;
+
+        //Match against player variable,
+        //based on the result grab the succes
+        //or occured option. Success indicating
+        //that the player has access, occurred indicating
+        //that the player has no access.
 
         if (game.getPlayerGlobalVariable(id, current.getVariableEvent.name))
             next = current.options[0].next;
@@ -60,6 +87,8 @@ exports.inspectItem = function(id, itemId, dialogData) {
 
         return;
     }
+
+    //For all options, inspect recursively
 
     current.options.forEach(function(option) {
         if (option.next === -1)
