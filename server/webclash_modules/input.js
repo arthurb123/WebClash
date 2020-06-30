@@ -330,7 +330,7 @@ exports.handleCommand = function(text, channel)
                         channel == undefined)
                         return 'wrong';
 
-                    status.givePlayerStatusEffect(p, channel.name, args[0]);
+                    status.givePlayerStatusEffect(p, channel.name, false, args[0]);
 
                     return 'success';
                 //Set player variable command

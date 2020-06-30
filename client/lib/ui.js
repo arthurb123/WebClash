@@ -142,7 +142,7 @@ const ui = {
             if (this.dom === undefined)
                 return;
 
-            this.manager.push('<font style="display: inline;" class="info">' + this.timeformat() + content + '</font><br>');
+            this.manager.push('<p style="display: inline;" class="info">' + this.timeformat() + content + '</p><br>');
 
             if (this.manager.length > 16)
                 this.manager.splice(0, 1);
@@ -429,7 +429,7 @@ const ui = {
                         let item = this.items[i];
 
                         ui.dialog.cur[data.id].text +=
-                            '<div class="slot" id="dialog_slot' + i + '" style="margin-top: 6px; margin-bottom: 0px; border: 1px solid ' + ui.inventory.getItemColor(item.rarity) + ';" onmouseenter="ui.inventory.displayBox(' + i + ', \'dialog\')" onmouseleave="ui.inventory.removeBox();">' +
+                            '<div class="slot" id="dialog_slot' + i + '" style="margin-top: 6px; margin-bottom: 0px; border: 1px solid ' + ui.inventory.getItemColor(item.rarity) + ';" onmouseenter="ui.inventory.showDisplayBox(' + i + ', \'dialog\')" onmouseleave="ui.inventory.removeDisplayBox();">' +
                                 '<img src="' + item.source + '" style="pointer-events: none; position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>' +
                             '</div>';
                     }
@@ -522,10 +522,10 @@ const ui = {
         },
         appendActionEventListener: function(slot, a) {
             slot.addEventListener('mouseover', function() {
-                ui.actionbar.displayBox(a);
+                ui.actionbar.showDisplayBox(a);
             });
             slot.addEventListener('mouseleave', function() {
-                ui.actionbar.removeBox();
+                ui.actionbar.removeDisplayBox();
             });
         },
         addLoops: function(cb) {
@@ -691,7 +691,7 @@ const ui = {
             if (c != undefined)
                 c.remove();
         },
-        displayBox: function(slot) {
+        showDisplayBox: function(slot) {
             if (player.actions[slot] == undefined)
                 return;
 
@@ -733,8 +733,8 @@ const ui = {
             displayBox.classList.add('box');
             displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 6px; height: auto; text-align: center;';
             displayBox.innerHTML =
-                    '<font class="header" style="font-size: 14px;">' + player.actions[slot].name + '</font><br>' +
-                    '<font class="info" style="position: relative; top: 6px;">' + player.actions[slot].description + '</font><br>' +
+                    '<p class="header" style="font-size: 14px;">' + player.actions[slot].name + '</p>' +
+                    '<p class="info" style="position: relative; top: 6px;">' + player.actions[slot].description + '</p>' +
                     '<font class="info" style="margin-top: 10px; font-size: 10px; display: block;">DPS: ' + dps + '</font>' +
                     heal + mana + castingTime +
                     '<font class="info" style="font-size: 10px; margin-top: -3px; display: block;">CD: ' + (player.actions[slot].cooldown/60).toFixed(1) + 's</font>';
@@ -753,12 +753,12 @@ const ui = {
                 displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-displayBox.offsetHeight-12 + 'px';
             });
         },
-        removeBox: function() {
+        removeDisplayBox: function() {
             if (document.getElementById('displayBox') == null ||
                this.displayBoxLoopID === undefined)
                 return;
 
-            lx.GAME.LOOPS.splice(this.displayBoxLoopID, 1);
+            delete lx.GAME.LOOPS[this.displayBoxLoopID];
 
             document.getElementById('displayBox').remove();
         }
@@ -788,10 +788,10 @@ const ui = {
                 slot.classList.add('slot');
 
                 slot.addEventListener('mouseover', function() {
-                    ui.inventory.displayBox(equippable, 'equipment');
+                    ui.inventory.showDisplayBox(equippable, 'equipment');
                 });
                 slot.addEventListener('mouseleave', function() {
-                    ui.inventory.removeBox();
+                    ui.inventory.removeDisplayBox();
                 });
                 slot.addEventListener('click', function() {
                     player.unequip(equippable);
@@ -913,10 +913,10 @@ const ui = {
                         ui.inventory.displayContext(i);
                     });
                     slot.addEventListener('mouseover', function() {
-                        ui.inventory.displayBox(i, 'inventory');
+                        ui.inventory.showDisplayBox(i, 'inventory');
                     });
                     slot.addEventListener('mouseleave', function() {
-                        ui.inventory.removeBox();
+                        ui.inventory.removeDisplayBox();
                     });
                     slot.addEventListener('click', function() {
                         ui.inventory.useItem(i);
@@ -1023,7 +1023,7 @@ const ui = {
                 ui.inventory.removeContext();
             }
         },
-        displayBox: function(slot, slotType) {
+        showDisplayBox: function(slot, slotType) {
             if (slotType === 'inventory' && player.inventory[slot] == undefined ||
                 slotType === 'equipment' && player.equipment[slot] == undefined ||
                 slotType === 'loot' && ui.loot.items[slot] == undefined ||
@@ -1179,9 +1179,9 @@ const ui = {
             displayBox.style = 'position: absolute; top: 0px; left: 0px; min-width: 120px; max-width: 160px; width: auto; padding: 10px; padding-bottom: 16px; height: auto; text-align: center;';
             displayBox.innerHTML =
                     '<font class="header" style="font-size: 14px; color: ' + color + ';">' + item.name + '</font><br>' +
-                    '<font class="info" style="font-size: 10px;">' + (item.minLevel > 0 ? ' lvl ' + item.minLevel + ' ' : '') + type + '</font><br>' +
+                    '<font class="info" style="font-size: 10px;">' + (item.minLevel > 0 ? ' lvl ' + item.minLevel + ' ' : '') + type + '</font>' +
                     action +
-                    '<font class="info" style="position: relative; top: 6px;">' + item.description + '</font><br>' +
+                    '<p class="info" style="position: relative; top: 6px;">' + item.description + '</p>' +
                     stats +
                     (note !== '' ? '<font class="info" style="position: relative; top: 10px; font-size: 11px; margin-top: 5px;">' + note + '</font><br>' : '') +
                     '<font class="info" style="position: relative; top: 10px; font-size: 11px; color: yellow;">' + item.value + ' ' + game.aliases.currency + '</font><br>';
@@ -1208,12 +1208,12 @@ const ui = {
                 displayBox.style.top = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y+offset.y + 'px';
             });
         },
-        removeBox: function() {
+        removeDisplayBox: function() {
             if (document.getElementById('displayBox') == null ||
                this.displayBoxLoopID === undefined)
                 return;
 
-            lx.GAME.LOOPS.splice(this.displayBoxLoopID, 1);
+            delete lx.GAME.LOOPS[this.displayBoxLoopID];
 
             document.getElementById('displayBox').remove();
         },
@@ -1237,7 +1237,7 @@ const ui = {
 
             //Hide displaybox
 
-            this.removeBox();
+            this.removeDisplayBox();
 
             //Show context menu
 
@@ -1342,7 +1342,7 @@ const ui = {
 
             //Hide (inventory) displaybox
 
-            ui.inventory.removeBox();
+            ui.inventory.removeDisplayBox();
 
             //Hide loot box
 
@@ -1382,10 +1382,10 @@ const ui = {
 
             slot.appendChild(lootImg);
             slot.addEventListener('mouseenter', function() {
-                ui.inventory.displayBox(data.id, 'loot');
+                ui.inventory.showDisplayBox(data.id, 'loot');
             });
             slot.addEventListener('mouseleave', function() {
-                ui.inventory.removeBox();
+                ui.inventory.removeDisplayBox();
             });
             slot.addEventListener('click', function() {
                 ui.loot.pickup(data.id);
@@ -1409,7 +1409,7 @@ const ui = {
 
             //Hide (inventory) displaybox
 
-            ui.inventory.removeBox();
+            ui.inventory.removeDisplayBox();
         },
         remove: function(id) {
             //Check if valid
@@ -2143,10 +2143,10 @@ const ui = {
             slot.appendChild(amount);
 
             slot.addEventListener('mouseenter', function() {
-                ui.inventory.displayBox(data.item.name, 'bank');
+                ui.inventory.showDisplayBox(data.item.name, 'bank');
             });
             slot.addEventListener('mouseleave', function() {
-                ui.inventory.removeBox();
+                ui.inventory.removeDisplayBox();
             });
             slot.addEventListener('click', function() {
                 ui.bank.withdraw(data.item.name);
@@ -2211,7 +2211,7 @@ const ui = {
 
             //Hide (inventory) displaybox
 
-            ui.inventory.removeBox();
+            ui.inventory.removeDisplayBox();
         },
         withdraw: function(name) {
             //Check if valid
@@ -2234,7 +2234,7 @@ const ui = {
 
             //Hide (inventory) displaybox
 
-            ui.inventory.removeBox();
+            ui.inventory.removeDisplayBox();
         },
         show: function() {
             //Check if already visible
@@ -2542,24 +2542,176 @@ const ui = {
     },
     statusEffects:
     {
+        loops: [],
         create: function() {
-            this.box = new UIBox('status_effects', 'status_effects_box', lx.GetDimensions().width/2, 20, undefined, undefined);
+            this.box = new UIBox('status_effects', 'status_effects_box', lx.GetDimensions().width/2, 30, undefined, undefined);
             this.box.setResizable(false);
             this.box.setTextAlign('center');
+
+            this.box.element.style.maxWidth = '192px';
+            this.box.element.style.padding = '2px';
+            this.box.element.style.transform = 'translate(-50%, 0)';
+            this.box.content.style.display  = 'flex';
+            this.box.content.style.flexWrap = 'wrap';
+
+            lx.Loops(() => {
+                for (let l = 0; l < this.loops.length; l++)
+                    if (this.loops[l])
+                        this.loops[l]();
+            });
 
             this.box.hide();
         },
         reload: function() {
-            document.getElementById('status_effects_box').clear();
+            this.box.clear();
+            this.loops = [];
 
+            let effects = 0;
             for (let effect in player.statusEffects) {
-                //...
+                let border = player.statusEffects[effect].hostile ? 'red' : 'lightgreen';
+
+                let slot = document.createElement('div');
+                slot.id = 'status_effect_' + effect.toLowerCase();
+                slot.classList.add('slot');
+                slot.style = 'cursor: default; width: 32px; height: 32px; border: 1px solid ' + border + ';';
+                
+                let img = document.createElement('img');
+                img.src = player.statusEffects[effect].icon;
+                img.style = 'width: 32px; height: 32px;';
+
+                slot.appendChild(img);
+
+                slot.addEventListener('mouseover', function() {
+                    ui.statusEffects.showDisplayBox(player.statusEffects[effect]);
+                });
+                slot.addEventListener('mouseleave', function() {
+                    ui.statusEffects.removeDisplayBox();
+                });
+
+                this.createTimer(slot, player.statusEffects[effect]);
+                this.box.addElement(slot);
+
+                effects++;
             }
 
-            if (player.statusEffects.length === 0)
-                document.getElementById('status_effects_box').style.visibility = 'hidden';
-            else
-                document.getElementById('status_effects_box').style.visibility = 'visible';
+            if (effects > 0)
+                this.box.show();
+            else {
+                this.removeDisplayBox();
+
+                this.box.hide();
+            }
+        },
+        createTimer: function(slot, statusEffect) {
+            let elapsed  = statusEffect.elapsed;
+            let duration = statusEffect.duration;
+
+            //Create countdown element
+
+            let cd = document.createElement('div');
+            cd.id = slot.id + '_countdown';
+            cd.classList.add('cooldown');
+
+            //Add time label to countdown element
+
+            let cdTime = document.createElement('p');
+
+            cdTime.classList.add('info');
+            cdTime.style.fontSize = '10px';
+            cdTime.style.position = 'relative';
+            cdTime.style.top = '8px';
+            cdTime.style.left = '4px';
+
+            cd.appendChild(cdTime);
+
+            //Append countdown element
+
+            slot.appendChild(cd);
+
+            //Setup countdown loop
+
+            let loopsId = this.loops.length;
+            this.loops.push(function() {
+                let remaining = duration - elapsed;
+
+                //Check if finished
+
+                if (remaining <= 0) {
+                    slot.remove();
+                    delete this.loops[loopsId];
+
+                    return;
+                }
+
+                //Adjust countdown width
+
+                cd.style.width = (remaining/duration)*100 + '%';
+
+                //Get real time left
+
+                let time = remaining/60;
+                if (time > 1)
+                    time = Math.round(time);
+                else
+                    time = time.toFixed(1);
+
+                //Change countdown time text
+
+                cdTime.innerHTML = time + 's';
+
+                //Increment elapsed
+
+                elapsed++;
+            });
+        },
+        showDisplayBox: function(statusEffect) {
+            //Check if a displayBox already exists
+
+            let el = document.getElementById('displayBox');
+
+            if (el != undefined)
+                return;
+
+            //Create displaybox
+
+            let displayBox = document.createElement('div');
+            let color = statusEffect.hostile ? 'red' : 'lightgreen';
+
+            displayBox.id = 'displayBox';
+            displayBox.classList.add('box');
+            displayBox.style = 'position: absolute; top: 0px; left: 0px; width: 120px; padding: 4px; padding-bottom: 10px; height: auto; text-align: center;';
+            displayBox.innerHTML =
+                    '<p class="header" style="font-size: 14px; color: ' + color + ';">' + statusEffect.name + '</p>' +
+                    '<p class="info" style="position: relative; top: 6px;">' + statusEffect.description + '</p>' +
+                    '<p class="info" style="position: relative; top: 6px; font-size: 11px; font-style: italic;">' + statusEffect.caster + "</p>";
+
+            //Append
+
+            view.dom.appendChild(displayBox);
+
+            //Create mouse following
+
+            displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-displayBox.offsetWidth/2 + 'px';
+            displayBox.style.top  = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y+18 + 'px';
+
+            this.displayBoxLoopID = lx.GAME.ADD_LOOPS(function() {
+                if (!player.statusEffects[statusEffect.name]) {
+                    ui.statusEffects.removeDisplayBox();
+                    return;
+                }
+
+                displayBox.style.left = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-displayBox.offsetWidth/2 + 'px';
+                displayBox.style.top  = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y+18 + 'px';
+            });
+        },
+        removeDisplayBox: function() {
+            if (document.getElementById('displayBox') == null ||
+                this.displayBoxLoopID === undefined)
+                return;
+
+            delete lx.GAME.LOOPS[this.displayBoxLoopID];
+
+            document.getElementById('displayBox').remove();
         }
     },
     party: {

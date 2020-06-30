@@ -716,7 +716,7 @@ const client = {
 
                 //Remove box
 
-                ui.inventory.removeBox();
+                ui.inventory.removeDisplayBox();
 
                 //Remove context menu
 
@@ -755,7 +755,7 @@ const client = {
 
                 //Remove box
 
-                ui.inventory.removeBox();
+                ui.inventory.removeDisplayBox();
 
                 //Remove context menu
 

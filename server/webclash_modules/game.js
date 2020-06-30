@@ -232,6 +232,11 @@ exports.addPlayer = function(channel)
 
                 player.statusEffectsMatrix = status.calculateStatusEffectsMatrix(player.statusEffects);
 
+                //Check if the player still has running status effects,
+                //this will make it so the player's effects get handled
+
+                status.checkPlayer(id);
+
                 //Set requires setup for player
 
                 game.players[id].setup = false;

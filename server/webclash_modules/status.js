@@ -49,7 +49,15 @@ exports.loadStatusEffect = function(location) {
     }
 };
 
-exports.givePlayerStatusEffect = function(id, casterName, statusEffectName) {
+exports.checkPlayer = function(id) {
+    //Checks if a player has running
+    //status effects and needs to be watched
+
+    if (Object.keys(game.players[id]).length > 0)
+        players[id] = true;
+};
+
+exports.givePlayerStatusEffect = function(id, casterName, hostile, statusEffectName) {
     try {
         //Get the status effect
 
@@ -75,6 +83,7 @@ exports.givePlayerStatusEffect = function(id, casterName, statusEffectName) {
         player.statusEffects[statusEffectName] = deepcopy(statusEffect);
         player.statusEffects[statusEffectName].caster = casterName;
         player.statusEffects[statusEffectName].elapsed = 0;
+        player.statusEffects[statusEffectName].hostile = hostile;
 
         //Calculate status effect matrix for the player
 

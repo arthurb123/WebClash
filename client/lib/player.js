@@ -496,10 +496,6 @@ const player = {
 
                     audio.playSound(sound);
                 }
-
-                //Add effect to UI
-
-                //...
             }
         }
 
@@ -509,12 +505,12 @@ const player = {
                 //Status effect removal
 
                 delete this.statusEffects[effect];
-
-                //Remove effect from UI
-
-                //...
             }
         }
+
+        //Reload UI
+
+        ui.statusEffects.reload();
 
         //Calculate status effect matrix
 
@@ -563,7 +559,7 @@ const player = {
         if (this.equipment[equippable] === undefined)
             return;
 
-        ui.inventory.removeBox();
+        ui.inventory.removeDisplayBox();
 
         channel.emit('CLIENT_UNEQUIP_ITEM', equippable);
     },
