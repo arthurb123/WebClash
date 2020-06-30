@@ -2548,6 +2548,7 @@ const ui = {
         create: function() {
             this.box = new UIBox('status_effects', 'status_effects_box', lx.GetDimensions().width/2, 30, undefined, undefined);
             this.box.setResizable(false);
+            this.box.setMovable(true);
             this.box.setTextAlign('center');
 
             this.box.element.style.maxWidth = '192px';
@@ -2579,7 +2580,7 @@ const ui = {
                 
                 let img = document.createElement('img');
                 img.src = player.statusEffects[effect].icon;
-                img.style = 'width: 32px; height: 32px;';
+                img.style = 'width: 32px; height: 32px; pointer-events: none;';
 
                 slot.appendChild(img);
 
