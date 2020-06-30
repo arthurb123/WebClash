@@ -39,12 +39,13 @@
             this.spawnNPCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showQuestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showShopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.turnHostileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.advanceQuestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.playerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getVariableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.canvas = new System.Windows.Forms.PictureBox();
-            this.showBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.giveStatusEffectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.SuspendLayout();
@@ -73,6 +74,7 @@
             this.eventsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.setVariableToolStripMenuItem,
             this.giveItemToolStripMenuItem,
+            this.giveStatusEffectToolStripMenuItem,
             this.loadMapToolStripMenuItem,
             this.affectPlayerToolStripMenuItem,
             this.spawnNPCToolStripMenuItem,
@@ -134,6 +136,13 @@
             this.showShopToolStripMenuItem.Text = "Show Shop";
             this.showShopToolStripMenuItem.Click += new System.EventHandler(this.ShowShopToolStripMenuItem_Click);
             // 
+            // showBankToolStripMenuItem
+            // 
+            this.showBankToolStripMenuItem.Name = "showBankToolStripMenuItem";
+            this.showBankToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showBankToolStripMenuItem.Text = "Show Bank";
+            this.showBankToolStripMenuItem.Click += new System.EventHandler(this.showBankToolStripMenuItem_Click);
+            // 
             // turnHostileToolStripMenuItem
             // 
             this.turnHostileToolStripMenuItem.Enabled = false;
@@ -175,12 +184,12 @@
             this.canvas.TabIndex = 2;
             this.canvas.TabStop = false;
             // 
-            // showBankToolStripMenuItem
+            // giveStatusEffectToolStripMenuItem
             // 
-            this.showBankToolStripMenuItem.Name = "showBankToolStripMenuItem";
-            this.showBankToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.showBankToolStripMenuItem.Text = "Show Bank";
-            this.showBankToolStripMenuItem.Click += new System.EventHandler(this.showBankToolStripMenuItem_Click);
+            this.giveStatusEffectToolStripMenuItem.Name = "giveStatusEffectToolStripMenuItem";
+            this.giveStatusEffectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.giveStatusEffectToolStripMenuItem.Text = "Give Status Effect";
+            this.giveStatusEffectToolStripMenuItem.Click += new System.EventHandler(this.giveStatusEffectToolStripMenuItem_Click);
             // 
             // Dialogue
             // 
@@ -221,5 +230,6 @@
         private System.Windows.Forms.ToolStripMenuItem setVariableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem advanceQuestToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showBankToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem giveStatusEffectToolStripMenuItem;
     }
 }

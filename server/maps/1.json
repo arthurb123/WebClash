@@ -1,12 +1,4 @@
-{ "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "target":"."
-        }
-    },
- "height":60,
+{ "height":60,
  "infinite":false,
  "layers":[
         {
@@ -1494,6 +1486,24 @@
                  "width":0,
                  "x":334.666666666667,
                  "y":147.333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":154,
+                 "name":"",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"NPC",
+                         "type":"string",
+                         "value":"Lightning#0"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1110.66666666667,
+                 "y":1250.66666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1502,10 +1512,10 @@
          "y":0
         }],
  "nextlayerid":21,
- "nextobjectid":154,
+ "nextobjectid":155,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.4.1",
+ "tiledversion":"1.2.1",
  "tileheight":32,
  "tilesets":[
         {
@@ -1714,6 +1724,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":1.4,
+ "version":1.2,
  "width":40
 }

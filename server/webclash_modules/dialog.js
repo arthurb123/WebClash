@@ -88,199 +88,226 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
 
     //Handle events
 
-    //Load map event
+    switch(dialogEvent.eventType) {
+        //Load map event
 
-    if (dialogEvent.eventType === 'LoadMap') {
-        //Get map index
+        case 'LoadMap':
+            //Get map index
 
-        let new_map = tiled.getMapIndex(dialogEvent.loadMapEvent.map);
+            let new_map = tiled.getMapIndex(dialogEvent.loadMapEvent.map);
 
-        //Check if map is valid
+            //Check if map is valid
 
-        if (new_map === -1)
-            return;
+            if (new_map === -1)
+                return;
 
-        //Load map
+            //Load map
 
-        game.loadMap(channel, dialogEvent.loadMapEvent.map);
+            game.loadMap(channel, dialogEvent.loadMapEvent.map);
 
-        //Set position
+            //Set position
 
-        game.setPlayerTilePosition(
-            id,
-            new_map,
-            dialogEvent.loadMapEvent.positionX,
-            dialogEvent.loadMapEvent.positionY
-        );
-    }
+            game.setPlayerTilePosition(
+                id,
+                new_map,
+                dialogEvent.loadMapEvent.positionX,
+                dialogEvent.loadMapEvent.positionY
+            );
 
-    //Give item event
+            break;
+    
+        //Give item event
 
-    else if (dialogEvent.eventType === 'GiveItem') {
-        //Add item(s)
+        case 'GiveItem':
+            //Add item(s)
 
-        let done = false;
+            let done = false;
 
-        for (let a = 0; a < dialogEvent.giveItemEvent.amount; a++) {
-            if (items.addPlayerItem(id, dialogEvent.giveItemEvent.item))
-                done = true;
-        }
+            //TODO: Check if player has enough room
+            //      for all dialog items, if not
+            //      this should be reported back to the
+            //      player. Right now this can be exploited..
 
-        if (!done)
-            return;
-    }
+            for (let a = 0; a < dialogEvent.giveItemEvent.amount; a++) {
+                if (items.addPlayerItem(id, dialogEvent.giveItemEvent.item))
+                    done = true;
+            }
 
-    //Affect player event
+            if (!done)
+                return;
 
-    else if (dialogEvent.eventType === 'AffectPlayer') {
-        //Add differences
+            break;
 
-        //Health
+        //Give status effect event
 
-        if (dialogEvent.affectPlayerEvent.healthDifference > 0)
-            game.healPlayer(id, dialogEvent.affectPlayerEvent.healthDifference);
-        else if (dialogEvent.affectPlayerEvent.healthDifference < 0)
-            game.damagePlayer(id, dialogEvent.affectPlayerEvent.healthDifference);
+        case 'GiveStatusEffect':
+            status.givePlayerStatusEffect(
+                id, 
+                dialogEvent.giveStatusEffectEvent.caster,
+                dialogEvent.giveStatusEffectEvent.hostile,
+                dialogEvent.giveStatusEffectEvent.statusEffect
+            );
 
-        //Mana
+            break;
 
-        game.deltaManaPlayer(id, dialogEvent.affectPlayerEvent.manaDifference);
+        //Affect player event
 
-        //Currency
+        case 'AffectPlayer':
+            //Add differences
 
-        if (!game.deltaCurrencyPlayer(id, dialogEvent.affectPlayerEvent.currencyDifference)) {
-            channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: false, id: clientData.id });
-            return;
-        }
-    }
+            //Health
 
-    //Spawn NPC event
+            if (dialogEvent.affectPlayerEvent.healthDifference > 0)
+                game.healPlayer(id, dialogEvent.affectPlayerEvent.healthDifference);
+            else if (dialogEvent.affectPlayerEvent.healthDifference < 0)
+                game.damagePlayer(id, dialogEvent.affectPlayerEvent.healthDifference);
 
-    else if (dialogEvent.eventType === 'SpawnNPC') {
-        //Check if the player already owns event NPC(s)
-        //with the same name as the NPC to be spawned
+            //Mana
 
-        if (npcs.ownsEventNPC(map, dialogEvent.spawnNPCEvent.name, id))
-            return;
+            game.deltaManaPlayer(id, dialogEvent.affectPlayerEvent.manaDifference);
 
-        //(Otherwise) Spawn event NPCs for the specified amount
+            //Currency
 
-        let pos = {
-            x: game.players[id].pos.X+game.players[id].character.width/2,
-            y: game.players[id].pos.Y+game.players[id].character.height,
-        };
+            if (!game.deltaCurrencyPlayer(id, dialogEvent.affectPlayerEvent.currencyDifference)) {
+                channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: false, id: clientData.id });
+                return;
+            }
 
-        for (let i = 0; i < dialogEvent.spawnNPCEvent.amount; i++)
+            break;
+
+        //Spawn NPC event
+
+        case 'SpawnNPC':
+            //Check if the player already owns event NPC(s)
+            //with the same name as the NPC to be spawned
+
+            if (npcs.ownsEventNPC(map, dialogEvent.spawnNPCEvent.name, id))
+                return;
+
+            //(Otherwise) Spawn event NPCs for the specified amount
+
+            let pos = {
+                x: game.players[id].pos.X+game.players[id].character.width/2,
+                y: game.players[id].pos.Y+game.players[id].character.height,
+            };
+
+            for (let i = 0; i < dialogEvent.spawnNPCEvent.amount; i++)
+                npcs.createEventNPC(
+                    map,
+                    dialogEvent.spawnNPCEvent.name,
+                    dialogEvent.spawnNPCEvent.profile,
+                    pos.x,
+                    pos.y,
+                    id,
+                    dialogEvent.spawnNPCEvent.hostile
+                );
+
+            break;
+
+        //Turn hostile event
+
+        case 'TurnHostile':
+            //Grab target NPC
+
+            let npc = npcs.onMap[map][clientData.owner];
+
+            //Kill original NPC
+
+            npcs.killNPC(map, clientData.owner);
+
+            //Create event NPC
+
             npcs.createEventNPC(
                 map,
-                dialogEvent.spawnNPCEvent.name,
-                dialogEvent.spawnNPCEvent.profile,
-                pos.x,
-                pos.y,
+                npc.name,
+                npc.data.profile,
+                npc.pos.X+npc.data.character.width/2,
+                npc.pos.Y+npc.data.character.height,
                 id,
-                dialogEvent.spawnNPCEvent.hostile
+                true,
+                function() {
+                    //On reset, respawn original npc
+
+                    npcs.respawnNPC(map, clientData.owner);
+                }
             );
-    }
 
-    //Turn hostile event
+            //Respond and return
 
-    else if (dialogEvent.eventType === 'TurnHostile') {
-        //Grab target NPC
-
-        let npc = npcs.onMap[map][clientData.owner];
-
-        //Kill original NPC
-
-        npcs.killNPC(map, clientData.owner);
-
-        //Create event NPC
-
-        npcs.createEventNPC(
-            map,
-            npc.name,
-            npc.data.profile,
-            npc.pos.X+npc.data.character.width/2,
-            npc.pos.Y+npc.data.character.height,
-            id,
-            true,
-            function() {
-                //On reset, respawn original npc
-
-                npcs.respawnNPC(map, clientData.owner);
-            }
-        );
-
-        //Respond and return
-
-        channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: true, id: clientData.id });
-        
-        return;
-    }
-
-    //Show quest event
-
-    else if (dialogEvent.eventType === 'ShowQuest') {
-        //Send quest information to player,
-        //if the quest has not been completed yet
-        //or the quest can be repeated
-
-        if (!quests.hasCompleted(id, dialogEvent.showQuestEvent.name) || dialogEvent.repeatable)
-            quest = quests.getQuestDialog(dialogEvent.showQuestEvent.name);
-        else {
-            channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: false, id: clientData.id });
+            channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: true, id: clientData.id });
 
             return;
-        }
-    }
 
-    //Show shop event
+        //Show quest event
 
-    else if (dialogEvent.eventType === 'ShowShop') {
-        //Respond to make sure the dialog closes
+        case 'ShowQuest':
+            //Send quest information to player,
+            //if the quest has not been completed yet
+            //or the quest can be repeated
 
-        channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: true, id: clientData.id });
+            if (!quests.hasCompleted(id, dialogEvent.showQuestEvent.name) || dialogEvent.repeatable)
+                quest = quests.getQuestDialog(dialogEvent.showQuestEvent.name);
+            else {
+                channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: false, id: clientData.id });
 
-        //Open shop for the player
+                return;
+            }
 
-        shop.openShop(id, clientData.owner, clientData.id, dialogEvent.showShopEvent);
-    }
+            break;
+
+        //Show shop event
+
+        case 'ShowShop':
+            //Respond to make sure the dialog closes
+
+            channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: true, id: clientData.id });
+
+            //Open shop for the player
+
+            shop.openShop(id, clientData.owner, clientData.id, dialogEvent.showShopEvent);
+
+            break;
     
-    //Show bank event
+        //Show bank event
 
-    else if (dialogEvent.eventType === 'ShowBank') {
-        //Respond to make sure the dialog closes
+        case 'ShowBank':
+            //Respond to make sure the dialog closes
 
-        channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: true, id: clientData.id });
+            channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: true, id: clientData.id });
 
-        //Open bank for the player
+            //Open bank for the player
 
-        banks.openBank(id, dialogEvent.showBankEvent.name);
-    }
+            banks.openBank(id, dialogEvent.showBankEvent.name);
 
-    //Advance quest event
+            break;
 
-    else if (dialogEvent.eventType === 'AdvanceQuest') {
-        //Advance quest objective (provide quest as questOverride,
-        //because it is a talk objective)
+        //Advance quest event
 
-        let npcName = npcs.onMap[map][clientData.owner].name;
-        quests.evaluateQuestObjective(id, 'talk', npcName, clientData.quest);
+        case 'AdvanceQuest':
+            //Advance quest objective (provide quest as questOverride,
+            //because it is a talk objective)
 
-        //Respond to continue dialog
+            let npcName = npcs.onMap[map][clientData.owner].name;
+            quests.evaluateQuestObjective(id, 'talk', npcName, clientData.quest);
 
-        channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: false, id: clientData.id });
-    }
+            //Respond to continue dialog
 
-    //Set player variable event
+            channel.emit('CLIENT_DIALOG_EVENT_RESPONSE', { result: false, id: clientData.id });
 
-    else if (dialogEvent.eventType === 'SetVariable') {
-        //Set player variable
+            break;
 
-        game.setPlayerGlobalVariable(
-            id,
-            dialogEvent.setVariableEvent.name,
-            dialogEvent.setVariableEvent.value
-        );
+        //Set player variable event
+
+        case 'SetVariable':
+            //Set player variable
+
+            game.setPlayerGlobalVariable(
+                id,
+                dialogEvent.setVariableEvent.name,
+                dialogEvent.setVariableEvent.value
+            );
+
+            break;
     }
 
     //Check if event is repeatable,

@@ -1,0 +1,189 @@
+{
+  "name": "Lightning",
+  "profiles": [
+    {
+      "showNameplate": true,
+      "movement": "free",
+      "range": 6,
+      "facing": 0,
+      "collidesWithinMap": true,
+      "type": "friendly",
+      "aggressive": false,
+      "attackRange": 1,
+      "character": "bunny",
+      "stats": {
+        "level": 1,
+        "exp": 0,
+        "power": 0,
+        "toughness": 0,
+        "agility": 0,
+        "wisdom": 0,
+        "intelligence": 0,
+        "vitality": 0
+      },
+      "health": {
+        "cur": 100,
+        "max": 100
+      },
+      "actions": [],
+      "items": [],
+      "equipment": [],
+      "dialog": [
+        {
+          "text": "Hey, hey! You!",
+          "portrait": null,
+          "entry": true,
+          "isEvent": false,
+          "options": [
+            {
+              "text": "You can talk?",
+              "next": 1
+            },
+            {
+              "text": "What..?",
+              "next": 1
+            },
+            {
+              "text": "Leave",
+              "next": -1
+            }
+          ],
+          "eventType": "",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "Yes, hello! You wanna go fast like me?!",
+          "portrait": null,
+          "entry": false,
+          "isEvent": false,
+          "options": [
+            {
+              "text": "Sure!",
+              "next": 2
+            },
+            {
+              "text": "No thanks",
+              "next": -1
+            }
+          ],
+          "eventType": "",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "",
+          "portrait": "",
+          "entry": false,
+          "isEvent": true,
+          "options": [
+            {
+              "text": "",
+              "next": 3
+            },
+            {
+              "text": "",
+              "next": -1
+            }
+          ],
+          "eventType": "GiveStatusEffect",
+          "repeatable": true,
+          "giveItemEvent": null,
+          "giveStatusEffectEvent": {
+            "statusEffect": "Hasted",
+            "hostile": false,
+            "caster": "Lightning"
+          },
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        },
+        {
+          "text": "There ya go! Now run your legs off human!!",
+          "portrait": null,
+          "entry": false,
+          "isEvent": false,
+          "options": [
+            {
+              "text": "Thanks!",
+              "next": -1
+            },
+            {
+              "text": "Leave",
+              "next": -1
+            }
+          ],
+          "eventType": "",
+          "repeatable": false,
+          "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
+          "loadMapEvent": null,
+          "affectPlayerEvent": null,
+          "spawnNPCEvent": null,
+          "turnHostileEvent": null,
+          "showQuestEvent": null,
+          "showShopEvent": null,
+          "showBankEvent": null,
+          "advanceQuestEvent": null,
+          "getVariableEvent": null,
+          "setVariableEvent": null
+        }
+      ],
+      "dialogElements": [
+        {
+          "p": "21, 131",
+          "id": 0,
+          "IsEvent": false,
+          "Size": "100, 80"
+        },
+        {
+          "p": "211, 82",
+          "id": 1,
+          "IsEvent": false,
+          "Size": "100, 80"
+        },
+        {
+          "p": "360, 77",
+          "id": 2,
+          "IsEvent": true,
+          "Size": "130, 20"
+        },
+        {
+          "p": "563, 101",
+          "id": 3,
+          "IsEvent": false,
+          "Size": "100, 80"
+        }
+      ]
+    }
+  ]
+}

@@ -24,6 +24,11 @@ namespace WebClashServer.Editors
 
                     LoadItemOptions();
                     break;
+                case "GiveStatusEffect":
+                    giveStatusEffectPanel.Visible = true;
+
+                    LoadStatusEffectOptions();
+                    break;
                 case "LoadMap":
                     loadMapPanel.Visible = true;
 
@@ -186,6 +191,59 @@ namespace WebClashServer.Editors
         private void itemAmount_ValueChanged(object sender, EventArgs e)
         {
             current.giveItemEvent.amount = (int)itemAmount.Value;
+        }
+
+        //Give status effect event
+
+        private void LoadStatusEffectOptions()
+        {
+            LoadStatusEffectList();
+
+            statusEffectList.SelectedItem = current.giveStatusEffectEvent.statusEffect;
+            casterName.Text = current.giveStatusEffectEvent.caster;
+            hostileStatusEffect.Checked = current.giveStatusEffectEvent.hostile;
+        }
+
+        private void LoadStatusEffectList()
+        {
+            statusEffectList.Items.Clear();
+
+            try
+            {
+                List<string> ext = new List<string>()
+                {
+                    ".json"
+                };
+
+                string[] effects = Directory.GetFiles(Program.main.serverLocation + "/effects", "*.*", SearchOption.AllDirectories)
+                    .Where(e => ext.Contains(Path.GetExtension(e))).ToArray();
+
+                for (int e = 0; e < effects.Length; e++)
+                {
+                    string effect = effects[e].Replace('\\', '/');
+
+                    statusEffectList.Items.Add(effect.Substring(effect.LastIndexOf('/') + 1, effect.LastIndexOf('.') - effect.LastIndexOf('/') - 1));
+                }
+            }
+            catch (Exception exc)
+            {
+                Logger.Error("Could not load status effects: ", exc);
+            }
+        }
+
+        private void statusEffectList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            current.giveStatusEffectEvent.statusEffect = statusEffectList.SelectedItem.ToString();
+        }
+
+        private void casterName_TextChanged(object sender, EventArgs e)
+        {
+            current.giveStatusEffectEvent.caster = casterName.Text;
+        }
+
+        private void hostileStatusEffect_CheckedChanged(object sender, EventArgs e)
+        {
+            current.giveStatusEffectEvent.hostile = hostileStatusEffect.Checked;
         }
 
         //Affect player event

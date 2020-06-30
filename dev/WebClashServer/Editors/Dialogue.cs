@@ -93,7 +93,7 @@ namespace WebClashServer.Editors
             if (item == -1)
                 return;
 
-            if (!elements[item].isEvent)
+            if (!elements[item].IsEvent)
             {
                 DialogueProperties dp = new DialogueProperties(dialogSystem.items[elements[item].id]);
 
@@ -230,7 +230,7 @@ namespace WebClashServer.Editors
 
                 if (new Rectangle(
                         ca.p,
-                        ca.size
+                        ca.Size
                     ).Contains(
                         canvas.PointToClient(MousePosition)
                     ))
@@ -259,8 +259,12 @@ namespace WebClashServer.Editors
         {
             try
             {
-                Rectangle r = new Rectangle(ca.p, ca.size);
+                //Setup rectangle and pen
+
+                Rectangle r = new Rectangle(ca.p, ca.Size);
                 Pen p = new Pen(Brushes.Black, 2);
+
+                //Draw arrow(s)
 
                 p.CustomEndCap = new AdjustableArrowCap(4, 4);
 
@@ -268,22 +272,22 @@ namespace WebClashServer.Editors
                     g.DrawLine(
                         p,
                         0,
-                        ca.p.Y + ca.size.Height / 2,
+                        ca.p.Y + ca.Size.Height / 2,
                         ca.p.X,
-                        ca.p.Y + ca.size.Height / 2
+                        ca.p.Y + ca.Size.Height / 2
                     );
 
                 for (int i = 0; i < dialogSystem.items[ca.id].options.Count; i++)
                 {
                     if (dialogSystem.items[ca.id].options[i].next == -1)
                     {
-                        int x = ca.p.X + ca.size.Width,
-                            y = ca.p.Y + ca.size.Height / 2;
+                        int x = ca.p.X + ca.Size.Width,
+                            y = ca.p.Y + ca.Size.Height / 2;
 
                         g.DrawLine(
                             p,
                             x, y,
-                            x + ca.size.Width / 2,
+                            x + ca.Size.Width / 2,
                             y
                         );
 
@@ -292,7 +296,7 @@ namespace WebClashServer.Editors
                             DefaultFont,
                             Brushes.Black,
                             new Point(
-                                x + ca.size.Width / 2 + 4,
+                                x + ca.Size.Width / 2 + 4,
                                 y - 4
                             )
                         );
@@ -306,20 +310,24 @@ namespace WebClashServer.Editors
 
                         g.DrawLine(
                             p,
-                            ca.p.X + ca.size.Width,
-                            ca.p.Y + ca.size.Height / 2,
+                            ca.p.X + ca.Size.Width,
+                            ca.p.Y + ca.Size.Height / 2,
                             target.p.X,
-                            target.p.Y + target.size.Height / 2
+                            target.p.Y + target.Size.Height / 2
                         );
                     }
                 }
 
+                //Draw rectangle
+
                 g.FillRectangle(Brushes.WhiteSmoke, r);
                 g.DrawRectangle(Pens.Black, r);
 
+                //Draw content
+
                 int offset = 4;
                 g.DrawString(
-                    "#" + ca.id + ": " + (ca.isEvent ? dialogSystem.items[ca.id].eventType : dialogSystem.items[ca.id].text),
+                    "#" + ca.id + ": " + (ca.IsEvent ? dialogSystem.items[ca.id].eventType : dialogSystem.items[ca.id].text),
                     DefaultFont,
                     Brushes.Black,
                     new Rectangle(
@@ -372,6 +380,9 @@ namespace WebClashServer.Editors
             {
                 case "GiveItem":
                     dialogSystem.items[cee.id].giveItemEvent = new GiveItemEvent();
+                    break;
+                case "GiveStatusEffect":
+                    dialogSystem.items[cee.id].giveStatusEffectEvent = new GiveStatusEffectEvent();
                     break;
                 case "LoadMap":
                     dialogSystem.items[cee.id].loadMapEvent = new LoadMapEvent();
@@ -437,6 +448,13 @@ namespace WebClashServer.Editors
         private void giveItemToolStripMenuItem_Click(object sender, EventArgs e)
         {
             addCanvasEventElement(EventType.GiveItem);
+
+            canvas.Invalidate();
+        }
+
+        private void giveStatusEffectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addCanvasEventElement(EventType.GiveStatusEffect);
 
             canvas.Invalidate();
         }
@@ -524,29 +542,34 @@ namespace WebClashServer.Editors
 
     public class CanvasElement
     {
+        public Size Size
+        {
+            get
+            {
+                if (!IsEvent)
+                    return new Size(100, 80); //Normal element Size
+                else
+                    return new Size(130, 20); //Event element Size
+            }
+        }
+
         public CanvasElement(Point p, int id)
         {
             this.p = p;
             this.id = id;
-
-            size = new Size(100, 80);
         }
 
-        public Point p = default(Point);
+        public Point p = default;
         public int id = 0;
 
-        public bool isEvent = false;
-
-        public Size size;
+        public bool IsEvent = false;
     }
 
     public class CanvasEventElement : CanvasElement
     {
         public CanvasEventElement(Point p, DialogueSystem ds, EventType tp) : base(p, ds.addDialogueItem(true))
         {
-            isEvent = true;
-
-            size = new Size(110, 20);
+            IsEvent = true;
         }
     }
 
@@ -562,6 +585,7 @@ namespace WebClashServer.Editors
         ShowBank,
         AdvanceQuest,
         SetVariable,
-        GetVariable
+        GetVariable,
+        GiveStatusEffect
     }
 }

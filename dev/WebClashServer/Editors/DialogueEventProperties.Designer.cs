@@ -55,6 +55,8 @@
             this.healthDifference = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
             this.spawnNPCPanel = new System.Windows.Forms.Panel();
+            this.npcProfileList = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.npcHostile = new System.Windows.Forms.CheckBox();
             this.npcAmount = new System.Windows.Forms.NumericUpDown();
             this.label12 = new System.Windows.Forms.Label();
@@ -71,8 +73,12 @@
             this.advanceQuestPanel = new System.Windows.Forms.Panel();
             this.advanceQuestEntryPoint = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.npcProfileList = new System.Windows.Forms.ComboBox();
+            this.giveStatusEffectPanel = new System.Windows.Forms.Panel();
+            this.casterName = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.statusEffectList = new System.Windows.Forms.ComboBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.hostileStatusEffect = new System.Windows.Forms.CheckBox();
             this.loadMapPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.positionY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.positionX)).BeginInit();
@@ -89,6 +95,7 @@
             this.showQuestPanel.SuspendLayout();
             this.playerVariablePanel.SuspendLayout();
             this.advanceQuestPanel.SuspendLayout();
+            this.giveStatusEffectPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // loadMapPanel
@@ -434,6 +441,25 @@
             this.spawnNPCPanel.TabIndex = 9;
             this.spawnNPCPanel.Visible = false;
             // 
+            // npcProfileList
+            // 
+            this.npcProfileList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.npcProfileList.FormattingEnabled = true;
+            this.npcProfileList.Location = new System.Drawing.Point(212, 33);
+            this.npcProfileList.Name = "npcProfileList";
+            this.npcProfileList.Size = new System.Drawing.Size(64, 21);
+            this.npcProfileList.TabIndex = 7;
+            this.npcProfileList.SelectedIndexChanged += new System.EventHandler(this.npcProfileList_SelectedIndexChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(12, 36);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(36, 13);
+            this.label5.TabIndex = 6;
+            this.label5.Text = "Profile";
+            // 
             // npcHostile
             // 
             this.npcHostile.AutoSize = true;
@@ -608,30 +634,72 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Advances the current \'Talk\' quest objective.";
             // 
-            // label5
+            // giveStatusEffectPanel
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 36);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(36, 13);
-            this.label5.TabIndex = 6;
-            this.label5.Text = "Profile";
+            this.giveStatusEffectPanel.Controls.Add(this.hostileStatusEffect);
+            this.giveStatusEffectPanel.Controls.Add(this.casterName);
+            this.giveStatusEffectPanel.Controls.Add(this.label16);
+            this.giveStatusEffectPanel.Controls.Add(this.statusEffectList);
+            this.giveStatusEffectPanel.Controls.Add(this.label17);
+            this.giveStatusEffectPanel.Location = new System.Drawing.Point(12, 12);
+            this.giveStatusEffectPanel.Name = "giveStatusEffectPanel";
+            this.giveStatusEffectPanel.Size = new System.Drawing.Size(286, 126);
+            this.giveStatusEffectPanel.TabIndex = 7;
+            this.giveStatusEffectPanel.Visible = false;
             // 
-            // npcProfileList
+            // casterName
             // 
-            this.npcProfileList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.npcProfileList.FormattingEnabled = true;
-            this.npcProfileList.Location = new System.Drawing.Point(212, 33);
-            this.npcProfileList.Name = "npcProfileList";
-            this.npcProfileList.Size = new System.Drawing.Size(64, 21);
-            this.npcProfileList.TabIndex = 7;
-            this.npcProfileList.SelectedIndexChanged += new System.EventHandler(this.npcProfileList_SelectedIndexChanged);
+            this.casterName.Location = new System.Drawing.Point(156, 46);
+            this.casterName.Name = "casterName";
+            this.casterName.Size = new System.Drawing.Size(120, 20);
+            this.casterName.TabIndex = 3;
+            this.casterName.TextChanged += new System.EventHandler(this.casterName_TextChanged);
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(12, 47);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(68, 13);
+            this.label16.TabIndex = 2;
+            this.label16.Text = "Caster Name";
+            // 
+            // statusEffectList
+            // 
+            this.statusEffectList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.statusEffectList.FormattingEnabled = true;
+            this.statusEffectList.Location = new System.Drawing.Point(156, 6);
+            this.statusEffectList.Name = "statusEffectList";
+            this.statusEffectList.Size = new System.Drawing.Size(121, 21);
+            this.statusEffectList.TabIndex = 1;
+            this.statusEffectList.SelectedIndexChanged += new System.EventHandler(this.statusEffectList_SelectedIndexChanged);
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(12, 9);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(68, 13);
+            this.label17.TabIndex = 0;
+            this.label17.Text = "Status Effect";
+            // 
+            // hostileStatusEffect
+            // 
+            this.hostileStatusEffect.AutoSize = true;
+            this.hostileStatusEffect.Location = new System.Drawing.Point(76, 85);
+            this.hostileStatusEffect.Name = "hostileStatusEffect";
+            this.hostileStatusEffect.Size = new System.Drawing.Size(122, 17);
+            this.hostileStatusEffect.TabIndex = 4;
+            this.hostileStatusEffect.Text = "Hostile Status Effect";
+            this.hostileStatusEffect.UseVisualStyleBackColor = true;
+            this.hostileStatusEffect.CheckedChanged += new System.EventHandler(this.hostileStatusEffect_CheckedChanged);
             // 
             // DialogueEventProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(312, 215);
+            this.Controls.Add(this.giveStatusEffectPanel);
             this.Controls.Add(this.spawnNPCPanel);
             this.Controls.Add(this.affectPlayerPanel);
             this.Controls.Add(this.nextIndex1);
@@ -676,6 +744,8 @@
             this.playerVariablePanel.PerformLayout();
             this.advanceQuestPanel.ResumeLayout(false);
             this.advanceQuestPanel.PerformLayout();
+            this.giveStatusEffectPanel.ResumeLayout(false);
+            this.giveStatusEffectPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -727,5 +797,11 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox npcProfileList;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Panel giveStatusEffectPanel;
+        private System.Windows.Forms.TextBox casterName;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.ComboBox statusEffectList;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.CheckBox hostileStatusEffect;
     }
 }
