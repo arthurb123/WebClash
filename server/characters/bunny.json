@@ -1,0 +1,25 @@
+{
+  "src": "res/characters/167.png",
+  "width": 32,
+  "height": 32,
+  "animation": {
+    "direction": "horizontal",
+    "speed": 8,
+    "alwaysAnimate": false
+  },
+  "collider": {
+    "x": 4,
+    "y": 16,
+    "width": 24,
+    "height": 16
+  },
+  "movement": {
+    "max": 1.5
+  },
+  "sounds": {
+    "hitSounds": [],
+    "deathSounds": []
+  },
+  "damageParticles": true,
+  "particleSrc": "res/particles/blood.png"
+}

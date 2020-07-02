@@ -38,6 +38,9 @@
             this.properties = new System.Windows.Forms.GroupBox();
             this.appearancePanel = new System.Windows.Forms.Panel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.statusEffectsPanel = new System.Windows.Forms.GroupBox();
+            this.label26 = new System.Windows.Forms.Label();
+            this.statusEffectSelect = new System.Windows.Forms.ComboBox();
             this.scale = new System.Windows.Forms.NumericUpDown();
             this.label23 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -51,6 +54,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.speed = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
+            this.propertyView = new System.Windows.Forms.ComboBox();
             this.behaviourPanel = new System.Windows.Forms.Panel();
             this.delay = new System.Windows.Forms.NumericUpDown();
             this.label24 = new System.Windows.Forms.Label();
@@ -63,7 +67,6 @@
             this.label19 = new System.Windows.Forms.Label();
             this.propertyType = new System.Windows.Forms.ComboBox();
             this.label18 = new System.Windows.Forms.Label();
-            this.propertyView = new System.Windows.Forms.ComboBox();
             this.removeElement = new System.Windows.Forms.Button();
             this.addElement = new System.Windows.Forms.Button();
             this.removeAction = new System.Windows.Forms.Button();
@@ -105,6 +108,7 @@
             this.properties.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.statusEffectsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).BeginInit();
@@ -180,9 +184,10 @@
             // 
             // properties
             // 
+            this.properties.Controls.Add(this.statusEffectsPanel);
             this.properties.Controls.Add(this.appearancePanel);
-            this.properties.Controls.Add(this.behaviourPanel);
             this.properties.Controls.Add(this.propertyView);
+            this.properties.Controls.Add(this.behaviourPanel);
             this.properties.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.properties.Location = new System.Drawing.Point(144, 231);
             this.properties.Name = "properties";
@@ -221,6 +226,38 @@
             this.groupBox3.TabIndex = 9;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Image";
+            // 
+            // statusEffectsPanel
+            // 
+            this.statusEffectsPanel.Controls.Add(this.label26);
+            this.statusEffectsPanel.Controls.Add(this.statusEffectSelect);
+            this.statusEffectsPanel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statusEffectsPanel.Location = new System.Drawing.Point(9, 49);
+            this.statusEffectsPanel.Name = "statusEffectsPanel";
+            this.statusEffectsPanel.Size = new System.Drawing.Size(239, 98);
+            this.statusEffectsPanel.TabIndex = 18;
+            this.statusEffectsPanel.TabStop = false;
+            this.statusEffectsPanel.Text = "Status Effects";
+            this.statusEffectsPanel.Visible = false;
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(9, 46);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(74, 15);
+            this.label26.TabIndex = 19;
+            this.label26.Text = "Status Effect";
+            // 
+            // statusEffectSelect
+            // 
+            this.statusEffectSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.statusEffectSelect.FormattingEnabled = true;
+            this.statusEffectSelect.Location = new System.Drawing.Point(104, 44);
+            this.statusEffectSelect.Name = "statusEffectSelect";
+            this.statusEffectSelect.Size = new System.Drawing.Size(121, 23);
+            this.statusEffectSelect.TabIndex = 18;
+            this.statusEffectSelect.SelectedIndexChanged += new System.EventHandler(this.statusEffectSelect_SelectedIndexChanged);
             // 
             // scale
             // 
@@ -402,6 +439,20 @@
             this.label4.TabIndex = 3;
             this.label4.Text = "Speed";
             // 
+            // propertyView
+            // 
+            this.propertyView.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.propertyView.FormattingEnabled = true;
+            this.propertyView.Items.AddRange(new object[] {
+            "Appearance",
+            "Behaviour",
+            "Status Effects"});
+            this.propertyView.Location = new System.Drawing.Point(74, 21);
+            this.propertyView.Name = "propertyView";
+            this.propertyView.Size = new System.Drawing.Size(121, 23);
+            this.propertyView.TabIndex = 10;
+            this.propertyView.SelectedIndexChanged += new System.EventHandler(this.propertyView_SelectedIndexChanged);
+            // 
             // behaviourPanel
             // 
             this.behaviourPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -553,19 +604,6 @@
             this.label18.Size = new System.Drawing.Size(33, 15);
             this.label18.TabIndex = 0;
             this.label18.Text = "Type";
-            // 
-            // propertyView
-            // 
-            this.propertyView.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.propertyView.FormattingEnabled = true;
-            this.propertyView.Items.AddRange(new object[] {
-            "Appearance",
-            "Behaviour"});
-            this.propertyView.Location = new System.Drawing.Point(74, 21);
-            this.propertyView.Name = "propertyView";
-            this.propertyView.Size = new System.Drawing.Size(121, 23);
-            this.propertyView.TabIndex = 10;
-            this.propertyView.SelectedIndexChanged += new System.EventHandler(this.propertyView_SelectedIndexChanged);
             // 
             // removeElement
             // 
@@ -1038,6 +1076,8 @@
             this.appearancePanel.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.statusEffectsPanel.ResumeLayout(false);
+            this.statusEffectsPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.height)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).EndInit();
@@ -1146,5 +1186,8 @@
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.NumericUpDown castingTime;
         private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.GroupBox statusEffectsPanel;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.ComboBox statusEffectSelect;
     }
 }

@@ -27,7 +27,8 @@
       "delay": 0,
       "rotates": true,
       "projectileSpeed": 1,
-      "projectileDistance": 0
+      "projectileDistance": 0,
+      "statusEffect": "Dehydrated"
     }
   ],
   "sounds": [

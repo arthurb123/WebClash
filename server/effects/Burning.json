@@ -1,0 +1,16 @@
+{
+  "description": "You are on fire! You lose 5 health per second.",
+  "icon": "res/icons/1.png",
+  "duration": 5000,
+  "sounds": [],
+  "effects": {
+    "manaTickDelta": 0,
+    "healthTickDelta": -5,
+    "itemFindFactor": 1.0,
+    "experienceGainFactor": 1.0,
+    "damageFactor": 1.0,
+    "movementSpeedFactor": 1.0,
+    "castingTimeFactor": 1.0,
+    "cooldownTimeFactor": 1.0
+  }
+}

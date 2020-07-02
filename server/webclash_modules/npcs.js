@@ -105,7 +105,7 @@ exports.loadMap = function(map)
         }
 };
 
-exports.updateMaps = function()
+exports.updateMaps = function(dt)
 {
     //Check if a map contains players,
     //if so update the NPCs
@@ -113,10 +113,10 @@ exports.updateMaps = function()
     for (let i = 0; i < tiled.maps.length; i++)
         if (this.mapPopulation[i] !== undefined &&
             this.mapPopulation[i] > 0)
-            this.updateMap(i);
+            this.updateMap(i, dt);
 };
 
-exports.updateMap = function(map)
+exports.updateMap = function(map, dt)
 {
     //Check if valid
 
@@ -129,7 +129,7 @@ exports.updateMap = function(map)
     for (let i = 0; i < this.onMap[map].length; i++)
         if (this.onMap[map][i] != undefined &&
             this.onMap[map][i].data != undefined)
-            this.updateNPC(map, i);
+            this.updateNPC(map, i, dt);
 };
 
 exports.createNPCs = function(npc_property, map_id)
@@ -199,6 +199,14 @@ exports.createNPC = function(map, name, profile, x, y, isEvent)
             break;
         };
 
+    //Setup NPC status effects container
+
+    npc.statusEffects = {};
+
+    //Calculate NPC status effect matrix
+
+    npc.statusEffectsMatrix = status.calculateStatusEffectsMatrix(npc.statusEffects);
+
     //Setup NPC Movement
 
     npc.pos = {
@@ -217,7 +225,10 @@ exports.createNPC = function(map, name, profile, x, y, isEvent)
         },
         distance: 0,
         cur: 0,
-        standard: this.randomNPCMovementTimeout()
+        standard: this.randomNPCMovementTimeout(
+            npc.data.character.movement.max,
+            npc.statusEffectsMatrix
+        )
     };
     npc.moving = false;
 
@@ -375,13 +386,13 @@ exports.loadNPC = function(name, profile)
     }
 };
 
-exports.updateNPC = function(map, id)
+exports.updateNPC = function(map, id, dt)
 {
     try {
         //Check if NPC is on timeout
 
         if (this.isTimedOut(map, id)) {
-            this.onTimeOut[map][id]--;
+            this.onTimeOut[map][id]-=dt;
 
             if (this.onTimeOut[map][id] <= 0) {
                 this.onTimeOut[map][id] = undefined;
@@ -397,11 +408,11 @@ exports.updateNPC = function(map, id)
 
         //Update NPC movement
 
-        this.updateNPCMovement(map, id);
+        this.updateNPCMovement(map, id, dt);
 
         //Update NPC combat
 
-        this.updateNPCCombat(map, id);
+        this.updateNPCCombat(map, id, dt);
     }
     catch (err)
     {
@@ -409,9 +420,12 @@ exports.updateNPC = function(map, id)
     }
 };
 
-exports.randomNPCMovementTimeout = function()
+exports.randomNPCMovementTimeout = function(movementSpeed, statusEffectsMatrix)
 {
-    return 60 + Math.round(Math.random()*180);
+    let randomInterval = 60 + Math.round(Math.random() * 180);
+    let intervalFactor = movementSpeed * statusEffectsMatrix['movementSpeedFactor'];
+
+    return Math.round(randomInterval / intervalFactor);
 };
 
 exports.randomNPCMovement = function(map, id, cb)
@@ -443,7 +457,7 @@ exports.randomNPCMovement = function(map, id, cb)
         cb();
 };
 
-exports.updateNPCMovement = function(map, id)
+exports.updateNPCMovement = function(map, id, dt)
 {
     //Standard NPC movement
 
@@ -460,7 +474,10 @@ exports.updateNPCMovement = function(map, id)
             this.onMap[map][id].movement.vel.y = 0;
             this.onMap[map][id].movement.distance = 0;
             this.onMap[map][id].movement.cur = 0;
-            this.onMap[map][id].movement.standard = this.randomNPCMovementTimeout();
+            this.onMap[map][id].movement.standard = this.randomNPCMovementTimeout(
+                this.onMap[map][id].data.character.movement.max,
+                this.onMap[map][id].statusEffectsMatrix
+            );
 
             //Set random direction
 
@@ -504,7 +521,7 @@ exports.updateNPCMovement = function(map, id)
             server.syncNPCPartially(map, id, 'direction');
         }
         else
-            this.onMap[map][id].movement.cur++;
+            this.onMap[map][id].movement.cur+=dt;
     }
 
     //Evaluate movement
@@ -512,6 +529,8 @@ exports.updateNPCMovement = function(map, id)
     if (this.onMap[map][id].moving) {
         //Evaluate movement
 
+        let maxSpeed = this.onMap[map][id].data.character.movement.max;
+        maxSpeed *= this.onMap[map][id].statusEffectsMatrix['movementSpeedFactor'];
         switch (this.onMap[map][id].direction)
         {
             case 0:
@@ -527,6 +546,11 @@ exports.updateNPCMovement = function(map, id)
                 this.onMap[map][id].movement.vel.y = -this.onMap[map][id].data.character.movement.max;
                 break;
         }
+
+        //Adjust movement velocities using the delta time
+
+        this.onMap[map][id].movement.vel.x *= dt;
+        this.onMap[map][id].movement.vel.y *= dt;
 
         //Add movement velocity
 
@@ -571,7 +595,7 @@ exports.updateNPCMovement = function(map, id)
     }
 };
 
-exports.updateNPCCombat = function(map, id)
+exports.updateNPCCombat = function(map, id, dt)
 {
     //Check if attacking should be prevented
 
@@ -710,14 +734,15 @@ exports.updateNPCCombat = function(map, id)
 
     //Update cooldown
 
-    for (let key in this.onMap[map][id].combat_cooldown.actual) {
-        if (this.onMap[map][id].combat_cooldown.actual[key].done)
+    let cooldowns = this.onMap[map][id].combat_cooldown.actual;
+    for (let key in cooldowns) {
+        if (cooldowns[key].done)
             continue;
 
-        this.onMap[map][id].combat_cooldown.actual[key].cur++;
+        cooldowns[key].cur+=dt;
 
-        if (this.onMap[map][id].combat_cooldown.actual[key].cur >= this.onMap[map][id].combat_cooldown.actual[key].standard)
-            this.onMap[map][id].combat_cooldown.actual[key].done = true;
+        if (cooldowns[key].cur >= cooldowns[key].standard)
+            cooldowns[key].done = true;
     };
 
     //Calculate distance to target
@@ -745,8 +770,8 @@ exports.updateNPCCombat = function(map, id)
     let nextAction = -1;
 
     for (let i = 0; i < this.onMap[map][id].data.actions.length; i++) {
-        if (this.onMap[map][id].combat_cooldown.actual[this.onMap[map][id].data.actions[i].action] != undefined &&
-            !this.onMap[map][id].combat_cooldown.actual[this.onMap[map][id].data.actions[i].action].done)
+        if (cooldowns[this.onMap[map][id].data.actions[i].action] != undefined &&
+           !cooldowns[this.onMap[map][id].data.actions[i].action].done)
             continue;
 
         nextAction = i;
@@ -846,7 +871,7 @@ exports.updateNPCCombat = function(map, id)
     {
         //Increment out of combat time
 
-        this.onMap[map][id].outOfCombatTime++;
+        this.onMap[map][id].outOfCombatTime+=dt;
 
         //Check if in range
 
@@ -898,11 +923,14 @@ exports.updateNPCCombat = function(map, id)
 
         //Sync casting time
 
+        let castingTime = action.castingTime;
+        castingTime *= this.onMap[map][id].statusEffectsMatrix["castingTimeFactor"];
+        
         server.syncNPCActionCast(
             map, 
             id,
             action.src,
-            action.castingTime
+            castingTime
         );
     }
 
@@ -1074,7 +1102,7 @@ exports.damageNPC = function(owner, map, id, delta)
 
     //Update NPC targets
 
-    if (owner !== id) {
+    if (owner != undefined && owner !== id) {
         if (this.onMap[map][id].targets[owner] == undefined)
             this.onMap[map][id].targets[owner] = 0
 
@@ -1253,6 +1281,10 @@ exports.killNPC = function(map, id)
 
     server.removeNPC(map, id);
 
+    //Remove all NPC status effects
+
+    this.onMap[map][id].statusEffects = {};
+
     //Set NPC to killed
 
     this.onMap[map][id].killed = true;
@@ -1384,10 +1416,15 @@ exports.evaluateLootTable = function(map, id)
             //Create chance
 
             let chance = Math.random();
+            let dropChance = 1/this.onMap[map][id].data.items[i].dropChance;
+
+            //Adjust drop chance using status effect matrix
+
+            dropChance *= game.players[looters[l]].statusEffectsMatrix['itemFindFactor'];
 
             //Evaluate chance against drop rate
 
-            if (chance <= 1/this.onMap[map][id].data.items[i].dropChance)
+            if (chance <= dropChance)
             {
                 //Create world item
 

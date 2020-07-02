@@ -689,7 +689,7 @@ exports.removeItem = function(map, item)
         this.onMap[map][item].timer.shouldRespawn = true;
 };
 
-exports.updateMaps = function()
+exports.updateMaps = function(dt)
 {
     //Cycle through all maps
 
@@ -710,7 +710,7 @@ exports.updateMaps = function()
             //World item
 
             if (this.onMap[m][i].type === 'world') {
-                this.onMap[m][i].timer.cur++;
+                this.onMap[m][i].timer.cur+=dt;
 
                 //Check if item should be released of it's owner
 
@@ -742,7 +742,7 @@ exports.updateMaps = function()
                 //Otherwise increment timer
 
                 else
-                    this.onMap[m][i].timer.cur++;
+                    this.onMap[m][i].timer.cur+=dt;
             }
         }
     }

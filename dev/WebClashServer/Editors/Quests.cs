@@ -48,9 +48,9 @@ namespace WebClashServer
 
                 for (int i = 0; i < quests.Length; i++)
                 {
-                    string q = quests[i];
+                    string q = quests[i].Replace('\\', '/');
 
-                    questList.Items.Add((i+1) + ". " + q.Substring(q.LastIndexOf('\\') + 1, q.LastIndexOf('.') - q.LastIndexOf('\\') - 1));
+                    questList.Items.Add((i+1) + ". " + q.Substring(q.LastIndexOf('/') + 1, q.LastIndexOf('.') - q.LastIndexOf('/') - 1));
                 }
             }
             catch (Exception exc)
@@ -158,7 +158,7 @@ namespace WebClashServer
 
         private void newLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string i = questList.Items.Count + ". " + string.Empty;
+            string i = (questList.Items.Count+1) + ". " + string.Empty;
 
             questList.Items.Add(i);
             questList.SelectedItem = i;

@@ -67,6 +67,7 @@
           "eventType": "",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -96,6 +97,7 @@
           "eventType": "SpawnNPC",
           "repeatable": true,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": {
@@ -130,6 +132,7 @@
           "eventType": "",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -159,6 +162,7 @@
           "eventType": "ShowQuest",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -190,6 +194,7 @@
           "eventType": "ShowQuest",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -221,6 +226,7 @@
           "eventType": "",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -250,6 +256,7 @@
           "eventType": "TurnHostile",
           "repeatable": true,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -275,6 +282,7 @@
           "eventType": "",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -291,50 +299,50 @@
         {
           "p": "33, 102",
           "id": 0,
-          "isEvent": false,
-          "size": "100, 80"
+          "IsEvent": false,
+          "Size": "100, 80"
         },
         {
           "p": "576, 23",
           "id": 1,
-          "isEvent": true,
-          "size": "95, 20"
+          "IsEvent": true,
+          "Size": "130, 20"
         },
         {
           "p": "384, 6",
           "id": 2,
-          "isEvent": false,
-          "size": "100, 80"
+          "IsEvent": false,
+          "Size": "100, 80"
         },
         {
           "p": "173, 88",
           "id": 3,
-          "isEvent": true,
-          "size": "95, 20"
+          "IsEvent": true,
+          "Size": "130, 20"
         },
         {
           "p": "383, 145",
           "id": 4,
-          "isEvent": true,
-          "size": "95, 20"
+          "IsEvent": true,
+          "Size": "130, 20"
         },
         {
           "p": "585, 138",
           "id": 5,
-          "isEvent": false,
-          "size": "100, 80"
+          "IsEvent": false,
+          "Size": "100, 80"
         },
         {
           "p": "755, 129",
           "id": 6,
-          "isEvent": true,
-          "size": "95, 20"
+          "IsEvent": true,
+          "Size": "130, 20"
         },
         {
           "p": "566, 247",
           "id": 7,
-          "isEvent": false,
-          "size": "100, 80"
+          "IsEvent": false,
+          "Size": "100, 80"
         }
       ]
     }

@@ -63,6 +63,8 @@ namespace WebClashServer.Classes
 
         public GiveItemEvent giveItemEvent = null;
 
+        public GiveStatusEffectEvent giveStatusEffectEvent = null;
+
         public LoadMapEvent loadMapEvent = null;
 
         public AffectPlayerEvent affectPlayerEvent = null;
@@ -105,8 +107,15 @@ namespace WebClashServer.Classes
     public class GiveItemEvent
     {
         public string item = "";
-
         public int amount = 1;
+    }
+
+    public class GiveStatusEffectEvent
+    {
+        public string statusEffect = "";
+
+        public bool hostile = false;
+        public string caster = "";
     }
 
     public class LoadMapEvent

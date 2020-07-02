@@ -46,7 +46,11 @@ namespace WebClashServer.Editors
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 foreach (string n in npcs)
-                    npcSelect.Items.Add(n.Substring(n.LastIndexOf('\\') + 1, n.LastIndexOf('.') - n.LastIndexOf('\\') - 1));
+                {
+                    string npc = n.Replace('\\', '/');
+
+                    npcSelect.Items.Add(npc.Substring(npc.LastIndexOf('/') + 1, npc.LastIndexOf('.') - npc.LastIndexOf('/') - 1));
+                }
             }
             catch (Exception exc)
             {
@@ -69,7 +73,11 @@ namespace WebClashServer.Editors
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 foreach (string c in characters)
-                    charSelect.Items.Add(c.Substring(c.LastIndexOf('\\') + 1, c.LastIndexOf('.') - c.LastIndexOf('\\') - 1));
+                {
+                    string character = c.Replace('\\', '/');
+
+                    charSelect.Items.Add(character.Substring(character.LastIndexOf('/') + 1, character.LastIndexOf('.') - character.LastIndexOf('/') - 1));
+                }
             }
             catch (Exception exc)
             {

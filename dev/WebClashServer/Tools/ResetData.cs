@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using WebClashServer.Classes;
 
 namespace WebClashServer.Editors
 {
@@ -36,23 +37,30 @@ namespace WebClashServer.Editors
             ResetDirectory("npcs");
             ResetDirectory("quests");
             ResetDirectory("characters");
+            ResetDirectory("effects");
 
             ResetDirectory("data/accounts");
+            ResetDirectory("data/banks");
             ResetDirectory("data/stats");
 
-            //ResetDirectoryExcept("characters", "player.json");
-
-            MessageBox.Show("All server data has been deleted/resetted.", "WebClash - Reset Complete");
+            Logger.Message("All server data has been deleted.");
 
             Close();
         }
 
         private void ResetDirectory(string name)
         {
-            DirectoryInfo di = new DirectoryInfo(serverLocation + "/" + name);
+            try
+            {
+                DirectoryInfo di = new DirectoryInfo(serverLocation + "/" + name);
 
-            foreach (FileInfo file in di.GetFiles())
-                file.Delete();
+                foreach (FileInfo file in di.GetFiles())
+                    file.Delete();
+            }
+            catch (Exception exc)
+            {
+                Logger.Error("Could not reset the directory '" + name + "': ", exc);
+            }
         }
 
         private void ResetDirectoryExcept(string name, string except)

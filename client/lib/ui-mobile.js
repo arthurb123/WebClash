@@ -10,6 +10,7 @@ const ui = {
         this.actionbar.create();
         this.loot.create();
         this.inventory.create();
+        this.statusEffects.create();
         this.equipment.create();
         this.status.create();
         this.settings.create();
@@ -647,7 +648,7 @@ const ui = {
                     return l;
                 }
         },
-        setCooldown: function(slot) {
+        setCooldown: function(slot, cooldownTime) {
             if (this.slots === undefined)
                 return;
 
@@ -692,7 +693,7 @@ const ui = {
 
             //Setup cooldown loop
 
-            let remaining = player.actions[slot].cooldown;
+            let remaining = cooldownTime;
 
             let cdLoopID = this.addLoops(function() {
                  if (player.actions[slot] == undefined) {
@@ -704,7 +705,7 @@ const ui = {
                     return;
                  }
 
-                 cd.style.width = (remaining/player.actions[slot].cooldown)*100 + '%';
+                 cd.style.width = (remaining/cooldownTime)*100 + '%';
 
                  let time = remaining/60;
                  if (time > 1)
@@ -732,7 +733,7 @@ const ui = {
             if (cd != undefined)
                 cd.remove();
         },
-        setCasting: function(slot) {
+        setCasting: function(slot, castingTime) {
             if (this.slots === undefined)
                 return;
 
@@ -773,7 +774,7 @@ const ui = {
 
             //Setup casting loop
 
-            let remaining = player.actions[slot].castingTime;
+            let remaining = castingTime;
 
             let cLoopID = this.addLoops(function() {
                 if (player.actions[slot] == undefined) {
@@ -784,9 +785,9 @@ const ui = {
                     return;
                 }
 
-                c.style.width = (100 - (remaining/player.actions[slot].castingTime)*100) + '%';
+                c.style.width = (100 - (remaining/castingTime)*100) + '%';
 
-                let time = (player.actions[slot].castingTime - remaining)/60;
+                let time = (castingTime - remaining)/60;
                 if (time > 1)
                     time = Math.round(time);
                 else
@@ -834,7 +835,7 @@ const ui = {
                 ui.inventory.move();
             }, { passive: false });
             content.addEventListener('touchend', function() {
-                ui.inventory.removeBox();
+                ui.inventory.removeDisplayBox();
             }, { passive: false });
 
             for (let i = 0; i < this.size.width*this.size.height; i++) {
@@ -875,7 +876,7 @@ const ui = {
             if (currentItem > this.size.width*this.size.height-1)
                 currentItem = this.size.width*this.size.height-1;
 
-            this.displayBox(currentItem, box.offsetLeft-box.offsetWidth, box.offsetTop+40);
+            this.showDisplayBox(currentItem, box.offsetLeft-box.offsetWidth, box.offsetTop+40);
         },
         reload: function() {
             if (this.slots === undefined)
@@ -975,7 +976,7 @@ const ui = {
                 ui.inventory.removeContext();
             }
         },
-        displayBox: function(slot, x, y) {
+        showDisplayBox: function(slot, x, y) {
             //Element
 
             let el = document.getElementById('displayBox'),
@@ -984,7 +985,7 @@ const ui = {
             if (el != undefined ||
                 context_el != undefined) {
                 if (el._slot !== slot)
-                    this.removeBox();
+                    this.removeDisplayBox();
                 else
                     return;
             }
@@ -1124,7 +1125,7 @@ const ui = {
 
             view.dom.appendChild(displayBox);
         },
-        removeBox: function() {
+        removeDisplayBox: function() {
             let el = document.getElementById('displayBox');
 
             if (el == null)
@@ -1161,7 +1162,7 @@ const ui = {
 
             //Hide displaybox
 
-            this.removeBox();
+            this.removeDisplayBox();
 
             //Show context menu
 
@@ -2170,7 +2171,7 @@ const ui = {
 
             //Hide (inventory) displaybox
 
-            ui.inventory.removeBox();
+            ui.inventory.removeDisplayBox();
         },
         withdraw: function(name) {
             //Check if valid
@@ -2193,7 +2194,7 @@ const ui = {
 
             //Hide (inventory) displaybox
 
-            ui.inventory.removeBox();
+            ui.inventory.removeDisplayBox();
         },
         show: function() {
             //Check if already visible
@@ -2444,6 +2445,123 @@ const ui = {
         },
         reload: function() {
             //...
+        }
+    },
+    statusEffects:
+    {
+        loops: [],
+        create: function() {
+            this.box = new UIBox('status_effects', 'status_effects_box', 228, 10, undefined, undefined);
+            this.box.setResizable(false);
+            this.box.setTextAlign('center');
+
+            this.box.element.style.backgroundColor = 'transparent';
+            this.box.element.style.maxWidth = '144px';
+            this.box.element.style.padding = '2px';
+            this.box.content.style.display  = 'flex';
+            this.box.content.style.flexWrap = 'wrap';
+
+            lx.Loops(() => {
+                for (let l = 0; l < this.loops.length; l++)
+                    if (this.loops[l])
+                        this.loops[l]();
+            });
+
+            this.box.hide();
+        },
+        reload: function() {
+            this.box.clear();
+            this.loops = [];
+
+            let effects = 0;
+            for (let effect in player.statusEffects) {
+                let border = player.statusEffects[effect].hostile ? 'red' : 'lightgreen';
+
+                let slot = document.createElement('div');
+                slot.id = 'status_effect_' + effect.toLowerCase();
+                slot.classList.add('slot');
+                slot.style = 'cursor: default; width: 24px; height: 24px; border: 1px solid ' + border + ';';
+                
+                let img = document.createElement('img');
+                img.src = player.statusEffects[effect].icon;
+                img.style = 'width: 24px; height: 24px;';
+
+                slot.appendChild(img);
+
+                this.createTimer(slot, player.statusEffects[effect]);
+                this.box.addElement(slot);
+
+                effects++;
+            }
+
+            if (effects > 0)
+                this.box.show();
+            else
+                this.box.hide();
+        },
+        createTimer: function(slot, statusEffect) {
+            let elapsed  = statusEffect.elapsed;
+            let duration = statusEffect.duration;
+
+            //Create countdown element
+
+            let cd = document.createElement('div');
+            cd.id = slot.id + '_countdown';
+            cd.classList.add('cooldown');
+
+            //Add time label to countdown element
+
+            let cdTime = document.createElement('p');
+
+            cdTime.classList.add('info');
+            cdTime.style.fontSize = '10px';
+            cdTime.style.position = 'relative';
+            cdTime.style.top = '4px';
+            cdTime.style.left = '4px';
+
+            cd.appendChild(cdTime);
+
+            //Append countdown element
+
+            slot.appendChild(cd);
+
+            //Setup countdown loop
+
+            let loopsId = this.loops.length;
+            this.loops.push(function() {
+                let remaining = duration - elapsed;
+
+                //Check if finished
+
+                if (remaining <= 0) {
+                    slot.remove();
+
+                    if (loopsId != undefined)
+                        delete ui.statusEffects.loops[loopsId];
+                    
+                    return;
+                }
+
+                //Adjust countdown width
+
+                cd.style.width = (remaining/duration)*100 + '%';
+
+                //Get real time left
+
+                let time = remaining/60;
+                if (time > 1)
+                    time = Math.round(time);
+                else
+                    time = time.toFixed(1);
+
+                //Change countdown time text
+
+                cdTime.innerHTML = time + 's';
+
+                //Increment elapsed
+
+                elapsed++;
+            });
         }
     },
     party: {

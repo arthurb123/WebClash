@@ -51,7 +51,11 @@ namespace WebClashServer.Editors
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
                 foreach (string c in characters)
-                    charSelect.Items.Add(c.Substring(c.LastIndexOf('\\') + 1, c.LastIndexOf('.') - c.LastIndexOf('\\') - 1));
+                {
+                    string character = c.Replace('\\', '/');
+
+                    charSelect.Items.Add(character.Substring(character.LastIndexOf('/') + 1, character.LastIndexOf('.') - character.LastIndexOf('/') - 1));
+                }
 
                 CheckInput();
             }

@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -45,7 +44,11 @@ namespace WebClashServer.Editors
                     .Where(s => ext.Contains(Path.GetExtension(s)) && !s.Contains(".metadata")).ToArray();
 
                 foreach (string m in maps)
-                    mapList.Items.Add(m.Substring(m.LastIndexOf('\\') + 1, m.LastIndexOf('.') - m.LastIndexOf('\\') - 1));
+                {
+                    string map = m.Replace('\\', '/');
+
+                    mapList.Items.Add(map.Substring(map.LastIndexOf('/') + 1, map.LastIndexOf('.') - map.LastIndexOf('/') - 1));
+                }
             }
             catch (Exception exc)
             {
@@ -198,7 +201,7 @@ namespace WebClashServer.Editors
                     for (int i = 0; i < current.tilesets.Length; i++)
                         current.tilesets[i].image = Path.GetDirectoryName(ofd.FileName) + "/" + current.tilesets[i].image;
 
-                    string startLocation = Program.main.serverLocation + "\\maps\\";
+                    string startLocation = Program.main.serverLocation + "/maps/";
 
                     File.Copy(ofd.FileName, startLocation + ofd.SafeFileName, true);
 

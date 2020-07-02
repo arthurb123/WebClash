@@ -1,0 +1,16 @@
+{
+  "description": "You are hasted, gaining 100% movement speed.",
+  "icon": "res/icons/5.png",
+  "duration": 10000,
+  "sounds": [],
+  "effects": {
+    "manaTickDelta": 0,
+    "healthTickDelta": 0,
+    "itemFindFactor": 1.0,
+    "experienceGainFactor": 1.0,
+    "damageFactor": 1.0,
+    "movementSpeedFactor": 2.0,
+    "castingTimeFactor": 1.0,
+    "cooldownTimeFactor": 1.0
+  }
+}

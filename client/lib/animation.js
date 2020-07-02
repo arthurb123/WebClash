@@ -1,5 +1,5 @@
 const animation = {
-    animateMoving: function(target)
+    animateMoving: function(target, statusEffectsMatrix)
     {
         //Check if valid
 
@@ -42,7 +42,12 @@ const animation = {
 
         //Evaluate
 
-        target._animation.cur++;
+        let delta = 1;
+
+        if (statusEffectsMatrix != undefined)
+            delta *= statusEffectsMatrix['movementSpeedFactor'];
+
+        target._animation.cur+=delta;
 
         if (target._animation.cur >= target._animation.speed)
         {
@@ -76,7 +81,7 @@ const animation = {
         start: function(target) {
             //Check if target is valid
 
-            if (target == undefined)
+            if (target == undefined || target._animation == undefined)
                 return;
 
             //If moving and no forced frame exists reset clip

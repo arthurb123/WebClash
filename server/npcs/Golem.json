@@ -37,7 +37,7 @@
           "extraCooldown": 21
         },
         {
-          "action": "Hydrate",
+          "action": "Dehydrate",
           "range": 2,
           "extraCooldown": 18
         }

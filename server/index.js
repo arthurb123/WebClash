@@ -62,6 +62,7 @@ global.shop     = require('./webclash_modules/shop');
 global.npcs     = require('./webclash_modules/npcs');
 global.actions  = require('./webclash_modules/actions');
 global.quests   = require('./webclash_modules/quests');
+global.status   = require('./webclash_modules/status');
 global.tiled    = require('./webclash_modules/tiled');
 global.logger   = require('./webclash_modules/logger');
 global.input    = require('./webclash_modules/input');
@@ -159,20 +160,22 @@ function startServer() {
 //Load all game data, and if successful start server
 
 game.loadAllCharacters(function() {
-    actions.loadAllActions(function() {
-        items.loadAllItems(function() {
-            quests.loadAllQuests(function() {
-                tiled.loadAllMaps(function() {
-                    //First check if the properties are valid
+    status.loadAllStatusEffects(function() {
+        actions.loadAllActions(function() {
+            items.loadAllItems(function() {
+                quests.loadAllQuests(function() {
+                    tiled.loadAllMaps(function() {
+                        //First check if the properties are valid
 
-                    checkProperties(function() {
-                        //Load plugins
+                        checkProperties(function() {
+                            //Load plugins
 
-                        plugins.load();
+                            plugins.load();
 
-                        //Start server
+                            //Start server
 
-                        startServer();
+                            startServer();
+                        });
                     });
                 });
             });

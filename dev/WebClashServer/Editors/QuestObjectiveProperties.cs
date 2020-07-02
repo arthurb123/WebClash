@@ -112,8 +112,8 @@ namespace WebClashServer.Editors
 
                 for (int i = 0; i < items.Length; i++)
                 {
-                    string it = items[i];
-                    string npc = it.Substring(it.LastIndexOf('\\') + 1, it.LastIndexOf('.') - it.LastIndexOf('\\') - 1);
+                    string it = items[i].Replace('\\', '/');
+                    string npc = it.Substring(it.LastIndexOf('/') + 1, it.LastIndexOf('.') - it.LastIndexOf('/') - 1);
 
                     killNpcSelection.Items.Add(npc);
                     talkNpcSelection.Items.Add(npc);
@@ -142,9 +142,9 @@ namespace WebClashServer.Editors
 
                 for (int i = 0; i < items.Length; i++)
                 {
-                    string it = items[i];
+                    string it = items[i].Replace('\\', '/');
 
-                    itemList.Items.Add(it.Substring(it.LastIndexOf('\\') + 1, it.LastIndexOf('.') - it.LastIndexOf('\\') - 1));
+                    itemList.Items.Add(it.Substring(it.LastIndexOf('/') + 1, it.LastIndexOf('.') - it.LastIndexOf('/') - 1));
                 }
             }
             catch (Exception exc)

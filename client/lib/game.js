@@ -24,14 +24,13 @@ const game = {
             .Loops(function() {
                 //Animate
 
-                animation.animateMoving(this);
+                animation.animateMoving(this, this._statusEffectsMatrix);
 
                 //Handle nameplate
 
                 if (this._nameplate != undefined) {
-                    let size = this.Size();
+                    this._nameplate.Offset(this.Size().W/2, -12);
 
-                    this._nameplate.Offset(size.W/2, -Math.floor(size.H/5));
                     if (this._level !== undefined)
                         this._nameplate.Text('lvl ' + this._level + ' - ' + this.name);
                 }
@@ -50,24 +49,35 @@ const game = {
                 //Handle casting bar
 
                 if (this._castingBar != undefined)
-                    this._castingBar.SIZE.W = this.SIZE.W*lx.GAME.SCALE;
+                    this._castingBar.SIZE.W = this.SIZE.W;
 
                 //Handle healthbar
    
                 if (this._health != undefined)
                 {
                     if (this._healthbar == undefined) {
-                        this._healthbar = new lx.UIProgressBar('black', '#FF4242', 0, -36, this.SIZE.W*lx.GAME.SCALE, 8)
+                        this._healthbar = new lx.UIProgressBar('black', '#FF4242', 0, -32, this.SIZE.W, 5)
                             .Progress(this._health.cur/this._health.max*100)
                             .Follows(go);
                     } else {
-                        this._healthbar.SIZE.W = this.SIZE.W * lx.GAME.SCALE;
+                        this._healthbar.SIZE.W = this.SIZE.W;
                         this._healthbar.Progress(this._health.cur/this._health.max*100);
     
-                        if (this._health.cur == this._health.max || !tiled.pvp)
-                            this._healthbar.Hide();
-                        else if (tiled.pvp)
-                            this._healthbar.Show();
+                        if (this._health.cur === this._health.max) {
+                            if (this._healthbar.UI_ID !== -1) {
+                                this._healthbar.Hide();
+
+                                game.adjustStatusEffectElements(this._statusEffectElements, this.SIZE.W);
+                            }
+                        }
+                        else {
+                            if (this._healthbar.UI_ID == undefined ||
+                                this._healthbar.UI_ID === -1) {
+                                this._healthbar.Show();
+
+                                game.adjustStatusEffectElements(this._statusEffectElements, this.SIZE.W);
+                            }
+                        }
                     }
                 }
             })
@@ -151,6 +161,9 @@ const game = {
         go._moving = false;
         go._direction = 0;
         go._equipment = {};
+        go._statusEffects = {};
+        go._statusEffectElements = {};
+        go._statusEffectsMatrix = this.calculateStatusEffectsMatrix(go._statusEffects);
 
         //Add nameplate
 
@@ -167,7 +180,7 @@ const game = {
             'rgba(0, 0, 0, .50)',
             'rgba(255, 255, 255, .75)',
             0, -6,
-            0, 8
+            0, 5
         )
             .Loops(function() {
                 this.Progress(this.Progress() + ((1000/60)/this._target) * 100);
@@ -181,10 +194,10 @@ const game = {
 
         go._castingIcon = new lx.UITexture(
             'transparent',
-            -18,
-            -6,
-            16,
-            16
+            -14,
+            -4,
+            12,
+            12
         )
             .Follows(go._castingBar);
 
@@ -421,6 +434,91 @@ const game = {
             ui.chat.addMessage('You are now level ' + level + '!');
         }
     },
+    setPlayerStatusEffects: function(id, statusEffects) 
+    {
+        let adjustElements = false;
+
+        //Set player status effects,
+        //check if effects have been
+        //added or removed
+
+        for (let effect in statusEffects) {
+            if (this.players[id]._statusEffects[effect] == undefined) {
+                //Status effect addition
+
+                this.players[id]._statusEffects[effect] = statusEffects[effect];
+
+                //Play a possible sound effect,
+                //if available
+
+                if (statusEffects[effect].sounds.length > 0) {
+                    let sound = Math.round(Math.random() * (statusEffects[effect].sounds.length - 1));
+                    sound = statusEffects[effect].sounds[sound];
+
+                    let pos  = game.players[id].Position();
+                    let size = game.players[id].Size();
+
+                    audio.playSoundAtPosition(sound, { 
+                        X: pos.X + size.W / 2, 
+                        Y: pos.Y + size.H / 2 
+                    });
+                }
+
+                //Create status effect element
+
+                this.players[id]._statusEffectElements[effect] =
+                    this.createStatusEffectElement(statusEffects[effect], function() {
+                        if (game.players[id]._statusEffectElements[effect]) {
+                            game.players[id]._statusEffectElements[effect].Hide();
+                            delete game.players[id]._statusEffectElements[effect];
+        
+                            game.adjustStatusEffectElements(
+                                game.players[id]._statusEffectElements, 
+                                game.players[id].SIZE.W
+                            );
+                        }
+                    });
+
+                //Make the element follow the healthbar
+                //and show it
+
+                this.players[id]._statusEffectElements[effect]
+                    .Follows(this.players[id]._healthbar)
+                    .Show();
+
+                adjustElements = true;
+            }
+        }
+
+        for (let effect in this.players[id]._statusEffects) {
+            if (statusEffects[effect] == undefined) {
+                //Status effect removal
+
+                delete this.players[id]._statusEffects[effect];
+
+                //Remove the status effect element
+
+                if (this.players[id]._statusEffectElements[effect]) {
+                    this.players[id]._statusEffectElements[effect].Hide();
+                    delete this.players[id]._statusEffectElements[effect];
+
+                    adjustElements = true;
+                }
+            }
+        }
+
+        //Check if elements should be adjusted
+
+        if (adjustElements)
+            this.adjustStatusEffectElements(
+                this.players[id]._statusEffectElements,
+                this.players[id].SIZE.W
+            );
+
+        //Calculate status effects matrix
+        
+        this.players[id]._statusEffectsMatrix = this.calculateStatusEffectsMatrix(statusEffects);
+    },
     removePlayer: function(id)
     {
         //Check if valid
@@ -434,6 +532,13 @@ const game = {
         this.players[id]._nameplate.Hide();
         if (this.players[id]._healthbar != undefined)
             this.players[id]._healthbar.Hide();
+
+        this.players[id]._castingBar.Hide();
+        this.players[id]._castingIcon.Hide();
+
+        for (let effect in this.players[id]._statusEffectElements)
+            this.players[id]._statusEffectElements[effect].Hide();
+        this.players[id]._statusEffectElements = {};
 
         this.players[id].Hide();
 
@@ -462,9 +567,9 @@ const game = {
 
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
             .Loops(function() {
-                //Animate
+                //Animate moving
 
-                animation.animateMoving(this);
+                animation.animateMoving(this, this._statusEffectsMatrix);
 
                 //Handle nameplate
 
@@ -491,24 +596,35 @@ const game = {
                 if (this._health != undefined)
                 {
                     if (this._healthbar === undefined) {
-                        this._healthbar = new lx.UIProgressBar('black', '#FF4242', 0, -36, this.SIZE.W*lx.GAME.SCALE, 8)
+                        this._healthbar = new lx.UIProgressBar('black', '#FF4242', 0, -32, this.SIZE.W, 5)
                             .Progress(this._health.cur/this._health.max*100)
                             .Follows(go);
                     } else {
-                        this._healthbar.SIZE.W = this.SIZE.W * lx.GAME.SCALE;
+                        this._healthbar.SIZE.W = this.SIZE.W;
                         this._healthbar.Progress(this._health.cur/this._health.max*100);
     
-                        if (this._health.cur == this._health.max)
-                            this._healthbar.Hide();
-                        else
-                            this._healthbar.Show();
+                        if (this._health.cur == this._health.max) {
+                            if (this._healthbar.UI_ID !== -1) {
+                                this._healthbar.Hide();
+
+                                game.adjustStatusEffectElements(this._statusEffectElements, this.SIZE.W);
+                            }
+                        }
+                        else {
+                            if (this._healthbar.UI_ID == undefined ||
+                                this._healthbar.UI_ID === -1) {
+                                this._healthbar.Show();
+
+                                game.adjustStatusEffectElements(this._statusEffectElements, this.SIZE.W);
+                            }
+                        }
                     }
                 }
 
                 //Handle casting bar
 
                 if (this._castingBar != undefined)
-                    this._castingBar.SIZE.W = this.SIZE.W*lx.GAME.SCALE;
+                    this._castingBar.SIZE.W = this.SIZE.W;
 
                 //Handle extra loops
     
@@ -616,6 +732,9 @@ const game = {
         go._loops = [];
         go._moving = false;
         go._direction = 0;
+        go._statusEffects = {};
+        go._statusEffectElements = {};
+        go._statusEffectsMatrix = this.calculateStatusEffectsMatrix(go._statusEffects);
 
         //Create nameplate
 
@@ -634,7 +753,7 @@ const game = {
             'rgba(0, 0, 0, .50)',
             'rgba(255, 255, 255, .75)',
             0, -6,
-            0, 8
+            0, 5
         )
             .Loops(function() {
                 this.Progress(this.Progress() + ((1000/60)/this._target) * 100);
@@ -648,10 +767,10 @@ const game = {
 
         go._castingIcon = new lx.UITexture(
             'transparent',
-            -18,
-            -6,
-            16,
-            16
+            -14,
+            -4,
+            12,
+            12
         )
             .Follows(go._castingBar);
 
@@ -791,6 +910,91 @@ const game = {
             });
         }
     },
+    setNPCStatusEffects: function(id, statusEffects) 
+    {
+        let adjustElements = false;
+
+        //Set player status effects,
+        //check if effects have been
+        //added or removed
+
+        for (let effect in statusEffects) {
+            if (this.npcs[id]._statusEffects[effect] == undefined) {
+                //Status effect addition
+
+                this.npcs[id]._statusEffects[effect] = statusEffects[effect];
+
+                //Play a possible sound effect,
+                //if available
+
+                if (statusEffects[effect].sounds.length > 0) {
+                    let sound = Math.round(Math.random() * (statusEffects[effect].sounds.length - 1));
+                    sound = statusEffects[effect].sounds[sound];
+
+                    let pos  = this.npcs[id].Position();
+                    let size = this.npcs[id].Size();
+
+                    audio.playSoundAtPosition(sound, { 
+                        X: pos.X + size.W / 2, 
+                        Y: pos.Y + size.H / 2 
+                    });
+                }
+
+                //Create status effect element
+
+                this.npcs[id]._statusEffectElements[effect] =
+                this.createStatusEffectElement(statusEffects[effect], function() {
+                    if (game.npcs[id]._statusEffectElements[effect]) {
+                        game.npcs[id]._statusEffectElements[effect].Hide();
+                        delete game.npcs[id]._statusEffectElements[effect];
+    
+                        game.adjustStatusEffectElements(
+                            game.npcs[id]._statusEffectElements, 
+                            game.npcs[id].SIZE.W
+                        );
+                    }
+                });
+            
+                //Make the element follow the healthbar
+                //and show it
+
+                this.npcs[id]._statusEffectElements[effect]
+                    .Follows(this.npcs[id]._healthbar)
+                    .Show();
+
+                adjustElements = true;
+            }
+        }
+
+        for (let effect in this.npcs[id]._statusEffects) {
+            if (statusEffects[effect] == undefined) {
+                //Status effect removal
+
+                delete this.npcs[id]._statusEffects[effect];
+
+                //Remove the status effect element
+
+                if (this.npcs[id]._statusEffectElements[effect]) {
+                    this.npcs[id]._statusEffectElements[effect].Hide();
+                    delete this.npcs[id]._statusEffectElements[effect];
+
+                    adjustElements = true;
+                }
+            }
+        }
+
+        //Check if elements should be adjusted
+
+        if (adjustElements)
+            this.adjustStatusEffectElements(
+                this.npcs[id]._statusEffectElements,
+                this.npcs[id].Size().W*lx.Scale()
+            );
+
+        //Calculate status effects matrix
+        
+        this.npcs[id]._statusEffectsMatrix = this.calculateStatusEffectsMatrix(statusEffects);
+    },
     removeNPC: function(id)
     {
         if (this.npcs[id] === undefined)
@@ -804,6 +1008,10 @@ const game = {
 
         if (this.npcs[id]._healthbar != undefined)
             this.npcs[id]._healthbar.Hide();
+
+        for (let effect in this.npcs[id]._statusEffectElements)
+            this.npcs[id]._statusEffectElements[effect].Hide();
+        this.npcs[id]._statusEffectElements = {};
 
         this.npcs[id] = undefined;
     },
@@ -1172,6 +1380,141 @@ const game = {
 
             tiled.convertAndLoadMap(JSON.parse(data));
         });
+    },
+
+    calculateStatusEffectsMatrix: function(statusEffects) {
+        //Calculates the status effect matrix
+        //from all possible status effects
+
+        //Setup base matrix
+
+        let matrix = {
+            healthTickDelta: 0,
+            manaTickDelta: 0,
+            itemFindFactor: 1.0,
+            experienceGainFactor: 1.0,
+            damageFactor: 1.0,
+            movementSpeedFactor: 1.0,
+            castingTimeFactor: 1.0,
+            cooldownTimeFactor: 1.0
+        };
+
+        for (let se in statusEffects) {
+            let effects = statusEffects[se].effects;
+
+            //Normal numerical values (delta ticks)
+
+            matrix['healthTickDelta'] += effects['healthTickDelta'];
+            matrix['manaTickDelta']   += effects['manaTickDelta'];
+
+            //Procentual changes (multiplication factors)
+
+            matrix['itemFindFactor']       += effects['itemFindFactor']       - 1;
+            matrix['experienceGainFactor'] += effects['experienceGainFactor'] - 1;
+            matrix['damageFactor']         += effects['damageFactor']         - 1;
+            matrix['movementSpeedFactor']  += effects['movementSpeedFactor']  - 1;
+            matrix['castingTimeFactor']    += effects['castingTimeFactor']    - 1;
+            matrix['cooldownTimeFactor']   += effects['cooldownTimeFactor']   - 1;
+        }
+
+        return matrix;
+    },
+    createStatusEffectElement: function(statusEffect, removalCallback) {
+        //Creates a status effect UI element
+        //that can be used for players and NPCs
+
+        let size = 12;
+
+        let icon = new lx.UITexture(
+            manager.getSprite(statusEffect.icon),
+            0, 0
+        );
+
+        let slot = new lx.UIProgressBar(
+            icon,                 //Use the icon as the background
+            'rgba(0, 0, 0, 0.5)', //Shaded filling
+            0, 0,
+            size, size
+        );
+
+        //Setup countdown timer
+
+        let elapsed  = statusEffect.elapsed;
+        let duration = statusEffect.duration;
+
+        slot.Loops(function() {
+            let remaining = duration - elapsed;
+
+            //Check if finished
+
+            if (remaining <= 0) {
+                slot.Hide();
+
+                //Call the removal callback
+                //once hidden, this can be
+                //used for an adjustment
+                //of the other elements
+
+                if (removalCallback)
+                    removalCallback();
+
+                return;
+            }
+
+            //Adjust countdown progress
+
+            slot.Progress((remaining / duration) * 100);
+
+            //Increment elapsed
+
+            elapsed++;
+        });
+
+        return slot;
+    },
+    adjustStatusEffectElements: function(elements, maxWidth) {
+        //Adjusts the position of status effect elements,
+        //so that it can sit correctly above the player
+        //health bar
+
+        //Default values
+        
+        let elementSize = 12;
+        let padding = 2;
+
+        //Adjust positions and offset of the element
+
+        let pos = { X: 0, Y: -(elementSize+padding) };
+        for (let element in elements) {
+            //Check if element is valid
+
+            if (!elements[element])
+                return;
+
+            //If has parent: check if parent
+            //is visible, if not; adjust for height
+
+            let parent = elements[element].Follows();
+            let offsetY = 0;
+
+            if (parent && 
+                (parent.UI_ID == undefined || parent.UI_ID === -1))
+                offsetY += parent.Size().H + padding;
+
+            //Set offset
+            
+            elements[element].Offset(pos.X, pos.Y+offsetY);
+
+            //Make sure the new position
+            //does not exceed the max width
+
+            if (pos.X >= maxWidth) {
+                pos.X = 0;
+                pos.Y -= elementSize + padding;
+            }
+            else
+                pos.X += elementSize + padding;
+        }
     },
 
     createAction: function(data)

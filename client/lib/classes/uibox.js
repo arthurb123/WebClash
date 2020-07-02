@@ -364,18 +364,21 @@ const UIBox = function(parent, id, x, y, width, height, appendToBody) {
         if (boxHeight == undefined)
             boxHeight = this.element.offsetHeight;
 
-        if (this.position.x+boxWidth/2 >= width/2)
+        let x = this.element.offsetLeft;
+        let y = this.element.offsetTop;
+
+        if (x+boxWidth/2 >= width/2)
             anchors.right = true;
 
-        if (this.position.y+boxHeight/2 >= height/2)
+        if (y+boxHeight/2 >= height/2)
             anchors.bottom = true;
 
-        if (this.position.x+boxWidth/4 <= width/2 && 
-            this.position.x+boxWidth*.75 >= width/2)
+        if (x+boxWidth/4 <= width/2 && 
+            x+boxWidth*.75 >= width/2)
             anchors.horizontalCentered = true;
 
-        if (this.position.y+boxHeight/4 <= height/2 && 
-            this.position.y+boxHeight*.75 >= height/2)
+        if (y+boxHeight/4 <= height/2 && 
+            y+boxHeight*.75 >= height/2)
             anchors.verticalCentered = true;
 
         return anchors;
@@ -398,9 +401,9 @@ const UIBox = function(parent, id, x, y, width, height, appendToBody) {
             boxHeight = box.size.height;
 
         if (boxWidth == undefined) 
-            boxWidth = parseInt(getComputedStyle(box.element).width);
+            boxWidth = box.element.offsetWidth;
         if (boxHeight == undefined)
-            boxHeight = parseInt(getComputedStyle(box.element).height);
+            boxHeight = box.element.offsetHeight;
 
         //Normal box handling
 

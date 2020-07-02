@@ -60,6 +60,7 @@
           "eventType": "",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -93,6 +94,7 @@
           "eventType": "",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -122,6 +124,7 @@
           "eventType": "",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -151,6 +154,7 @@
           "eventType": "ShowQuest",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -185,6 +189,7 @@
             "item": "Magic Axe",
             "amount": 1
           },
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -210,6 +215,7 @@
           "eventType": "",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -235,6 +241,7 @@
           "eventType": "",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -264,6 +271,7 @@
           "eventType": "AffectPlayer",
           "repeatable": true,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": {
             "healthDifference": -5,
@@ -293,6 +301,7 @@
           "eventType": "",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -322,6 +331,7 @@
           "eventType": "ShowQuest",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -349,6 +359,7 @@
           "eventType": "",
           "repeatable": false,
           "giveItemEvent": null,
+          "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
           "spawnNPCEvent": null,
@@ -369,68 +380,68 @@
         {
           "p": "62, 129",
           "id": 0,
-          "isEvent": false,
-          "size": "100, 80"
+          "IsEvent": false,
+          "Size": "100, 80"
         },
         {
           "p": "356, 130",
           "id": 1,
-          "isEvent": false,
-          "size": "100, 80"
+          "IsEvent": false,
+          "Size": "100, 80"
         },
         {
           "p": "208, 241",
           "id": 2,
-          "isEvent": false,
-          "size": "100, 80"
+          "IsEvent": false,
+          "Size": "100, 80"
         },
         {
           "p": "216, 89",
           "id": 3,
-          "isEvent": true,
-          "size": "85, 25"
+          "IsEvent": true,
+          "Size": "130, 20"
         },
         {
           "p": "579, 253",
           "id": 4,
-          "isEvent": true,
-          "size": "80, 20"
+          "IsEvent": true,
+          "Size": "130, 20"
         },
         {
           "p": "765, 276",
           "id": 5,
-          "isEvent": false,
-          "size": "100, 80"
+          "IsEvent": false,
+          "Size": "100, 80"
         },
         {
           "p": "768, 162",
           "id": 6,
-          "isEvent": false,
-          "size": "100, 80"
+          "IsEvent": false,
+          "Size": "100, 80"
         },
         {
           "p": "520, 341",
           "id": 7,
-          "isEvent": true,
-          "size": "80, 20"
+          "IsEvent": true,
+          "Size": "130, 20"
         },
         {
           "p": "712, 398",
           "id": 8,
-          "isEvent": false,
-          "size": "100, 80"
+          "IsEvent": false,
+          "Size": "100, 80"
         },
         {
           "p": "365, 32",
           "id": 9,
-          "isEvent": true,
-          "size": "95, 20"
+          "IsEvent": true,
+          "Size": "130, 20"
         },
         {
           "p": "567, 74",
           "id": 10,
-          "isEvent": false,
-          "size": "100, 80"
+          "IsEvent": false,
+          "Size": "100, 80"
         },
         null,
         null,
