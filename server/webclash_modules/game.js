@@ -274,7 +274,6 @@ exports.setupPlayer = function(channel)
         server.syncPlayerPartially(id, 'exp', channel, false);
         server.syncPlayerPartially(id, 'points', channel, false);
         server.syncPlayerPartially(id, 'attributes', channel, false);
-        server.syncPlayerPartially(id, 'statusEffects', channel, false);
         server.syncPlayerPartially(id, 'actions', channel, false);
         server.syncPlayerPartially(id, 'quests', channel, false);
         server.syncPlayerPartially(id, 'currency', channel, false);
@@ -588,7 +587,7 @@ exports.killPlayer = function(id, pvpKiller)
     //      But the UI issue should be looked into
     //      in general.
 
-    server.syncPlayerPartially(id, 'statusEffects', this.players[id].channel, false);
+    server.syncPlayerPartially(id, 'statusEffects');
 
     //Set player killed variable
 
@@ -735,7 +734,7 @@ exports.deltaExperiencePlayer = function(id, exp)
     //Adjust experience according to
     //the status effect matrix
 
-    exp *= this.players[id].statusEffectsMatrix['experienceGainFactor'];
+    exp = Math.round(exp * this.players[id].statusEffectsMatrix['experienceGainFactor']);
 
     //Delta experience
 

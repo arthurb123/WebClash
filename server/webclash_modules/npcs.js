@@ -225,7 +225,10 @@ exports.createNPC = function(map, name, profile, x, y, isEvent)
         },
         distance: 0,
         cur: 0,
-        standard: this.randomNPCMovementTimeout()
+        standard: this.randomNPCMovementTimeout(
+            npc.data.character.movement.max,
+            npc.statusEffectsMatrix
+        )
     };
     npc.moving = false;
 
@@ -417,9 +420,12 @@ exports.updateNPC = function(map, id, dt)
     }
 };
 
-exports.randomNPCMovementTimeout = function()
+exports.randomNPCMovementTimeout = function(movementSpeed, statusEffectsMatrix)
 {
-    return 60 + Math.round(Math.random()*180);
+    let randomInterval = 60 + Math.round(Math.random() * 180);
+    let intervalFactor = movementSpeed * statusEffectsMatrix['movementSpeedFactor'];
+
+    return Math.round(randomInterval / intervalFactor);
 };
 
 exports.randomNPCMovement = function(map, id, cb)
@@ -468,7 +474,10 @@ exports.updateNPCMovement = function(map, id, dt)
             this.onMap[map][id].movement.vel.y = 0;
             this.onMap[map][id].movement.distance = 0;
             this.onMap[map][id].movement.cur = 0;
-            this.onMap[map][id].movement.standard = this.randomNPCMovementTimeout();
+            this.onMap[map][id].movement.standard = this.randomNPCMovementTimeout(
+                this.onMap[map][id].data.character.movement.max,
+                this.onMap[map][id].statusEffectsMatrix
+            );
 
             //Set random direction
 

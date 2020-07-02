@@ -81,7 +81,7 @@ const animation = {
         start: function(target) {
             //Check if target is valid
 
-            if (target == undefined)
+            if (target == undefined || target._animation == undefined)
                 return;
 
             //If moving and no forced frame exists reset clip

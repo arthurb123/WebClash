@@ -1437,6 +1437,7 @@ exports.syncPlayer = function(id, channel, broadcast)
     this.syncPlayerPartially(id, 'direction', channel, broadcast);
     this.syncPlayerPartially(id, 'character', channel, broadcast);
     this.syncPlayerPartially(id, 'equipment', channel, broadcast);
+    this.syncPlayerPartially(id, 'statusEffects', channel, broadcast);
     this.syncPlayerPartially(id, 'level', channel, broadcast);
     this.syncPlayerPartially(id, 'health', channel, broadcast);
     this.syncPlayerPartially(id, 'mana', channel, broadcast);
@@ -1518,6 +1519,9 @@ exports.syncNPCPartially = function(map, id, type, channel)
         case 'stats':
             data.stats = npcs.onMap[map][id].data.stats;
             break;
+        case 'statusEffects':
+            data.statusEffects = npcs.onMap[map][id].statusEffects;
+            break;
         case 'health':
             data.health = npcs.onMap[map][id].data.health;
             break;
@@ -1564,12 +1568,13 @@ exports.syncNPC = function(map, id, channel)
     this.syncNPCPartially(map, id, 'inCombat', channel);
 
     //Some NPCs don't have stats, so we dont send it if
-    //it is empty
+    //it is empty. Otherwise send stats and other combat
+    //related data.
 
     if (npcs.onMap[map][id].data.stats !== undefined &&
         npcs.onMap[map][id].data.stats !== null) {
         this.syncNPCPartially(map, id, 'stats', channel);
-
+        this.syncNPCPartially(map, id, 'statusEffects', channel);
         this.syncNPCPartially(map, id, 'health', channel);
     }
 };

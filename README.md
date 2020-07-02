@@ -32,7 +32,10 @@ already present.
   - Create items with unique uses or effects.
 * Combat editor<br>
   - Create a unique combat experience through "actions", which also features<br>
-    projectile support.
+    projectile and status effects support.
+* Status effect editor<br>
+  - Create varying status effects that can enhance movement speed, deal or heal<br>
+    damage over time and much more.
 * Chat with commands<br>
   - Converse with other players and execute player and/or admin commands.
 * Party system<br>

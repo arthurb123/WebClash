@@ -234,8 +234,6 @@ const client = {
                 game.setPlayerEquipment(id, data.equipment);
             if (data.actions !== undefined)
                 player.setActions(data.actions);
-            if (data.statusEffects !== undefined)
-                player.setStatusEffects(data.statusEffects);
             if (data.quests !== undefined)
                 player.setQuests(data.quests);
             if (data.currency !== undefined) {
@@ -243,6 +241,12 @@ const client = {
 
                 if (id === game.player)
                     ui.inventory.setCurrency(data.currency);
+            }
+            if (data.statusEffects !== undefined) {
+                if (id === game.player)
+                    player.setStatusEffects(data.statusEffects);
+                else
+                    game.setPlayerStatusEffects(id, data.statusEffects);
             }
             if (data.character !== undefined) {
                 manager.getSprite(data.character.src, function (sprite) {
@@ -337,6 +341,8 @@ const client = {
                 game.npcs[data.id]._aggressive = data.aggressive;
             if (data.inCombat != undefined)
                 game.npcs[data.id]._inCombat = data.inCombat;
+            if (data.statusEffects !== undefined)
+                game.setNPCStatusEffects(data.id, data.statusEffects);
             if (data.character !== undefined) {
                 manager.getSprite(data.character.src, function(sprite) {
                     game.npcs[data.id].Sprite(sprite);

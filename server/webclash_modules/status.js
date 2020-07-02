@@ -95,9 +95,9 @@ exports.givePlayerStatusEffect = function(id, casterName, hostile, statusEffectN
 
         player.statusEffectsMatrix = this.calculateStatusEffectsMatrix(player.statusEffects);
 
-        //Sync the status effect to the affected player
+        //Sync the status effect
 
-        server.syncPlayerPartially(id, 'statusEffects', player.channel, false);
+        server.syncPlayerPartially(id, 'statusEffects');
 
         //Add player to the watch list
 
@@ -108,7 +108,7 @@ exports.givePlayerStatusEffect = function(id, casterName, hostile, statusEffectN
     }
 };
 
-exports.giveNPCStatusEffect = function(map, id, statusEffectName) {
+exports.giveNPCStatusEffect = function(map, id, statusEffectName, playerOverride) {
     try {
         //Check if status effect name is valid
 
@@ -133,10 +133,15 @@ exports.giveNPCStatusEffect = function(map, id, statusEffectName) {
 
         npc.statusEffects[statusEffectName] = deepcopy(statusEffect);
         npc.statusEffects[statusEffectName].elapsed = 0;
+        npc.statusEffects[statusEffectName].playerOwner = playerOverride;
 
         //Calculate status effect matrix for the NPC
 
         npc.statusEffectsMatrix = this.calculateStatusEffectsMatrix(npc.statusEffects);
+
+        //Sync the status effect
+
+        server.syncNPCPartially(map, id, 'statusEffects');
 
         //Add NPC to the watchlist
 
@@ -174,32 +179,12 @@ exports.updateStatusEffects = function(dt) {
                     continue;
                 }
 
-            //If tick: handle tick deltas
-
-            if (tick) {
-                //Health tick
-
-                let healthTickDelta = player.statusEffectsMatrix['healthTickDelta'];
-                if (healthTickDelta !== 0)
-                    healthTickDelta < 0 ? game.damagePlayer(id, healthTickDelta) : game.healPlayer(id, healthTickDelta);
-
-                //Mana tick
-
-                let manaTickDelta = player.statusEffectsMatrix['manaTickDelta'];
-                if (manaTickDelta !== 0)
-                    game.deltaManaPlayer(id, manaTickDelta);
-            }
-
             //Update all status effects
 
             for (let effect in player.statusEffects) {
                 if (effect == undefined ||
                     player.statusEffects[effect] == undefined)
                     continue;
-
-                //Increment elapsed
-
-                player.statusEffects[effect].elapsed+=dt;
 
                 //Check if over duration
 
@@ -214,7 +199,29 @@ exports.updateStatusEffects = function(dt) {
 
                     //Sync the status effects
 
-                    server.syncPlayerPartially(id, 'statusEffects', player.channel, false);
+                    server.syncPlayerPartially(id, 'statusEffects');
+                }
+
+                //Increment elapsed
+
+                player.statusEffects[effect].elapsed += dt;
+
+                //If tick: handle tick deltas
+
+                if (tick) {
+                    //Health tick
+
+                    let healthTickDelta = player.statusEffects[effect].effects['healthTickDelta'];
+                    if (healthTickDelta !== 0)
+                        healthTickDelta < 0 
+                            ? game.damagePlayer(id, healthTickDelta) 
+                            : game.healPlayer(id, healthTickDelta);
+
+                    //Mana tick
+
+                    let manaTickDelta = player.statusEffects[effect].effects['manaTickDelta'];
+                    if (manaTickDelta !== 0)
+                        game.deltaManaPlayer(id, manaTickDelta);
                 }
             }
 
@@ -246,30 +253,12 @@ exports.updateStatusEffects = function(dt) {
                         continue;
                     }
 
-                //If tick: handle tick deltas
-
-                if (tick) {
-                    //Health tick
-                    
-                    let healthTickDelta = npc.statusEffectsMatrix['healthTickDelta'];
-                    if (healthTickDelta !== 0)
-                        healthTickDelta < 0 ? npcs.damageNPC(undefined, m, n, healthTickDelta) : npcs.healNPC(m, n, healthTickDelta);
-
-                    //Mana tick
-
-                    //NPCs do not use mana (yet)...
-                }
-
                 //Update all status effects
 
                 for (let effect in npc.statusEffects) {
                     if (effect == undefined ||
                         npc.statusEffects[effect] == undefined)
                         continue;
-
-                    //Increment elapsed
-
-                    npc.statusEffects[effect].elapsed+=dt;
 
                     //Check if over duration
 
@@ -281,6 +270,30 @@ exports.updateStatusEffects = function(dt) {
                         //Calculate new status effect matrix
 
                         npc.statusEffectsMatrix = this.calculateStatusEffectsMatrix(npc.statusEffects);
+
+                        //Sync the status effects
+
+                        server.syncNPCPartially(m, n, 'statusEffects');
+                    }
+                    
+                    //Increment elapsed
+
+                    npc.statusEffects[effect].elapsed += dt;
+
+                    //If tick: handle tick deltas
+
+                    if (tick) {
+                        //Health tick
+                        
+                        let healthTickDelta = npc.statusEffects[effect].effects['healthTickDelta'];
+                        if (healthTickDelta !== 0)
+                            healthTickDelta < 0 
+                                ? npcs.damageNPC(npc.statusEffects[effect].playerOwner, m, n, healthTickDelta) 
+                                : npcs.healNPC(m, n, healthTickDelta);
+
+                        //Mana tick
+
+                        //TODO: NPCs do not use mana yet...
                     }
                 }
 

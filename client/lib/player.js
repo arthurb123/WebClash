@@ -80,7 +80,7 @@ const player = {
             'rgba(0, 0, 0, .50)',
             'rgba(255, 255, 255, .75)',
             0, -6,
-            0, 8
+            0, 5
         )
             .Loops(function() {
                 this.Progress(this.Progress() + ((1000/60)/this._target) * 100);
@@ -92,10 +92,10 @@ const player = {
 
         go._castingIcon = new lx.UITexture(
             'transparent',
-            -18,
-            -6,
-            16,
-            16
+            -14,
+            -4,
+            12,
+            12
         )
             .Follows(go._castingBar);
 
@@ -105,7 +105,7 @@ const player = {
 
         //Calculate status effect matrix by default
 
-        player.calculateStatusEffectsMatrix();
+        player.statusEffectsMatrix = game.calculateStatusEffectsMatrix(player.statusEffects);
 
         //Check if a camera should be created
 
@@ -494,7 +494,13 @@ const player = {
                     let sound = Math.round(Math.random() * (statusEffects[effect].sounds.length - 1));
                     sound = statusEffects[effect].sounds[sound];
 
-                    audio.playSound(sound);
+                    let pos  = game.players[game.player].Position();
+                    let size = game.players[game.player].Size();
+
+                    audio.playSoundAtPosition(sound, { 
+                        X: pos.X + size.W / 2, 
+                        Y: pos.Y + size.H / 2 
+                    });
                 }
             }
         }
@@ -514,44 +520,7 @@ const player = {
 
         //Calculate status effect matrix
 
-        this.calculateStatusEffectsMatrix();
-    },
-    calculateStatusEffectsMatrix: function() {
-        //Calculates the status effect matrix
-        //from all possible status effects
-
-        //Setup base matrix
-
-        let matrix = {
-            healthTickDelta: 0,
-            manaTickDelta: 0,
-            itemFindFactor: 1.0,
-            experienceGainFactor: 1.0,
-            damageFactor: 1.0,
-            movementSpeedFactor: 1.0,
-            castingTimeFactor: 1.0,
-            cooldownTimeFactor: 1.0
-        };
-
-        for (let se in this.statusEffects) {
-            let effects = this.statusEffects[se].effects;
-
-            //Normal numerical values (delta ticks)
-
-            matrix['healthTickDelta'] += effects['healthTickDelta'];
-            matrix['manaTickDelta']   += effects['manaTickDelta'];
-
-            //Procentual changes (multiplication factors)
-
-            matrix['itemFindFactor']       += effects['itemFindFactor']       - 1;
-            matrix['experienceGainFactor'] += effects['experienceGainFactor'] - 1;
-            matrix['damageFactor']         += effects['damageFactor']         - 1;
-            matrix['movementSpeedFactor']  += effects['movementSpeedFactor']  - 1;
-            matrix['castingTimeFactor']    += effects['castingTimeFactor']    - 1;
-            matrix['cooldownTimeFactor']   += effects['cooldownTimeFactor']   - 1;
-        }
-
-        this.statusEffectsMatrix = matrix;
+        player.statusEffectsMatrix = game.calculateStatusEffectsMatrix(player.statusEffects);
     },
 
     unequip: function(equippable)
@@ -585,7 +554,7 @@ const player = {
 
         //Update casting bar
 
-        this._castingBar.SIZE.W = this.SIZE.W*lx.GAME.SCALE;
+        this._castingBar.SIZE.W = this.SIZE.W;
 
         //Update movement
 

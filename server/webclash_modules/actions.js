@@ -813,7 +813,7 @@ exports.instantiatePlayerActionElement = function(actionData, actionElement) {
     }
     else if (collection[name].heal < 0) {
         let heal = collection[name].heal;
-        heal *= game.players[id].statusEffectsMatrix['damageFactor'];
+        heal = Math.round(heal * game.players[id].statusEffectsMatrix['damageFactor']);
 
         game.damagePlayer(id, heal);
     }
@@ -926,7 +926,7 @@ exports.damageNPCs = function(owner, actionData, actionElement, action, onlyStat
 
                 //Adjust damage based on damage factor
 
-                damage *= game.players[owner].statusEffectsMatrix['damageFactor'];
+                damage = Math.round(damage * game.players[owner].statusEffectsMatrix['damageFactor']);
 
                 //Damage NPC
 
@@ -935,7 +935,7 @@ exports.damageNPCs = function(owner, actionData, actionElement, action, onlyStat
                 //If buff is available, apply that buff
 
                 if (actionElement.statusEffect !== '')
-                    status.giveNPCStatusEffect(actionData.map, n, actionElement.statusEffect);
+                    status.giveNPCStatusEffect(actionData.map, n, actionElement.statusEffect, owner);
 
                 result = true;
             }
@@ -1084,7 +1084,7 @@ exports.damagePlayers = function(stats, damageFactor, actionData, actionElement,
 
                 //Adjust damage based on status effect matrix
 
-                damage *= damageFactor;
+                damage = Math.round(damage * damageFactor);
 
                 //Damage player
 
