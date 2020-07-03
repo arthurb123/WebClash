@@ -1,10 +1,11 @@
 {
-  "description": "Being dehydrated drains you of 5 mana per second.",
+  "description": "Being dehydrated drains you of 2 mana per second.",
   "icon": "res/icons/4.png",
   "duration": 5000,
+  "removeUponDeath": true,
   "sounds": [],
   "effects": {
-    "manaTickDelta": -5,
+    "manaTickDelta": -2,
     "healthTickDelta": 0,
     "itemFindFactor": 1.0,
     "experienceGainFactor": 1.0,

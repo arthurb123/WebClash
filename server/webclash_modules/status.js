@@ -168,16 +168,19 @@ exports.updateStatusEffects = function(dt) {
 
             let player = game.players[id];
 
-            //Check if already handled,
-            //dead or offline
+            //Check if offline
 
-            if (player == undefined ||
-                player.killed) {
-                    //Remove from watch list
+            if (player == undefined) {
+                //Remove from watch list
 
-                    delete players[id];
-                    continue;
-                }
+                delete players[id];
+                continue;
+            }
+
+            //Check if dead
+
+            if (player.killed)
+                continue;
 
             //Update all status effects
 
@@ -186,9 +189,13 @@ exports.updateStatusEffects = function(dt) {
                     player.statusEffects[effect] == undefined)
                     continue;
 
+                //Grab status effect
+
+                let statusEffect = player.statusEffects[effect];
+
                 //Check if over duration
 
-                if (player.statusEffects[effect].elapsed >= player.statusEffects[effect].duration) {
+                if (statusEffect.elapsed >= statusEffect.duration) {
                     //Remove the effect
 
                     delete player.statusEffects[effect];
@@ -200,18 +207,22 @@ exports.updateStatusEffects = function(dt) {
                     //Sync the status effects
 
                     server.syncPlayerPartially(id, 'statusEffects');
+
+                    //Continue
+
+                    continue;
                 }
 
                 //Increment elapsed
 
-                player.statusEffects[effect].elapsed += dt;
+                statusEffect.elapsed += dt;
 
                 //If tick: handle tick deltas
 
                 if (tick) {
                     //Health tick
 
-                    let healthTickDelta = player.statusEffects[effect].effects['healthTickDelta'];
+                    let healthTickDelta = statusEffect.effects['healthTickDelta'];
                     if (healthTickDelta !== 0)
                         healthTickDelta < 0 
                             ? game.damagePlayer(id, healthTickDelta) 
@@ -219,7 +230,7 @@ exports.updateStatusEffects = function(dt) {
 
                     //Mana tick
 
-                    let manaTickDelta = player.statusEffects[effect].effects['manaTickDelta'];
+                    let manaTickDelta = statusEffect.effects['manaTickDelta'];
                     if (manaTickDelta !== 0)
                         game.deltaManaPlayer(id, manaTickDelta);
                 }
@@ -242,16 +253,19 @@ exports.updateStatusEffects = function(dt) {
 
                 let npc = npcs.onMap[m][n];
 
-                //Check if already handled,
-                //dead or offline
+                //Check if offline
 
-                if (npc == undefined ||
-                    npc.killed) {
-                        //Remove from watch list
+                if (npc == undefined) {
+                    //Remove from watch list
 
-                        delete onMap[m][n];
-                        continue;
-                    }
+                    delete onMap[m][n];
+                    continue;
+                }
+
+                //Check if dead
+
+                if (npc.killed)
+                    continue;
 
                 //Update all status effects
 
@@ -260,9 +274,13 @@ exports.updateStatusEffects = function(dt) {
                         npc.statusEffects[effect] == undefined)
                         continue;
 
+                    //Grab status effect
+
+                    let statusEffect = npc.statusEffects[effect];
+
                     //Check if over duration
 
-                    if (npc.statusEffects[effect].elapsed >= npc.statusEffects[effect].duration) {
+                    if (statusEffect.elapsed >= statusEffect.duration) {
                         //Remove the effect
 
                         delete npc.statusEffects[effect];
@@ -274,21 +292,25 @@ exports.updateStatusEffects = function(dt) {
                         //Sync the status effects
 
                         server.syncNPCPartially(m, n, 'statusEffects');
+
+                        //Continue
+
+                        continue;
                     }
                     
                     //Increment elapsed
 
-                    npc.statusEffects[effect].elapsed += dt;
+                    statusEffect.elapsed += dt;
 
                     //If tick: handle tick deltas
 
                     if (tick) {
                         //Health tick
                         
-                        let healthTickDelta = npc.statusEffects[effect].effects['healthTickDelta'];
+                        let healthTickDelta = statusEffect.effects['healthTickDelta'];
                         if (healthTickDelta !== 0)
                             healthTickDelta < 0 
-                                ? npcs.damageNPC(npc.statusEffects[effect].playerOwner, m, n, healthTickDelta) 
+                                ? npcs.damageNPC(statusEffect.playerOwner, m, n, healthTickDelta) 
                                 : npcs.healNPC(m, n, healthTickDelta);
 
                         //Mana tick

@@ -572,9 +572,18 @@ exports.killPlayer = function(id, pvpKiller)
 
     server.removePlayer(game.players[id].channel, false);
 
-    //Remove all status effects
+    //Remove status effects that should
+    //be removed upon death
 
-    this.players[id].statusEffects = {};
+    for (let effect in this.players[id].statusEffects) {
+        if (this.players[id].statusEffects[effect].removeUponDeath)
+            delete this.players[id].statusEffects[effect];
+    }
+
+    //Calculate status effect matrix
+
+    this.players[id].statusEffectsMatrix = 
+        status.calculateStatusEffectsMatrix(this.players[id].statusEffects);
 
     //Sync status effects
 

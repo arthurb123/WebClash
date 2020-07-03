@@ -1,7 +1,8 @@
 {
   "description": "You are hasted, gaining 100% movement speed.",
   "icon": "res/icons/5.png",
-  "duration": 10000,
+  "duration": 20000,
+  "removeUponDeath": true,
   "sounds": [],
   "effects": {
     "manaTickDelta": 0,

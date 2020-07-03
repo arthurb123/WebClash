@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StatusEffects));
             this.statusEffectList = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.removeUponDeath = new System.Windows.Forms.CheckBox();
             this.itemSounds = new System.Windows.Forms.Button();
             this.duration = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
@@ -85,12 +86,13 @@
             this.statusEffectList.FormattingEnabled = true;
             this.statusEffectList.Location = new System.Drawing.Point(2, 2);
             this.statusEffectList.Name = "statusEffectList";
-            this.statusEffectList.Size = new System.Drawing.Size(120, 407);
+            this.statusEffectList.Size = new System.Drawing.Size(120, 420);
             this.statusEffectList.TabIndex = 0;
             this.statusEffectList.SelectedIndexChanged += new System.EventHandler(this.itemList_SelectedIndexChanged);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.removeUponDeath);
             this.groupBox1.Controls.Add(this.itemSounds);
             this.groupBox1.Controls.Add(this.duration);
             this.groupBox1.Controls.Add(this.label5);
@@ -102,14 +104,25 @@
             this.groupBox1.Controls.Add(this.icon);
             this.groupBox1.Location = new System.Drawing.Point(126, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(316, 150);
+            this.groupBox1.Size = new System.Drawing.Size(316, 160);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "General Settings";
             // 
+            // removeUponDeath
+            // 
+            this.removeUponDeath.AutoSize = true;
+            this.removeUponDeath.Location = new System.Drawing.Point(92, 107);
+            this.removeUponDeath.Name = "removeUponDeath";
+            this.removeUponDeath.Size = new System.Drawing.Size(123, 17);
+            this.removeUponDeath.TabIndex = 21;
+            this.removeUponDeath.Text = "Remove upon death";
+            this.removeUponDeath.UseVisualStyleBackColor = true;
+            this.removeUponDeath.CheckedChanged += new System.EventHandler(this.removeUponDeath_CheckedChanged);
+            // 
             // itemSounds
             // 
-            this.itemSounds.Location = new System.Drawing.Point(11, 119);
+            this.itemSounds.Location = new System.Drawing.Point(12, 133);
             this.itemSounds.Name = "itemSounds";
             this.itemSounds.Size = new System.Drawing.Size(292, 21);
             this.itemSounds.TabIndex = 20;
@@ -208,7 +221,7 @@
             this.newLink.ActiveLinkColor = System.Drawing.Color.Blue;
             this.newLink.AutoSize = true;
             this.newLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.newLink.Location = new System.Drawing.Point(4, 419);
+            this.newLink.Location = new System.Drawing.Point(4, 429);
             this.newLink.Name = "newLink";
             this.newLink.Size = new System.Drawing.Size(29, 13);
             this.newLink.TabIndex = 2;
@@ -222,7 +235,7 @@
             this.saveLink.ActiveLinkColor = System.Drawing.Color.Blue;
             this.saveLink.AutoSize = true;
             this.saveLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.saveLink.Location = new System.Drawing.Point(47, 419);
+            this.saveLink.Location = new System.Drawing.Point(47, 429);
             this.saveLink.Name = "saveLink";
             this.saveLink.Size = new System.Drawing.Size(32, 13);
             this.saveLink.TabIndex = 3;
@@ -234,7 +247,7 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.description);
-            this.groupBox3.Location = new System.Drawing.Point(126, 156);
+            this.groupBox3.Location = new System.Drawing.Point(126, 166);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(316, 73);
             this.groupBox3.TabIndex = 5;
@@ -258,7 +271,7 @@
             this.delete.AutoSize = true;
             this.delete.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.delete.LinkColor = System.Drawing.Color.Red;
-            this.delete.Location = new System.Drawing.Point(97, 419);
+            this.delete.Location = new System.Drawing.Point(97, 429);
             this.delete.Name = "delete";
             this.delete.Size = new System.Drawing.Size(23, 13);
             this.delete.TabIndex = 6;
@@ -315,7 +328,7 @@
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Location = new System.Drawing.Point(126, 230);
+            this.groupBox2.Location = new System.Drawing.Point(126, 242);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(316, 202);
             this.groupBox2.TabIndex = 6;
@@ -556,7 +569,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(451, 441);
+            this.ClientSize = new System.Drawing.Size(451, 451);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.dialogPanel);
             this.Controls.Add(this.equipmentPanel);
@@ -570,8 +583,8 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(467, 480);
-            this.MinimumSize = new System.Drawing.Size(467, 480);
+            this.MaximumSize = new System.Drawing.Size(467, 490);
+            this.MinimumSize = new System.Drawing.Size(467, 490);
             this.Name = "StatusEffects";
             this.Text = "WebClash - Status Effects";
             this.Load += new System.EventHandler(this.StatusEffects_Load);
@@ -633,5 +646,6 @@
         private System.Windows.Forms.NumericUpDown movementSpeedFactor;
         private System.Windows.Forms.NumericUpDown damageFactor;
         private System.Windows.Forms.NumericUpDown experienceGainFactor;
+        private System.Windows.Forms.CheckBox removeUponDeath;
     }
 }

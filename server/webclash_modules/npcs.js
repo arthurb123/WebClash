@@ -1095,7 +1095,7 @@ exports.damageNPC = function(owner, map, id, delta)
 
     //Add delta accordingly
 
-    this.onMap[map][id].data.health.cur+=delta;
+    this.onMap[map][id].data.health.cur += delta;
 
     if (this.onMap[map][id].data.health.cur < 0)
         this.onMap[map][id].data.health.cur = 0;
@@ -1284,6 +1284,11 @@ exports.killNPC = function(map, id)
     //Remove all NPC status effects
 
     this.onMap[map][id].statusEffects = {};
+
+    //Calculate NPC status effect matrix
+
+    this.onMap[map][id].statusEffectsMatrix = 
+        status.calculateStatusEffectsMatrix(this.onMap[map][id].statusEffects);
 
     //Set NPC to killed
 

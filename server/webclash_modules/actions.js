@@ -932,9 +932,10 @@ exports.damageNPCs = function(owner, actionData, actionElement, action, onlyStat
 
                 npcs.damageNPC(owner, actionData.map, n, damage);
 
-                //If buff is available, apply that buff
+                //If buff is available, apply that buff - 
+                //and the damage is not zero
 
-                if (actionElement.statusEffect !== '')
+                if (actionElement.statusEffect !== '' && damage < 0)
                     status.giveNPCStatusEffect(actionData.map, n, actionElement.statusEffect, owner);
 
                 result = true;
@@ -1090,9 +1091,10 @@ exports.damagePlayers = function(stats, damageFactor, actionData, actionElement,
 
                 game.damagePlayer(p, damage, except);
 
-                //If buff is available, apply that buff
+                //If buff is available, apply that buff - 
+                //and the attack did not miss
 
-                if (actionElement.statusEffect !== '') {
+                if (actionElement.statusEffect !== '' && damage < 0) {
                     let owner = actionData.owner;
                     if (actionData.ownerType === 'npc')
                         owner = npcs.onMap[actionData.map][owner].name;

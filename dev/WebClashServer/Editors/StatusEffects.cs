@@ -73,6 +73,8 @@ namespace WebClashServer
 
             description.Text = current.description;
 
+            removeUponDeath.Checked = current.removeUponDeath;
+
             healthTickDelta.Value = current.effects.healthTickDelta;
             manaTickDelta.Value = current.effects.manaTickDelta;
             itemFindFactor.Value = (decimal)current.effects.itemFindFactor;
@@ -174,6 +176,14 @@ namespace WebClashServer
             current.description = description.Text;
         }
 
+        private void removeUponDeath_CheckedChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.removeUponDeath = removeUponDeath.Checked;
+        }
+
         private void delete_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (current == null)
@@ -259,6 +269,8 @@ namespace WebClashServer
 
             duration = temp.duration;
 
+            removeUponDeath = temp.removeUponDeath;
+
             sounds = temp.sounds;
 
             effects = temp.effects;
@@ -267,6 +279,7 @@ namespace WebClashServer
         public string description = "";
         public string icon = "";
         public int duration = 1;
+        public bool removeUponDeath = true;
         public PossibleSound[] sounds = new PossibleSound[0];
         public Effects effects = new Effects();
     }
