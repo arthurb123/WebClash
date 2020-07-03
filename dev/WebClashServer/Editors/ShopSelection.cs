@@ -10,7 +10,6 @@ namespace WebClashServer.Editors
 {
     public partial class ShopSelection : Form
     {
-        //private List<ShopItem> items = new List<ShopItem>();
         private ShowShopEvent sse = new ShowShopEvent();
         private int current = -1;
 

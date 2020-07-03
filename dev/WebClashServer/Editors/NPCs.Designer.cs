@@ -44,8 +44,7 @@
             this.equipmentButton = new System.Windows.Forms.Button();
             this.showNameplate = new System.Windows.Forms.CheckBox();
             this.dialogueButton = new System.Windows.Forms.Button();
-            this.charSelect = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.characterName = new System.Windows.Forms.Label();
             this.typeFriendly = new System.Windows.Forms.RadioButton();
             this.typeHostile = new System.Windows.Forms.RadioButton();
             this.save = new System.Windows.Forms.LinkLabel();
@@ -84,6 +83,7 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.profileGroupBox = new System.Windows.Forms.GroupBox();
+            this.selectCharacter = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.range)).BeginInit();
@@ -228,9 +228,9 @@
             // 
             // equipmentButton
             // 
-            this.equipmentButton.Location = new System.Drawing.Point(220, 20);
+            this.equipmentButton.Location = new System.Drawing.Point(206, 19);
             this.equipmentButton.Name = "equipmentButton";
-            this.equipmentButton.Size = new System.Drawing.Size(160, 23);
+            this.equipmentButton.Size = new System.Drawing.Size(144, 23);
             this.equipmentButton.TabIndex = 17;
             this.equipmentButton.Text = "Edit Equipment";
             this.equipmentButton.UseVisualStyleBackColor = true;
@@ -239,7 +239,7 @@
             // showNameplate
             // 
             this.showNameplate.AutoSize = true;
-            this.showNameplate.Location = new System.Drawing.Point(132, 49);
+            this.showNameplate.Location = new System.Drawing.Point(215, 50);
             this.showNameplate.Name = "showNameplate";
             this.showNameplate.Size = new System.Drawing.Size(121, 19);
             this.showNameplate.TabIndex = 16;
@@ -257,26 +257,14 @@
             this.dialogueButton.UseVisualStyleBackColor = true;
             this.dialogueButton.Click += new System.EventHandler(this.dialogButton_Click);
             // 
-            // charSelect
+            // characterName
             // 
-            this.charSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.charSelect.FormattingEnabled = true;
-            this.charSelect.Items.AddRange(new object[] {
-            "Horizontal"});
-            this.charSelect.Location = new System.Drawing.Point(76, 20);
-            this.charSelect.Name = "charSelect";
-            this.charSelect.Size = new System.Drawing.Size(133, 23);
-            this.charSelect.TabIndex = 12;
-            this.charSelect.SelectedIndexChanged += new System.EventHandler(this.charSelect_SelectedIndexChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 24);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(60, 15);
-            this.label2.TabIndex = 11;
-            this.label2.Text = "Character";
+            this.characterName.Location = new System.Drawing.Point(23, 49);
+            this.characterName.Name = "characterName";
+            this.characterName.Size = new System.Drawing.Size(169, 19);
+            this.characterName.TabIndex = 11;
+            this.characterName.Text = "Character: -";
+            this.characterName.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // typeFriendly
             // 
@@ -720,7 +708,7 @@
             this.groupBox3.Controls.Add(this.typeFriendly);
             this.groupBox3.Controls.Add(this.aggressive);
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(10, 93);
+            this.groupBox3.Location = new System.Drawing.Point(10, 100);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(394, 103);
             this.groupBox3.TabIndex = 10;
@@ -729,14 +717,14 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.selectCharacter);
             this.groupBox4.Controls.Add(this.showNameplate);
             this.groupBox4.Controls.Add(this.equipmentButton);
-            this.groupBox4.Controls.Add(this.label2);
-            this.groupBox4.Controls.Add(this.charSelect);
+            this.groupBox4.Controls.Add(this.characterName);
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox4.Location = new System.Drawing.Point(10, 21);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(394, 74);
+            this.groupBox4.Size = new System.Drawing.Size(394, 80);
             this.groupBox4.TabIndex = 11;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Appearance";
@@ -754,6 +742,16 @@
             this.profileGroupBox.TabIndex = 12;
             this.profileGroupBox.TabStop = false;
             this.profileGroupBox.Text = "NPC Profile";
+            // 
+            // selectCharacter
+            // 
+            this.selectCharacter.Location = new System.Drawing.Point(40, 19);
+            this.selectCharacter.Name = "selectCharacter";
+            this.selectCharacter.Size = new System.Drawing.Size(144, 23);
+            this.selectCharacter.TabIndex = 18;
+            this.selectCharacter.Text = "Select Character";
+            this.selectCharacter.UseVisualStyleBackColor = true;
+            this.selectCharacter.Click += new System.EventHandler(this.selectCharacter_Click);
             // 
             // NPCs
             // 
@@ -810,8 +808,7 @@
         private System.Windows.Forms.Button delete;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.LinkLabel save;
-        private System.Windows.Forms.ComboBox charSelect;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label characterName;
         private System.Windows.Forms.TextBox name;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button dialogueButton;
@@ -859,5 +856,6 @@
         private System.Windows.Forms.Button removeProfile;
         private System.Windows.Forms.Button addProfile;
         private System.Windows.Forms.ComboBox profileSelect;
+        private System.Windows.Forms.Button selectCharacter;
     }
 }

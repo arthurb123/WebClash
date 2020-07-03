@@ -30,17 +30,13 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Actions));
-            this.label1 = new System.Windows.Forms.Label();
-            this.actionSelect = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.charSelect = new System.Windows.Forms.ComboBox();
             this.canvas = new System.Windows.Forms.PictureBox();
             this.properties = new System.Windows.Forms.GroupBox();
-            this.appearancePanel = new System.Windows.Forms.Panel();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.statusEffectsPanel = new System.Windows.Forms.GroupBox();
             this.label26 = new System.Windows.Forms.Label();
             this.statusEffectSelect = new System.Windows.Forms.ComboBox();
+            this.appearancePanel = new System.Windows.Forms.Panel();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.scale = new System.Windows.Forms.NumericUpDown();
             this.label23 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -69,8 +65,6 @@
             this.label18 = new System.Windows.Forms.Label();
             this.removeElement = new System.Windows.Forms.Button();
             this.addElement = new System.Windows.Forms.Button();
-            this.removeAction = new System.Windows.Forms.Button();
-            this.addAction = new System.Windows.Forms.Button();
             this.save = new System.Windows.Forms.LinkLabel();
             this.animationTimer = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -104,11 +98,16 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.mana = new System.Windows.Forms.NumericUpDown();
             this.label21 = new System.Windows.Forms.Label();
+            this.changeCharacter = new System.Windows.Forms.Button();
+            this.characterName = new System.Windows.Forms.Label();
+            this.actionList = new System.Windows.Forms.ListBox();
+            this.delete = new System.Windows.Forms.LinkLabel();
+            this.newAction = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.properties.SuspendLayout();
+            this.statusEffectsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.statusEffectsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).BeginInit();
@@ -135,48 +134,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.mana)).BeginInit();
             this.SuspendLayout();
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(74, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Current Action";
-            // 
-            // actionSelect
-            // 
-            this.actionSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.actionSelect.FormattingEnabled = true;
-            this.actionSelect.Location = new System.Drawing.Point(145, 12);
-            this.actionSelect.Name = "actionSelect";
-            this.actionSelect.Size = new System.Drawing.Size(135, 21);
-            this.actionSelect.TabIndex = 1;
-            this.actionSelect.SelectedIndexChanged += new System.EventHandler(this.actionSelect_SelectedIndexChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(408, 70);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(91, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Testing Character";
-            // 
-            // charSelect
-            // 
-            this.charSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.charSelect.FormattingEnabled = true;
-            this.charSelect.Location = new System.Drawing.Point(611, 67);
-            this.charSelect.Name = "charSelect";
-            this.charSelect.Size = new System.Drawing.Size(120, 21);
-            this.charSelect.TabIndex = 3;
-            this.charSelect.SelectedIndexChanged += new System.EventHandler(this.charSelect_SelectedIndexChanged);
-            // 
             // canvas
             // 
             this.canvas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.canvas.Location = new System.Drawing.Point(411, 92);
+            this.canvas.Location = new System.Drawing.Point(521, 71);
             this.canvas.Name = "canvas";
             this.canvas.Size = new System.Drawing.Size(320, 320);
             this.canvas.TabIndex = 4;
@@ -189,43 +150,13 @@
             this.properties.Controls.Add(this.propertyView);
             this.properties.Controls.Add(this.behaviourPanel);
             this.properties.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.properties.Location = new System.Drawing.Point(144, 231);
+            this.properties.Location = new System.Drawing.Point(257, 195);
             this.properties.Name = "properties";
             this.properties.Size = new System.Drawing.Size(254, 243);
             this.properties.TabIndex = 5;
             this.properties.TabStop = false;
             this.properties.Text = "Properties";
             this.properties.Visible = false;
-            // 
-            // appearancePanel
-            // 
-            this.appearancePanel.AutoSize = true;
-            this.appearancePanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.appearancePanel.Controls.Add(this.groupBox3);
-            this.appearancePanel.Controls.Add(this.animation);
-            this.appearancePanel.Location = new System.Drawing.Point(9, 49);
-            this.appearancePanel.Margin = new System.Windows.Forms.Padding(0);
-            this.appearancePanel.Name = "appearancePanel";
-            this.appearancePanel.Size = new System.Drawing.Size(239, 178);
-            this.appearancePanel.TabIndex = 17;
-            this.appearancePanel.Visible = false;
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.scale);
-            this.groupBox3.Controls.Add(this.label23);
-            this.groupBox3.Controls.Add(this.label6);
-            this.groupBox3.Controls.Add(this.height);
-            this.groupBox3.Controls.Add(this.source);
-            this.groupBox3.Controls.Add(this.width);
-            this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Location = new System.Drawing.Point(0, 0);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(236, 103);
-            this.groupBox3.TabIndex = 9;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Image";
             // 
             // statusEffectsPanel
             // 
@@ -258,6 +189,36 @@
             this.statusEffectSelect.Size = new System.Drawing.Size(121, 23);
             this.statusEffectSelect.TabIndex = 18;
             this.statusEffectSelect.SelectedIndexChanged += new System.EventHandler(this.statusEffectSelect_SelectedIndexChanged);
+            // 
+            // appearancePanel
+            // 
+            this.appearancePanel.AutoSize = true;
+            this.appearancePanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.appearancePanel.Controls.Add(this.groupBox3);
+            this.appearancePanel.Controls.Add(this.animation);
+            this.appearancePanel.Location = new System.Drawing.Point(9, 49);
+            this.appearancePanel.Margin = new System.Windows.Forms.Padding(0);
+            this.appearancePanel.Name = "appearancePanel";
+            this.appearancePanel.Size = new System.Drawing.Size(239, 178);
+            this.appearancePanel.TabIndex = 17;
+            this.appearancePanel.Visible = false;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.scale);
+            this.groupBox3.Controls.Add(this.label23);
+            this.groupBox3.Controls.Add(this.label6);
+            this.groupBox3.Controls.Add(this.height);
+            this.groupBox3.Controls.Add(this.source);
+            this.groupBox3.Controls.Add(this.width);
+            this.groupBox3.Controls.Add(this.label3);
+            this.groupBox3.Controls.Add(this.label7);
+            this.groupBox3.Location = new System.Drawing.Point(0, 0);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(236, 103);
+            this.groupBox3.TabIndex = 9;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Image";
             // 
             // scale
             // 
@@ -607,7 +568,7 @@
             // 
             // removeElement
             // 
-            this.removeElement.Location = new System.Drawing.Point(261, 203);
+            this.removeElement.Location = new System.Drawing.Point(374, 167);
             this.removeElement.Name = "removeElement";
             this.removeElement.Size = new System.Drawing.Size(100, 23);
             this.removeElement.TabIndex = 7;
@@ -617,7 +578,7 @@
             // 
             // addElement
             // 
-            this.addElement.Location = new System.Drawing.Point(180, 203);
+            this.addElement.Location = new System.Drawing.Point(293, 167);
             this.addElement.Name = "addElement";
             this.addElement.Size = new System.Drawing.Size(75, 23);
             this.addElement.TabIndex = 6;
@@ -625,33 +586,13 @@
             this.addElement.UseVisualStyleBackColor = true;
             this.addElement.Click += new System.EventHandler(this.addElement_Click);
             // 
-            // removeAction
-            // 
-            this.removeAction.Location = new System.Drawing.Point(330, 12);
-            this.removeAction.Name = "removeAction";
-            this.removeAction.Size = new System.Drawing.Size(69, 21);
-            this.removeAction.TabIndex = 9;
-            this.removeAction.Text = "Remove Action";
-            this.removeAction.UseVisualStyleBackColor = true;
-            this.removeAction.Click += new System.EventHandler(this.removeAction_Click);
-            // 
-            // addAction
-            // 
-            this.addAction.Location = new System.Drawing.Point(286, 12);
-            this.addAction.Name = "addAction";
-            this.addAction.Size = new System.Drawing.Size(39, 21);
-            this.addAction.TabIndex = 8;
-            this.addAction.Text = "Add";
-            this.addAction.UseVisualStyleBackColor = true;
-            this.addAction.Click += new System.EventHandler(this.addAction_Click);
-            // 
             // save
             // 
             this.save.ActiveLinkColor = System.Drawing.Color.Blue;
             this.save.AutoSize = true;
             this.save.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.save.LinkColor = System.Drawing.Color.Blue;
-            this.save.Location = new System.Drawing.Point(699, 461);
+            this.save.Location = new System.Drawing.Point(47, 418);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(32, 13);
             this.save.TabIndex = 11;
@@ -681,7 +622,7 @@
             this.groupBox1.Controls.Add(this.power);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(145, 40);
+            this.groupBox1.Location = new System.Drawing.Point(258, 4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(254, 99);
             this.groupBox1.TabIndex = 12;
@@ -875,7 +816,7 @@
             this.groupBox2.Controls.Add(this.icon);
             this.groupBox2.Controls.Add(this.label15);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(11, 40);
+            this.groupBox2.Location = new System.Drawing.Point(124, 4);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(127, 434);
             this.groupBox2.TabIndex = 14;
@@ -1008,7 +949,7 @@
             this.groupBox4.Controls.Add(this.heal);
             this.groupBox4.Controls.Add(this.label14);
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox4.Location = new System.Drawing.Point(144, 139);
+            this.groupBox4.Location = new System.Drawing.Point(257, 103);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(255, 57);
             this.groupBox4.TabIndex = 17;
@@ -1043,41 +984,98 @@
             this.label21.TabIndex = 17;
             this.label21.Text = "Mana";
             // 
+            // changeCharacter
+            // 
+            this.changeCharacter.Location = new System.Drawing.Point(521, 42);
+            this.changeCharacter.Name = "changeCharacter";
+            this.changeCharacter.Size = new System.Drawing.Size(139, 23);
+            this.changeCharacter.TabIndex = 18;
+            this.changeCharacter.Text = "Select Testing Character";
+            this.changeCharacter.UseVisualStyleBackColor = true;
+            this.changeCharacter.Click += new System.EventHandler(this.changeCharacter_Click);
+            // 
+            // characterName
+            // 
+            this.characterName.AutoSize = true;
+            this.characterName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.characterName.Location = new System.Drawing.Point(664, 47);
+            this.characterName.Name = "characterName";
+            this.characterName.Size = new System.Drawing.Size(24, 13);
+            this.characterName.TabIndex = 19;
+            this.characterName.Text = "test";
+            // 
+            // actionList
+            // 
+            this.actionList.FormattingEnabled = true;
+            this.actionList.Location = new System.Drawing.Point(2, 4);
+            this.actionList.Name = "actionList";
+            this.actionList.Size = new System.Drawing.Size(116, 407);
+            this.actionList.TabIndex = 20;
+            this.actionList.SelectedIndexChanged += new System.EventHandler(this.actionList_SelectedIndexChanged);
+            // 
+            // delete
+            // 
+            this.delete.ActiveLinkColor = System.Drawing.Color.Red;
+            this.delete.AutoSize = true;
+            this.delete.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.delete.LinkColor = System.Drawing.Color.Red;
+            this.delete.Location = new System.Drawing.Point(95, 418);
+            this.delete.Name = "delete";
+            this.delete.Size = new System.Drawing.Size(23, 13);
+            this.delete.TabIndex = 23;
+            this.delete.TabStop = true;
+            this.delete.Text = "Del";
+            this.delete.VisitedLinkColor = System.Drawing.Color.Red;
+            this.delete.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.delete_LinkClicked);
+            // 
+            // newAction
+            // 
+            this.newAction.ActiveLinkColor = System.Drawing.Color.Blue;
+            this.newAction.AutoSize = true;
+            this.newAction.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.newAction.Location = new System.Drawing.Point(5, 418);
+            this.newAction.Name = "newAction";
+            this.newAction.Size = new System.Drawing.Size(29, 13);
+            this.newAction.TabIndex = 21;
+            this.newAction.TabStop = true;
+            this.newAction.Text = "New";
+            this.newAction.VisitedLinkColor = System.Drawing.Color.Blue;
+            this.newAction.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.newAction_LinkClicked);
+            // 
             // Actions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(746, 486);
+            this.ClientSize = new System.Drawing.Size(854, 441);
+            this.Controls.Add(this.delete);
+            this.Controls.Add(this.newAction);
+            this.Controls.Add(this.actionList);
+            this.Controls.Add(this.characterName);
+            this.Controls.Add(this.changeCharacter);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.save);
             this.Controls.Add(this.removeElement);
             this.Controls.Add(this.addElement);
-            this.Controls.Add(this.removeAction);
-            this.Controls.Add(this.addAction);
             this.Controls.Add(this.properties);
             this.Controls.Add(this.canvas);
-            this.Controls.Add(this.charSelect);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.actionSelect);
-            this.Controls.Add(this.label1);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(762, 525);
-            this.MinimumSize = new System.Drawing.Size(762, 525);
+            this.MaximumSize = new System.Drawing.Size(870, 480);
+            this.MinimumSize = new System.Drawing.Size(870, 480);
             this.Name = "Actions";
             this.Text = "WebClash - Actions";
             this.Load += new System.EventHandler(this.Actions_Load);
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
             this.properties.ResumeLayout(false);
             this.properties.PerformLayout();
+            this.statusEffectsPanel.ResumeLayout(false);
+            this.statusEffectsPanel.PerformLayout();
             this.appearancePanel.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.statusEffectsPanel.ResumeLayout(false);
-            this.statusEffectsPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.height)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).EndInit();
@@ -1114,17 +1112,10 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox actionSelect;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox charSelect;
         private System.Windows.Forms.PictureBox canvas;
         private System.Windows.Forms.GroupBox properties;
         private System.Windows.Forms.Button addElement;
         private System.Windows.Forms.Button removeElement;
-        private System.Windows.Forms.Button removeAction;
-        private System.Windows.Forms.Button addAction;
         private System.Windows.Forms.LinkLabel save;
         private System.Windows.Forms.TextBox source;
         private System.Windows.Forms.Label label3;
@@ -1189,5 +1180,10 @@
         private System.Windows.Forms.GroupBox statusEffectsPanel;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.ComboBox statusEffectSelect;
+        private System.Windows.Forms.Button changeCharacter;
+        private System.Windows.Forms.Label characterName;
+        private System.Windows.Forms.ListBox actionList;
+        private System.Windows.Forms.LinkLabel delete;
+        private System.Windows.Forms.LinkLabel newAction;
     }
 }

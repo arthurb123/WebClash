@@ -15,6 +15,7 @@ namespace WebClashServer.Editors
         private Action current = null;
         private Character currentCharacter = null;
         private Image charImage = null;
+        private string oldName;
 
         private int curElement = 0;
 
@@ -26,7 +27,6 @@ namespace WebClashServer.Editors
         private Dictionary<Element, bool> finished = new Dictionary<Element, bool>();
         private Dictionary<string, Image> savedImages = new Dictionary<string, Image>();
 
-        private int oldActionSelection = 0;
         private bool dataHasChanged = false;
 
         public Actions()
@@ -41,40 +41,22 @@ namespace WebClashServer.Editors
             canvas.MouseMove += new MouseEventHandler(mouseMoveCanvas);
             canvas.MouseUp += new MouseEventHandler(mouseUpCanvas);
 
-            actionSelect.TextChanged += ((object s, EventArgs ea) =>
-            {
-                if (current == null)
-                    return;
-
-                if (oldActionSelection == actionSelect.SelectedIndex)
-                    current.name = actionSelect.Text;
-                else
-                    oldActionSelection = actionSelect.SelectedIndex;
-            });
-
             ReloadActions();
-            ReloadCharacters();
             ReloadStatusEffects();
 
-            if (actionSelect.Items.Count > 0)
-                actionSelect.SelectedItem = actionSelect.Items[0];
-            else
-                addAction_Click(sender, e);
+            LoadFirstCharacter();
 
-            if (charSelect.Items.Count > 0)
-            {
-                if (charSelect.Items.Contains("player"))
-                    charSelect.SelectedItem = "player";
-                else
-                    charSelect.SelectedItem = charSelect.Items[0];
-            }
+            if (actionList.Items.Count > 0)
+                actionList.SelectedItem = actionList.Items[0];
+            else
+                newAction_LinkClicked(sender, null);
 
             canvas.Invalidate();
         }
 
         private void ReloadActions()
         {
-            actionSelect.Items.Clear();
+            actionList.Items.Clear();
 
             try
             {
@@ -83,46 +65,20 @@ namespace WebClashServer.Editors
                     ".json"
                 };
 
-                string[] characters = Directory.GetFiles(Program.main.serverLocation + "/actions", "*.*", SearchOption.AllDirectories)
+                string[] actions = Directory.GetFiles(Program.main.serverLocation + "/actions", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
-                foreach (string c in characters)
+                for (int a = 0; a < actions.Length; a++)
                 {
-                    string character = c.Replace('\\', '/');
+                    string action = actions[a].Replace('\\', '/');
+                    action = action.Substring(action.LastIndexOf('/') + 1, action.LastIndexOf('.') - action.LastIndexOf('/') - 1);
 
-                    actionSelect.Items.Add(character.Substring(character.LastIndexOf('/') + 1, character.LastIndexOf('.') - character.LastIndexOf('/') - 1));
+                    actionList.Items.Add((a + 1) + ". " + action);
                 }
             }
             catch (Exception exc)
             {
                 Logger.Error("Could not load actions: ", exc);
-            }
-        }
-
-        private void ReloadCharacters()
-        {
-            charSelect.Items.Clear();
-
-            try
-            {
-                List<string> ext = new List<string>()
-                {
-                    ".json"
-                };
-
-                string[] characters = Directory.GetFiles(Program.main.serverLocation + "/characters", "*.*", SearchOption.AllDirectories)
-                    .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
-
-                foreach (string c in characters)
-                {
-                    string character = c.Replace('\\', '/');
-
-                    charSelect.Items.Add(character.Substring(character.LastIndexOf('/') + 1, character.LastIndexOf('.') - character.LastIndexOf('/') - 1));
-                }
-            }
-            catch (Exception exc)
-            {
-                Logger.Error("Could not load characters: ", exc);
             }
         }
 
@@ -155,6 +111,29 @@ namespace WebClashServer.Editors
             }
         }
 
+        private void LoadFirstCharacter()
+        {
+            try
+            {
+                List<string> ext = new List<string>()
+                {
+                    ".json"
+                };
+
+                string[] characters = Directory.GetFiles(Program.main.serverLocation + "/characters", "*.*", SearchOption.AllDirectories)
+                    .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
+
+                string character = characters[0].Replace('\\', '/');
+                character = character.Substring(character.LastIndexOf('/') + 1, character.LastIndexOf('.') - character.LastIndexOf('/') - 1);
+
+                LoadCharacter(character);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error("Could not load a testing character: ", exc);
+            }
+        }
+
         private void LoadAction(string actionName)
         {
             if (actionName == string.Empty)
@@ -168,6 +147,7 @@ namespace WebClashServer.Editors
                 properties.Visible = false;
 
             name.Text = current.name;
+            oldName = name.Text;
 
             power.Value = (decimal)current.scaling.power;
             intelligence.Value = (decimal)current.scaling.intelligence;
@@ -196,6 +176,8 @@ namespace WebClashServer.Editors
 
         private void LoadCharacter(string charName)
         {
+            characterName.Text = charName;
+
             if (charName == string.Empty)
                 currentCharacter = new Character();
             else
@@ -403,24 +385,28 @@ namespace WebClashServer.Editors
             moving = false;
         }
 
-        private void actionSelect_SelectedIndexChanged(object sender, EventArgs e)
+
+        private void actionList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadAction(actionSelect.SelectedItem.ToString());
+            if (actionList.SelectedItem == null)
+                return;
+
+            string t = actionList.SelectedItem.ToString();
+
+            LoadAction(t.Substring(t.IndexOf(" ") + 1, t.Length - t.IndexOf(" ") - 1));
         }
 
-        private void charSelect_SelectedIndexChanged(object sender, EventArgs e)
+        private void newAction_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            LoadCharacter(charSelect.SelectedItem.ToString());
+            string i = (actionList.Items.Count + 1) + ". " + string.Empty;
+
+            actionList.Items.Add(i);
+            actionList.SelectedItem = i;
+
+            LoadAction(string.Empty);
         }
 
-        private void addAction_Click(object sender, EventArgs e)
-        {
-            actionSelect.Items.Add(string.Empty);
-
-            actionSelect.SelectedItem = string.Empty;
-        }
-
-        private void removeAction_Click(object sender, EventArgs e)
+        private void delete_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (!File.Exists(Program.main.serverLocation + "/actions/" + current.name + ".json"))
             {
@@ -433,24 +419,47 @@ namespace WebClashServer.Editors
 
             ReloadActions();
 
-            if (charSelect.Items.Count > 0)
-                charSelect.SelectedItem = charSelect.Items[0];
+            if (actionList.Items.Count > 0)
+                actionList.SelectedItem = actionList.Items[0];
+            else
+                newAction_LinkClicked(sender, e);
 
             dataHasChanged = true;
         }
 
+        private void changeCharacter_Click(object sender, EventArgs e)
+        {
+            CharacterSelection charSelection = new CharacterSelection("Select testing character", characterName.Text);
+
+            charSelection.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
+                string result = charSelection.GetResult();
+
+                if (result != "")
+                    LoadCharacter(result);
+            };
+
+            charSelection.ShowDialog();
+        }
+
         private void save_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (current == null)
+            if (current == null || name.Text.Length == 0)
+            {
+                Logger.Error("Could not save action as it is invalid.");
                 return;
+            }
 
-            File.WriteAllText(Program.main.serverLocation + "/actions/" + current.name + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
+            if (oldName != name.Text)
+                File.Delete(Program.main.serverLocation + "/actions/" + oldName + ".json");
+
+            File.WriteAllText(Program.main.serverLocation + "/actions/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
             Logger.Message("Action has been saved!");
 
             ReloadActions();
 
-            actionSelect.SelectedItem = current.name;
+            actionList.SelectedItem = name.Text;
 
             dataHasChanged = true;
         }

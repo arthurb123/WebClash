@@ -22,7 +22,6 @@ namespace WebClashServer.Editors
 
         private void NPCs_Load(object sender, EventArgs e)
         {
-            ReloadCharacters();
             ReloadNPCs();
 
             if (npcSelect.Items.Count > 0)
@@ -55,33 +54,6 @@ namespace WebClashServer.Editors
             catch (Exception exc)
             {
                 Logger.Error("Could not load NPCs: ", exc);
-            }
-        }
-
-        private void ReloadCharacters()
-        {
-            charSelect.Items.Clear();
-
-            try
-            {
-                List<string> ext = new List<string>()
-                {
-                    ".json"
-                };
-
-                string[] characters = Directory.GetFiles(Program.main.serverLocation + "/characters", "*.*", SearchOption.AllDirectories)
-                    .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
-
-                foreach (string c in characters)
-                {
-                    string character = c.Replace('\\', '/');
-
-                    charSelect.Items.Add(character.Substring(character.LastIndexOf('/') + 1, character.LastIndexOf('.') - character.LastIndexOf('/') - 1));
-                }
-            }
-            catch (Exception exc)
-            {
-                Logger.Error("Could not load characters: ", exc);
             }
         }
 
@@ -234,7 +206,7 @@ namespace WebClashServer.Editors
 
             checkTypeEnabled();
 
-            charSelect.SelectedItem = currentProfile.character;
+            characterName.Text = "Character: " + currentProfile.character;
         }
 
         private void npcSelect_SelectedIndexChanged(object sender, EventArgs e)
@@ -242,12 +214,25 @@ namespace WebClashServer.Editors
             LoadNPC(npcSelect.SelectedItem.ToString());
         }
 
-        private void charSelect_SelectedIndexChanged(object sender, EventArgs e)
+        private void selectCharacter_Click(object sender, EventArgs e)
         {
             if (current == null)
                 return;
 
-            currentProfile.character = charSelect.SelectedItem.ToString();
+            CharacterSelection charSelection = new CharacterSelection("Select character for NPC '" + current.name + "'", currentProfile.character);
+
+            charSelection.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
+                string result = charSelection.GetResult();
+
+                if (result != "")
+                {
+                    currentProfile.character = result;
+                    characterName.Text = "Character: " + result;
+                }
+            };
+
+            charSelection.ShowDialog();
         }
 
         private void save_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

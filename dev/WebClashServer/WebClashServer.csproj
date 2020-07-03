@@ -79,6 +79,12 @@
     <Compile Include="Editors\Actions.Designer.cs">
       <DependentUpon>Actions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\CharacterSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\CharacterSelection.Designer.cs">
+      <DependentUpon>CharacterSelection.cs</DependentUpon>
+    </Compile>
     <Compile Include="Editors\StatusEffects.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -227,6 +233,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Editors\Actions.resx">
       <DependentUpon>Actions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\CharacterSelection.resx">
+      <DependentUpon>CharacterSelection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\StatusEffects.resx">
       <DependentUpon>StatusEffects.cs</DependentUpon>

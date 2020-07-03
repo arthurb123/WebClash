@@ -207,6 +207,27 @@ namespace WebClashServer
             dataHasChanged = true;
         }
 
+
+        private void delete_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (current == null)
+            {
+                Logger.Error("Could not remove item as it is invalid.");
+                return;
+            }
+
+            File.Delete(Program.main.serverLocation + "/items/" + oldName + ".json");
+
+            ReloadItems();
+
+            if (itemList.Items.Count > 0)
+                itemList.SelectedItem = itemList.Items[0];
+            else
+                newLink_LinkClicked(sender, e);
+
+            dataHasChanged = true;
+        }
+
         private void SetTypes()
         {
             foreach (ItemType it in Enum.GetValues(typeof(ItemType)))
@@ -309,26 +330,6 @@ namespace WebClashServer
                 return;
 
             current.description = description.Text;
-        }
-
-        private void delete_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            if (current == null)
-            {
-                Logger.Error("Could not remove item as it is invalid.");
-                return;
-            }
-
-            File.Delete(Program.main.serverLocation + "/items/" + oldName + ".json");
-
-            ReloadItems();
-
-            if (itemList.Items.Count > 0)
-                itemList.SelectedItem = itemList.Items[0];
-            else
-                newLink_LinkClicked(sender, e);
-
-            dataHasChanged = true;
         }
 
         //Consumable settings
