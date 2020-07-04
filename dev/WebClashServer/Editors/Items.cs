@@ -33,6 +33,8 @@ namespace WebClashServer
 
             if (itemList.Items.Count > 0)
                 itemList.SelectedItem = itemList.Items[0];
+            else
+                newLink_LinkClicked(sender, null);
         }
 
         private void ReloadItems()
@@ -215,6 +217,9 @@ namespace WebClashServer
                 Logger.Error("Could not remove item as it is invalid.");
                 return;
             }
+
+            if (!Logger.Question("Are you sure you want to delete the item?"))
+                return;
 
             File.Delete(Program.main.serverLocation + "/items/" + oldName + ".json");
 

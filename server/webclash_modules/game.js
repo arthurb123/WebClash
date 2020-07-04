@@ -215,6 +215,9 @@ exports.addPlayer = function(channel)
 
                 player.map_id = tiled.getMapIndex(player.map);
 
+                if (player.statusEffects == undefined)
+                    player.statusEffects = {};
+
                 //Increment player count
 
                 game.playerCount++;

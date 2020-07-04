@@ -202,7 +202,7 @@ exports.usePlayerItem = function(id, name)
 
     //Check if valid
 
-    if (item === undefined)
+    if (item == undefined)
         return false;
 
     //Check if minimal item level matches player level
@@ -362,7 +362,7 @@ exports.setPlayerEquipment = function(id, item)
 exports.unequipPlayerEquipment = function(id, slot) {
     //Check if player has equipped item
 
-    if (game.players[id].equipment[slot] === undefined)
+    if (game.players[id].equipment[slot] == undefined)
         return;
 
     //Get item
@@ -371,7 +371,7 @@ exports.unequipPlayerEquipment = function(id, slot) {
 
     //Check if valid
 
-    if (item === undefined)
+    if (item == undefined)
         return;
 
     //Add item
@@ -596,7 +596,7 @@ exports.releaseWorldItemsFromOwner = function(map, owner)
 
     for (let i = 0; i < this.onMap[map].length; i++)
     {
-        if (this.onMap[map][i] === undefined)
+        if (this.onMap[map][i] == undefined)
             continue;
 
         if (this.onMap[map][i].item.owner == owner)
@@ -616,7 +616,7 @@ exports.releaseWorldItemFromOwner = function(map, item)
 {
     //Check if valid
 
-    if (this.onMap[map] === undefined)
+    if (this.onMap[map] == undefined)
         return;
 
     //Set owner to -1
@@ -632,8 +632,8 @@ exports.pickupItem = function(map, id, item)
 {
     //Check if valid
 
-    if (this.onMap[map] === undefined ||
-        this.onMap[map][item] === undefined)
+    if (this.onMap[map] == undefined ||
+        this.onMap[map][item] == undefined)
         return false;
 
     //Check owner
@@ -668,7 +668,7 @@ exports.removeItem = function(map, item)
 {
     //Check if valid
 
-    if (this.onMap[map] === undefined)
+    if (this.onMap[map] == undefined)
         return;
 
     //Sync remove item
@@ -697,14 +697,14 @@ exports.updateMaps = function(dt)
     {
         //Check if map is valid
 
-        if (this.onMap[m] === undefined)
+        if (this.onMap[m] == undefined)
             continue;
 
         //Cycle through all items
 
         for (let i = 0; i < this.onMap[m].length; i++)
         {
-            if (this.onMap[m][i] === undefined)
+            if (this.onMap[m][i] == undefined)
                 continue;
 
             //World item

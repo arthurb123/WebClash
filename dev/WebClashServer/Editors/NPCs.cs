@@ -12,6 +12,7 @@ namespace WebClashServer.Editors
     {
         private NPC current;
         private NPCProfile currentProfile;
+        private string oldName;
 
         private bool dataHasChanged = false;
 
@@ -24,15 +25,15 @@ namespace WebClashServer.Editors
         {
             ReloadNPCs();
 
-            if (npcSelect.Items.Count > 0)
-                npcSelect.SelectedItem = npcSelect.Items[0];
+            if (npcList.Items.Count > 0)
+                npcList.SelectedItem = npcList.Items[0];
             else
-                npcSelect.SelectedItem = string.Empty;
+                newLink_LinkClicked(sender, null);
         }
 
         private void ReloadNPCs()
         {
-            npcSelect.Items.Clear();
+            npcList.Items.Clear();
 
             try
             {
@@ -44,11 +45,12 @@ namespace WebClashServer.Editors
                 string[] npcs = Directory.GetFiles(Program.main.serverLocation + "/npcs", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
-                foreach (string n in npcs)
+                for (int n = 0; n < npcs.Length; n++)
                 {
-                    string npc = n.Replace('\\', '/');
+                    string npc = npcs[n].Replace('\\', '/');
+                    npc = npc.Substring(npc.LastIndexOf('/') + 1, npc.LastIndexOf('.') - npc.LastIndexOf('/') - 1);
 
-                    npcSelect.Items.Add(npc.Substring(npc.LastIndexOf('/') + 1, npc.LastIndexOf('.') - npc.LastIndexOf('/') - 1));
+                    npcList.Items.Add((n+1) + ". " + npc);
                 }
             }
             catch (Exception exc)
@@ -104,6 +106,7 @@ namespace WebClashServer.Editors
                 else
                 {
                     name.Text = npcName;
+                    oldName = name.Text;
 
                     ReloadNPCProfiles();
 
@@ -209,11 +212,6 @@ namespace WebClashServer.Editors
             characterName.Text = "Character: " + currentProfile.character;
         }
 
-        private void npcSelect_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            LoadNPC(npcSelect.SelectedItem.ToString());
-        }
-
         private void selectCharacter_Click(object sender, EventArgs e)
         {
             if (current == null)
@@ -235,14 +233,27 @@ namespace WebClashServer.Editors
             charSelection.ShowDialog();
         }
 
-        private void save_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void newLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (name.Text.Length == 0)
+            string i = (npcList.Items.Count + 1) + ". " + string.Empty;
+
+            npcList.Items.Add(i);
+            npcList.SelectedItem = i;
+
+            LoadNPC(string.Empty);
+        }
+
+        private void saveLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (current == null || name.Text.Length == 0)
             {
                 Logger.Error("This NPC cannot be saved as it has an invalid name.");
 
                 return;
             }
+
+            if (oldName != name.Text)
+                File.Delete(Program.main.serverLocation + "/npcs/" + oldName + ".json");
 
             File.WriteAllText(Program.main.serverLocation + "/npcs/" + name.Text + ".json", JsonConvert.SerializeObject(current, Formatting.Indented));
 
@@ -250,34 +261,43 @@ namespace WebClashServer.Editors
 
             ReloadNPCs();
 
-            npcSelect.SelectedItem = name.Text;
+            npcList.SelectedItem = name.Text;
 
             dataHasChanged = true;
         }
 
-        private void add_Click(object sender, EventArgs e)
+        private void deleteLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            //Create empty NPC
-
-            npcSelect.Items.Add(string.Empty);
-            npcSelect.SelectedItem = string.Empty;
-        }
-
-        private void delete_Click(object sender, EventArgs e)
-        {
-            if (!File.Exists(Program.main.serverLocation + "/npcs/" + name.Text + ".json"))
+            if (current == null)
             {
-                Logger.Error("This character cannot be deleted as it does not exist yet.");
-
+                Logger.Error("Could not remove NPC as it is invalid.");
                 return;
             }
 
-            File.Delete(Program.main.serverLocation + "/npcs/" + name.Text + ".json");
+            if (!Logger.Question("Are you sure you want to delete the NPC?"))
+                return;
+
+            File.Delete(Program.main.serverLocation + "/npcs/" + oldName + ".json");
 
             ReloadNPCs();
 
-            if (npcSelect.Items.Count > 0)
-                npcSelect.SelectedItem = npcSelect.Items[0];
+            if (npcList.Items.Count > 0)
+                npcList.SelectedItem = npcList.Items[0];
+            else
+                newLink_LinkClicked(sender, e);
+
+            dataHasChanged = true;
+        }
+
+        private void npcList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (npcList.SelectedItem == null)
+                return;
+
+            string n = npcList.SelectedItem.ToString();
+            n = n.Substring(n.IndexOf(" ") + 1, n.Length - n.IndexOf(" ") - 1);
+
+            LoadNPC(n);
         }
 
         private void addProfile_Click(object sender, EventArgs e)
@@ -586,7 +606,7 @@ namespace WebClashServer.Editors
             }
         }
 
-        public string name = "New NPC";
+        public string name = "";
         public NPCProfile[] profiles = new NPCProfile[0];
     }
 

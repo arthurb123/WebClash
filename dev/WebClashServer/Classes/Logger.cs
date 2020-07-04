@@ -1,5 +1,7 @@
 ﻿using System;
-using System.Windows;
+using System.Windows.Forms;
+using MessageBox = System.Windows.Forms.MessageBox;
+using MessageBoxButton = System.Windows.Forms.MessageBoxButtons;
 
 namespace WebClashServer.Classes
 {
@@ -16,6 +18,11 @@ namespace WebClashServer.Classes
         public static void Message(string message)
         {
             MessageBox.Show(message, "WebClash - Message");
+        }
+
+        public static bool Question(string message)
+        {
+            return MessageBox.Show(message, "WebClash - Question", MessageBoxButton.YesNo) == DialogResult.Yes;
         }
     }
 }

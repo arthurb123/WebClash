@@ -415,6 +415,9 @@ namespace WebClashServer.Editors
                 return;
             }
 
+            if (!Logger.Question("Are you sure you want to delete the action?"))
+                return;
+
             File.Delete(Program.main.serverLocation + "/actions/" + current.name + ".json");
 
             ReloadActions();

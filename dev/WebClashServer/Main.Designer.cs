@@ -51,10 +51,10 @@
             this.resetDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.permissions = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.interactionPanel = new System.Windows.Forms.Panel();
             this.inputCommand = new System.Windows.Forms.TextBox();
             this.menuStrip.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.interactionPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // output
@@ -261,7 +261,7 @@
             // permissions
             // 
             this.permissions.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("permissions.BackgroundImage")));
-            this.permissions.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.permissions.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.permissions.Cursor = System.Windows.Forms.Cursors.Hand;
             this.permissions.Dock = System.Windows.Forms.DockStyle.Right;
             this.permissions.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -276,17 +276,17 @@
             this.permissions.UseVisualStyleBackColor = true;
             this.permissions.Click += new System.EventHandler(this.permissions_Click);
             // 
-            // panel1
+            // interactionPanel
             // 
-            this.panel1.Controls.Add(this.inputCommand);
-            this.panel1.Controls.Add(this.startButton);
-            this.panel1.Controls.Add(this.settings);
-            this.panel1.Controls.Add(this.permissions);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 220);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(404, 21);
-            this.panel1.TabIndex = 6;
+            this.interactionPanel.Controls.Add(this.inputCommand);
+            this.interactionPanel.Controls.Add(this.startButton);
+            this.interactionPanel.Controls.Add(this.settings);
+            this.interactionPanel.Controls.Add(this.permissions);
+            this.interactionPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.interactionPanel.Location = new System.Drawing.Point(0, 220);
+            this.interactionPanel.Name = "interactionPanel";
+            this.interactionPanel.Size = new System.Drawing.Size(404, 21);
+            this.interactionPanel.TabIndex = 6;
             // 
             // inputCommand
             // 
@@ -303,7 +303,7 @@
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(404, 241);
             this.Controls.Add(this.output);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.interactionPanel);
             this.Controls.Add(this.status);
             this.Controls.Add(this.menuStrip);
             this.DoubleBuffered = true;
@@ -314,8 +314,8 @@
             this.Text = "WebClash";
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.interactionPanel.ResumeLayout(false);
+            this.interactionPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -335,7 +335,7 @@
         private System.Windows.Forms.ToolStripMenuItem actionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem itemsToolStripMenuItem;
         private System.Windows.Forms.Button permissions;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel interactionPanel;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem questsToolStripMenuItem;

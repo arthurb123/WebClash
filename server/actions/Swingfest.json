@@ -27,7 +27,8 @@
       "delay": 0,
       "rotates": true,
       "projectileSpeed": 1,
-      "projectileDistance": 0
+      "projectileDistance": 0,
+      "statusEffect": ""
     },
     {
       "x": 137,
@@ -43,7 +44,8 @@
       "delay": 6,
       "rotates": true,
       "projectileSpeed": 1,
-      "projectileDistance": 0
+      "projectileDistance": 0,
+      "statusEffect": ""
     },
     {
       "x": 179,
@@ -59,7 +61,8 @@
       "delay": 12,
       "rotates": true,
       "projectileSpeed": 1,
-      "projectileDistance": 0
+      "projectileDistance": 0,
+      "statusEffect": ""
     }
   ],
   "sounds": [

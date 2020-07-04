@@ -29,10 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NPCs));
-            this.label1 = new System.Windows.Forms.Label();
-            this.npcSelect = new System.Windows.Forms.ComboBox();
-            this.add = new System.Windows.Forms.Button();
-            this.delete = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.removeProfile = new System.Windows.Forms.Button();
             this.addProfile = new System.Windows.Forms.Button();
@@ -47,7 +43,6 @@
             this.characterName = new System.Windows.Forms.Label();
             this.typeFriendly = new System.Windows.Forms.RadioButton();
             this.typeHostile = new System.Windows.Forms.RadioButton();
-            this.save = new System.Windows.Forms.LinkLabel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.collidesWithinMap = new System.Windows.Forms.CheckBox();
             this.facing = new System.Windows.Forms.ComboBox();
@@ -82,8 +77,12 @@
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.profileGroupBox = new System.Windows.Forms.GroupBox();
             this.selectCharacter = new System.Windows.Forms.Button();
+            this.profileGroupBox = new System.Windows.Forms.GroupBox();
+            this.npcList = new System.Windows.Forms.ListBox();
+            this.deleteLink = new System.Windows.Forms.LinkLabel();
+            this.saveLink = new System.Windows.Forms.LinkLabel();
+            this.newLink = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.range)).BeginInit();
@@ -103,46 +102,6 @@
             this.profileGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(225, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 15);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Current NPC";
-            // 
-            // npcSelect
-            // 
-            this.npcSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.npcSelect.FormattingEnabled = true;
-            this.npcSelect.Location = new System.Drawing.Point(306, 13);
-            this.npcSelect.Name = "npcSelect";
-            this.npcSelect.Size = new System.Drawing.Size(137, 21);
-            this.npcSelect.TabIndex = 1;
-            this.npcSelect.SelectedIndexChanged += new System.EventHandler(this.npcSelect_SelectedIndexChanged);
-            // 
-            // add
-            // 
-            this.add.Location = new System.Drawing.Point(518, 12);
-            this.add.Name = "add";
-            this.add.Size = new System.Drawing.Size(39, 23);
-            this.add.TabIndex = 2;
-            this.add.Text = "Add";
-            this.add.UseVisualStyleBackColor = true;
-            this.add.Click += new System.EventHandler(this.add_Click);
-            // 
-            // delete
-            // 
-            this.delete.Location = new System.Drawing.Point(563, 12);
-            this.delete.Name = "delete";
-            this.delete.Size = new System.Drawing.Size(58, 23);
-            this.delete.TabIndex = 3;
-            this.delete.Text = "Remove";
-            this.delete.UseVisualStyleBackColor = true;
-            this.delete.Click += new System.EventHandler(this.delete_Click);
-            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.removeProfile);
@@ -153,7 +112,7 @@
             this.groupBox1.Controls.Add(this.name);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(191, 49);
+            this.groupBox1.Location = new System.Drawing.Point(300, 6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(458, 74);
             this.groupBox1.TabIndex = 4;
@@ -289,21 +248,6 @@
             this.typeHostile.Text = "Hostile";
             this.typeHostile.UseVisualStyleBackColor = true;
             this.typeHostile.CheckedChanged += new System.EventHandler(this.typeHostile_CheckedChanged);
-            // 
-            // save
-            // 
-            this.save.ActiveLinkColor = System.Drawing.Color.Blue;
-            this.save.AutoSize = true;
-            this.save.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.save.LinkColor = System.Drawing.Color.Blue;
-            this.save.Location = new System.Drawing.Point(449, 18);
-            this.save.Name = "save";
-            this.save.Size = new System.Drawing.Size(32, 13);
-            this.save.TabIndex = 7;
-            this.save.TabStop = true;
-            this.save.Text = "Save";
-            this.save.VisitedLinkColor = System.Drawing.Color.Blue;
-            this.save.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.save_LinkClicked);
             // 
             // groupBox2
             // 
@@ -729,20 +673,6 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Appearance";
             // 
-            // profileGroupBox
-            // 
-            this.profileGroupBox.Controls.Add(this.groupBox4);
-            this.profileGroupBox.Controls.Add(this.groupBox2);
-            this.profileGroupBox.Controls.Add(this.groupBox3);
-            this.profileGroupBox.Controls.Add(this.statistics);
-            this.profileGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.profileGroupBox.Location = new System.Drawing.Point(12, 129);
-            this.profileGroupBox.Name = "profileGroupBox";
-            this.profileGroupBox.Size = new System.Drawing.Size(792, 320);
-            this.profileGroupBox.TabIndex = 12;
-            this.profileGroupBox.TabStop = false;
-            this.profileGroupBox.Text = "NPC Profile";
-            // 
             // selectCharacter
             // 
             this.selectCharacter.Location = new System.Drawing.Point(40, 19);
@@ -753,23 +683,88 @@
             this.selectCharacter.UseVisualStyleBackColor = true;
             this.selectCharacter.Click += new System.EventHandler(this.selectCharacter_Click);
             // 
+            // profileGroupBox
+            // 
+            this.profileGroupBox.Controls.Add(this.groupBox4);
+            this.profileGroupBox.Controls.Add(this.groupBox2);
+            this.profileGroupBox.Controls.Add(this.groupBox3);
+            this.profileGroupBox.Controls.Add(this.statistics);
+            this.profileGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.profileGroupBox.Location = new System.Drawing.Point(130, 84);
+            this.profileGroupBox.Name = "profileGroupBox";
+            this.profileGroupBox.Size = new System.Drawing.Size(792, 320);
+            this.profileGroupBox.TabIndex = 12;
+            this.profileGroupBox.TabStop = false;
+            this.profileGroupBox.Text = "NPC Profile";
+            // 
+            // npcList
+            // 
+            this.npcList.FormattingEnabled = true;
+            this.npcList.Location = new System.Drawing.Point(4, 5);
+            this.npcList.Name = "npcList";
+            this.npcList.Size = new System.Drawing.Size(120, 381);
+            this.npcList.TabIndex = 13;
+            this.npcList.SelectedIndexChanged += new System.EventHandler(this.npcList_SelectedIndexChanged);
+            // 
+            // deleteLink
+            // 
+            this.deleteLink.ActiveLinkColor = System.Drawing.Color.Red;
+            this.deleteLink.AutoSize = true;
+            this.deleteLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.deleteLink.LinkColor = System.Drawing.Color.Red;
+            this.deleteLink.Location = new System.Drawing.Point(101, 392);
+            this.deleteLink.Name = "deleteLink";
+            this.deleteLink.Size = new System.Drawing.Size(23, 13);
+            this.deleteLink.TabIndex = 16;
+            this.deleteLink.TabStop = true;
+            this.deleteLink.Text = "Del";
+            this.deleteLink.VisitedLinkColor = System.Drawing.Color.Red;
+            this.deleteLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.deleteLink_LinkClicked);
+            // 
+            // saveLink
+            // 
+            this.saveLink.ActiveLinkColor = System.Drawing.Color.Blue;
+            this.saveLink.AutoSize = true;
+            this.saveLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.saveLink.Location = new System.Drawing.Point(51, 392);
+            this.saveLink.Name = "saveLink";
+            this.saveLink.Size = new System.Drawing.Size(32, 13);
+            this.saveLink.TabIndex = 15;
+            this.saveLink.TabStop = true;
+            this.saveLink.Text = "Save";
+            this.saveLink.VisitedLinkColor = System.Drawing.Color.Blue;
+            this.saveLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.saveLink_LinkClicked);
+            // 
+            // newLink
+            // 
+            this.newLink.ActiveLinkColor = System.Drawing.Color.Blue;
+            this.newLink.AutoSize = true;
+            this.newLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.newLink.Location = new System.Drawing.Point(8, 392);
+            this.newLink.Name = "newLink";
+            this.newLink.Size = new System.Drawing.Size(29, 13);
+            this.newLink.TabIndex = 14;
+            this.newLink.TabStop = true;
+            this.newLink.Text = "New";
+            this.newLink.VisitedLinkColor = System.Drawing.Color.Blue;
+            this.newLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.newLink_LinkClicked);
+            // 
             // NPCs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(816, 461);
+            this.ClientSize = new System.Drawing.Size(929, 411);
+            this.Controls.Add(this.deleteLink);
+            this.Controls.Add(this.saveLink);
+            this.Controls.Add(this.newLink);
+            this.Controls.Add(this.npcList);
             this.Controls.Add(this.profileGroupBox);
-            this.Controls.Add(this.save);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.delete);
-            this.Controls.Add(this.add);
-            this.Controls.Add(this.npcSelect);
-            this.Controls.Add(this.label1);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(832, 500);
-            this.MinimumSize = new System.Drawing.Size(832, 500);
+            this.MaximumSize = new System.Drawing.Size(945, 450);
+            this.MinimumSize = new System.Drawing.Size(945, 450);
             this.Name = "NPCs";
             this.Text = "WebClash - NPCs";
             this.Load += new System.EventHandler(this.NPCs_Load);
@@ -801,13 +796,7 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox npcSelect;
-        private System.Windows.Forms.Button add;
-        private System.Windows.Forms.Button delete;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.LinkLabel save;
         private System.Windows.Forms.Label characterName;
         private System.Windows.Forms.TextBox name;
         private System.Windows.Forms.Label label3;
@@ -857,5 +846,9 @@
         private System.Windows.Forms.Button addProfile;
         private System.Windows.Forms.ComboBox profileSelect;
         private System.Windows.Forms.Button selectCharacter;
+        private System.Windows.Forms.ListBox npcList;
+        private System.Windows.Forms.LinkLabel deleteLink;
+        private System.Windows.Forms.LinkLabel saveLink;
+        private System.Windows.Forms.LinkLabel newLink;
     }
 }
