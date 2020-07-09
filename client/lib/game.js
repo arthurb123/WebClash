@@ -275,6 +275,30 @@ const game = {
         this.players[name] = go.Show(3);
     },
 
+    setPlayerCharacter: function(id, character, isPlayer) {
+        manager.getSprite(character.src, function (sprite) {
+            game.players[id].Sprite(sprite);
+            game.players[id].Sprite().Clip(0, 0, character.width, character.height);
+
+            game.players[id].SIZE = game.players[id].Sprite().Size();
+
+            if (isPlayer)
+            {
+                player.setCollider(character.collider);
+                player.setMovement(game.players[id], character.movement);
+            }
+
+            game.players[id]._animation = character.animation;
+            game.players[id]._animation.cur = 0;
+
+            game.players[id]._sounds = character.sounds;
+
+            game.players[id]._damageParticles = {
+                exists: character.damageParticles,
+                src: character.particleSrc
+            };
+        });
+    },
     setPlayerHealth: function(id, health)
     {
         if (this.players[id]._health !== undefined) {
@@ -793,6 +817,24 @@ const game = {
         //Add and show NPC
 
         this.npcs[id] = go.Show(3);
+    },
+    setNPCCharacter: function(id, character) {
+        manager.getSprite(character.src, function(sprite) {
+            game.npcs[id].Sprite(sprite);
+            game.npcs[id].Sprite().Clip(0, 0, character.width, character.height);
+
+            game.npcs[id].SIZE = game.npcs[id].Sprite().Size();
+
+            game.npcs[id]._animation = character.animation;
+            game.npcs[id]._animation.cur = 0;
+
+            game.npcs[id]._sounds = character.sounds;
+
+            game.npcs[id]._damageParticles = {
+                exists: character.damageParticles,
+                src: character.particleSrc
+            };
+        });
     },
     setNPCType: function(id, type, hasDialog)
     {

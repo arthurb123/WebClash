@@ -204,16 +204,19 @@ const client = {
                 }
             }
 
-            //Check what data is present
-            if (data.remove) 
-                game.removePlayer(id);
-            if (data.pos !== undefined) {
-                game.players[id].POS = data.pos;
+            //If player package make sure to stop movement
 
-            //If player make sure to stop movement
             if (data.isPlayer)
                 game.players[id].Movement(0, 0);
-            }
+
+            //Handle data
+
+            if (data.remove) 
+                game.removePlayer(id);
+            if (data.pos !== undefined)
+                game.players[id].POS = data.pos;
+            if (data.character !== undefined)
+                game.setPlayerCharacter(id, data.character, data.isPlayer);
             if (data.moving !== undefined)
                 game.players[id]._moving = data.moving;
             if (data.direction !== undefined)
@@ -247,30 +250,6 @@ const client = {
                     player.setStatusEffects(data.statusEffects);
                 else
                     game.setPlayerStatusEffects(id, data.statusEffects);
-            }
-            if (data.character !== undefined) {
-                manager.getSprite(data.character.src, function (sprite) {
-                    game.players[id].Sprite(sprite);
-                    game.players[id].Sprite().Clip(0, 0, data.character.width, data.character.height);
-
-                    game.players[id].SIZE = game.players[id].Sprite().Size();
-
-                    if (data.isPlayer)
-                    {
-                        player.setCollider(data.character.collider);
-                        player.setMovement(game.players[id], data.character.movement);
-                    }
-
-                    game.players[id]._animation = data.character.animation;
-                    game.players[id]._animation.cur = 0;
-
-                    game.players[id]._sounds = data.character.sounds;
-
-                    game.players[id]._damageParticles = {
-                        exists: data.character.damageParticles,
-                        src: data.character.particleSrc
-                    };
-                });
             }
         });
         channel.on('GAME_PLAYER_KILLED', function (data) {
