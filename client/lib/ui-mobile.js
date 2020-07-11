@@ -777,8 +777,8 @@ const ui = {
             let remaining = castingTime;
 
             let cLoopID = this.addLoops(function() {
-                if (player.actions[slot] == undefined) {
-                    ui.actionbar.removeCooldown(slot);
+                if (player.moving || player.actions[slot] == undefined) {
+                    ui.actionbar.removeCasting(slot);
 
                     ui.actionbar.loops[cLoopID] = undefined;
 
@@ -796,7 +796,7 @@ const ui = {
                 cTime.innerHTML = time + 's';
 
                 if (remaining <= 0) {
-                    ui.actionbar.removeCooldown(slot);
+                    ui.actionbar.removeCasting(slot);
 
                     ui.actionbar.loops[cLoopID] = undefined;
                 } else

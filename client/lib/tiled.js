@@ -316,7 +316,7 @@ const tiled = {
 
                     //Set animation properties and show
 
-                    let layer = map.mapLayers[layer_id].hover ? 4 : 0;
+                    let layer = map.mapLayers[layer_id].hover ? 4 : layer_id;
                     animation
                         .Position(
                             tp.x+this.offset.width+offset_width,
@@ -915,7 +915,7 @@ const tiled = {
                         undefined,
                         p_x, p_y,
                         p_w, p_h
-                    ).Show(0);
+                    ).Show(3);
 
                     //Give dialog texture
 

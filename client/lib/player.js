@@ -292,15 +292,20 @@ const player = {
             lx.OnKey(key.k, function(data) {
                 if (lx.CONTEXT.CONTROLLER.TARGET != undefined) {
                     if (data.state === 0) {
+                        player.moving = false;
+
                         if (key.v.x !== 0)
                             lx.CONTEXT.CONTROLLER.TARGET.MOVEMENT.VX = 0;
                         if (key.v.y !== 0)
                             lx.CONTEXT.CONTROLLER.TARGET.MOVEMENT.VY = 0;
+
                         return;
                     }
 
-                    let maxVel = movement.max * player.statusEffectsMatrix['movementSpeedFactor'];
+                    player.cancelCastAction();
+                    player.moving = true;
 
+                    let maxVel = movement.max * player.statusEffectsMatrix['movementSpeedFactor'];
                     game.players[game.player].MaxVelocity(maxVel);
     
                     if (ui === undefined || !ui.chat.isTyping())
@@ -451,6 +456,17 @@ const player = {
         //Check if valid
 
         if (player.actions[slot] == undefined)
+            return;
+
+        //Apply status effects matrix to the casting time
+
+        let castingTime = player.actions[slot].castingTime;
+        castingTime *= player.statusEffectsMatrix['castingTimeFactor'];
+
+        //Check if moving and casting is
+        //required
+
+        if (player.moving && castingTime > 0)
             return;
 
         //Check if already casting another spell,
