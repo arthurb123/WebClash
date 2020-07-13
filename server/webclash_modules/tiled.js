@@ -165,7 +165,27 @@ exports.getMapTileRectangles = function(map, id)
     }
 
     return rects;
-}
+};
+
+exports.getMapTileObjectRectangles = function(map, id, object) 
+{
+    //Get map tile rectangles
+
+    let rects = this.getMapTileRectangles(map, id);
+
+    //For all rectangles, adjust according to the
+    //object position and size
+
+    for (let r = 0; r < rects.length; r++)
+        rects[r] = {
+            x: rects[r].x + object.x,
+            y: rects[r].y + object.y,
+            w: (object.w == undefined ? 0 : object.w),
+            h: (object.h == undefined ? 0 : object.h)
+        };
+
+    return rects;
+};
 
 exports.cacheMap = function(map)
 {
@@ -182,10 +202,10 @@ exports.cacheMap = function(map)
 
     //Calculate base offset width and height
 
-    let offset_width = -map.width*map.tilewidth/2,
+    let offset_width  = -map.width*map.tilewidth/2,
         offset_height = -map.height*map.tileheight/2;
 
-    //Cache tilesets
+    //Cache tilesets (tiles and tile specific objects)
 
     for (let t = 0; t < map.tilesets.length; t++)
     {
@@ -208,21 +228,90 @@ exports.cacheMap = function(map)
 
                 let checks = this.getPropertyChecks(tileset.tiles[i].properties);
 
-                //Create properties
+                //Create properties list
+
+                let properties = [];
 
                 for (let p = 0; p < tileset.tiles[i].properties.length; p++)
                 {
+                    //Grab the property
+
                     let property = tileset.tiles[i].properties[p];
+
+                    //Skip check properties
+
+                    if (property.name === 'getVariableTrue' ||
+                        property.name === 'getVariableFalse')
+                        continue;
+
+                    //Add to properties list
+
+                    properties.push({
+                        name: property.name,
+                        value: property.value
+                    });
+                }
+
+                //Add to map properties list
+
+                this.maps_properties[id].push({
+                    tile: tileset.tiles[i].id,
+                    properties: properties,
+                    rectangles: this.getMapTileRectangles(map, actual),
+                    checks: checks
+                });
+            }
+
+            //Check tile specific objects
+
+            if (tileset.tiles[i].objectgroup != undefined)
+                for (let o = 0; o < tileset.tiles[i].objectgroup.objects.length; o++) {
+                    let obj = tileset.tiles[i].objectgroup.objects[o];
+
+                    //Get checks (if they exist)
+
+                    let checks = this.getPropertyChecks(obj.properties);
+
+                    //Create properties list
+
+                    let properties = [];
+
+                    for (let p = 0; p < obj.properties.length; p++) {
+                        //Grab the property
+
+                        let property = obj.properties[p];
+
+                        //Skip check properties
+
+                        if (property.name === 'getVariableTrue' ||
+                            property.name === 'getVariableFalse')
+                            continue;
+
+                        //Add to properties list
+
+                        properties.push({
+                            name: property.name,
+                            value: property.value
+                        });
+                    }
+
+                    //Add to map properties list
+                    
+                    obj = { 
+                        x: obj.x, 
+                        y: obj.y, 
+                        w: obj.width, 
+                        h: obj.height
+                    };
 
                     this.maps_properties[id].push({
                         tile: tileset.tiles[i].id,
-                        name: property.name,
-                        value: property.value,
-                        rectangles: this.getMapTileRectangles(map, actual),
+                        object: obj,
+                        properties: properties,
+                        rectangles: this.getMapTileObjectRectangles(map, actual, obj),
                         checks: checks
                     });
                 }
-            }
         }
     }
 
@@ -248,40 +337,56 @@ exports.cacheMap = function(map)
 
         for (let o = 0; o < map.layers[l].objects.length; o++)
         {
-            const data = map.layers[l].objects[o];
+            const obj = map.layers[l].objects[o];
 
             //Check properties
 
-            if (data.properties != undefined) {
+            if (obj.properties != undefined) {
                 //Get checks (if they exist)
 
-                let checks = this.getPropertyChecks(data.properties);
+                let checks = this.getPropertyChecks(obj.properties);
 
-                //Create properties
+                //Create properties list
 
-                for (let p = 0; p < data.properties.length; p++)
+                let properties = [];
+
+                for (let p = 0; p < obj.properties.length; p++)
                 {
-                    let property = data.properties[p];
+                    //Grab the property
 
-                    //Get collision data
+                    let property = obj.properties[p];
 
-                    let coll = {
-                        x: data.x + offset_width + layer_offset_width,
-                        y: data.y + offset_height + layer_offset_height,
-                        w: data.width,
-                        h: data.height
-                    };
+                    //Skip check properties
 
-                    //Add to map properties
+                    if (property.name === 'getVariableTrue' ||
+                        property.name === 'getVariableFalse')
+                        continue;
 
-                    this.maps_properties[id].push({
-                        object: o,
+                    //Add to properties list
+
+                    properties.push({
                         name: property.name,
-                        value: property.value,
-                        rectangles: [coll],
-                        checks: checks
+                        value: property.value
                     });
                 }
+
+                //Setup collision rectangle
+
+                let coll = {
+                    x: obj.x + offset_width + layer_offset_width,
+                    y: obj.y + offset_height + layer_offset_height,
+                    w: obj.width,
+                    h: obj.height
+                };
+
+                //Add to map properties list
+
+                this.maps_properties[id].push({
+                    object: { x: obj.x, y: obj.y, w: obj.width, h: obj.height },
+                    properties: properties,
+                    rectangles: [coll],
+                    checks: checks
+                });
             }
         }
     }
@@ -290,6 +395,15 @@ exports.cacheMap = function(map)
 
     map.colliderZoneWidth  = Math.ceil(map.width  / colliderZoneSize);
     map.colliderZoneHeight = Math.ceil(map.height / colliderZoneSize);
+
+    //TODO: Clean this mess of 200 lines of magic up, 
+    //      it is not essential as it only has to happen
+    //      once upon startup - but if this is more
+    //      efficient it reduces the startup time
+    //      significantly. Idea: move from checking
+    //      every collider against a zone to creating
+    //      all colliders once and moving it into the
+    //      correct zone.
 
     for (let x = 0; x < map.colliderZoneWidth; x++)
         for (let y = 0; y < map.colliderZoneHeight; y++) {
@@ -340,6 +454,39 @@ exports.cacheMap = function(map)
                 {
                     const data = map.layers[l].objects[o];
 
+                    //If properties exist, get checks -
+                    //and check for other properties
+
+                    let checks = [];
+
+                    if (data.properties != undefined) {
+                        //Get checks (if they exist)
+
+                        checks = this.getPropertyChecks(data.properties);
+
+                        //For all properties, check certain properties
+
+                        let valid = true;
+                        for (let p = 0; p < data.properties.length; p++)
+                        {
+                            let property = data.properties[p];
+
+                            //Check if any other property
+                            //than checks
+
+                            if (property.name !== 'getVariableTrue' &&
+                                property.name !== 'getVariableFalse') {
+                                valid = false;
+                                break;
+                            }
+                        }
+
+                        //Check if still valid
+
+                        if (!valid)
+                            continue;
+                    }
+
                     //Get collision data
 
                     let coll = {
@@ -349,42 +496,10 @@ exports.cacheMap = function(map)
                         h: data.height
                     };
 
-                    //Create collider boolean
+                    //Check if not a point,
+                    //or has no size
 
-                    let createCollider = true;
-                    let checks = [];
-
-                    //Check properties
-
-                    if (data.properties != undefined) {
-                        //Get checks (if they exist)
-
-                        checks = this.getPropertyChecks(data.properties);
-
-                        //For all properties, check certain properties
-
-                        for (let p = 0; p < data.properties.length; p++)
-                        {
-                            let property = data.properties[p];
-
-                            //Evaluate property name,
-                            //as design properties do
-                            //not require colliders!
-
-                            if (property.name === 'mapDialogue' ||
-                                property.name === 'lightHotspot' ||
-                                property.name === 'NPC' ||
-                                property.name === 'item')
-                                createCollider = false;
-                        }
-                    }
-
-                    //Check if not a point or
-                    //create collider is set
-                    //to false
-
-                    if (!createCollider ||
-                        data.width === 0 ||
+                    if (data.width  === 0 ||
                         data.height === 0 ||
                         data.point)
                         continue;
@@ -400,6 +515,83 @@ exports.cacheMap = function(map)
                         collider: coll,
                         checks: checks
                     });
+                }
+
+                //Cycle through all tile specific objects
+
+                for (let t = 0; t < map.tilesets.length; t++)
+                {
+                    let tileset = map.tilesets[t];
+
+                    if (tileset.tiles === undefined)
+                        continue;
+
+                    for (let i = 0; i < tileset.tiles.length; i++) {
+                        //Check if tile specific objects are available,
+                        //if so cycle through all tile specific objects
+
+                        if (tileset.tiles[i].objectgroup == undefined)
+                            continue;
+
+                        for (let o = 0; o < tileset.tiles[i].objectgroup.objects.length; o++)
+                        {
+                            const data = tileset.tiles[i].objectgroup.objects[o];
+
+                            //If properties exist, get checks -
+                            //and check for other properties
+
+                            let checks = [];
+
+                            if (data.properties != undefined) {
+                                //Get checks (if they exist)
+
+                                checks = this.getPropertyChecks(data.properties);
+
+                                //For all properties, check certain properties
+
+                                let valid = true;
+                                for (let p = 0; p < data.properties.length; p++)
+                                {
+                                    let property = data.properties[p];
+
+                                    //Check if any other property
+                                    //than checks
+
+                                    if (property.name !== 'getVariableTrue' &&
+                                        property.name !== 'getVariableFalse') {
+                                        valid = false;
+                                        break;
+                                    }
+                                }
+
+                                //Check if still valid
+
+                                if (!valid)
+                                    continue;
+                            }
+
+                            //Get all tile object rectangles
+
+                            let rects = this.getMapTileObjectRectangles(map, actual, data);
+
+                            //For all tile object rectangles, 
+                            //attempt to add the zone
+
+                            for (let r = 0; r < rects.length; r++) {
+                                //Check if collider falls in the current zone
+            
+                                if (!this.checkRectangularCollision(rects[r], zone))
+                                    continue;
+            
+                                //Add collider to zone
+            
+                                this.maps_collider_zones[id][zoneId].colliders.push({
+                                    collider: rects[r],
+                                    checks: checks
+                                });
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -421,10 +613,6 @@ exports.cacheMap = function(map)
     //Handle design properties
 
     this.handleMapDesign(id);
-
-    //Load NPCs
-
-    npcs.loadMap(id);
 };
 
 exports.handleMapDesign = function(map)
@@ -439,23 +627,36 @@ exports.handleMapDesign = function(map)
 
             let rect = property.rectangles[r];
 
-            //Switch on property name
+            //Switch on property names
 
-            switch (property.name) {
-                //Item design property
+            for (let i = 0; i < property.properties.length; i++) {
+                switch (property.properties[i].name) {
+                    //Item design property
 
-                case 'item':
-                    items.createMapItem(
-                        map, 
-                        rect.x+rect.w/2,
-                        rect.y+rect.h/2,
-                        property.value
-                    );
-                    break;
+                    case 'item':
+                        items.createMapItem(
+                            map, 
+                            rect.x+rect.w/2,
+                            rect.y+rect.h/2,
+                            property.properties[i].value
+                        );
+                        break;
+                    
+                    //NPC design property
 
-                //Other design properties
+                    case 'NPC':
+                        npcs.createNPCs(
+                            property.properties[i].value, 
+                            property.rectangles, 
+                            property.checks, 
+                            map
+                        );
+                        break;
 
-                //...
+                    //Other design properties
+
+                    //...
+                }
             }
         }
     }
@@ -487,30 +688,55 @@ exports.getPropertyChecks = function(properties) {
 
 exports.checkPropertyWithRectangle = function(map, property_name, property_value, rectangle)
 {
+    //Setup data
+
     let data = {
-        near: false,
-        map: map
+        near: false
     };
+
+    //Check if the map is valid, and map
+    //properties exist - otherwise return
+    //the default data
 
     if (map == -1 ||
         this.maps_properties[map] == undefined ||
         this.maps_properties[map].length == 0)
         return data;
 
+    //Go over all map properties, when a property with
+    //the matching name and value is found we check if
+    //a collision occurs - this indicates if the property
+    //is within the rectangle
+
     for (let p = 0; p < this.maps_properties[map].length; p++) {
-        if (this.maps_properties[map][p].name !== property_name ||
-            this.maps_properties[map][p].value !== property_value)
-            continue;
+        for (let i = 0; i < this.maps_properties[map][p].properties.length; i++) {
+            //Grab the property
 
-        for (let r = 0; r < this.maps_properties[map][p].rectangles.length; r++)
-            if (this.checkRectangularCollision(this.maps_properties[map][p].rectangles[r], rectangle))
-            {
-                data.near = true;
-                data.tile = this.maps_properties[map][p].tile;
-                data.object = this.maps_properties[map][p].object;
+            let property = this.maps_properties[map][p].properties[i];
 
-                break;
-            }
+            //Check if the name and value match
+
+            if (property.name  !== property_name ||
+                property.value !== property_value)
+                continue;
+
+            //Check if a collision occurs with any rectangle
+
+            for (let r = 0; r < this.maps_properties[map][p].rectangles.length; r++)
+                if (this.checkRectangularCollision(this.maps_properties[map][p].rectangles[r], rectangle))
+                {
+                    //Set near to true and append
+                    //any necessary information
+
+                    data.near = true;
+                    data.tile = this.maps_properties[map][p].tile;
+                    data.object = this.maps_properties[map][p].object;
+
+                    //Return the data
+
+                    return data;
+                }
+        }
     }
 
     return data;
@@ -528,45 +754,92 @@ exports.getPropertiesWithRectangle = function(map, rectangle)
     for (let p = 0; p < this.maps_properties[map].length; p++)
         for (let r = 0; r < this.maps_properties[map][p].rectangles.length; r++) 
             if (this.checkRectangularCollision(this.maps_properties[map][p].rectangles[r], rectangle))
-                result.push(this.maps_properties[map][p]);
+                result.concat(this.maps_properties[map][p].properties);
 
     return result;
 }
 
 exports.getPropertiesFromTile = function(map, tile)
 {
-    let result = [];
-
     if (this.maps_properties[map] == undefined)
-        return result;
+        return [];
 
-    for (let p = 0; p < this.maps_properties[map].length; p++) {
-        if (this.maps_properties[map][p].tile == tile)
-            result.push({
-                name: this.maps_properties[map][p].name,
-                value: this.maps_properties[map][p].value
-            });
-    }
+    for (let p = 0; p < this.maps_properties[map].length; p++)
+        if (this.maps_properties[map][p].objects == undefined &&
+            this.maps_properties[map][p].tile == tile) 
+            return this.maps_properties[map][p].properties;
 
-    return result;
+    return [];
+};
+
+exports.getPropertiesFromTileObject = function(map, tile, object) 
+{
+    if (this.maps_properties[map] == undefined)
+        return [];
+
+    for (let p = 0; p < this.maps_properties[map].length; p++)
+        if (this.maps_properties[map][p].tile == tile &&
+            this.maps_properties[map][p].object == object)
+            return this.maps_properties[map][p].properties;
+
+    return [];
 };
 
 exports.getPropertiesFromObject = function(map, object)
 {
-    let result = [];
-
     if (this.maps_properties[map] == undefined)
-        return result;
+        return [];
 
-    for (let p = 0; p < this.maps_properties[map].length; p++) {
-        if (this.maps_properties[map][p].object == object)
-            result.push({
-                name: this.maps_properties[map][p].name,
-                value: this.maps_properties[map][p].value
-            });
+    for (let p = 0; p < this.maps_properties[map].length; p++)
+        if (this.maps_properties[map][p].tile == undefined &&
+            this.maps_properties[map][p].object == object) 
+            return this.maps_properties[map][p].properties;
+
+    return [];
+};
+
+exports.parseCollisionZones = function(map) 
+{
+    let colliders = [];
+
+    //Go over all collider zones and add
+    //the colliders to the list
+
+    for (let zone = 0; zone < this.maps_collider_zones[map].length; zone++) 
+        for (let coll = 0; coll < this.maps_collider_zones[map][zone].colliders.length; coll++)
+            colliders.push(this.maps_collider_zones[map][zone].colliders[coll]);
+
+    //Return the collider list
+
+    return colliders;
+};
+
+exports.getPlayerColliders = function(id, map)
+{
+    //Parse the collision zones
+
+    let colliders = this.parseCollisionZones(map);
+    let playerColliders = [];
+
+    //For all colliders, check if the player meets the checks
+
+    for (let c = 0; c < colliders.length; c++) {
+        //Skip any invalid colliders
+
+        if (colliders[c] == undefined)
+            continue;
+
+        //If not eligible (false result), skip the collider.
+
+        if (!game.checkPlayerForChecks(id, colliders[c].checks))
+            continue;
+
+        //Add to player colliders
+
+        playerColliders.push(colliders[c].collider);
     }
 
-    return result;
+    return playerColliders;
 };
 
 exports.findCollisionZone = function(map, rectangle)
@@ -730,9 +1003,18 @@ exports.requestMap = function(req, res) {
         if (properties.allowExternalClients)
             res.header('Access-Control-Allow-Origin', '*');
 
-        //Send custom tailored map for player
+        //Send custom tailored map for player,
+        //if it is valid
 
-        res.send(tiled.createPlayerMap(player_id, map_id));
+        let playerMap = tiled.createPlayerMap(player_id, map_id);
+
+        if (playerMap == undefined) {
+            output.give('Could not send player map as it was invalid.');
+
+            return;
+        }
+
+        res.send(playerMap);
     }
     catch (err) {
         //Give error and respond to client with error
@@ -744,35 +1026,123 @@ exports.requestMap = function(req, res) {
 };
 
 exports.createPlayerMap = function(id, map_id) {
-    let vars = {};
+    try {
+        //Setup data containers
 
-    //Get all needed global variables
+        let properties = [];
+        let skipTiles = {};
 
-    for (let i = 0; i < this.maps_properties[map_id].length; i++) 
-        for (let ii = 0; ii < this.maps_properties[map_id][i].checks.length; ii++) {
-            let check = this.maps_properties[map_id][i].checks[ii];
+        //Setup list of properties that are not
+        //necessary to be send to the clientside
 
-            //TODO: For some reason all variable checks are
-            //      duplicated, this probably is caused by
-            //      the Tiled caching process somewhere
-            //      during the property caching.
-            //      Reproduce with: console.log(check);
+        const skipProperties = {
+            //Design properties
+            'NPC': true,
+            'item': true,
 
-            if (vars[check.name] == undefined) {
+            //Event properties
+            'positionX': true,
+            'positionY': true,
+
+            //Check properties
+            'getVariableTrue': true,
+            'getVariableFalse': true
+        };
+
+        //Go over all properties, if the checks apply
+        //or are not required - add to the properties list.
+        //Make sure to skip unnecessary properties.
+
+        for (let i = 0; i < this.maps_properties[map_id].length; i++) {
+            let filteredProperties = [];
+            let valid = true;
+
+            //Go over all checks
+
+            for (let c = 0; c < this.maps_properties[map_id][i].checks.length; c++) {
+                //Shorten reference
+
+                let property = this.maps_properties[map_id][i];
+                
+                //Grab check
+
+                let check = property.checks[c];
+
+                //Get the variable result (true or false)
+
                 let result = game.getPlayerGlobalVariable(id, check.name);
-                if (result == undefined)
-                    result = false;
 
-                vars[check.name] = result;
+                //If invalid, set valid to false and break
+
+                if (!result) {
+                    //Check if a tile property,
+                    //if so then this tile should
+                    //be skipped completely
+
+                    if (property.tile != undefined &&
+                        property.object == undefined)
+                        skipTiles[property.tile] = true;
+                    
+                    valid = false;
+                    break;
+                }
             }
+
+            //Check if valid, if so go over all
+            //properties of the map property
+
+            if (!valid)
+                continue;
+
+            for (let p = 0; p < this.maps_properties[map_id][i].properties.length; p++) {
+                let property = this.maps_properties[map_id][i].properties[p];
+
+                //Check if the property should be skipped
+
+                if (skipProperties[property.name])
+                    continue;
+
+                //Add to the filtered properties list
+
+                filteredProperties.push(property);
+            }
+
+            //Check if the filtered properties are
+            //empty, if so continue
+
+            if (filteredProperties.length === 0)
+                continue;
+
+            //Create a unique map property
+            //housing the filtered properties
+            //and add this to the properties list
+
+            let map_property = deepcopy(this.maps_properties[map_id][i]);
+            map_property.properties = filteredProperties;
+
+            //The checks are unnecessary, so these
+            //can be removed
+
+            delete map_property.checks;
+
+            properties.push(map_property);
         }
 
-    //Return the map with the checks
+        //Return the map with the filtered properties
+        //and a parsed list of all colliders
 
-    return {
-        vars: vars,
-        map: this.maps[map_id]
-    };
+        return {
+            skipTiles: skipTiles,
+            colliders: this.getPlayerColliders(id, map_id),
+            properties: properties,
+            map: this.maps[map_id]
+        };
+    }
+    catch (err) {
+        //Give error and respond to client with error
+
+        output.giveError('Could not create player map: ', err);
+    }
 };
 
 exports.inDialogRange = function(player, map, dialogName) {

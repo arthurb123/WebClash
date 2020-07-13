@@ -12,7 +12,7 @@ const client = {
 
                 //Set status text
 
-                document.getElementById('status_text').innerHTML = 'Server is not available';
+                document.getElementById('status_text').innerHTML = 'Server is not available.';
             }, 12000);
 
             //Generate address and full address

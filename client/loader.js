@@ -92,7 +92,7 @@ function finishLoading(isMobile)
 {
     //Set status
 
-    document.getElementById('status_text').innerHTML = 'Connecting';
+    document.getElementById('status_text').innerHTML = 'Connecting...';
 
     //Connect to server
 

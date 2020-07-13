@@ -213,7 +213,14 @@ exports.addPlayer = function(channel)
                 player.character = game.characters[player.char_name];
                 player.channel = channel;
 
+                //Set the player map id
+
                 player.map_id = tiled.getMapIndex(player.map);
+
+                //If the player has no status effect object,
+                //create it - this is good for upgrading users
+
+                //TODO: On final release, remove this?
 
                 if (player.statusEffects == undefined)
                     player.statusEffects = {};

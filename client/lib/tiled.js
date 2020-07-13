@@ -4,13 +4,15 @@ const tiled = {
     animations: [],
     lightHotspots: [],
     dialogs: [],
-    vars: {},
+
     convertAndLoadMap: function(data)
     {
-        //Extract map and map specific variables
+        //Shorten map reference
 
         const map = data.map;
-        this.vars = data.vars;
+        map._properties = data.properties;
+        map._colliders = data.colliders;
+        map._skipTiles = data.skipTiles;
 
         //Set loading
 
@@ -88,12 +90,20 @@ const tiled = {
             height: -this.size.height/2
         };
 
+        //Handle properties
+
+        tiled.handleProperties(map);
+
+        //Handle colliders
+
+        tiled.handleColliders(map);
+
         //Cache all tilesets
 
         manager.cacheTilesets(map.tilesets, function() {
-            //Check all tile objects (colliders, properties, animations, etc.)
+            //Find animations
 
-            tiled.checkObjects(map);
+            tiled.findAnimations(map);
 
             //Update progress
 
@@ -201,7 +211,8 @@ const tiled = {
                         return;
 
                     //Calculate the actual opacity
-                    //of the shadow map
+                    //of the shadow map using the
+                    //game time
 
                     let opacity = 0,
                         maxOpacity = properties.nightOpacity;
@@ -260,6 +271,7 @@ const tiled = {
             channel.emit('CLIENT_REQUEST_MAP_CONTENT');
         });
     },
+
     getLayerWithName: function(map, layer_name) {
         //Cycle through all map layers until
         //the corresponding map was found
@@ -269,6 +281,64 @@ const tiled = {
                 return map.layers[l];
         }
     },
+    getMapTileRectangles: function(map, id)
+    {
+        //Create rectangle array
+
+        let rects = [];
+
+        for (let l = 0; l < map.layers.length; l++) {
+            if (!map.layers[l].visible ||
+                map.layers[l].type !== 'tilelayer')
+                continue;
+
+            //Get map offset width and height
+            //and calculate layer offset
+
+            let offset_width = -map.width*map.tilewidth/2,
+                offset_height = -map.height*map.tileheight/2;
+
+            if (map.layers[l].offsetx !== undefined)
+                offset_width += map.layers[l].offsetx;
+            if (map.layers[l].offsety !== undefined)
+                offset_height += map.layers[l].offsety;
+
+            //Find all tiles in the layer that correspond to
+            //the specified tile identifier (id), add the
+            //rectangles of these tiles to the rectangle array
+
+            for (let t = 0; t < map.layers[l].data.length; t++)
+                if (map.layers[l].data[t] == id+1)
+                    rects.push({
+                        x: (t % map.layers[l].width) * map.tilewidth + offset_width,
+                        y: Math.floor(t / map.layers[l].width) * map.tileheight + offset_height,
+                        w: map.tilewidth,
+                        h: map.tileheight
+                    });
+        }
+
+        return rects;
+    },
+    getMapTileObjectRectangles: function(map, id, object) 
+    {
+        //Get map tile rectangles
+
+        let rects = this.getMapTileRectangles(map, id);
+
+        //For all rectangles, adjust according to the
+        //object position and size
+
+        for (let r = 0; r < rects.length; r++)
+            rects[r] = {
+                x: rects[r].x + object.x,
+                y: rects[r].y + object.y,
+                w: (object.w == undefined ? 0 : object.w),
+                h: (object.h == undefined ? 0 : object.h)
+            };
+
+        return rects;
+    },
+
     cacheLayer: function(map, layer_id, offset_width, offset_height)
     {
         //Get layer
@@ -296,6 +366,11 @@ const tiled = {
                 if (actual == 0)
                     continue;
 
+                //Check if tile should be skipped
+
+                if (map._skipTiles[actual-1])
+                    continue;
+
                 //Calculate tile position
 
                 let tp = {
@@ -305,14 +380,14 @@ const tiled = {
 
                 //If animated, add animation and continue
 
-                if (map.animatedTiles[actual] != undefined) {
-                    let animation = new lx.Animation(map.animatedTiles[actual].sprites);
-                    animation.TIMER.FRAMES = map.animatedTiles[actual].frames;
+                if (map._animatedTiles[actual] != undefined) {
+                    let animation = new lx.Animation(map._animatedTiles[actual].sprites);
+                    animation.TIMER.FRAMES = map._animatedTiles[actual].frames;
 
                     //Tiled uses a height offset for animations bigger
                     //than the tile height, this needs to be compensated for
 
-                    let heightOffset = -(map.animatedTiles[actual].size.h-map.tileheight);
+                    let heightOffset = -(map._animatedTiles[actual].size.h-map.tileheight);
 
                     //Set animation properties and show
 
@@ -323,8 +398,8 @@ const tiled = {
                             tp.y+this.offset.height+offset_height+heightOffset
                         )
                         .Size(
-                            map.animatedTiles[actual].size.w,
-                            map.animatedTiles[actual].size.h
+                            map._animatedTiles[actual].size.w,
+                            map._animatedTiles[actual].size.h
                         )
                         .Show(layer);
 
@@ -354,22 +429,6 @@ const tiled = {
 
                 if (sprite == undefined)
                     continue;
-
-                //Check if the tile should be skipped
-
-                if (tileset.tiles != undefined) {
-                    let shouldSkip = false;
-
-                    for (let i = 0; i < tileset.tiles.length; i++) 
-                        if (tileset.tiles[i].id === (layer.data[t] - 1) &&
-                            tileset.tiles[i]._skip) {
-                                shouldSkip = true;
-                                break;
-                            }
-
-                    if (shouldSkip)
-                        continue;
-                }
 
                 //Check if sprite has a tilewidth specified
 
@@ -402,208 +461,171 @@ const tiled = {
 
         return c;
     },
-    checkObjects: function(map)
-    {
+    cacheShadowMap: function(map) {
+        //Get shading color based on map
+        //shading type
+
+        let color = properties.nightColor;
+
+        if (map.alwaysDark)
+            color = properties.darknessColor;
+
+        let c = new lx.Canvas(
+            map.width*map.tilewidth,
+            map.height*map.tileheight
+        );
+
+        //Draw shadow map
+
+        c.Draw(function(g) {
+            //Overall shading
+
+            g.fillStyle = color;
+            g.globalCompositeOperation = 'source-over';
+            g.fillRect(0, 0, c.Size().W, c.Size().H);
+
+            //First create cutouts for all light
+            //hotspots
+
+            g.globalCompositeOperation = 'destination-out';
+            for (let lhs = 0; lhs < tiled.lightHotspots.length; lhs++) {
+                if (tiled.lightHotspots[lhs] == undefined)
+                    continue;
+
+                //Save
+
+                g.save();
+
+                //Create hotspot path
+
+                g.beginPath();
+                g.arc(
+                    tiled.lightHotspots[lhs].x, 
+                    tiled.lightHotspots[lhs].y, 
+                    tiled.lightHotspots[lhs].size*map.tilewidth,
+                    0, 
+                    2 * Math.PI
+                );
+                g.closePath();
+                
+                //Fill
+    
+                g.fill();
+
+                //Restore
+
+                g.restore();
+            }
+
+            //Draw coloring for all applicable
+            //light hotspots
+
+            g.globalCompositeOperation = 'source-over';
+            for (let lhs = 0; lhs < tiled.lightHotspots.length; lhs++) {
+                if (tiled.lightHotspots[lhs] == undefined ||
+                    tiled.lightHotspots[lhs].color == undefined)
+                    continue;
+
+                //Save
+
+                g.save();
+
+                //Change opacity and
+                //set fill style
+
+                g.globalAlpha = .5;
+                g.fillStyle = tiled.lightHotspots[lhs].color;
+
+                //Create hotspot path
+
+                g.beginPath();
+                g.arc(
+                    tiled.lightHotspots[lhs].x, 
+                    tiled.lightHotspots[lhs].y, 
+                    tiled.lightHotspots[lhs].size*map.tilewidth,
+                    0, 
+                    2 * Math.PI
+                );
+                g.closePath();
+                
+                //Fill
+    
+                g.fill();
+
+                //Restore
+
+                g.restore();
+            }
+        });
+
+        //Blur canvas
+
+        stackBlurCanvasRGBA(
+            c.CANVAS,
+            24
+        );
+
+        //Return cached shadow canvas
+
+        return c;
+    },
+    
+    findAnimations: function(map) {
         //Create animated tiles object
 
-        map.animatedTiles = {};
+        map._animatedTiles = {};
 
-        //Check all layers
+        //Go over all tilesets
 
         for (let l = 0; l < map.layers.length; l++) {
-             //Check if layer is visible
+            //Check if layer is visible
 
-             if (!map.layers[l].visible)
-                 continue;
+            if (!map.layers[l].visible)
+                continue;
 
-             const width = map.layers[l].width;
+            //Check if a tile layer
 
-             //Tile layer
+            if (map.layers[l].type === 'tilelayer') {
+                const data = map.layers[l].data;
 
-             if (map.layers[l].type === 'tilelayer') {
-                 const data = map.layers[l].data;
+                for (let t = 0; t < data.length; t++)
+                {
+                   //Skip empty tiles
 
-                 for (let t = 0; t < data.length; t++)
-                 {
-                    //Skip empty tiles
+                   if (data[t] === 0)
+                       continue;
 
-                    if (data[t] === 0)
-                        continue;
+                   //Get corresponding tileset
 
-                    //Get corresponding tileset
+                   let tileset,
+                       actual = data[t];
 
-                    let tileset,
-                        actual = data[t];
+                   for (let i = 0; i < map.tilesets.length; i++) {
+                       if (data[t] >= map.tilesets[i].firstgid) {
+                           tileset = map.tilesets[i];
 
-                    for (let i = 0; i < map.tilesets.length; i++) {
-                        if (data[t] >= map.tilesets[i].firstgid) {
-                            tileset = map.tilesets[i];
+                           if (i > 0)
+                               actual = data[t] - map.tilesets[i].firstgid + 1;
+                       } else
+                           break;
+                   }
 
-                            if (i > 0)
-                                actual = data[t] - map.tilesets[i].firstgid + 1;
-                        } else
-                            break;
-                    }
+                   //Check if tileset has unique tiles
 
-                    //Check if tileset has unique tiles
+                   if (tileset.tiles === undefined)
+                       continue;
 
-                    if (tileset.tiles === undefined)
-                        continue;
+                   //Check animation
 
-                    //Calculate tile coordinates
-
-                    let tp = {
-                        x: t % width * map.tilewidth + this.offset.width,
-                        y: Math.floor(t / width) * map.tileheight + this.offset.height
-                    };
-
-                    //Check tile colliders
-
-                    this.checkTileColliders(tp, tileset, actual);
-
-                    //Check tile properties
-
-                    this.checkTileProperties(tp, tileset, actual);
-
-                    //Check animation
-
-                    this.checkAnimation(map, tileset, data[t], actual, map.layers[l].opacity);
-                 }
-             }
-
-             //Object layer
-
-             if (map.layers[l].type === 'objectgroup') {
-                 const data = map.layers[l].objects;
-
-                 for (let o = 0; o < data.length; o++)
-                 {
-                    //Check if visible
-
-                     if (!data[o].visible)
-                         continue;
-
-                    //Grab properties and
-                    //setup callbacks array
-
-                    const properties = map.layers[l].objects[o].properties,
-                          callbacks = [];
-
-                    let createCollider = true;
-
-                    //Check properties
-
-                    if (properties != undefined) {
-                        let isMapEvent = false;
-
-                        //Get the checks if they exist
-
-                        const checks = this.getPropertyChecks(properties);
-
-                        //Check if the checks comply to
-                        //the variables that were send with
-                        //the map
-
-                        let valid = true;
-                        for (let c = 0; c < checks.length; c++) 
-                            if (this.vars[checks[c].name] !== checks[c].value) {
-                                valid = false;
-                                break;
-                            }
-
-                        if (!valid)
-                            continue;
-
-                        //Check if the properties contain a 
-                        //load map event, this affects property handling
-
-                        for (let p = 0; p < properties.length; p++) {
-                            if (properties[p].name === 'loadMap')
-                            {
-                                isMapEvent = true;
-
-                                break;
-                            }
-                        }
-
-                        for (let p = 0; p < properties.length; p++) {
-                            //Skip map related events, as these 
-                            //are handled by the server upon map change
-
-                            if (properties[p].name === 'positionX' || properties[p].name === 'positionY')
-                                if (isMapEvent)
-                                    continue;
-
-                            //Skip design events, make sure that
-                            //these also disable collider creation
-
-                            if (properties[p].name === 'mapDialogue' ||
-                                properties[p].name === 'lightHotspot') {
-                                createCollider = false;
-                                continue;
-                            }
-
-                            //Handle property
-
-                            let f = this.handleProperty(properties[p]);
-
-                            if (f !== undefined)
-                                callbacks.push(f);
-                        }
-
-                        //Handle design events
-
-                        this.handleDesign(
-                            properties, 
-                            data[o].x+this.offset.width, 
-                            data[o].y+this.offset.height,
-                            data[o].width,
-                            data[o].height
-                        );
-                    }
-
-                    //Check if collider should be created
-
-                    if (!createCollider ||
-                        data.point ||
-                        data[o].width === 0 ||
-                        data[o].height === 0)
-                        continue;
-
-                    //Create collider
-
-                    let coll = new lx.BoxCollider(
-                        data[o].x+this.offset.width,
-                        data[o].y+this.offset.height,
-                        data[o].width,
-                        data[o].height,
-                        true
+                   this.checkAnimation(
+                       map, 
+                       tileset,
+                       data[t], 
+                       actual, 
+                       map.layers[l].opacity
                     );
-
-                    //Append callbacks to collider
-                    //if necessary
-
-                    if (callbacks.length > 0) {
-                        coll.OnCollide = function(data) {
-                            let go = lx.FindGameObjectWithCollider(data.trigger);
-
-                            if (go === undefined)
-                                return;
-
-                            callbacks.forEach(function(cb) {
-                                if (cb !== undefined) {
-                                    if (tiled.loading)
-                                        return;
-
-                                    cb(go);
-                                }
-                            });
-                        };
-
-                        coll.Solid(false);
-                    }
-                 }
-             }
+                }
+            }
         }
     },
     checkAnimation: function(map, tileset, id, actual, opacity)
@@ -613,13 +635,15 @@ const tiled = {
                 //Make sure animation tile(s) is/are available
 
                 if (tileset.tiles[i].animation === undefined ||
-                    map.animatedTiles[id] != undefined)
+                    map._animatedTiles[id] != undefined)
                     continue;
 
                 //Make sure the tile does not have to be skipped
 
-                if (tileset.tiles[i]._skip)
+                if (map._skipTiles[actual-1])
                     continue;
+
+                //Setup containers
 
                 let sprites = [],
                     frames = [];
@@ -667,7 +691,7 @@ const tiled = {
                 //Add to the animated tiles available
                 //on the map
 
-                map.animatedTiles[id] = {
+                map._animatedTiles[id] = {
                     sprites: sprites,
                     frames: frames,
                     size: {
@@ -678,170 +702,144 @@ const tiled = {
             }
         }
     },
-    checkTileColliders: function(tile_position, tileset, actual)
-    {
-        //Cycle through all tileset tiles
 
-        for (let i = 0; i < tileset.tiles.length; i++) {
-            //If the tile conforms to the specified
-            //tile identifier (actual), check if the
-            //tile has objects which can be used as
-            //colliders
+    handleProperties: function(map) {
+        //Handle event properties
 
-            if (tileset.tiles[i].id+1 == actual) {
-                if (tileset.tiles[i].objectgroup === undefined ||
-                    tileset.tiles[i].objectgroup.objects === undefined)
-                    continue;
+        this.handleEventProperties(map);
 
-                //Get reference for shortening
+        //Handle design properties
 
-                const objects = tileset.tiles[i].objectgroup.objects;
+        this.handleDesignProperties(map);
+    },
+    handleColliders: function(map) {
+        //Go over all colliders and
+        //create box colliders
 
-                //Add all colliders based on the objects
+        for (let c = 0; c < map._colliders.length; c++) {
+            let coll = map._colliders[c];
 
-                for (let c = 0; c < objects.length; c++)
-                    if (objects[c].visible)
-                        new lx.BoxCollider(
-                            tile_position.x + objects[c].x,
-                            tile_position.y + objects[c].y,
-                            objects[c].width,
-                            objects[c].height,
-                            true
-                        );
-            }
+            new lx.BoxCollider(
+                coll.x,
+                coll.y,
+                coll.w,
+                coll.h,
+                true
+            );
         }
     },
-    checkTileProperties: function(tile_position, tileset, actual)
+
+    handleEventProperties: function(map)
     {
-        //Check all tile properties
-
-        for (let i = 0; i < tileset.tiles.length; i++) {
-            if (tileset.tiles[i].id+1 == actual) {
-                if (tileset.tiles[i].properties === undefined)
-                    continue;
-
-                const properties = tileset.tiles[i].properties,
-                      callbacks = [];
-
-                let isMapEvent = false,
-                    createCollider = true;
-
-                //Get the checks if they exist
-
-                const checks = this.getPropertyChecks(properties);
-
-                //Check if the checks comply to
-                //the variables that were send with
-                //the map
-
-                let valid = true;
-                for (let c = 0; c < checks.length; c++) 
-                    if (this.vars[checks[c].name] !== checks[c].value) {
-                        valid = false;
-                        break;
-                    }
-
-                if (!valid) {
-                    //Because we are dealing with tile
-                    //properties, if checks do not comply
-                    //enable skipping of the tile on top
-                    //of skipping property handling
-
-                    tileset.tiles[i]._skip = true;
-                    continue;
-                }
-
-                //First check if the properties contain a 
-                //load map event, this affects property handling
-
-                for (let p = 0; p < properties.length; p++) {
-                    if (properties[p].name === 'loadMap')
-                    {
-                        isMapEvent = true;
-
-                        break;
-                    }
-                }
-
-                for (let p = 0; p < properties.length; p++) {
-                    //Skip map related events, as these 
-                    //are handled by the server upon map change
-
-                    if (properties[p].name === 'positionX' || 
-                        properties[p].name === 'positionY')
-                        if (isMapEvent)
-                            continue;
-
-                    //Skip design events, make sure that
-                    //these also disable collider creation
-
-                    if (properties[p].name === 'mapDialogue' ||
-                        properties[p].name === 'lightHotspot') {
-                            createCollider = false;
-                            continue;
-                        }
-
-                    //Handle the property
-
-                    let f = this.handleProperty(properties[p]);
-
-                    //Add the property callback
-
-                    if (f !== undefined)
-                        callbacks.push(f);
-                }
-
-                //Add all generated callbacks
-                //as a collider, if the collider
-                //should be created
-
-                if (createCollider && callbacks.length > 0) {
-                    if (tileset.tiles[i].objectgroup === undefined)
-                        new lx.BoxCollider(
-                            tile_position.x,
-                            tile_position.y,
-                            tileset.tilewidth,
-                            tileset.tileheight,
-                            true,
-                            function(data) {
-                                let go = lx.FindGameObjectWithCollider(data.trigger);
-
-                                if (go === undefined)
-                                    return;
-
-                                callbacks.forEach(function(cb) {
-                                    if (cb !== undefined) {
-                                        if (!tiled.loading)
-                                            cb(go);
-                                    }
-                                });
-                            }
-                        ).Solid(false);
-                    else {
-                        //Add callbacks to objectgroup colliders
-                    }
-                }
-
-                //Handle design events
-
-                this.handleDesign(
-                    properties, 
-                    tile_position.x, 
-                    tile_position.y,
-                    tileset.tilewidth,
-                    tileset.tileheight
-                );
-            }
-        }
-    },
-    handleProperty: function(property)
-    {
-        if (property === undefined)
+        if (map._properties === undefined)
             return;
 
+        //Go over all map properties
+
+        for (let i = 0; i < map._properties.length; i++) {
+            let properties = map._properties[i].properties;
+
+            let hasLoadMapEvent = false;
+            let callbacks = [];
+
+            //First check if the properties contain a 
+            //load map event, this affects property handling
+
+            for (let p = 0; p < properties.length; p++)
+                if (properties[p].name === 'loadMap')
+                {
+                    hasLoadMapEvent = true;
+
+                    break;
+                }
+
+            //Go over all properties and handle
+            //event properties accordingly
+
+            for (let p = 0; p < properties.length; p++) {
+                //Skip positioning related events if there
+                //already is a load map event present, as
+                //positioning events are handled by the 
+                //server upon map change
+
+                if (properties[p].name === 'positionX' || 
+                    properties[p].name === 'positionY')
+                    if (hasLoadMapEvent)
+                        continue;
+
+                //Generate a event property callback
+                //for the property
+
+                let cb = this.generateEventPropertyCallback(properties[p]);
+
+                //Add the property callback
+
+                if (cb != undefined)
+                    callbacks.push(cb);
+            }
+
+            //Add all generated callbacks as
+            //as a collider for all rectangles, 
+            //if there are valid event callbacks 
+            //available
+
+            if (callbacks.length === 0)
+                continue;
+
+            //Grab or calculate the rectangles based
+            //on the presence of a tile and object
+            //identifier
+
+            let rectangles = map._properties[i].rectangles;
+
+            if (map._properties[i].tile   != undefined &&
+                map._properties[i].object == undefined)
+            {
+                rectangles = this.getMapTileRectangles(
+                    map, 
+                    map._properties[i].tile
+                );
+            }
+            else if (map._properties[i].tile   != undefined &&
+                     map._properties[i].object != undefined)
+            {
+                rectangles = this.getMapTileObjectRectangles(
+                    map,
+                    map._properties[i].tile,
+                    map._properties[i].object
+                );
+            }
+
+            for (let r = 0; r < rectangles.length; r++) {
+                let rect = rectangles[r];
+
+                new lx.BoxCollider(
+                    rect.x,
+                    rect.y,
+                    rect.w,
+                    rect.h,
+                    true,
+                    function(data) {
+                        let go = lx.FindGameObjectWithCollider(data.trigger);
+
+                        if (go === undefined)
+                            return;
+
+                        callbacks.forEach(function(cb) {
+                            if (cb !== undefined) {
+                                if (!tiled.loading)
+                                    cb(go);
+                            }
+                        });
+                    }
+                ).Solid(false);
+            }
+        }
+    },
+    generateEventPropertyCallback: function(property) {
         switch (property.name)
         {
-            //Callback related events
+            //Load map event
 
             case "loadMap":
                 return function(go) {
@@ -861,171 +859,116 @@ const tiled = {
                         }
                     }
                 };
+
+            //Positioning events
+
             case "positionX":
             case "positionY":
                 return function(go) {
                     if (go === game.players[game.player])
                         player.propertyInteraction.interact();
                 };
-        }
+        };
     },
-    handleDesign: function(properties, p_x, p_y, p_w, p_h)
+
+    handleDesignProperties: function(map)
     {
-        //Light hotspot
+        //Go over all map properties
 
-        let lightHotspotID;
+        for (let i = 0; i < map._properties.length; i++) {
+            let properties = map._properties[i].properties;
 
-        //Other design variables
+            //Grab or calculate the rectangles based
+            //on the presence of a tile and object
+            //identifier
 
-        //...
+            let rectangles = map._properties[i].rectangles;
 
-        //Check for design properties
-
-        for (let p = 0; p < properties.length; p++) {
-            let property = properties[p];
-
-            switch (property.name) {
-                //Light hotspots and coloring
-
-                case 'lightHotspot':
-                    if (lightHotspotID == undefined)
-                        lightHotspotID = this.addLightHotspot(
-                            p_x+p_w/2, 
-                            p_y+p_h/2
-                        );
-                    
-                    this.lightHotspots[lightHotspotID].size = property.value;
-                    break;
-                case 'lightHotspotColor':
-                    if (lightHotspotID == undefined)
-                        lightHotspotID = this.addLightHotspot(
-                            p_x+p_w/2,
-                            p_y+p_h/2
-                        );
-                    
-                    this.lightHotspots[lightHotspotID].color = '#' + property.value.substr(3, property.value.length-3);
-                    break;
-
-                //Map dialog
-
-                case 'mapDialogue':
-                    //Create dialog GO
-
-                    let dialog = new lx.GameObject(
-                        undefined,
-                        p_x, p_y,
-                        p_w, p_h
-                    ).Show(3);
-
-                    //Give dialog texture
-
-                    game.giveDialogTexture(dialog, function() {
-                        //Request dialog
-
-                        channel.emit('CLIENT_REQUEST_MAP_DIALOG', property.value);
-                    });
-
-                    //Add to dialogs
-
-                    this.dialogs.push(dialog);
-
-                    break;
-            }
-        }
-    },
-    getPropertyChecks: function(properties) {
-        let checks = [];
-
-        for (let p = 0; p < properties.length; p++)
-        {
-            let property = properties[p];
-
-            //Check for get variable checks
-
-            if (property.name === 'getVariableTrue')
-                checks.push({
-                    name: property.value,
-                    value: true
-                });
-            if (property.name === 'getVariableFalse')
-                checks.push({
-                    name: property.value,
-                    value: false
-                });
-        }
-
-        return checks;
-    },
-    createWorldBoundaries: function(map) {
-        new lx.BoxCollider(this.offset.width, this.offset.height-map.tileheight, map.width*map.tilewidth, map.tileheight, true);
-        new lx.BoxCollider(this.offset.width-map.tilewidth, this.offset.height, map.tilewidth, map.height*map.tileheight, true);
-
-        new lx.BoxCollider(this.offset.width, this.offset.height+map.height*map.tileheight, map.width*map.tilewidth, map.tileheight, true);
-        new lx.BoxCollider(this.offset.width+map.width*map.tilewidth, this.offset.height, map.tilewidth, map.height*map.tileheight, true);
-    },
-    cacheShadowMap: function(map) {
-        //Get shading color based on map
-        //shading type
-
-        let color = properties.nightColor;
-
-        if (map.alwaysDark)
-            color = properties.darknessColor;
-
-        let c = new lx.Canvas(
-            map.width*map.tilewidth,
-            map.height*map.tileheight
-        );
-
-        //Draw shadow map
-
-        c.Draw(function(g) {
-            //Overall shading
-
-            g.fillStyle = color;
-            g.globalCompositeOperation = 'source-over';
-            g.fillRect(0, 0, c.Size().W, c.Size().H);
-
-            g.globalCompositeOperation = 'destination-out';
-            for (let lhs = 0; lhs < tiled.lightHotspots.length; lhs++) {
-                if (tiled.lightHotspots[lhs] == undefined)
-                    continue;
-
-                //Actual light hotspot
-
-                g.globalAlpha = 1;
-                g.beginPath();
-                g.arc(
-                    tiled.lightHotspots[lhs].x, 
-                    tiled.lightHotspots[lhs].y, 
-                    tiled.lightHotspots[lhs].size*map.tilewidth,
-                    0, 
-                    2 * Math.PI
+            if (map._properties[i].tile   != undefined &&
+                map._properties[i].object == undefined)
+            {
+                rectangles = this.getMapTileRectangles(
+                    map, 
+                    map._properties[i].tile
                 );
-                g.closePath();
-                g.fill();
+            }
+            else if (map._properties[i].tile   != undefined &&
+                     map._properties[i].object != undefined)
+            {
+                rectangles = this.getMapTileObjectRectangles(
+                    map,
+                    map._properties[i].tile,
+                    map._properties[i].object
+                );
+            }
 
-                //Coloring, if specified
+            //Check for design properties for
+            //all rectangles
 
-                if (tiled.lightHotspots[lhs].color != undefined) {
-                    g.globalAlpha = .5;
-                    g.globalCompositeOperation = 'source-over';
-                    g.fillStyle = tiled.lightHotspots[lhs].color;
-                    g.fill();
+            for (let r = 0; r < rectangles.length; r++) {
+                let rect = rectangles[r];
+
+                //Design variables
+
+                let lightHotspotID;
+
+                //Check for design properties
+
+                for (let p = 0; p < properties.length; p++) {
+                    let property = properties[p];
+
+                    switch (property.name) {
+                        //Light hotspots and coloring
+
+                        case 'lightHotspot':
+                            if (lightHotspotID == undefined)
+                                lightHotspotID = this.addLightHotspot(
+                                    rect.x+rect.w/2, 
+                                    rect.y+rect.h/2
+                                );
+                            
+                            this.lightHotspots[lightHotspotID].size = property.value;
+                            break;
+                        case 'lightHotspotColor':
+                            if (lightHotspotID == undefined)
+                                lightHotspotID = this.addLightHotspot(
+                                    rect.x+rect.w/2,
+                                    rect.y+rect.h/2
+                                );
+                            
+                            this.lightHotspots[lightHotspotID].color = '#' + property.value.substr(3, property.value.length-3);
+                            break;
+
+                        //Map dialog
+
+                        case 'mapDialogue':
+                            //Create dialog GO
+
+                            let dialog = new lx.GameObject(
+                                undefined,
+                                rect.x, 
+                                rect.y,
+                                rect.w,
+                                rect.h
+                            ).Show(3);
+
+                            //Give dialog texture
+
+                            game.giveDialogTexture(dialog, function() {
+                                //Request dialog
+
+                                channel.emit('CLIENT_REQUEST_MAP_DIALOG', property.value);
+                            });
+
+                            //Add to dialogs
+
+                            this.dialogs.push(dialog);
+
+                            break;
+                    }
                 }
             }
-        });
-
-        //Blur canvas
-
-        stackBlurCanvasRGBA(
-            c.CANVAS,
-            24
-        );
-
-        //Return cached shadow canvas
-
-        return c;
+        }
     },
     addLightHotspot: function(x, y) {
         let lhs = {
@@ -1037,5 +980,13 @@ const tiled = {
         this.lightHotspots.push(lhs);
 
         return this.lightHotspots.length-1;
+    },
+
+    createWorldBoundaries: function(map) {
+        new lx.BoxCollider(this.offset.width, this.offset.height-map.tileheight, map.width*map.tilewidth, map.tileheight, true);
+        new lx.BoxCollider(this.offset.width-map.tilewidth, this.offset.height, map.tilewidth, map.height*map.tileheight, true);
+
+        new lx.BoxCollider(this.offset.width, this.offset.height+map.height*map.tileheight, map.width*map.tilewidth, map.tileheight, true);
+        new lx.BoxCollider(this.offset.width+map.width*map.tilewidth, this.offset.height, map.tilewidth, map.height*map.tileheight, true);
     }
 };

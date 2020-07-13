@@ -508,13 +508,17 @@ exports.handleChannel = function(channel)
             if (!isInGame(true) || data == undefined)
                 return;
 
-            //Get next map
-
-            let next_map = tiled.getMapIndex(data);
-
             //Shorten channel name
 
             let id = channel.name;
+
+            //Shorten current map
+
+            let map = game.players[id].map_id;
+
+            //Get next map
+
+            let next_map = tiled.getMapIndex(data);
 
             //Check if valid player and if
             //the player is on a different map
@@ -525,7 +529,7 @@ exports.handleChannel = function(channel)
             //Check if player is near to a loadMap property
 
             let result = tiled.checkPropertyWithRectangle(
-                game.players[id].map_id, 
+                map, 
                 'loadMap', 
                 data,
                 {
@@ -539,16 +543,19 @@ exports.handleChannel = function(channel)
             if (!result.near)
                 return;
 
-            //Check if positioning properties exist
+            //Check if positioning properties exist,
+            //if they do reposition the player
 
-            let properties;
+            let properties = [];
 
-            if (result.tile != undefined)
-                properties = tiled.getPropertiesFromTile(result.map, result.tile);
+            if (result.tile != undefined && result.object != undefined)
+                properties = tiled.getPropertiesFromTileObject(map, result.tile, result.object);
+            else if (result.tile != undefined)
+                properties = tiled.getPropertiesFromTile(map, result.tile);
             else if (result.object != undefined)
-                properties = tiled.getPropertiesFromObject(result.map, result.object);
+                properties = tiled.getPropertiesFromObject(map, result.object);
 
-            if (properties != undefined) {
+            if (properties != undefined)
                 for (let p = 0; p < properties.length; p++)
                 {
                     //Set position value if property exists
@@ -558,7 +565,6 @@ exports.handleChannel = function(channel)
                     if (properties[p].name === 'positionY') 
                         game.players[id].pos.Y = (properties[p].value-tiled.maps[next_map].height/2+1)*tiled.maps[next_map].tileheight-game.players[id].character.height;
                 }
-            }
             
             //Send map to player
 
