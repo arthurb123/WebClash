@@ -1261,7 +1261,7 @@ const game = {
             this.players[this.player].COLLIDER = c.Enable();
         }
     },
-    createWorldItem: function(data)
+    createMapItem: function(data)
     {
         //Check if valid
 

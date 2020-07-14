@@ -441,7 +441,7 @@ const client = {
 
              //Handle data
 
-             game.createWorldItem(data);
+             game.createMapItem(data);
         });
         channel.on('GAME_CHAT_UPDATE', function (data) {
             //Check if the recieved data is valid

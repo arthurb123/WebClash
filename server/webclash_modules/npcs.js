@@ -104,7 +104,43 @@ exports.updateMap = function(map, dt)
             this.updateNPC(map, i, dt);
 };
 
-exports.createNPCs = function(name, rectangles, checks, map_id)
+exports.createNPCFromProperty = function(map_id, name, rectangle, checks) {
+    //Calculate NPC position
+
+    let pos = {
+        x: rectangle.x,
+        y: rectangle.y
+    };
+
+    //Center NPC position if a width
+    //and height of the property exist
+
+    if (rectangle.w != undefined)
+        pos.x += rectangle.w/2;
+    if (rectangle.h != undefined)
+        pos.y += rectangle.h/2;
+
+    //Extract name and profile
+
+    let profile = 0;
+    let hashId  = name.indexOf('#');
+
+    if (hashId !== -1) {
+        profile = parseInt(name.substr(hashId+1, name.length-1));
+        name    = name.substr(0, hashId);
+    } else
+        output.give('Created the NPC \'' + name + '\' without a specified profile, defaults to profile #0.');
+
+    //Create NPC
+
+    let npc = this.createNPC(map_id, name, profile, pos.x, pos.y, false);
+
+    //Set checks on the newly created NPC
+
+    this.onMap[map_id][npc].checks = checks;
+};
+
+exports.createNPC = function(map_id, name, profile, x, y, isEvent)
 {
     //Check if onMap at map is undefined
 
@@ -116,48 +152,7 @@ exports.createNPCs = function(name, rectangles, checks, map_id)
     if (this.mapPopulation[map_id] == undefined)
         this.mapPopulation[map_id] = 0;
 
-    //Cycle through all dimensions
-
-    for (let i = 0; i < rectangles.length; i++) {
-        //Calculate NPC position
-
-        let pos = {
-            x: rectangles[i].x,
-            y: rectangles[i].y
-        };
-
-        //Center NPC position if a width
-        //and height of the property exist
-
-        if (rectangles[i].w != undefined)
-            pos.x += rectangles[i].w/2;
-        if (rectangles[i].h != undefined)
-            pos.y += rectangles[i].h/2;
-
-        //Extract name and profile
-
-        let profile = 0;
-        let hashId  = name.indexOf('#');
-
-        if (hashId !== -1) {
-            profile = parseInt(name.substr(hashId+1, name.length-1));
-            name    = name.substr(0, hashId);
-        } else
-            output.give('Created the NPC \'' + name + '\' without a specified profile, defaults to profile #0.');
-
-        //Create NPC
-
-        let npc = this.createNPC(map_id, name, profile, pos.x, pos.y, false);
-
-        //Set checks on the newly created NPC
-
-        this.onMap[map_id][npc].checks = checks;
-    }
-};
-
-exports.createNPC = function(map, name, profile, x, y, isEvent)
-{
-    //Get specified NPC
+    //Setup specified NPC
 
     let npc = {
         name: name,
@@ -173,8 +168,8 @@ exports.createNPC = function(map, name, profile, x, y, isEvent)
 
     //Setup NPC
 
-    for (let n = 0; n < this.onMap[map].length+1; n++)
-        if (this.onMap[map][n] == undefined) {
+    for (let n = 0; n < this.onMap[map_id].length+1; n++)
+        if (this.onMap[map_id][n] == undefined) {
             npc.id = n;
 
             break;
@@ -243,7 +238,7 @@ exports.createNPC = function(map, name, profile, x, y, isEvent)
 
     //Add NPC to map
 
-    this.onMap[map][npc.id] = npc;
+    this.onMap[map_id][npc.id] = npc;
 
     return npc.id;
 };
@@ -1414,7 +1409,7 @@ exports.evaluateLootTable = function(map, id)
             {
                 //Create world item
 
-                items.createWorldItem(
+                items.createMapItem(
                     looters[l],
                     map,
                     this.onMap[map][id].pos.X+this.onMap[map][id].data.character.width/2,

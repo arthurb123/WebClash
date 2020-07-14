@@ -56,8 +56,29 @@ entities. (players, NPCs, items, etc.)
 
 Colliders are supported, however only in
 the rectangular form.
-Colliders can be created using objects (object layers)
-or tile specific objects.
+Colliders can be created using rectangular
+objects (object layers) or using tile specific 
+objects.
+
+Design properties do not create colliders,
+only event properties will create colliders.
+
+Putting check properties on any kind of object,
+a regular object or a tile specific object that
+contains other properties that aren't checks,
+will determine if the property will be applied or
+not for a player (E.G: check does not apply, the NPC
+will not be visible for that player).
+
+If an object has checks but no other properties,
+the checks will determine if the collider is available
+or not for a player (E.G: check does not apply, the
+collider will not be available for that player).
+
+Putting check properties on a tile itself
+will determine if the tile will be visible
+or not for a player (E.G: check does not apply, the
+tile will not be visible for that player).
 
 The custom properties available for Tiled 
 objects are as follows:
@@ -96,7 +117,6 @@ objects are as follows:
 		         (int value)
 
 [Checks]
-(Currently only supports design properties)
 
 * "getVariableTrue"   -> Checks if a player variable exists
 			 and is true. All other properties

@@ -455,7 +455,7 @@ exports.dropPlayerItem = function(id, slot, ownerOverride) {
     else
         name = game.players[id].inventory[slot];
 
-    items.createWorldItem(
+    items.createMapItem(
         (ownerOverride == undefined ? -1 : ownerOverride),
         game.players[id].map_id,
         game.players[id].pos.X+game.players[id].character.width/2,
@@ -475,11 +475,11 @@ exports.dropPlayerItem = function(id, slot, ownerOverride) {
     return true;
 };
 
-exports.createWorldItem = function(owner, map, x, y, name)
+exports.createMapItem = function(owner, map_id, x, y, name)
 {
     //Get item
 
-    let item = this.getItem(name);
+    let item = this.getConvertedItem(name);
 
     //Check if valid
 
@@ -496,29 +496,27 @@ exports.createWorldItem = function(owner, map, x, y, name)
     //Create item array on map
     //if necessary
 
-    if (this.onMap[map] == undefined)
-        this.onMap[map] = [];
+    if (this.onMap[map_id] == undefined)
+        this.onMap[map_id] = [];
 
-    //Get converted item and add
-    //world item specific attributes
+    //Add item specific attributes
 
-    let worldItem = this.getConvertedItem(name);
-    worldItem.owner = ownerName;
-    worldItem.pos = {
+    item.owner = ownerName;
+    item.pos = {
         X: x,
-        Y: y
+        Y: y + tiled.maps[map_id].tileheight / 2
     };
 
-    //Add world item to map
+    //Add item to map
 
-    for (let i = 0; i < this.onMap[map].length+1; i++)
-        if (this.onMap[map][i] == undefined)
+    for (let i = 0; i < this.onMap[map_id].length+1; i++)
+        if (this.onMap[map_id][i] == undefined)
         {
-            worldItem.id = i;
+            item.id = i;
 
-            this.onMap[map][i] = {
-                item: worldItem,
-                type: 'world',
+            this.onMap[map_id][i] = {
+                item: item,
+                type: 'single', //Single type, should not respawn
                 timer: {
                     cur: 0,
                     releaseTime: 30, //30 seconds for item release
@@ -531,13 +529,13 @@ exports.createWorldItem = function(owner, map, x, y, name)
 
     //Sync across map
 
-    server.syncItem(map, worldItem);
+    server.syncItem(map_id, item);
 };
 
-exports.createMapItem = function(map, x, y, name) {
+exports.createMapItemFromProperty = function(map_id, name, rect, checks) {
     //Get item
 
-    let item = this.getItem(name);
+    let item = this.getConvertedItem(name);
 
     //Check if valid
 
@@ -547,29 +545,28 @@ exports.createMapItem = function(map, x, y, name) {
     //Create item array on map
     //if necessary
 
-    if (this.onMap[map] == undefined)
-        this.onMap[map] = [];
+    if (this.onMap[map_id] == undefined)
+        this.onMap[map_id] = [];
 
-    //Get converted item and add
-    //map item specific attributes
+    //Add map item specific attributes
 
-    let mapItem = this.getConvertedItem(name);
-    mapItem.owner = -1;
-    mapItem.pos = {
-        X: x,
-        Y: y
+    item.owner = -1;
+    item.checks = checks;
+    item.pos = {
+        X: rect.x + (rect.w == undefined ? 0 : rect.w / 2),
+        Y: rect.y + (rect.h == undefined ? 0 : rect.h / 2) + tiled.maps[map_id].tileheight / 2
     };
 
     //Add item to map
 
-    for (let i = 0; i < this.onMap[map].length+1; i++)
-        if (this.onMap[map][i] == undefined)
+    for (let i = 0; i < this.onMap[map_id].length+1; i++)
+        if (this.onMap[map_id][i] == undefined)
         {
-            mapItem.id = i;
+            item.id = i;
 
-            this.onMap[map][i] = {
-                item: mapItem,
-                type: 'map',
+            this.onMap[map_id][i] = {
+                item: item,
+                type: 'permanent', //Permanent type, should respawn
                 timer: {
                     cur: 0,
                     respawnTime: 60,    //Item respawn time of 60 sec
@@ -579,10 +576,6 @@ exports.createMapItem = function(map, x, y, name) {
 
             break;
         }
-
-    //Sync across map
-
-    server.syncItem(map, mapItem);
 };
 
 exports.releaseWorldItemsFromOwner = function(map, owner)
@@ -642,11 +635,11 @@ exports.pickupItem = function(map, id, item)
         this.onMap[map][item].item.owner !== game.players[id].name)
         return false;
 
-    //If the item is a map item, check
+    //If the item is a permanent item, check
     //if it should respawn first to prevent
     //item spamming through some sort of hacking
 
-    if (this.onMap[map][item].type === 'map' &&
+    if (this.onMap[map][item].type === 'permanent' &&
         this.onMap[map][item].timer.shouldRespawn)
         return false;
 
@@ -678,14 +671,15 @@ exports.removeItem = function(map, item)
         remove: true
     });
 
-    //Remove item if world item
+    //Remove item if it is a single type,
+    //indicating it should not respawn
 
-    if (this.onMap[map][item].type === 'world')
+    if (this.onMap[map][item].type === 'single')
         this.onMap[map][item] = undefined;
 
-    //If map item, enable respawn timer
+    //If permanent item, enable respawn timer
 
-    else if (this.onMap[map][item].type === 'map')
+    else if (this.onMap[map][item].type === 'permanent')
         this.onMap[map][item].timer.shouldRespawn = true;
 };
 
@@ -707,42 +701,46 @@ exports.updateMaps = function(dt)
             if (this.onMap[m][i] == undefined)
                 continue;
 
-            //World item
+            //Single map item
 
-            if (this.onMap[m][i].type === 'world') {
-                this.onMap[m][i].timer.cur+=dt;
-
-                //Check if item should be released of it's owner
-
-                if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.releaseTime &&
-                    this.onMap[m][i].item.owner != -1)
-                    this.releaseWorldItemFromOwner(m, i);
-
-                //Check if item should be removed
-
-                if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.removeTime)
-                    this.removeItem(m, i);
-            }
-            else if (this.onMap[m][i].type === 'map') {
-                //Check if should respawn
-
-                if (!this.onMap[m][i].timer.shouldRespawn)
-                    continue;
-
-                //Check if item can be respawned,
-                //if so sync item and reset values
-
-                if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.respawnTime) {
-                    this.onMap[m][i].timer.shouldRespawn = false;
-                    this.onMap[m][i].timer.cur = 0;
-
-                    server.syncItem(m, this.onMap[m][i].item);
-                }
-
-                //Otherwise increment timer
-
-                else
+            switch (this.onMap[m][i].type) {
+                case 'single':
                     this.onMap[m][i].timer.cur+=dt;
+
+                    //Check if item should be released of it's owner
+
+                    if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.releaseTime &&
+                        this.onMap[m][i].item.owner != -1)
+                        this.releaseWorldItemFromOwner(m, i);
+
+                    //Check if item should be removed
+
+                    if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.removeTime)
+                        this.removeItem(m, i);
+
+                    break;
+                case 'permanent':
+                    //Check if should respawn
+
+                    if (!this.onMap[m][i].timer.shouldRespawn)
+                        continue;
+
+                    //Check if item can be respawned,
+                    //if so sync item and reset values
+
+                    if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.respawnTime) {
+                        this.onMap[m][i].timer.shouldRespawn = false;
+                        this.onMap[m][i].timer.cur = 0;
+
+                        server.syncItem(m, this.onMap[m][i].item);
+                    }
+
+                    //Otherwise increment timer
+
+                    else
+                        this.onMap[m][i].timer.cur+=dt;
+
+                    break;
             }
         }
     }
@@ -762,6 +760,17 @@ exports.sendMap = function(id)
     //Send all items in map
 
     for (let i = 0; i < this.onMap[map].length; i++)
-        if (this.onMap[map][i] !== undefined)
-            server.syncItem(map, this.onMap[map][i].item, channel, false);
+        if (this.onMap[map][i] !== undefined) {
+            let item = this.onMap[map][i].item;
+
+            //If a permanent item, check for checks
+
+            if (this.onMap[map][i].type === 'permanent')
+                if (!game.checkPlayerForChecks(id, item.checks))
+                    continue;
+
+            //Sync item
+
+            server.syncItem(map, item, channel, false);
+        }
 };

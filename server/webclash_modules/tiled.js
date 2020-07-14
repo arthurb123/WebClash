@@ -268,49 +268,53 @@ exports.cacheMap = function(map)
                 for (let o = 0; o < tileset.tiles[i].objectgroup.objects.length; o++) {
                     let obj = tileset.tiles[i].objectgroup.objects[o];
 
-                    //Get checks (if they exist)
+                    //Check properties
 
-                    let checks = this.getPropertyChecks(obj.properties);
+                    if (obj.properties != undefined) {
+                        //Get checks (if they exist)
 
-                    //Create properties list
+                        let checks = this.getPropertyChecks(obj.properties);
 
-                    let properties = [];
+                        //Create properties list
 
-                    for (let p = 0; p < obj.properties.length; p++) {
-                        //Grab the property
+                        let properties = [];
 
-                        let property = obj.properties[p];
+                        for (let p = 0; p < obj.properties.length; p++) {
+                            //Grab the property
 
-                        //Skip check properties
+                            let property = obj.properties[p];
 
-                        if (property.name === 'getVariableTrue' ||
-                            property.name === 'getVariableFalse')
-                            continue;
+                            //Skip check properties
 
-                        //Add to properties list
+                            if (property.name === 'getVariableTrue' ||
+                                property.name === 'getVariableFalse')
+                                continue;
 
-                        properties.push({
-                            name: property.name,
-                            value: property.value
+                            //Add to properties list
+
+                            properties.push({
+                                name: property.name,
+                                value: property.value
+                            });
+                        }
+
+                        //Add to map properties list
+                        
+                        obj = { 
+                            x: obj.x, 
+                            y: obj.y, 
+                            w: obj.width, 
+                            h: obj.height
+                        };
+
+                        this.maps_properties[id].push({
+                            tile: tileset.tiles[i].id,
+                            object: obj,
+                            properties: properties,
+                            rectangles: this.getMapTileObjectRectangles(map, actual, obj),
+                            checks: checks
                         });
                     }
-
-                    //Add to map properties list
-                    
-                    obj = { 
-                        x: obj.x, 
-                        y: obj.y, 
-                        w: obj.width, 
-                        h: obj.height
-                    };
-
-                    this.maps_properties[id].push({
-                        tile: tileset.tiles[i].id,
-                        object: obj,
-                        properties: properties,
-                        rectangles: this.getMapTileObjectRectangles(map, actual, obj),
-                        checks: checks
-                    });
                 }
         }
     }
@@ -615,17 +619,32 @@ exports.cacheMap = function(map)
     this.handleMapDesign(id);
 };
 
-exports.handleMapDesign = function(map)
+exports.handleMapDesign = function(map_id)
 {
     //Cycle through all properties
 
-    for (let p = 0; p < this.maps_properties[map].length; p++) {
-        let property = this.maps_properties[map][p];
+    for (let p = 0; p < this.maps_properties[map_id].length; p++) {
+        let property = this.maps_properties[map_id][p];
 
-        for (let r = 0; r < property.rectangles.length; r++) {
+        //Grab or calculate rectangles
+
+        let rectangles = property.rectangles;
+
+        if (property.tile   != undefined &&
+            property.object == undefined)
+        {
+            rectangles = this.getMapTileRectangles(this.maps[map_id], property.tile);
+        }
+        else if (property.tile   != undefined &&
+                 property.object != undefined) 
+        {
+            rectangles = this.getMapTileObjectRectangles(this.maps[map_id], property.tile, property.object);
+        }
+
+        for (let r = 0; r < rectangles.length; r++) {
             //Simplify current rectangle
 
-            let rect = property.rectangles[r];
+            let rect = rectangles[r];
 
             //Switch on property names
 
@@ -634,22 +653,22 @@ exports.handleMapDesign = function(map)
                     //Item design property
 
                     case 'item':
-                        items.createMapItem(
-                            map, 
-                            rect.x+rect.w/2,
-                            rect.y+rect.h/2,
-                            property.properties[i].value
+                        items.createMapItemFromProperty(
+                            map_id,
+                            property.properties[i].value,
+                            rect,
+                            property.checks
                         );
                         break;
                     
                     //NPC design property
 
                     case 'NPC':
-                        npcs.createNPCs(
+                        npcs.createNPCFromProperty(
+                            map_id,
                             property.properties[i].value, 
-                            property.rectangles, 
-                            property.checks, 
-                            map
+                            rect, 
+                            property.checks
                         );
                         break;
 
