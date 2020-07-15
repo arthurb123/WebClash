@@ -537,6 +537,12 @@ exports.cacheMap = function(map)
                         if (tileset.tiles[i].objectgroup == undefined)
                             continue;
 
+                        //Calculate actual
+
+                        let actual = tileset.tiles[i].id;
+                        if (t > 0)
+                            actual = tileset.tiles[i].id + tileset.firstgid - 1;
+
                         for (let o = 0; o < tileset.tiles[i].objectgroup.objects.length; o++)
                         {
                             const data = tileset.tiles[i].objectgroup.objects[o];
