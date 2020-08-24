@@ -1,65 +1,84 @@
 {
-  "sw": 320,
-  "sh": 320,
+  "sw": 448,
+  "sh": 448,
   "name": "Arrow Rain",
   "src": "res/icons/9.png",
   "description": "Shoot multiple arrows.",
-  "scaling": {
-    "power": 0.05,
-    "agility": 0.12,
-    "intelligence": 0.0,
-    "wisdom": 0.0,
-    "toughness": 0.0,
-    "vitality": 0.0
-  },
   "elements": [
     {
-      "x": 145,
-      "y": 195,
+      "x": 208,
+      "y": 240,
       "w": 32,
       "h": 32,
       "scale": 1.0,
-      "type": "projectile",
       "src": "res/actions/12.png",
       "animated": false,
       "speed": 8,
       "direction": "vertical",
+      "type": "projectile",
+      "rotates": true,
+      "projectileSpeed": 10,
+      "projectileDistance": 8,
+      "scaling": {
+        "power": 0.0,
+        "agility": 0.13,
+        "intelligence": 0.0,
+        "wisdom": 0.0,
+        "toughness": 0.0,
+        "vitality": 0.0
+      },
       "delay": 6,
-      "rotates": true,
-      "projectileSpeed": 5,
-      "projectileDistance": 8
+      "statusEffect": ""
     },
     {
-      "x": 131,
-      "y": 185,
+      "x": 192,
+      "y": 224,
       "w": 32,
       "h": 32,
       "scale": 1.0,
-      "type": "projectile",
       "src": "res/actions/12.png",
       "animated": false,
       "speed": 8,
       "direction": "vertical",
+      "type": "projectile",
+      "rotates": true,
+      "projectileSpeed": 10,
+      "projectileDistance": 8,
+      "scaling": {
+        "power": 0.0,
+        "agility": 0.13,
+        "intelligence": 0.0,
+        "wisdom": 0.0,
+        "toughness": 0.0,
+        "vitality": 0.0
+      },
       "delay": 0,
-      "rotates": true,
-      "projectileSpeed": 5,
-      "projectileDistance": 8
+      "statusEffect": ""
     },
     {
-      "x": 158,
-      "y": 185,
+      "x": 224,
+      "y": 224,
       "w": 32,
       "h": 32,
       "scale": 1.0,
-      "type": "projectile",
       "src": "res/actions/12.png",
       "animated": false,
       "speed": 8,
       "direction": "vertical",
-      "delay": 12,
+      "type": "projectile",
       "rotates": true,
-      "projectileSpeed": 5,
-      "projectileDistance": 8
+      "projectileSpeed": 10,
+      "projectileDistance": 8,
+      "scaling": {
+        "power": 0.0,
+        "agility": 0.13,
+        "intelligence": 0.0,
+        "wisdom": 0.0,
+        "toughness": 0.0,
+        "vitality": 0.0
+      },
+      "delay": 12,
+      "statusEffect": ""
     }
   ],
   "sounds": [

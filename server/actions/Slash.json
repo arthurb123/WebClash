@@ -1,33 +1,34 @@
 {
-  "sw": 320,
-  "sh": 320,
+  "sw": 448,
+  "sh": 448,
   "name": "Slash",
   "src": "res/icons/6.png",
   "description": "Hack 'n' slash",
-  "scaling": {
-    "power": 0.275,
-    "agility": 0.0,
-    "intelligence": 0.0,
-    "wisdom": 0.0,
-    "toughness": 0.0,
-    "vitality": 0.0
-  },
   "elements": [
     {
-      "x": 136,
-      "y": 179,
+      "x": 200,
+      "y": 240,
       "w": 48,
       "h": 48,
       "scale": 1.0,
-      "type": "static",
       "src": "res/actions/8.png",
       "animated": true,
       "speed": 2,
       "direction": "horizontal",
-      "delay": 0,
+      "type": "static",
       "rotates": true,
       "projectileSpeed": 1,
-      "projectileDistance": 0
+      "projectileDistance": 0,
+      "scaling": {
+        "power": 0.0,
+        "agility": 0.0,
+        "intelligence": 0.0,
+        "wisdom": 0.0,
+        "toughness": 0.0,
+        "vitality": 0.0
+      },
+      "delay": 0,
+      "statusEffect": ""
     }
   ],
   "sounds": [

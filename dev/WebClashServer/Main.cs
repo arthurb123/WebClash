@@ -281,7 +281,7 @@ namespace WebClashServer
 
             //Check if the server location is valid
 
-            if (Directory.Exists(serverLocation) ||
+            if (Directory.Exists(serverLocation) &&
                 File.Exists(serverLocation + "/index.js"))
             {
                 ReformatServerLocation();
@@ -301,7 +301,7 @@ namespace WebClashServer
             //request server location
 
             while (!Directory.Exists(serverLocation) ||
-                !File.Exists(serverLocation + "/index.js"))
+                   !File.Exists(serverLocation + "/index.js"))
             {
                 status.Text = "Server folder not located.";
 
@@ -311,6 +311,10 @@ namespace WebClashServer
 
                 if (RequestServerLocation())
                 {
+                    if (!Directory.Exists(serverLocation) ||
+                        !File.Exists(serverLocation + "/index.js"))
+                        continue;
+
                     status.Text = "Server folder located.";
 
                     ReformatServerLocation();

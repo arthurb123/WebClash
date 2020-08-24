@@ -42,25 +42,13 @@ exports.startLoop = function()
 
         npcs.updateMaps(dt);
 
-        //Update action cooldowns
+        //Update combat
 
-        actions.updateCooldowns(dt);
-
-        //Update action casting
-
-        actions.updateCasting(dt);
-
-        //Update actions
-
-        actions.updateActions(dt);
+        combat.update(dt);
 
         //Update status effects
 
         status.updateStatusEffects(dt);
-
-        //Update action projectiles
-
-        actions.updateProjectiles(dt);
 
         //Update game time
 
@@ -78,30 +66,14 @@ exports.startLoop = function()
 
         game.updatePlayers();
 
-        //Update in combat
+        //Update combat active players
 
-        actions.combat.update();
+        combat.active.update();
 
         //Update banks manager
 
         banks.updateCache();
     }, 1000);
-};
-
-exports.updateInCombat = function() {
-    for (let p in game.players)
-        if (game.players[p] != undefined &&
-            game.players[p].combat.is)
-            for (let action in game.players[p].actions_cooldown)
-            {
-                if (game.players[p].actions_cooldown[action] == undefined)
-                    continue;
-
-                game.players[p].actions_cooldown[action]--;
-
-                if (game.players[p].actions_cooldown[action] <= 0)
-                    game.players[p].actions_cooldown[action] = undefined;
-            }
 };
 
 exports.savePermissions = function ()
@@ -542,7 +514,7 @@ exports.regeneratePlayer = function(id)
 
     //Check if in-combat
 
-    if (actions.combat.in(id))
+    if (combat.active.in(id))
         return;
 
     //Regenerate mana if possible

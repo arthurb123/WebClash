@@ -8,49 +8,7 @@ const npcCasting = {};
 const projectiles = [];
 const activeActions = [];
 
-exports.loadAllActions = function(cb)
-{
-    let location = 'actions';
-
-    fs.readdir(location, (err, files) => {
-        if (err) {
-            output.giveError('Could not load actions: ', err);
-            return;
-        }
-
-        let count = 0;
-
-        files.forEach(file => {
-            let action = actions.loadAction(location + '/' + file);
-            collection[action.name] = action;
-
-            count++;
-        });
-
-        output.give('Loaded ' + count + ' action(s).');
-
-        if (cb !== undefined)
-            cb();
-    });
-};
-
-exports.loadAction = function(location)
-{
-    try {
-        return JSON.parse(fs.readFileSync(location, 'utf-8'));
-    }
-    catch (err)
-    {
-        output.giveError('Could not load action: ', err);
-    }
-};
-
-exports.getAction = function(name)
-{
-    return collection[name];
-};
-
-exports.combat = {
+exports.active = {
     players: {},
     update: function() {
         //Check for all players if they
@@ -71,6 +29,90 @@ exports.combat = {
     },
     timeout: 5 //Combat timeout in seconds
 };
+
+exports.loadAllActions = function(cb)
+{
+    let location = 'actions';
+
+    fs.readdir(location, (err, files) => {
+        if (err) {
+            output.giveError('Could not load actions: ', err);
+            return;
+        }
+
+        let count = 0;
+
+        files.forEach(file => {
+            let action = combat.loadAction(location + '/' + file);
+            collection[action.name] = action;
+
+            count++;
+        });
+
+        output.give('Loaded ' + count + ' action(s).');
+
+        if (cb !== undefined)
+            cb();
+    });
+};
+
+exports.loadAction = function(location)
+{
+    try {
+        let action = JSON.parse(fs.readFileSync(location, 'utf-8'));
+
+        //Check if the action contains scaling,
+        //instead of each element of the action
+        //containing scaling - this indicates the
+        //action was created using an older version
+        //of WebClash.
+
+        if (action.scaling != undefined) {
+            output.give(
+                'The action "' + action.name + '" was created using an older version of WebClash, ' +
+                'please update the action.'
+            );
+
+            //Apply scaling to all elements, to
+            //have the action still work
+
+            for (let e = 0; e < action.elements.length; e++)
+                if (action.elements[e].scaling == undefined)
+                    action.elements[e].scaling = action.scaling;
+                    
+            delete action.scaling;
+        }
+
+        return action;
+    }
+    catch (err)
+    {
+        output.giveError('Could not load action: ', err);
+    }
+};
+
+exports.getAction = function(name)
+{
+    return collection[name];
+};
+
+exports.update = function(dt) {
+    //Update action cooldowns
+
+    combat.updateCooldowns(dt);
+
+    //Update action casting
+
+    combat.updateCasting(dt);
+
+    //Update actions
+
+    combat.updateActions(dt);
+
+    //Update action projectiles
+
+    combat.updateProjectiles(dt);
+}
 
 exports.updateCasting = function(dt) {
     //Check player casting timers
@@ -1077,7 +1119,7 @@ exports.damagePlayers = function(stats, damageFactor, actionData, actionElement,
             if (tiled.checkRectangularCollision(actionRect, playerRect)) {
                 //Set in-combat
 
-                this.combat.add(p);
+                this.active.add(p);
 
                 //Calculate damage
 

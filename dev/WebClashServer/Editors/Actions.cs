@@ -8,18 +8,24 @@ using System.Linq;
 using System.Windows.Forms;
 using WebClashServer.Classes;
 
+using Action = WebClashServer.Classes.Action;
+
 namespace WebClashServer.Editors
 {
     public partial class Actions : Form
     {
         private Action current = null;
+        private Element clipboardActionElement = null;
         private Character currentCharacter = null;
         private Image charImage = null;
+        private ActionElement actionElement = null;
         private string oldName;
 
         private int curElement = 0;
+        private int cellSize = 32;
 
         private bool moving = false;
+        private bool disableSnapping = false;
         private Point oldMP = default;
 
         private Dictionary<Element, Frame> elementFrames = new Dictionary<Element, Frame>();
@@ -42,7 +48,6 @@ namespace WebClashServer.Editors
             canvas.MouseUp += new MouseEventHandler(mouseUpCanvas);
 
             ReloadActions();
-            ReloadStatusEffects();
 
             LoadFirstCharacter();
 
@@ -82,35 +87,6 @@ namespace WebClashServer.Editors
             }
         }
 
-        private void ReloadStatusEffects()
-        {
-            statusEffectSelect.Items.Clear();
-
-            try
-            {
-                List<string> ext = new List<string>()
-                {
-                    ".json"
-                };
-
-                string[] effects = Directory.GetFiles(Program.main.serverLocation + "/effects", "*.*", SearchOption.AllDirectories)
-                    .Where(e => ext.Contains(Path.GetExtension(e))).ToArray();
-
-                statusEffectSelect.Items.Add("");
-
-                foreach (string e in effects)
-                {
-                    string effect = e.Replace('\\', '/');
-
-                    statusEffectSelect.Items.Add(effect.Substring(effect.LastIndexOf('/') + 1, effect.LastIndexOf('.') - effect.LastIndexOf('/') - 1));
-                }
-            }
-            catch (Exception exc)
-            {
-                Logger.Error("Could not load status effects: ", exc);
-            }
-        }
-
         private void LoadFirstCharacter()
         {
             try
@@ -141,23 +117,15 @@ namespace WebClashServer.Editors
             else
                 current = new Action(Program.main.serverLocation + "/actions/" + actionName + ".json");
 
-            if (current.elements.Length > 0)
-                GrabElement(0);
-            else
-                properties.Visible = false;
+            current.sw = canvas.Width;
+            current.sh = canvas.Height;
 
             name.Text = current.name;
             oldName = name.Text;
 
-            power.Value = (decimal)current.scaling.power;
-            intelligence.Value = (decimal)current.scaling.intelligence;
-            wisdom.Value = (decimal)current.scaling.wisdom;
-            agility.Value = (decimal)current.scaling.agility;
-            toughness.Value = (decimal)current.scaling.toughness;
-            vitality.Value = (decimal)current.scaling.vitality;
-
             icon.Text = current.src;
             AttemptSetIcon();
+            LoadElements();
 
             description.Text = current.description;
 
@@ -166,6 +134,9 @@ namespace WebClashServer.Editors
 
             castingTime.Value = (int)Math.Round((double)current.castingTime * (1000d / 60));
             cooldown.Value = (int)Math.Round((double)current.cooldown * (1000d / 60));
+
+            if (current.elements.Length > 0)
+                GrabElement(0);
 
             finished.Clear();
             remainingDelays.Clear();
@@ -185,6 +156,17 @@ namespace WebClashServer.Editors
 
             if (currentCharacter.src != string.Empty)
                 AttemptSetCharImage(currentCharacter.src);
+        }
+
+        private void LoadElements()
+        {
+            if (current == null)
+                return;
+
+            elementList.Items.Clear();
+
+            for (int e = 0; e < current.elements.Length; e++)
+                elementList.Items.Add("#" + (e + 1) + " (" + current.elements[e].type + ")");
         }
 
         private void AttemptSetCharImage(string src)
@@ -232,7 +214,52 @@ namespace WebClashServer.Editors
 
                 g.Clear(Color.FromKnownColor(KnownColor.ControlLight));
 
-                Point sp = new Point(canvas.Width / 2 - currentCharacter.width / 2, canvas.Height / 2 - currentCharacter.height / 2);
+                Point sp = new Point(
+                    canvas.Width / 2 - currentCharacter.width / 2, 
+                    canvas.Height / 2 - currentCharacter.height / 2
+                );
+
+                //Render grid
+
+                int widthCells  = canvas.Width / cellSize;
+                int heightCells = canvas.Height / cellSize;
+
+                //Render sub-cells
+
+                for (int x = 0; x < widthCells * 2; x++)
+                    for (int y = 0; y < heightCells * 2; y++)
+                    {
+                        int subCellSize = cellSize / 2;
+
+                        Pen dottedPen = new Pen(Color.FromArgb(16, 0, 0, 0), 1)
+                        {
+                            DashStyle = System.Drawing.Drawing2D.DashStyle.Dash
+                        };
+
+                        g.DrawRectangle(
+                            dottedPen,
+                            new Rectangle(
+                                x * subCellSize, 
+                                y * subCellSize, 
+                                subCellSize, 
+                                subCellSize
+                            )
+                        );
+                    }
+
+                //Render cells
+
+                for (int x = 0; x < widthCells; x++)
+                    for (int y = 0; y < heightCells; y++)
+                        g.DrawRectangle(
+                            new Pen(Color.FromArgb(48, 0, 0, 0), 1), 
+                            new Rectangle(
+                                x * cellSize, 
+                                y * cellSize, 
+                                cellSize, 
+                                cellSize
+                            )
+                        );
 
                 //Render character
 
@@ -269,9 +296,11 @@ namespace WebClashServer.Editors
                         //Draw delay in seconds
 
                         double remainingTime = remainingDelays[cur] * (1000d / 60) / 1000;
+
                         StringFormat format = new StringFormat();
                         format.LineAlignment = StringAlignment.Center;
                         format.Alignment = StringAlignment.Center;
+
                         g.DrawString(
                             remainingTime.ToString("0.#s"),
                             new Font("Verdana", 10), 
@@ -298,40 +327,56 @@ namespace WebClashServer.Editors
                             g.DrawImage(img, r, 0, elementFrames[cur].frame * cur.h, cur.w, cur.h, GraphicsUnit.Pixel);
                     }
 
-                    //Draw rectangle
+                //Draw rectangle
 
-                    DrawRectangle:
-                        if (cur == current.elements[curElement])
-                            g.DrawRectangle(Pens.Blue, r);
-                        else
-                            g.DrawRectangle(Pens.Purple, r);
+                DrawRectangle:
+                    if (cur == current.elements[curElement])
+                    {
+                        //Draw position text
+
+                        g.DrawString(
+                            "#" + (curElement+1) + " (" + r.X + ", " + r.Y + ")",
+                            new Font("Verdana", 10),
+                            Brushes.Black,
+                            new Point(2, 2)
+                        );
+
+                        //Draw rectangle
+
+                        g.DrawRectangle(new Pen(Color.DeepPink, 1), r);
+                    }
+                    else
+                        g.DrawRectangle(new Pen(Color.Blue, 1), r);
                     
                     //Draw projectile arrow (if projectile)
 
                     if (cur.type == "projectile")
                     {
-                        Pen p = new Pen(Color.FromArgb(125, Color.Black), 6);
+                        Pen p = new Pen(Color.FromArgb(125, Color.Black), 6)
+                        {
+                            EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor
+                        };
 
-                        p.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
+                        int x = (int)(cur.x + (cur.w * cur.scale) / 2),
+                            y = (int)(cur.y + (cur.h * cur.scale) / 2);
 
-                        int x = cur.x + cur.w / 2,
-                            y = cur.y + cur.h / 2;
+                        float dx = (x - canvas.Width / 2),
+                              dy = (y - canvas.Height / 2);
 
-                        int dx = (x - current.sw / 2),
-                            dy = (y - current.sh / 2);
+                        float len = (float)Math.Sqrt(dx * dx + dy * dy);
 
-                        int l = current.sw/6;
+                        dx /= len;
+                        dy /= len;
 
-                        if (dx > l)
-                            dx = l;
-                        else if (dx < -l)
-                            dx = -l;
-                        if (dy > l)
-                            dy = l;
-                        else if (dy < -l)
-                            dy = -l;
+                        int arrowLength = 48;
 
-                        g.DrawLine(p, x, y, x + dx, y + dy);
+                        g.DrawLine(
+                            p, 
+                            x, 
+                            y, 
+                            x + dx * arrowLength, 
+                            y + dy * arrowLength
+                        );
                     }
                 }
             }
@@ -367,14 +412,64 @@ namespace WebClashServer.Editors
 
         private void mouseMoveCanvas(object sender, EventArgs e)
         {
+            //If moving an element, handle movement
+
             if (moving)
             {
+                //Get mouse position
+
                 Point mp = canvas.PointToClient(MousePosition);
 
-                current.elements[curElement].x += mp.X - oldMP.X;
-                current.elements[curElement].y += mp.Y - oldMP.Y;
+                //Calculate new position
+
+                float x = current.elements[curElement].x + mp.X - oldMP.X;
+                float y = current.elements[curElement].y + mp.Y - oldMP.Y;
+
+                //Check for snapping
+
+                if (!disableSnapping)
+                {
+                    int snappingSize = 1;
+
+                    for (int sx = -snappingSize; sx <= snappingSize; sx++)
+                    {
+                        if ((x + sx) % cellSize == 0)
+                        {
+                            x = (float)Math.Round(x / cellSize) * cellSize;
+                            break;
+                        }
+                        else if ((x + sx) % (cellSize / 2) == 0)
+                        {
+                            x = (float)Math.Round(x / cellSize * 2) * cellSize / 2;
+                            break;
+                        }
+                    }
+
+                    for (int sy = -snappingSize; sy <= snappingSize; sy++)
+                    {
+                        if ((y + sy) % cellSize == 0)
+                        {
+                            y = (float)Math.Round(y / cellSize) * cellSize;
+                            break;
+                        }
+                        else if ((y + sy) % (cellSize / 2) == 0)
+                        {
+                            y = (float)Math.Round(y / cellSize * 2) * cellSize / 2;
+                            break;
+                        }
+                    }
+                }
+
+                //Set position
+
+                current.elements[curElement].x = (int)x;
+                current.elements[curElement].y = (int)y;
+
+                //Set old mouse position
 
                 oldMP = mp;
+
+                //Repaint canvas
 
                 canvas.Invalidate();
             }
@@ -430,21 +525,6 @@ namespace WebClashServer.Editors
             dataHasChanged = true;
         }
 
-        private void changeCharacter_Click(object sender, EventArgs e)
-        {
-            CharacterSelection charSelection = new CharacterSelection("Select testing character", characterName.Text);
-
-            charSelection.FormClosed += (object s, FormClosedEventArgs fcea) =>
-            {
-                string result = charSelection.GetResult();
-
-                if (result != "")
-                    LoadCharacter(result);
-            };
-
-            charSelection.ShowDialog();
-        }
-
         private void save_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (current == null || name.Text.Length == 0)
@@ -467,6 +547,12 @@ namespace WebClashServer.Editors
             dataHasChanged = true;
         }
 
+
+        private void icon_TextChanged(object sender, EventArgs e)
+        {
+            AttemptSetIcon();
+        }
+
         private void Name_TextChanged(object sender, EventArgs e)
         {
             if (current == null)
@@ -475,19 +561,72 @@ namespace WebClashServer.Editors
             current.name = name.Text;
         }
 
-        private void addElement_Click(object sender, EventArgs e)
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            current.description = description.Text;
+        }
+
+        private void heal_ValueChanged(object sender, EventArgs e)
+        {
+            current.heal = (int)heal.Value;
+        }
+
+        private void mana_ValueChanged(object sender, EventArgs e)
+        {
+            current.mana = (int)mana.Value;
+        }
+
+        private void castingTime_ValueChanged(object sender, EventArgs e)
+        {
+            current.castingTime = (int)Math.Round((double)castingTime.Value / (1000d / 60));
+        }
+
+        private void cooldown_ValueChanged(object sender, EventArgs e)
+        {
+            current.cooldown = (int)Math.Round((double)cooldown.Value / (1000d / 60));
+        }
+
+        private void editSounds_Click(object sender, EventArgs e)
+        {
+            SoundSelection soundSelection = new SoundSelection("Set sounds for action '" + current.name + "'", current.sounds);
+
+            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+                current.sounds = soundSelection.GetSelection();
+            };
+
+            soundSelection.ShowDialog();
+        }
+
+        private void AttemptSetIcon()
+        {
+            string serverLocation = Program.main.clientLocation + icon.Text;
+
+            if (!File.Exists(serverLocation))
+            {
+                iconImage.BackgroundImage = null;
+                current.src = string.Empty;
+                return;
+            }
+
+            iconImage.BackgroundImage = Image.FromFile(serverLocation);
+            current.src = icon.Text;
+        }
+
+        private void addElement_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (current == null)
                 return;
 
             current.AddElement();
 
+            LoadElements();
+
             GrabElement(current.elements.Length - 1);
 
             canvas.Invalidate();
         }
 
-        private void removeElement_Click(object sender, EventArgs e)
+        private void removeElement_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (current == null)
                 return;
@@ -496,118 +635,92 @@ namespace WebClashServer.Editors
             {
                 current.RemoveElement(curElement);
 
+                LoadElements();
+
                 GrabElement(current.elements.Length - 1);
             }
 
             canvas.Invalidate();
         }
 
+        private void elementList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            curElement = elementList.SelectedIndex;
+        }
+
+        private void elementList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.C)
+                copyElement_Click(null, null);
+
+            else if (e.Control && e.KeyCode == Keys.V)
+                pasteElement_Click(null, null);
+
+            else if (e.Alt)
+                disableSnapping = true;
+
+            e.Handled = true;
+        }
+
+        private void elementList_KeyUp(object sender, KeyEventArgs e)
+        {
+            disableSnapping = false;
+
+            e.Handled = true;
+        }
+
+        private void copyElement_Click(object sender, EventArgs e)
+        {
+            if (curElement == -1)
+                return;
+
+            clipboardActionElement = current.elements[curElement];
+        }
+
+        private void pasteElement_Click(object sender, EventArgs e)
+        {
+            if (clipboardActionElement == null)
+                return;
+
+            List<Element> elements = new List<Element>(current.elements)
+            {
+                (Element)clipboardActionElement.Clone()
+            };
+
+            current.elements = elements.ToArray();
+
+            LoadElements();
+
+            GrabElement(current.elements.Length - 1);
+
+            canvas.Invalidate();
+        }
+
+        private void editElement_Click(object sender, EventArgs e)
+        {
+            if (current == null || curElement == -1)
+                return;
+
+            if (actionElement != null)
+            {
+                actionElement.Close();
+                actionElement = null;
+            }
+
+            actionElement = new ActionElement(
+                current.elements[curElement],
+                canvas,
+                curElement
+            );
+            actionElement.Show();
+        }
+
         private void GrabElement(int id)
         {
             curElement = id;
+            elementList.SelectedIndex = curElement;
 
-            if (id == -1)
-                properties.Visible = false;
-            else
-            {
-                properties.Visible = true;
-
-                if (propertyView.SelectedItem == null)
-                    propertyView.SelectedItem = propertyView.Items[0];
-
-                LoadProperties();
-            }
-        }
-
-        private void LoadProperties()
-        {
-            if (current.elements.Length == 0) { 
-                return;
-            }
-
-            speed.Value = current.elements[curElement].speed;
-
-            width.Value = current.elements[curElement].w;
-            height.Value = current.elements[curElement].h;
-            scale.Value = (decimal)current.elements[curElement].scale;
-
-            source.Text = current.elements[curElement].src;
-
-            //Appearance
-
-            delay.Value = (int)Math.Round((double)current.elements[curElement].delay * (1000d / 60));
-
-            animationEnabled.Checked = current.elements[curElement].animated;
-            speed.Enabled = current.elements[curElement].animated;
-            direction.Enabled = current.elements[curElement].animated;
-            projectileRotates.Checked = current.elements[curElement].rotates;
-
-            projectileSpeed.Value = current.elements[curElement].projectileSpeed;
-            projectileDistance.Value = current.elements[curElement].projectileDistance;
-
-            if (current.elements[curElement].direction == "horizontal")
-                direction.SelectedItem = "Horizontal";
-            else if (current.elements[curElement].direction == "vertical")
-                direction.SelectedItem = "Vertical";
-
-            //Behaviour
-
-            delay.Value = (int)Math.Round((double)current.elements[curElement].delay * (1000d / 60d));
-
-            propertyType.SelectedItem = char.ToUpper(current.elements[curElement].type[0]) + current.elements[curElement].type.Substring(1, current.elements[curElement].type.Length - 1);
-
-            animationEnabled.Checked = current.elements[curElement].animated;
-            projectileRotates.Checked = current.elements[curElement].rotates;
-
-            projectileSpeed.Value = current.elements[curElement].projectileSpeed;
-            projectileDistance.Value = current.elements[curElement].projectileDistance;
-
-            //Status effects
-
-            statusEffectSelect.SelectedItem = current.elements[curElement].statusEffect;
-
-            canvas.Invalidate();
-        }
-
-        private void width_ValueChanged(object sender, EventArgs e)
-        {
-            current.elements[curElement].w = (int)width.Value;
-
-            canvas.Invalidate();
-        }
-
-        private void height_ValueChanged(object sender, EventArgs e)
-        {
-            current.elements[curElement].h = (int)height.Value;
-
-            canvas.Invalidate();
-        }
-
-        private void Scale_ValueChanged(object sender, EventArgs e)
-        {
-            current.elements[curElement].scale = float.Parse(scale.Value.ToString("0.000")); ;
-
-            canvas.Invalidate();
-        }
-
-        private void source_TextChanged(object sender, EventArgs e)
-        {
-            current.elements[curElement].src = source.Text;
-
-            canvas.Invalidate();
-        }
-
-        private void speed_ValueChanged(object sender, EventArgs e)
-        {
-            current.elements[curElement].speed = (int)speed.Value;
-        }
-
-        private void direction_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (direction.SelectedItem.ToString() == "Horizontal")
-                current.elements[curElement].direction = "horizontal";
-            else if (direction.SelectedItem.ToString() == "Vertical")
-                current.elements[curElement].direction = "vertical";
+            elementList.Focus();
         }
 
         private void animationTimer_Tick(object sender, EventArgs e)
@@ -647,7 +760,7 @@ namespace WebClashServer.Editors
             {
                 //Check if already finished
 
-                if (finished[cur])
+                if (!finished.ContainsKey(cur) || finished[cur])
                     continue;
 
                 //If the element has no source, set finished and continue
@@ -670,7 +783,7 @@ namespace WebClashServer.Editors
 
                 if (!elementFrames.ContainsKey(cur))
                     elementFrames.Add(cur, new Frame());
-                
+
                 //Check if not animated
 
                 if (!cur.animated)
@@ -712,306 +825,24 @@ namespace WebClashServer.Editors
             canvas.Invalidate();
         }
 
-        private void power_ValueChanged(object sender, EventArgs e)
+        private void changeCharacter_Click(object sender, EventArgs e)
         {
-            current.scaling.power = float.Parse(power.Value.ToString("0.000"));
-        }
+            CharacterSelection charSelection = new CharacterSelection("Select testing character", characterName.Text);
 
-        private void agility_ValueChanged(object sender, EventArgs e)
-        {
-            current.scaling.agility = float.Parse(agility.Value.ToString("0.000"));
-        }
+            charSelection.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
+                string result = charSelection.GetResult();
 
-        private void toughness_ValueChanged(object sender, EventArgs e)
-        {
-            current.scaling.toughness = float.Parse(toughness.Value.ToString("0.000"));
-        }
-
-        private void intelligence_ValueChanged(object sender, EventArgs e)
-        {
-            current.scaling.intelligence = float.Parse(intelligence.Value.ToString("0.000"));
-        }
-
-        private void wisdom_ValueChanged(object sender, EventArgs e)
-        {
-            current.scaling.wisdom = float.Parse(wisdom.Value.ToString("0.000"));
-        }
-
-        private void vitality_ValueChanged(object sender, EventArgs e)
-        {
-            current.scaling.vitality = float.Parse(vitality.Value.ToString("0.000"));
-        }
-
-        private void heal_ValueChanged(object sender, EventArgs e)
-        {
-            current.heal = (int)heal.Value;
-        }
-        
-        private void mana_ValueChanged(object sender, EventArgs e)
-        {
-            current.mana = (int)mana.Value;
-        }
-
-        private void icon_TextChanged(object sender, EventArgs e)
-        {
-            AttemptSetIcon();
-        }
-
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-            current.description = description.Text;
-        }
-
-        private void editSounds_Click(object sender, EventArgs e)
-        {
-            SoundSelection soundSelection = new SoundSelection("Set sounds for action '" + current.name + "'", current.sounds);
-
-            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
-                current.sounds = soundSelection.GetSelection();
+                if (result != "")
+                    LoadCharacter(result);
             };
 
-            soundSelection.ShowDialog();
-        }
-
-        private void AttemptSetIcon()
-        {
-            string serverLocation = Program.main.clientLocation + icon.Text;
-
-            if (!File.Exists(serverLocation))
-            {
-                iconImage.BackgroundImage = null;
-                current.src = string.Empty;
-                return;
-            }
-
-            iconImage.BackgroundImage = Image.FromFile(serverLocation);
-            current.src = icon.Text;
-        }
-
-        private void castingTime_ValueChanged(object sender, EventArgs e)
-        {
-            current.castingTime = (int)Math.Round((double)castingTime.Value / (1000d / 60));
-        }
-
-        private void cooldown_ValueChanged(object sender, EventArgs e)
-        {
-            current.cooldown = (int)Math.Round((double)cooldown.Value / (1000d / 60));
-        }
-
-        private void propertyView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (propertyView.SelectedItem.ToString())
-            {
-                case "Appearance":
-                    appearancePanel.Visible = true;
-                    behaviourPanel.Visible = false;
-                    statusEffectsPanel.Visible = false;
-
-                    break;
-                case "Behaviour":
-                    appearancePanel.Visible = false;
-                    behaviourPanel.Visible = true;
-                    statusEffectsPanel.Visible = false;
-
-                    break;
-                case "Status Effects":
-                    appearancePanel.Visible = false;
-                    behaviourPanel.Visible = false;
-                    statusEffectsPanel.Visible = true;
-
-                    break;
-            }
-        }
-
-        //Behaviour panel
-
-        private void delay_ValueChanged(object sender, EventArgs e)
-        {
-            current.elements[curElement].delay = (int)Math.Round((double)delay.Value / (1000d/60d));
-        }
-
-        private void animationEnabled_CheckedChanged(object sender, EventArgs e)
-        {
-            current.elements[curElement].animated = animationEnabled.Checked;
-
-            speed.Enabled = current.elements[curElement].animated;
-            direction.Enabled = current.elements[curElement].animated;
-        }
-
-        private void projectileRotates_CheckedChanged(object sender, EventArgs e)
-        {
-            current.elements[curElement].rotates = projectileRotates.Checked;
-        }
-
-        private void projectileSpeed_ValueChanged(object sender, EventArgs e)
-        {
-            if (current.elements[curElement] == null)
-                return;
-
-            current.elements[curElement].projectileSpeed = (int)projectileSpeed.Value;
-        }
-
-        private void projectileDistance_ValueChanged(object sender, EventArgs e)
-        {
-            if (current.elements[curElement] == null)
-                return;
-
-            current.elements[curElement].projectileDistance = (int)projectileDistance.Value;
-        }
-
-        private void propertyType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (current.elements[curElement] == null)
-                return;
-
-            current.elements[curElement].type = propertyType.SelectedItem.ToString().ToLower();
-
-            if (current.elements[curElement].type == "projectile")
-            {
-                projectilePanel.Visible = true;
-            }
-            else
-            {
-                animationEnabled.Checked = true;
-
-                projectilePanel.Visible = false;
-            }
-
-            canvas.Invalidate();
-        }
-
-        //Status effects panel
-
-        private void statusEffectSelect_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (current.elements[curElement] == null)
-                return;
-
-            current.elements[curElement].statusEffect = statusEffectSelect.SelectedItem.ToString();
+            charSelection.ShowDialog();
         }
 
         public bool GetChanged()
         {
             return dataHasChanged;
         }
-    }
-
-    public class Action
-    {
-        public Action()
-        {
-            //...
-        }
-
-        public Action(string source)
-        {
-            try
-            {
-                Action temp = JsonConvert.DeserializeObject<Action>(File.ReadAllText(source));
-
-                elements = temp.elements;
-
-                sounds = temp.sounds;
-
-                scaling = temp.scaling;
-
-                name = temp.name;
-
-                heal = temp.heal;
-
-                mana = temp.mana;
-
-                src = temp.src;
-
-                description = temp.description;
-
-                cooldown = temp.cooldown;
-
-                castingTime = temp.castingTime;
-            }
-            catch (Exception exc)
-            {
-                Logger.Error("Could not construct action instance: ", exc);
-            }
-        }
-
-        public void AddElement()
-        {
-            List<Element> temp = new List<Element>(elements);
-
-            temp.Add(new Element());
-
-            elements = temp.ToArray();
-        }
-
-        public void RemoveElement(int id)
-        {
-            List<Element> temp = new List<Element>(elements);
-
-            temp.RemoveAt(id);
-
-            elements = temp.ToArray();
-        }
-
-        public int sw = 320,
-                   sh = 320;
-
-        public string name = "New Action";
-
-        public string src = "";
-
-        public string description = "";
-
-        public Scaling scaling = new Scaling();
-
-        public Element[] elements = new Element[0];
-
-        public PossibleSound[] sounds = new PossibleSound[0];
-
-        public int heal = 0,
-                   mana = 0;
-
-        public int cooldown = 0;
-        public int castingTime = 0;
-    }
-
-    public class Scaling
-    {
-        public float power = 0.0f,
-                   agility = 0.0f,
-                   intelligence = 0.0f,
-                   wisdom = 0.0f,
-                   toughness = 0.0f,
-                   vitality = 0.0f;
-    }
-    
-    public class Element
-    {
-        public int x = 0,
-                   y = 0;
-
-        public int w = 64,
-                   h = 64;
-
-        public float scale = 1.0f;
-        public string type = "static";
-        public string src = "";
-
-        public bool animated = true;
-        public int speed = 8;
-        public string direction = "horizontal";
-        public int delay = 0;
-
-        public bool rotates = true;
-        public int projectileSpeed = 1;
-        public int projectileDistance = 0;
-
-        public string statusEffect = "";
-    }
-
-    public class Frame
-    {
-        public int cur = 0;
-        public int frame = 0;
     }
 }

@@ -580,7 +580,7 @@ exports.updateNPCCombat = function(map, id, dt)
 
     //Check if casting
 
-    if (actions.isNPCCasting(map, id))
+    if (combat.isNPCCasting(map, id))
         return;
 
     //Check if out of combat for too long
@@ -888,14 +888,14 @@ exports.updateNPCCombat = function(map, id, dt)
 
     let actionData = this.onMap[map][id].data.actions[nextAction];
 
-    if (actions.performNPCAction(
+    if (combat.performNPCAction(
         actionData,
         map,
         id
     )) {
         //Grab the actual action
 
-        let action = actions.getAction(actionData.action);
+        let action =combat.getAction(actionData.action);
 
         //Sync casting time
 

@@ -1,33 +1,33 @@
 {
-  "sw": 320,
-  "sh": 320,
+  "sw": 448,
+  "sh": 448,
   "name": "Combust",
   "src": "res/icons/1.png",
   "description": "That's hot.",
-  "scaling": {
-    "power": 0.0,
-    "agility": 0.0,
-    "intelligence": 0.25,
-    "wisdom": 0.05,
-    "toughness": 0.0,
-    "vitality": 0.0
-  },
   "elements": [
     {
-      "x": 137,
-      "y": 198,
+      "x": 200,
+      "y": 240,
       "w": 48,
       "h": 48,
       "scale": 1.0,
-      "type": "static",
       "src": "res/actions/11.png",
       "animated": true,
       "speed": 2,
       "direction": "horizontal",
-      "delay": 0,
+      "type": "static",
       "rotates": true,
       "projectileSpeed": 1,
       "projectileDistance": 0,
+      "scaling": {
+        "power": 0.0,
+        "agility": 0.0,
+        "intelligence": 0.0,
+        "wisdom": 0.0,
+        "toughness": 0.0,
+        "vitality": 0.0
+      },
+      "delay": 0,
       "statusEffect": "Burning"
     }
   ],

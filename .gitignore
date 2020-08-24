@@ -9,3 +9,4 @@ server/data/stats/
 dev/WebClashServer/bin/
 dev/WebClashServer/obj/
 dev/WebClashServer/.vs/
+dev/WebClashServer/packages/

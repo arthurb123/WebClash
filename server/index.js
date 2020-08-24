@@ -60,7 +60,7 @@ global.dialog   = require('./webclash_modules/dialog');
 global.items    = require('./webclash_modules/items');
 global.shop     = require('./webclash_modules/shop');
 global.npcs     = require('./webclash_modules/npcs');
-global.actions  = require('./webclash_modules/actions');
+global.combat   = require('./webclash_modules/combat');
 global.quests   = require('./webclash_modules/quests');
 global.status   = require('./webclash_modules/status');
 global.tiled    = require('./webclash_modules/tiled');
@@ -161,7 +161,7 @@ function startServer() {
 
 game.loadAllCharacters(function() {
     status.loadAllStatusEffects(function() {
-        actions.loadAllActions(function() {
+       combat.loadAllActions(function() {
             items.loadAllItems(function() {
                 quests.loadAllQuests(function() {
                     tiled.loadAllMaps(function() {

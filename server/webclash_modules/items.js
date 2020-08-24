@@ -89,7 +89,7 @@ exports.loadAllItems = function(cb)
             item.name = file.substr(0, file.lastIndexOf('.'));
 
             if (item.equippableAction !== '')
-                item.scaling = actions.getAction(item.equippableAction).scaling;
+                item.scaling =combat.getAction(item.equippableAction).scaling;
 
             items.collection.push(item);
 
@@ -116,11 +116,11 @@ exports.loadItem = function(location)
 
         if (object.type === 'consumable' &&
             object.consumableAction.length > 0)
-            action = actions.getAction(object.consumableAction);
+            action =combat.getAction(object.consumableAction);
 
         if (object.type === 'equipment' &&
             object.equippableAction.length > 0)
-            action = actions.getAction(object.equippableAction);
+            action =combat.getAction(object.equippableAction);
 
         if (action !== undefined)
             object.actionIcon = action.src;
@@ -255,7 +255,7 @@ exports.usePlayerItem = function(id, name)
         //Add action
 
         if (item.consumableAction.length > 0 &&
-            !actions.addPlayerAction(item.consumableAction, id, item.consumableActionUses))
+            !combat.addPlayerAction(item.consumableAction, id, item.consumableActionUses))
             return false;
 
         //Remove player item
@@ -334,12 +334,12 @@ exports.setPlayerEquipment = function(id, item)
         //Set action at 0 if main
 
         if (equippable === 'main')
-            actions.setPlayerAction(item.equippableAction, 0, id);
+           combat.setPlayerAction(item.equippableAction, 0, id);
 
         //Set action at 1 if offhand
 
         if (equippable === 'offhand')
-            actions.setPlayerAction(item.equippableAction, 1, id);
+           combat.setPlayerAction(item.equippableAction, 1, id);
     }
 
     //Calculate new attributes
@@ -382,7 +382,7 @@ exports.unequipPlayerEquipment = function(id, slot) {
     //Check if equipment has action
 
     if (item.equippableAction !== undefined)
-        if (!actions.removePlayerAction(item.equippableAction, id))
+        if (!combat.removePlayerAction(item.equippableAction, id))
             return;
 
     //Remove equipped item

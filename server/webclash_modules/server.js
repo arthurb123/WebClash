@@ -26,7 +26,7 @@ exports.handleChannel = function(channel)
             //Check if player is in-combat, 
             //if so do not logout
 
-            if (actions.combat.in(id))
+            if (combat.active.in(id))
                 return;
 
             //Remove player
@@ -346,7 +346,7 @@ exports.handleChannel = function(channel)
 
             //Cancel player casting
 
-            actions.cancelPlayerCasting(id);
+           combat.cancelPlayerCasting(id);
 
             //Check data
 
@@ -462,9 +462,9 @@ exports.handleChannel = function(channel)
 
             let result;
             if (!tiled.maps[game.players[id].map_id].pvp)
-                result = actions.performPlayerAction(data, id, false);
+                result =combat.performPlayerAction(data, id, false);
             else
-                result = actions.performPlayerAction(data, id, true);
+                result =combat.performPlayerAction(data, id, true);
 
             //Emit casting action packages to self and others
 
@@ -1399,7 +1399,7 @@ exports.syncPlayerPartially = function(id, type, channel, broadcast)
                 if (game.players[id].actions[a] == undefined)
                     continue;
 
-                data.actions[a] = actions.createPlayerSlotAction(game.players[id].actions[a]);
+                data.actions[a] =combat.createPlayerSlotAction(game.players[id].actions[a]);
             }
             break;
         case 'statusEffects':
@@ -1606,7 +1606,7 @@ exports.syncPlayerActionCast = function(slot, id, channel, broadcast)
 {
     //Get the action
 
-    let action = actions.getAction(game.players[id].actions[slot].name);
+    let action =combat.getAction(game.players[id].actions[slot].name);
 
     //Get casting time and adjust based on
     //status effects matrix
@@ -1746,7 +1746,7 @@ exports.syncActionSlot = function(slot, id, channel)
 
     if (game.players[id].actions[slot] != undefined)
     {
-        data.action = actions.createPlayerSlotAction(game.players[id].actions[slot]);
+        data.action =combat.createPlayerSlotAction(game.players[id].actions[slot]);
 
         if (data.action === undefined)
             return;
