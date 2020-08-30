@@ -964,7 +964,7 @@ exports.damageNPCs = function(owner, actionData, actionElement, action, onlyStat
                 !npcs.isInvisible(owner, n)) {
                 //Calculate damage
 
-                let damage = this.calculateDamage(game.players[owner].attributes, action.scaling);
+                let damage = this.calculateDamage(game.players[owner].attributes, actionElement.scaling);
 
                 //Adjust damage based on damage factor
 
@@ -1123,7 +1123,7 @@ exports.damagePlayers = function(stats, damageFactor, actionData, actionElement,
 
                 //Calculate damage
 
-                let damage = this.calculateDamage(stats, action.scaling);
+                let damage = this.calculateDamage(stats, actionElement.scaling);
 
                 //Adjust damage based on status effect matrix
 

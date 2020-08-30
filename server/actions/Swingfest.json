@@ -20,7 +20,7 @@
       "projectileSpeed": 1,
       "projectileDistance": 0,
       "scaling": {
-        "power": 0.0,
+        "power": 0.22,
         "agility": 0.0,
         "intelligence": 0.0,
         "wisdom": 0.0,
@@ -45,7 +45,7 @@
       "projectileSpeed": 1,
       "projectileDistance": 0,
       "scaling": {
-        "power": 0.0,
+        "power": 0.22,
         "agility": 0.0,
         "intelligence": 0.0,
         "wisdom": 0.0,
@@ -70,7 +70,7 @@
       "projectileSpeed": 1,
       "projectileDistance": 0,
       "scaling": {
-        "power": 0.0,
+        "power": 0.22,
         "agility": 0.0,
         "intelligence": 0.0,
         "wisdom": 0.0,

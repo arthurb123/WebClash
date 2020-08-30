@@ -22,8 +22,8 @@
       "scaling": {
         "power": 0.0,
         "agility": 0.0,
-        "intelligence": 0.0,
-        "wisdom": 0.0,
+        "intelligence": 0.25,
+        "wisdom": 0.05,
         "toughness": 0.0,
         "vitality": 0.0
       },
