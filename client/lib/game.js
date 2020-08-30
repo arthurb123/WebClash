@@ -1717,10 +1717,6 @@ const game = {
     },
     calculateDamagePerSecond: function(scaling, extra_attributes)
     {
-        if (scaling == undefined ||
-            extra_attributes == undefined)
-            return 0;
-
         let total = 0;
 
         for (let key in player.attributes)
