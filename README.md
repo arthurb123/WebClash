@@ -49,7 +49,8 @@ already present.
 ### Example<br>
 An example WebClash server (EU) is available [on my webserver](http://www.arthurb.nl/projects/webclash).<br>
 This example server does not get updated very often and might be running an older version.<br>
-Furthermore try to force refresh (Shift+F5) the game to always have the latest files.
+Because of development the server sometimes get wiped, this includes the user accounts.<br>
+Last but not least, try to force refresh (Shift+F5) the game to always have the latest files.
 
 ### Development<br>
 Currently WebClash is still under development.<br>
