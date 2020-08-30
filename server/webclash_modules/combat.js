@@ -557,6 +557,9 @@ exports.removePlayerAction = function(name, id)
 
 exports.calculateAverageScalingFromAction = function(actionName)
 {
+    if (actionName == undefined)
+        return undefined;
+
     //Keep track of seen amount of stats
     //and the total average
 

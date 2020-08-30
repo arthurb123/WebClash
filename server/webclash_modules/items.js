@@ -45,6 +45,7 @@ exports.getConvertedItem = function(name)
             result.heal = item.heal;
             result.mana = item.mana;
             result.currency = item.currency;
+
             break;
         case 'equipment':
             result.actionIcon = item.actionIcon;
@@ -54,11 +55,14 @@ exports.getConvertedItem = function(name)
             result.equippableSource = item.equippableSource;
 
             result.stats = item.stats;
-            result.scaling = combat.calculateAverageScalingFromAction(item.equippableAction);
+            if (item.equippableAction != undefined)
+                result.scaling = combat.calculateAverageScalingFromAction(item.equippableAction);
+
             break;
         case 'dialog':
             result.dialog = item.dialog;
             result.consumableDialog = item.consumableDialog;
+            
             break;
     };
 
@@ -578,7 +582,7 @@ exports.createMapItemFromProperty = function(map_id, name, rect, checks) {
         }
 };
 
-exports.releaseWorldItemsFromOwner = function(map, owner)
+exports.releaseMapItemsFromOwner = function(map, owner)
 {
     //Check if valid
 
@@ -605,7 +609,7 @@ exports.releaseWorldItemsFromOwner = function(map, owner)
     }
 };
 
-exports.releaseWorldItemFromOwner = function(map, item)
+exports.releaseMapItemFromOwner = function(map, item)
 {
     //Check if valid
 
@@ -711,7 +715,7 @@ exports.updateMaps = function(dt)
 
                     if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.releaseTime &&
                         this.onMap[m][i].item.owner != -1)
-                        this.releaseWorldItemFromOwner(m, i);
+                        this.releaseMapItemFromOwner(m, i);
 
                     //Check if item should be removed
 

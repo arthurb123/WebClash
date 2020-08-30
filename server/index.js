@@ -27,9 +27,11 @@ const geckos   = safeRequire('@geckos.io/server').default,
       http     = safeRequire('http').Server(app),
       path     = safeRequire('path'),
       readline = safeRequire('readline');
-    
+
 global.fs       = safeRequire('fs');
 global.deepcopy = safeRequire('deepcopy');
+global.crand    = safeRequire('csprng');
+global.sha256   = safeRequire('js-sha256');
 
 //Load server settings
 
@@ -51,6 +53,7 @@ gameplay.nightLength *= 60;
 
 //Load WebClash modules
 
+global.accounts = require('./webclash_modules/accounts');
 global.server   = require('./webclash_modules/server');
 global.game     = require('./webclash_modules/game');
 global.rooms    = require('./webclash_modules/rooms');

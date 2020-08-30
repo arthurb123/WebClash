@@ -318,7 +318,7 @@ exports.removePlayer = function(channel)
 
         //Release owned world items
 
-        items.releaseWorldItemsFromOwner(this.players[id].map_id, id);
+        items.releaseMapItemsFromOwner(this.players[id].map_id, id);
 
         //Save player
 

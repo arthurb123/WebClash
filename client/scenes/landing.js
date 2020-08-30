@@ -100,12 +100,12 @@ const landingScene = new lx.Scene(function() {
 
         if (name.length == 0)
         {
-            giveMessage('Enter a valid username');
+            giveMessage('Enter a valid username.');
             return;
         }
         if (pass.length == 0)
         {
-            giveMessage('Enter a valid password');
+            giveMessage('Enter a valid password.');
             return;
         }
 
@@ -116,18 +116,26 @@ const landingScene = new lx.Scene(function() {
         channel.on('CLIENT_LOGIN_RESPONSE', function(data) {
             switch (data)
             {
-                case 'none':
+                case 'invalid':
+                    giveMessage('Username not allowed.');
+                    break;
                 case 'wrong':
-                    giveMessage('Wrong username or password');
+                    giveMessage('Wrong username or password.');
+                    break;
+                case 'timedout':
+                    giveMessage('You have exceeded your login attempts, try again later.');
+                    break;
+                case 'error':
+                    giveMessage('Something went wrong, please try again.')
                     break;
                 case 'full':
-                    giveMessage('The server is full');
+                    giveMessage('The server is full.');
                     break;
                 case 'loggedin':
-                    giveMessage('You are already logged in');
+                    giveMessage('You are already logged in.');
                     break;
                 case 'banned':
-                    giveMessage('You have been banned');
+                    giveMessage('You have been banned.');
                     break;
             }
         });
@@ -141,12 +149,12 @@ const landingScene = new lx.Scene(function() {
 
         if (name.length == 0)
         {
-            giveMessage('Enter a valid username');
+            giveMessage('Enter a valid username.');
             return;
         }
         if (pass.length == 0)
         {
-            giveMessage('Enter a valid password');
+            giveMessage('Enter a valid password.');
             return;
         }
 
@@ -158,13 +166,16 @@ const landingScene = new lx.Scene(function() {
             switch (data)
             {
                 case 'invalid':
-                    giveMessage('Username not allowed');
+                    giveMessage('Username not allowed.');
                     break;
                 case 'taken':
-                    giveMessage('Username has been taken');
+                    giveMessage('Username has been taken.');
+                    break;
+                case 'error':
+                    giveMessage('Something went wrong, please try again.')
                     break;
                 case 'full':
-                    giveMessage('The server is full');
+                    giveMessage('The server is full.');
                     break;
             }
         });

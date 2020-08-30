@@ -36,8 +36,8 @@ exports.load = function(dir, name, cb)
 exports.exists = function(dir, name, cb)
 {
     try {
-        fs.stat('data/' + dir + '/' + name + '.json', function(err, stat) {
-            if(err == null)
+        fs.stat('data/' + dir + '/' + name + '.json', function(err) {
+            if (err == null)
                 cb(true);
             else if (err.code === 'ENOENT')
                 cb(false);
@@ -55,12 +55,17 @@ exports.save = function(dir, name, data, cb)
 {
     try
     {
-        fs.writeFile('data/' + dir + '/' + name + '.json', JSON.stringify(data, null, 1), 'utf-8', function(err) {
-            if (err)
-                throw err;
-            else if (cb !== undefined)
-                cb();
-        });
+        fs.writeFile(
+            'data/' + dir + '/' + name + '.json', 
+            JSON.stringify(data, null, 1), 
+            'utf-8', 
+            function(err) {
+                if (err)
+                    throw err;
+                else if (cb)
+                    cb();
+            }
+        );
     }
     catch (err)
     {
@@ -76,12 +81,16 @@ exports.saveAttributes = function(dir, name, attributes, cb)
             for (let key in attributes)
                 data[key] = attributes[key];
 
-            fs.writeFile('data/' + dir + '/' + name + '.json', JSON.stringify(data, null, 1), 'utf-8', function(err) {
-                if (err)
-                    throw err;
-                else if (cb !== undefined)
-                    cb();
-            });
+            fs.writeFile(
+                'data/' + dir + '/' + name + '.json', 
+                JSON.stringify(data, null, 1), 'utf-8', 
+                function(err) {
+                    if (err)
+                        throw err;
+                    else if (cb)
+                        cb();
+                }
+            );
         });
     }
     catch (err)

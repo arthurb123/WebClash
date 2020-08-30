@@ -58,177 +58,36 @@ exports.handleChannel = function(channel)
     //Authentication events
 
     channel.on('CLIENT_LOGIN', function(data) {
-        try {
-            //Check if valid package
+        //Check if valid package
 
-            if (data === undefined || 
-                data.name === undefined)
-                return;
+        if (data === undefined || 
+            data.name === undefined ||
+            data.pass === undefined)
+            return;
 
-            //Convert name to string
-
-            let name = data.name.toString();
-
-            //Check if name is valid
-
-            if (!name.match("^[a-zA-Z0-9]*$")) {
-                channel.emit('CLIENT_LOGIN_RESPONSE', 'none');
-                return;
-            }
-
-            //Grab entry with username
-
-            storage.load('accounts', name, function(player) {
-                if (player === undefined)
-                {
-                    channel.emit('CLIENT_LOGIN_RESPONSE', 'none');
-                    return;
-                }
-
-                //Check if password matches
-
-                if (player.pass != data.pass)
-                {
-                    channel.emit('CLIENT_LOGIN_RESPONSE', 'wrong');
-                    return;
-                }
-
-                //Check if there is place available
-
-                if (properties.maxPlayers != 0 &&
-                    game.playerCount >= properties.maxPlayers)
-                {
-                    channel.emit('CLIENT_LOGIN_RESPONSE', 'full');
-                    return;
-                }
-
-                //Check if banned
-
-                if (permissions.banned.indexOf(name) != -1)
-                {
-                    channel.emit('CLIENT_LOGIN_RESPONSE', 'banned');
-                    return;
-                }
-
-                //Check if already logged in
-
-                if (game.players[name] != undefined)
-                {
-                    //If so, log other person out and login
-                    //This can also be blocked using
-                    //channel.emit('CLIENT_LOGIN_RESPONSE', 'loggedin');
-                    //However this is necessary to protect against
-                    //account blocking when in-combat and logging out.
-
-                    game.disconnectPlayer(name, false);
-
-                    //Output
-
-                    output.give('User \'' + name + '\' has relogged.');
-                }
-                else
-                {
-                    //Output
-
-                    output.give('User \'' + name + '\' has logged in.');
-                }
-
-                //Set variables
-
-                channel.name = name;
-
-                //Request the respective page,
-                //based on if the account has
-                //created a character
-
-                if (player.created)
-                    channel.emit('REQUEST_GAME');
-                else
-                    channel.emit('REQUEST_CREATION', game.getPlayerCharacters());
-            });
-        }
-        catch (err) {
-            output.giveError('Could not handle login: ', err);
-        }
+        //Login account
+        
+        accounts.login(
+            channel, 
+            data.name.toString(), 
+            data.pass.toString()
+        );
     });
 
     channel.on('CLIENT_REGISTER', function(data) {
-        try {
-            //Check if valid package
+        //Check if valid package
 
-            if (data === undefined || 
-                data.name === undefined)
-                return;
+        if (data === undefined || 
+            data.name === undefined)
+            return;
 
-            //Convert name to string
+        //Register account
 
-            let name = data.name.toString();
-
-            //Check profanity and illegal characters
-
-            if (input.filterText(name).indexOf('*') != -1 ||
-                !name.match("^[a-zA-Z0-9]*$"))
-            {
-                channel.emit('CLIENT_REGISTER_RESPONSE', 'invalid');
-                return;
-            }
-
-            //Check if account already exists
-
-            storage.exists('accounts', name, function(is) {
-                if (is)
-                {
-                    channel.emit('CLIENT_REGISTER_RESPONSE', 'taken');
-                    return;
-                }
-
-                //Check if there is place available
-
-                if (properties.maxPlayers != 0 &&
-                    game.playerCount >= properties.maxPlayers)
-                {
-                    channel.emit('CLIENT_REGISTER_RESPONSE', 'full');
-                    return;
-                }
-
-                //Insert account
-
-                storage.save('accounts', name, {
-                    pass: data.pass,
-                    created: false,
-                    settings: {
-                        audio: {
-                            main: 50,
-                            music: 50,
-                            sound: 50
-                        }
-                    }
-                }, function() {
-                    //Insert bank
-
-                    storage.save('banks', name, {});
-
-                    //Insert and save default stats
-
-                    game.savePlayer(name, undefined, function() {
-                        //Give output
-
-                        output.give('New user \'' + name + '\' created.');
-
-                        //Set variables
-
-                        channel.name = name;
-
-                        //Request character creation page
-
-                        channel.emit('REQUEST_CREATION', game.getPlayerCharacters());
-                    });
-                });
-            });
-        }
-        catch (err) {
-            output.giveError('Could not handle registration: ', err);
-        }
+        accounts.register(
+            channel, 
+            data.name.toString(), 
+            data.pass.toString()
+        );
     });
 
     channel.on('CLIENT_CREATE_CHARACTER', function(data) {
