@@ -555,6 +555,49 @@ exports.removePlayerAction = function(name, id)
     return true;
 };
 
+exports.calculateAverageScalingFromAction = function(actionName)
+{
+    //Keep track of seen amount of stats
+    //and the total average
+
+    let recorded = {
+        power: 0,
+        agility: 0,
+        intelligence: 0,
+        wisdom: 0,
+        vitality: 0,
+        toughness: 0
+    };
+
+    let scaling = {
+        power: 0,
+        agility: 0,
+        intelligence: 0,
+        wisdom: 0,
+        vitality: 0,
+        toughness: 0
+    };
+
+    //Add all scaling, if the scaling is valid
+
+    for (let e = 0; e < collection[actionName].elements.length; e++) {
+        let elScaling = collection[actionName].elements[e].scaling;
+
+        for (let key in elScaling)
+            if (elScaling[key] !== 0) {
+                scaling[key] += elScaling[key];
+                recorded[key]++;
+            }
+    }
+
+    //Average out
+
+    for (let key in scaling)
+        scaling[key] /= recorded[key];
+
+    return scaling;
+}
+
 exports.createPlayerSlotAction = function(action)
 {
     //Shorten action name
@@ -570,7 +613,7 @@ exports.createPlayerSlotAction = function(action)
         description: collection[name].description,
         cooldown: collection[name].cooldown,
         castingTime: collection[name].castingTime,
-        scaling: collection[name].scaling,
+        scaling: this.calculateAverageScalingFromAction(name),
         sounds: collection[name].sounds,
         heal: collection[name].heal,
         mana: collection[name].mana,

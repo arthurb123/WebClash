@@ -3,9 +3,9 @@
  "created": true,
  "settings": {
   "audio": {
-   "main": 50,
-   "music": 50,
-   "sound": 50
+   "main": 0,
+   "sound": 50,
+   "music": 50
   }
  }
 }

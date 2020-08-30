@@ -182,6 +182,12 @@
     <Compile Include="Options\Plugins.Designer.cs">
       <DependentUpon>Plugins.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\GenerateExpTable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\GenerateExpTable.Designer.cs">
+      <DependentUpon>GenerateExpTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\ResetData.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -291,6 +297,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Options\Plugins.resx">
       <DependentUpon>Plugins.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\GenerateExpTable.resx">
+      <DependentUpon>GenerateExpTable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\ResetData.resx">
       <DependentUpon>ResetData.cs</DependentUpon>

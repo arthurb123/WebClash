@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using WebClashServer.Classes;
 using WebClashServer.Editors;
 using WebClashServer.Options;
+using WebClashServer.Tools;
 using Action = System.Action;
 
 namespace WebClashServer
@@ -633,6 +634,14 @@ namespace WebClashServer
         }
 
         //Tools
+
+        private void generateExpTableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!CheckServerLocation())
+                return;
+
+            new GenerateExpTable(serverLocation).ShowDialog();
+        }
 
         private void obfuscateClientToolStripMenuItem_Click(object sender, EventArgs e)
         {

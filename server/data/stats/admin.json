@@ -2,11 +2,11 @@
  "map": "1",
  "char_name": "player_male",
  "pos": {
-  "X": -32,
-  "Y": 256
+  "X": -480,
+  "Y": 816
  },
  "moving": false,
- "direction": 0,
+ "direction": 2,
  "health": {
   "cur": 100,
   "max": 100
@@ -16,12 +16,12 @@
   "max": 100
  },
  "currency": 0,
- "level": 1,
+ "level": 3,
  "stats": {
-  "exp": 0,
+  "exp": 4,
   "points": 0,
   "attributes": {
-   "power": 1,
+   "power": 3,
    "toughness": 1,
    "vitality": 1,
    "agility": 1,
@@ -30,12 +30,24 @@
   }
  },
  "killed": false,
- "actions": [],
+ "actions": [
+  {
+   "name": "Slash"
+  },
+  {
+   "name": "Combust"
+  }
+ ],
  "statusEffects": {},
  "inventory": [
-  "Sword"
+  "Ring of Arrows",
+  "Healing Slab",
+  null
  ],
- "equipment": {},
+ "equipment": {
+  "main": "Sword",
+  "offhand": "Magic Axe"
+ },
  "quests": {},
  "gvars": {}
 }

@@ -53,6 +53,7 @@
             this.permissions = new System.Windows.Forms.Button();
             this.interactionPanel = new System.Windows.Forms.Panel();
             this.inputCommand = new System.Windows.Forms.TextBox();
+            this.generateExpTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.interactionPanel.SuspendLayout();
             this.SuspendLayout();
@@ -230,6 +231,7 @@
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.generateExpTableToolStripMenuItem,
             this.obfuscateClientToolStripMenuItem,
             this.resetDataToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
@@ -239,14 +241,14 @@
             // obfuscateClientToolStripMenuItem
             // 
             this.obfuscateClientToolStripMenuItem.Name = "obfuscateClientToolStripMenuItem";
-            this.obfuscateClientToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.obfuscateClientToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.obfuscateClientToolStripMenuItem.Text = "Obfuscate Client";
             this.obfuscateClientToolStripMenuItem.Click += new System.EventHandler(this.obfuscateClientToolStripMenuItem_Click);
             // 
             // resetDataToolStripMenuItem
             // 
             this.resetDataToolStripMenuItem.Name = "resetDataToolStripMenuItem";
-            this.resetDataToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.resetDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.resetDataToolStripMenuItem.Text = "Reset Data";
             this.resetDataToolStripMenuItem.ToolTipText = "Allows for server data resetting";
             this.resetDataToolStripMenuItem.Click += new System.EventHandler(this.resetDataToolStripMenuItem_Click);
@@ -295,6 +297,13 @@
             this.inputCommand.Name = "inputCommand";
             this.inputCommand.Size = new System.Drawing.Size(242, 20);
             this.inputCommand.TabIndex = 6;
+            // 
+            // generateExpTableToolStripMenuItem
+            // 
+            this.generateExpTableToolStripMenuItem.Name = "generateExpTableToolStripMenuItem";
+            this.generateExpTableToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.generateExpTableToolStripMenuItem.Text = "Generate Exp. Table";
+            this.generateExpTableToolStripMenuItem.Click += new System.EventHandler(this.generateExpTableToolStripMenuItem_Click);
             // 
             // Main
             // 
@@ -347,6 +356,7 @@
         private System.Windows.Forms.ToolStripMenuItem managePluginsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem effectsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem generateExpTableToolStripMenuItem;
     }
 }
 

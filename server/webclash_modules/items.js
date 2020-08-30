@@ -54,7 +54,7 @@ exports.getConvertedItem = function(name)
             result.equippableSource = item.equippableSource;
 
             result.stats = item.stats;
-            result.scaling = item.scaling;
+            result.scaling = combat.calculateAverageScalingFromAction(item.equippableAction);
             break;
         case 'dialog':
             result.dialog = item.dialog;
