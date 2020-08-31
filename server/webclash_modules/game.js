@@ -454,6 +454,11 @@ exports.saveUserSettings = function(name, settings)
 
 exports.damagePlayer = function(id, damage, pvpDamager)
 {
+    //Check if valid
+
+    if (this.players[id] == undefined)
+        return false;
+
     //Subtract toughness from damage
 
     if (this.players[id].attributes.toughness > 0)

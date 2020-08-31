@@ -193,7 +193,8 @@ exports.updateStatusEffects = function(dt) {
 
                 let statusEffect = player.statusEffects[effect];
 
-                //Check if over duration
+                //Check if over duration, or player killed
+                //and the buff removes
 
                 if (statusEffect.elapsed >= statusEffect.duration) {
                     //Remove the effect
@@ -223,10 +224,14 @@ exports.updateStatusEffects = function(dt) {
                     //Health tick
 
                     let healthTickDelta = statusEffect.effects['healthTickDelta'];
-                    if (healthTickDelta !== 0)
+                    if (healthTickDelta !== 0) {
                         healthTickDelta < 0 
                             ? game.damagePlayer(id, healthTickDelta) 
                             : game.healPlayer(id, healthTickDelta);
+
+                        if (player.killed)
+                            break;
+                    }
 
                     //Mana tick
 
@@ -252,15 +257,6 @@ exports.updateStatusEffects = function(dt) {
                 //Grab data
 
                 let npc = npcs.onMap[m][n];
-
-                //Check if offline
-
-                if (npc == undefined) {
-                    //Remove from watch list
-
-                    delete onMap[m][n];
-                    continue;
-                }
 
                 //Check if dead
 
@@ -308,10 +304,14 @@ exports.updateStatusEffects = function(dt) {
                         //Health tick
                         
                         let healthTickDelta = statusEffect.effects['healthTickDelta'];
-                        if (healthTickDelta !== 0)
+                        if (healthTickDelta !== 0) {
                             healthTickDelta < 0 
                                 ? npcs.damageNPC(statusEffect.playerOwner, m, n, healthTickDelta) 
                                 : npcs.healNPC(m, n, healthTickDelta);
+
+                            if (npc.killed)
+                                break;
+                        }
 
                         //Mana tick
 

@@ -510,16 +510,16 @@ exports.updateNPCMovement = function(map, id, dt)
         switch (this.onMap[map][id].direction)
         {
             case 0:
-                this.onMap[map][id].movement.vel.y = this.onMap[map][id].data.character.movement.max;
+                this.onMap[map][id].movement.vel.y = maxSpeed;
                 break;
             case 1:
-                this.onMap[map][id].movement.vel.x = -this.onMap[map][id].data.character.movement.max;
+                this.onMap[map][id].movement.vel.x = -maxSpeed;
                 break;
             case 2:
-                this.onMap[map][id].movement.vel.x = this.onMap[map][id].data.character.movement.max;
+                this.onMap[map][id].movement.vel.x = maxSpeed;
                 break;
             case 3:
-                this.onMap[map][id].movement.vel.y = -this.onMap[map][id].data.character.movement.max;
+                this.onMap[map][id].movement.vel.y = -maxSpeed;
                 break;
         }
 
@@ -530,8 +530,8 @@ exports.updateNPCMovement = function(map, id, dt)
 
         //Add movement velocity
 
-        this.onMap[map][id].pos.X+=this.onMap[map][id].movement.vel.x;
-        this.onMap[map][id].pos.Y+=this.onMap[map][id].movement.vel.y;
+        this.onMap[map][id].pos.X += this.onMap[map][id].movement.vel.x;
+        this.onMap[map][id].pos.Y += this.onMap[map][id].movement.vel.y;
 
         //Check and add distance
 
@@ -1059,7 +1059,7 @@ exports.damageNPC = function(owner, map, id, delta)
     if (this.onMap[map] === undefined ||
         this.onMap[map][id] === undefined ||
         this.isTimedOut(map, id))
-        return;
+        return false;
 
     //Subtract toughness from damage
 
@@ -1105,8 +1105,13 @@ exports.damageNPC = function(owner, map, id, delta)
 
     //Check if health is equal to 0 - if so kill
 
-    if (this.onMap[map][id].data.health.cur <= 0)
+    if (this.onMap[map][id].data.health.cur <= 0) {
         this.killNPC(map, id);
+
+        return true;
+    }
+
+    return false;
 };
 
 exports.healNPC = function(map, id, delta) {

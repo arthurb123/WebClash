@@ -557,7 +557,7 @@ exports.removePlayerAction = function(name, id)
 
 exports.calculateAverageScalingFromAction = function(actionName)
 {
-    if (actionName == undefined)
+    if (actionName == undefined || collection[actionName] == undefined)
         return undefined;
 
     //Keep track of seen amount of stats
@@ -596,7 +596,8 @@ exports.calculateAverageScalingFromAction = function(actionName)
     //Average out
 
     for (let key in scaling)
-        scaling[key] /= recorded[key];
+        if (recorded[key] > 0)
+            scaling[key] /= recorded[key];
 
     return scaling;
 }
@@ -1016,15 +1017,17 @@ exports.damageNPCs = function(owner, actionData, actionElement, action, onlyStat
 
                 damage = Math.round(damage * game.players[owner].statusEffectsMatrix['damageFactor']);
 
-                //Damage NPC
+                //Damage NPC, if result is true - the NPC
+                //has been killed, if not killed try to
+                //apply the buff
 
-                npcs.damageNPC(owner, actionData.map, n, damage);
+                if (!npcs.damageNPC(owner, actionData.map, n, damage)) {
+                    //If buff is available, apply that buff - 
+                    //and the damage is not zero
 
-                //If buff is available, apply that buff - 
-                //and the damage is not zero
-
-                if (actionElement.statusEffect !== '' && damage < 0)
-                    status.giveNPCStatusEffect(actionData.map, n, actionElement.statusEffect, owner);
+                    if (actionElement.statusEffect !== '' && damage < 0)
+                        status.giveNPCStatusEffect(actionData.map, n, actionElement.statusEffect, owner);
+                }
 
                 result = true;
             }
@@ -1177,17 +1180,17 @@ exports.damagePlayers = function(stats, damageFactor, actionData, actionElement,
 
                 //Damage player
 
-                game.damagePlayer(p, damage, except);
+                if (!game.damagePlayer(p, damage, except)) {
+                    //If buff is available, apply that buff - 
+                    //and the attack did not miss
 
-                //If buff is available, apply that buff - 
-                //and the attack did not miss
+                    if (actionElement.statusEffect !== '' && damage < 0) {
+                        let owner = actionData.owner;
+                        if (actionData.ownerType === 'npc')
+                            owner = npcs.onMap[actionData.map][owner].name;
 
-                if (actionElement.statusEffect !== '' && damage < 0) {
-                    let owner = actionData.owner;
-                    if (actionData.ownerType === 'npc')
-                        owner = npcs.onMap[actionData.map][owner].name;
-
-                    status.givePlayerStatusEffect(p, owner, true, actionElement.statusEffect);
+                        status.givePlayerStatusEffect(p, owner, true, actionElement.statusEffect);
+                    }
                 }
 
                 done = true;

@@ -22,8 +22,8 @@
         "vitality": 0
       },
       "health": {
-        "cur": 85,
-        "max": 85
+        "cur": 125,
+        "max": 125
       },
       "actions": [
         {
