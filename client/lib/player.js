@@ -478,10 +478,30 @@ const player = {
         else if (player.casting === slot)
             return;
 
-        //Check if cooldown
+        //Check if cooldown and the cooldown
+        //is significantly large enough to
+        //give the player feedback
+        
+        if (ui.actionbar.onCooldown[slot] != undefined) {
+            if (ui.actionbar.onCooldown[slot] >= 45)
+                ui.floaties.errorFloaty(
+                    game.players[game.player], 
+                    player.actions[slot].name + ' is on cooldown.'
+                );
 
-        if (ui.actionbar.onCooldown[slot])
             return;
+        }
+
+        //Check mana usage
+
+        if (game.players[game.player]._mana.cur + player.actions[slot].mana < 0) {
+            ui.floaties.errorFloaty(
+                game.players[game.player], 
+                'Not enough mana.'
+            );
+
+            return;
+        }
 
         //Face mouse
 

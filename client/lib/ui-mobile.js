@@ -258,7 +258,7 @@ const ui = {
             
             let content = document.createElement('p');
             content.id = 'dialog_box_content';
-            content.style = 'position: relative; left: 5%; top: 2px; white-space: normal; overflow-y: auto; overflow-x: hidden; width: 90%; font-size: 14px; margin-bottom: 15px;';
+            content.style = 'position: relative; left: 5%; top: 2px; white-space: pre-line; word-break: break-word; overflow-y: hidden; overflow-x: hidden; width: 90%; font-size: 14px; margin-bottom: 15px;';
 
             let divider = document.createElement('hr');
             divider.style = 'position: relative; top: -5px; padding: 0px; border: 0; width: 90%; border-bottom: 1px solid whitesmoke;';
@@ -314,7 +314,7 @@ const ui = {
             {
                 channel.emit('CLIENT_DIALOG_EVENT', {
                     owner: this.owner,
-                    type: (this.quest == undefined ? this.type : 'quest'),
+                    type: (this.quest == undefined ? this.type : 'quest'),                    
                     quest: this.quest,
                     id: id
                 });
@@ -332,6 +332,26 @@ const ui = {
             contentEl.clear();
             optionsEl.clear();
 
+            //Set display based on quest or normal
+            //dialog panel
+
+            if (this.cur[id].minLevel != undefined)  //Quest panel
+                contentEl.style.display = 'inherit';
+            else //Normal dialog panel
+                contentEl.style.display = 'flex';
+
+            //Create portrait div
+
+            let widthMargin = 12;
+            let portraitDiv = document.createElement('div');
+
+            if (this.cur[id].minLevel == undefined) { //Normal dialog panel
+                portraitDiv.style.marginTop = 'auto';
+                portraitDiv.style.marginBottom = 'auto';
+                portraitDiv.style.marginRight = widthMargin + 'px';
+                portraitDiv.style.height = '100%';
+            }
+
             //Set title/name
 
             let title = document.createElement('font');
@@ -339,8 +359,8 @@ const ui = {
             title.style = 'font-weight: bold; font-size: 14px;';
             title.innerHTML = name_override == undefined ? this.name : name_override;
 
-            contentEl.appendChild(title);
-            contentEl.appendChild(document.createElement('br'));
+            portraitDiv.appendChild(title);
+            portraitDiv.appendChild(document.createElement('br'));
 
             //Set portrait (if available)
 
@@ -349,18 +369,37 @@ const ui = {
                 portrait.classList.add('portrait');
                 portrait.src = this.cur[id].portrait;
                 
-                contentEl.appendChild(portrait);
+                portraitDiv.appendChild(portrait);
             }
 
-            //Append breaks
+            //Append portrait to content
+
+            contentEl.appendChild(portraitDiv);
+
+            //Append break
 
             contentEl.appendChild(document.createElement('br'));
 
-            //Add quest text
+            //Set dialog text
 
             let text = document.createElement('div');
-            text.innerHTML = this.cur[id].text;
+            text.style.height = '100%';
+            text.style.overflowX = 'hidden';
+            text.style.overflowY = 'auto';
             contentEl.appendChild(text);
+
+            if (this.cur[id].minLevel != undefined) { //Quest panel
+                text.style.textAlign = 'center';
+                text.innerHTML = this.cur[id].text;
+            }
+            else {                                    //Normal dialog panel
+                text.style.textAlign = 'left';
+                this.setDialogText(
+                    text, 
+                    this.cur[id].text, 
+                    widthMargin
+                );
+            }
 
             //Handle options
 
@@ -393,7 +432,7 @@ const ui = {
 
                 let button = document.createElement('button');
                 button.classList.add('link_button');
-                button.style = 'margin-left: 0px; font-size: 12px;';
+                button.style = 'margin-left: 0px;';
                 button.innerHTML = '[ ' + option.text + ' ]';
 
                 button.addEventListener('click', function() {
@@ -419,6 +458,94 @@ const ui = {
 
                     ui.dialog.hideDialog();
                 });
+        },
+        setDialogText(target, text, widthMargin) {
+            switch (properties.dialogTextMode) {
+                case 'immediate':
+                    target.innerHTML = text;
+                    break;
+
+                case 'steps':
+                    //Get post size of all text and
+                    //apply to the text container target
+
+                    target.style.visibility = 'hidden';
+                    target.innerHTML = text;
+                    target.style.height = getComputedStyle(target).height;
+                    target.style.width  = parseInt(getComputedStyle(target).width) + widthMargin*2 + 'px';
+
+                    //Reset
+
+                    target.innerHTML = '';
+                    target.style.visibility = 'inherit';
+
+                    //Grab DOM elements from text
+
+                    let domElements = [];
+                    let domParser = new DOMParser();
+                    for (let c = 0; c < text.length; c++) {
+                        //Check if valid opening DOM tag
+
+                        if (text[c] !== '<' || 
+                            text[c] === '<' && c+1 < text.length && text[c+1] === '/')
+                            continue;
+
+                        //Check if opening bracket of the closing tag is present
+
+                        let tagCloseOpen = text.indexOf('</', c+1);
+                        if (tagCloseOpen === -1)
+                            continue;
+
+                        //Check fi the closing bracket of the closing tag is present
+
+                        let tagCloseClose = text.indexOf('>', tagCloseOpen);
+                        if (tagCloseClose === -1)
+                            continue;
+
+                        //Try to parse as DOM element
+
+                        let length = tagCloseClose - c + 1;
+                        let stringToParse = text.substr(c, length);
+                        try {
+                            domElements[c] = {
+                                element: domParser.parseFromString(stringToParse, 'text/html').body.firstChild,
+                                length: length
+                            };
+                        }
+                        catch (err) {
+                            console.log('Failed to parse DOM element found in dialog "' + stringToParse + '": ' + err);
+                        }
+                    }
+
+                    //Setup character timer
+
+                    let char = 0;
+                    let timer = setInterval(() => {
+                        if (!this.visible || char >= text.length) {
+                            clearInterval(timer);
+                            return;
+                        }
+
+                        //Check if DOM element is available,
+                        //if so append element and increment step
+                        //with the length of the trimmed DOM element
+
+                        if (domElements[char] != undefined) {
+                            target.appendChild(domElements[char].element);
+
+                            char += domElements[char].length;
+                        } 
+
+                        //Otherwise fill string with step
+
+                        else {
+                            target.innerHTML += text[char];
+
+                            char++;
+                        }
+                    }, 25);
+                    break;
+            }
         },
         hideDialog: function() {
             if (!this.visible)
@@ -689,25 +816,21 @@ const ui = {
 
             //Set on cooldown
 
-            this.onCooldown[slot] = true;
-
-            //Setup cooldown loop
-
-            let remaining = cooldownTime;
+            this.onCooldown[slot] = cooldownTime;
 
             let cdLoopID = this.addLoops(function() {
                  if (player.actions[slot] == undefined) {
                     ui.actionbar.removeCooldown(slot);
-                    ui.actionbar.onCooldown[slot] = false;
+                    delete ui.actionbar.onCooldown[slot];
 
                     ui.actionbar.loops[cdLoopID] = undefined;
 
                     return;
                  }
 
-                 cd.style.width = (remaining/cooldownTime)*100 + '%';
+                 cd.style.width = (ui.actionbar.onCooldown[slot]/cooldownTime)*100 + '%';
 
-                 let time = remaining/60;
+                 let time = ui.actionbar.onCooldown[slot]/60;
                  if (time > 1)
                     time = Math.round(time);
                  else
@@ -715,13 +838,13 @@ const ui = {
 
                  cdTime.innerHTML = time + 's';
 
-                 if (remaining <= 0) {
+                 if (ui.actionbar.onCooldown[slot] <= 0) {
                     ui.actionbar.removeCooldown(slot);
-                    ui.actionbar.onCooldown[slot] = false;
+                    delete ui.actionbar.onCooldown[slot];
 
                     ui.actionbar.loops[cdLoopID] = undefined;
                  } else
-                    remaining--;
+                    ui.actionbar.onCooldown[slot]--;
             });
         },
         removeCooldown: function(slot) {
@@ -2762,6 +2885,13 @@ const ui = {
     floaties:
     {
         buffer: [],
+        error: {
+            movement: {
+                y: 0,
+                sy: -.35,
+                dy: .05
+            }
+        },
         add: function(uitext, duration)
         {
             this.buffer.push({
@@ -2776,11 +2906,13 @@ const ui = {
         },
         update: function()
         {
+            //Regular floaties
+
             for (let i = 0; i < ui.floaties.buffer.length; i++)
             {
-                ui.floaties.buffer[i].uitext.Position(
-                    ui.floaties.buffer[i].uitext.Position().X+ui.floaties.buffer[i].movement.x,
-                    ui.floaties.buffer[i].uitext.Position().Y+ui.floaties.buffer[i].movement.y
+                ui.floaties.buffer[i].uitext.Move(
+                    ui.floaties.buffer[i].movement.x,
+                    ui.floaties.buffer[i].movement.y
                 );
                 
                 ui.floaties.buffer[i].cur--;
@@ -2793,6 +2925,45 @@ const ui = {
                     ui.floaties.buffer.splice(i, 1);
                 }
             }
+
+            //Error floaty
+
+            if (ui.floaties.error.uitext != undefined) {
+                ui.floaties.error.uitext.Move(
+                    0,
+                    ui.floaties.error.movement.y
+                );
+                
+                ui.floaties.error.cur--;
+                ui.floaties.error.movement.y += ui.floaties.error.movement.dy;
+
+                if (ui.floaties.error.cur <= 0)
+                {
+                    ui.floaties.error.uitext.Hide();
+                    delete ui.floaties.error.uitext;
+                }
+            }
+        },
+        errorFloaty: function(target, text)
+        {
+            if (this.error.uitext != undefined)
+                return;
+
+            let t = new lx.UIText(
+                text,
+                target.Size().W/2,
+                target.Size().H/2,
+                12,
+                '#FF4242'
+            );
+
+            t.Follows(target);
+            t.Alignment('center');
+            t.SHADOW = true;
+
+            this.error.uitext = t.Show();
+            this.error.movement.y = this.error.movement.sy;
+            this.error.cur = 32;
         },
         experienceFloaty: function(target, delta)
         {

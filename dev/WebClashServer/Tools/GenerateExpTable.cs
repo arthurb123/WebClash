@@ -26,7 +26,7 @@ namespace WebClashServer.Tools
             table = new List<int>();
 
             int val = (int)startingValue.Value;
-            for (int l = 0; l < (int)maxLevel.Value; l++)
+            for (int l = 0; l < (int)maxLevel.Value - 1; l++)
             {
                 if (l > 0)
                     val += (int)Math.Round((float)valueIncrement.Value * ((float)growFactor.Value * l));

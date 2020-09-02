@@ -37,5 +37,14 @@ const properties = {
     //On imcompatible (too small) maps 
     //this effect will be disabled
 
-    lockCamera: true
+    lockCamera: true,
+
+    /*      Gameplay Settings       */
+
+    //Determines the visual style of
+    //dialog text, "immediate" makes the
+    //text appear immediately, "steps"
+    //makes the text appear letter-by-letter.
+
+    dialogTextMode: "steps"
 };
