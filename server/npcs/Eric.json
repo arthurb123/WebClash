@@ -53,7 +53,7 @@
               "next": 3
             },
             {
-              "text": "Sup bro",
+              "text": "Sup dude",
               "next": 1
             }
           ],
@@ -107,7 +107,7 @@
           "setVariableEvent": null
         },
         {
-          "text": "You are currently in an example world of WebClash.\nWebClash is an ORPG suite for the browser!\n\nWhy don't you take a look around?",
+          "text": "You are currently in an example world of <i>WebClash</i>, an ORPG suite for the browser!\nWhy don't you take a look around?",
           "portrait": "res/portraits/1.png",
           "entry": false,
           "isEvent": false,
@@ -208,7 +208,7 @@
           "isEvent": false,
           "options": [
             {
-              "text": "Oh shit ye",
+              "text": "I forgot",
               "next": -1
             }
           ],
@@ -294,7 +294,7 @@
           "isEvent": false,
           "options": [
             {
-              "text": "Thanks for that",
+              "text": "Thanks for that..",
               "next": -1
             }
           ],
@@ -346,7 +346,7 @@
           "setVariableEvent": null
         },
         {
-          "text": "Thanks m8, you did great.",
+          "text": "Thanks mate, you did great.",
           "portrait": "res/portraits/1.png",
           "entry": false,
           "isEvent": false,
