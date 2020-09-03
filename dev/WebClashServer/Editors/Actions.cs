@@ -22,11 +22,12 @@ namespace WebClashServer.Editors
         private string oldName;
 
         private int curElement = 0;
-        private int cellSize = 32;
+        private readonly int cellSize = 32;
 
         private bool moving = false;
         private bool disableSnapping = false;
         private Point oldMP = default;
+        private Bitmap cachedGrid = null;
 
         private Dictionary<Element, Frame> elementFrames = new Dictionary<Element, Frame>();
         private Dictionary<Element, int> remainingDelays = new Dictionary<Element, int>();
@@ -43,12 +44,13 @@ namespace WebClashServer.Editors
         private void Actions_Load(object sender, EventArgs e)
         {
             canvas.Paint += new PaintEventHandler(paintCanvas);
+            canvas.Resize += new EventHandler(resizeCanvas);
             canvas.MouseDown += new MouseEventHandler(mouseDownCanvas);
             canvas.MouseMove += new MouseEventHandler(mouseMoveCanvas);
             canvas.MouseUp += new MouseEventHandler(mouseUpCanvas);
 
+            CacheGrid();
             ReloadActions();
-
             LoadFirstCharacter();
 
             if (actionList.Items.Count > 0)
@@ -203,25 +205,14 @@ namespace WebClashServer.Editors
             return savedImages[src];
         }
 
-        private void paintCanvas(object sender, PaintEventArgs e)
+        private void CacheGrid()
         {
-            if (current == null)
-                return;
-
-            try
+            cachedGrid = new Bitmap(canvas.Width, canvas.Height);
+            using (Graphics g = Graphics.FromImage(cachedGrid))
             {
-                Graphics g = e.Graphics;
-
-                g.Clear(Color.FromKnownColor(KnownColor.ControlLight));
-
-                Point sp = new Point(
-                    canvas.Width / 2 - currentCharacter.width / 2, 
-                    canvas.Height / 2 - currentCharacter.height / 2
-                );
-
                 //Render grid
 
-                int widthCells  = canvas.Width / cellSize;
+                int widthCells = canvas.Width / cellSize;
                 int heightCells = canvas.Height / cellSize;
 
                 //Render sub-cells
@@ -239,9 +230,9 @@ namespace WebClashServer.Editors
                         g.DrawRectangle(
                             dottedPen,
                             new Rectangle(
-                                x * subCellSize, 
-                                y * subCellSize, 
-                                subCellSize, 
+                                x * subCellSize,
+                                y * subCellSize,
+                                subCellSize,
                                 subCellSize
                             )
                         );
@@ -252,14 +243,37 @@ namespace WebClashServer.Editors
                 for (int x = 0; x < widthCells; x++)
                     for (int y = 0; y < heightCells; y++)
                         g.DrawRectangle(
-                            new Pen(Color.FromArgb(48, 0, 0, 0), 1), 
+                            new Pen(Color.FromArgb(48, 0, 0, 0), 1),
                             new Rectangle(
-                                x * cellSize, 
-                                y * cellSize, 
-                                cellSize, 
+                                x * cellSize,
+                                y * cellSize,
+                                cellSize,
                                 cellSize
                             )
                         );
+            }
+        }
+
+        private void paintCanvas(object sender, PaintEventArgs e)
+        {
+            if (current == null)
+                return;
+
+            try
+            {
+                Graphics g = e.Graphics;
+                g.Clear(Color.FromKnownColor(KnownColor.ControlLight));
+
+                //Calculate character center point
+
+                Point sp = new Point(
+                    canvas.Width / 2 - currentCharacter.width / 2, 
+                    canvas.Height / 2 - currentCharacter.height / 2
+                );
+
+                //Render cached grid
+
+                g.DrawImage(cachedGrid, 0, 0);
 
                 //Render character
 
@@ -297,14 +311,16 @@ namespace WebClashServer.Editors
 
                         double remainingTime = remainingDelays[cur] * (1000d / 60) / 1000;
 
-                        StringFormat format = new StringFormat();
-                        format.LineAlignment = StringAlignment.Center;
-                        format.Alignment = StringAlignment.Center;
+                        StringFormat format = new StringFormat
+                        {
+                            LineAlignment = StringAlignment.Center,
+                            Alignment = StringAlignment.Center
+                        };
 
                         g.DrawString(
                             remainingTime.ToString("0.#s"),
-                            new Font("Verdana", 10), 
-                            new SolidBrush(Color.FromArgb(150, 0, 0, 0)), 
+                            new Font("Verdana", 10),
+                            new SolidBrush(Color.FromArgb(150, 0, 0, 0)),
                             cur.x + w / 2, cur.y + h / 2,
                             format
                         );
@@ -327,27 +343,27 @@ namespace WebClashServer.Editors
                             g.DrawImage(img, r, 0, elementFrames[cur].frame * cur.h, cur.w, cur.h, GraphicsUnit.Pixel);
                     }
 
-                //Draw rectangle
+                    //Draw rectangle
 
-                DrawRectangle:
-                    if (cur == current.elements[curElement])
-                    {
-                        //Draw position text
+                    DrawRectangle:
+                        if (cur == current.elements[curElement])
+                        {
+                            //Draw position text
 
-                        g.DrawString(
-                            "#" + (curElement+1) + " (" + r.X + ", " + r.Y + ")",
-                            new Font("Verdana", 10),
-                            Brushes.Black,
-                            new Point(2, 2)
-                        );
+                            g.DrawString(
+                                "#" + (curElement + 1) + " (" + r.X + ", " + r.Y + ")",
+                                new Font("Verdana", 10),
+                                Brushes.Black,
+                                new Point(2, 2)
+                            );
 
-                        //Draw rectangle
+                            //Draw rectangle
 
-                        g.DrawRectangle(new Pen(Color.DeepPink, 1), r);
-                    }
-                    else
-                        g.DrawRectangle(new Pen(Color.Blue, 1), r);
-                    
+                            g.DrawRectangle(new Pen(Color.DeepPink, 1), r);
+                        }
+                        else
+                            g.DrawRectangle(new Pen(Color.Blue, 1), r);
+
                     //Draw projectile arrow (if projectile)
 
                     if (cur.type == "projectile")
@@ -361,7 +377,7 @@ namespace WebClashServer.Editors
                             y = (int)(cur.y + (cur.h * cur.scale) / 2);
 
                         float dx = (x - canvas.Width / 2),
-                              dy = (y - canvas.Height / 2);
+                                dy = (y - canvas.Height / 2);
 
                         float len = (float)Math.Sqrt(dx * dx + dy * dy);
 
@@ -371,10 +387,10 @@ namespace WebClashServer.Editors
                         int arrowLength = 48;
 
                         g.DrawLine(
-                            p, 
-                            x, 
-                            y, 
-                            x + dx * arrowLength, 
+                            p,
+                            x,
+                            y,
+                            x + dx * arrowLength,
                             y + dy * arrowLength
                         );
                     }
@@ -384,6 +400,11 @@ namespace WebClashServer.Editors
             {
                 //...
             }
+        }
+
+        private void resizeCanvas(object sender, EventArgs e)
+        {
+            CacheGrid();
         }
 
         private void mouseDownCanvas(object sender, EventArgs e)
@@ -422,8 +443,11 @@ namespace WebClashServer.Editors
 
                 //Calculate new position
 
-                float x = current.elements[curElement].x + mp.X - oldMP.X;
-                float y = current.elements[curElement].y + mp.Y - oldMP.Y;
+                float dx = mp.X - oldMP.X;
+                float dy = mp.Y - oldMP.Y;
+
+                float x = current.elements[curElement].x + dx;
+                float y = current.elements[curElement].y + dy;
 
                 //Check for snapping
 
@@ -431,43 +455,58 @@ namespace WebClashServer.Editors
                 {
                     int snappingSize = 1;
 
-                    for (int sx = -snappingSize; sx <= snappingSize; sx++)
-                    {
-                        if ((x + sx) % cellSize == 0)
+                    if (!current.elements[curElement].snappedX)
+                        for (int sx = -snappingSize; sx <= snappingSize; sx++)
                         {
-                            x = (float)Math.Round(x / cellSize) * cellSize;
-                            break;
+                            if ((x + sx) % cellSize == 0)
+                            {
+                                x = (float)Math.Round(x / cellSize) * cellSize;
+                                current.elements[curElement].snappedX = true;
+                                break;
+                            }
+                            else if ((x + sx) % (cellSize / 2) == 0)
+                            {
+                                x = (float)Math.Round(x / cellSize * 2) * cellSize / 2;
+                                current.elements[curElement].snappedX = true;
+                                break;
+                            }
                         }
-                        else if ((x + sx) % (cellSize / 2) == 0)
-                        {
-                            x = (float)Math.Round(x / cellSize * 2) * cellSize / 2;
-                            break;
-                        }
-                    }
 
-                    for (int sy = -snappingSize; sy <= snappingSize; sy++)
-                    {
-                        if ((y + sy) % cellSize == 0)
+                    if (!current.elements[curElement].snappedY)
+                        for (int sy = -snappingSize; sy <= snappingSize; sy++)
                         {
-                            y = (float)Math.Round(y / cellSize) * cellSize;
-                            break;
+                            if ((y + sy) % cellSize == 0)
+                            {
+                                y = (float)Math.Round(y / cellSize) * cellSize;
+                                current.elements[curElement].snappedY = true;
+                                break;
+                            }
+                            else if ((y + sy) % (cellSize / 2) == 0)
+                            {
+                                y = (float)Math.Round(y / cellSize * 2) * cellSize / 2;
+                                current.elements[curElement].snappedY = true;
+                                break;
+                            }
                         }
-                        else if ((y + sy) % (cellSize / 2) == 0)
-                        {
-                            y = (float)Math.Round(y / cellSize * 2) * cellSize / 2;
-                            break;
-                        }
-                    }
                 }
 
                 //Set position
 
-                current.elements[curElement].x = (int)x;
-                current.elements[curElement].y = (int)y;
+                if (current.elements[curElement].x != (int)x)
+                {
+                    current.elements[curElement].x = (int)x;
+                    current.elements[curElement].snappedX = false;
+                }
+
+                if (current.elements[curElement].y != (int)y)
+                {
+                    current.elements[curElement].y = (int)y;
+                    current.elements[curElement].snappedY = false;
+                }
 
                 //Set old mouse position
 
-                oldMP = mp;
+                oldMP = new Point(mp.X, mp.Y);
 
                 //Repaint canvas
 
@@ -479,7 +518,6 @@ namespace WebClashServer.Editors
         {
             moving = false;
         }
-
 
         private void actionList_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -646,6 +684,13 @@ namespace WebClashServer.Editors
         private void elementList_SelectedIndexChanged(object sender, EventArgs e)
         {
             curElement = elementList.SelectedIndex;
+
+            //Set snapped by default to true,
+            //to allow for manipulation from the
+            //start
+
+            current.elements[curElement].snappedX = true;
+            current.elements[curElement].snappedY = true;
         }
 
         private void elementList_KeyDown(object sender, KeyEventArgs e)
@@ -721,6 +766,13 @@ namespace WebClashServer.Editors
             elementList.SelectedIndex = curElement;
 
             elementList.Focus();
+
+            //Set snapped by default to true,
+            //to allow for manipulation from the
+            //start
+
+            current.elements[curElement].snappedX = true;
+            current.elements[curElement].snappedY = true;
         }
 
         private void animationTimer_Tick(object sender, EventArgs e)

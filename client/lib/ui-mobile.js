@@ -432,7 +432,7 @@ const ui = {
 
                 let button = document.createElement('button');
                 button.classList.add('link_button');
-                button.style = 'margin-left: 0px;';
+                button.style = 'margin-left: 0px; font-size: 13px;';
                 button.innerHTML = '[ ' + option.text + ' ]';
 
                 button.addEventListener('click', function() {

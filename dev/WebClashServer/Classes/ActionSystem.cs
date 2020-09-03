@@ -106,6 +106,9 @@ namespace WebClashServer.Classes
         public int delay = 0;
         public string statusEffect = "";
 
+        public bool snappedX = false;
+        public bool snappedY = false;
+
         public object Clone()
         {
             return MemberwiseClone();
