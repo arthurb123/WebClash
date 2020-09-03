@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using WebClashServer.Classes;
@@ -17,7 +15,9 @@ namespace WebClashServer.Editors
         public List<CanvasElement> elements = new List<CanvasElement>();
         
         private int curElement = -1;
+        private bool moving = false;
         private Point oldMouse = new Point(-1, -1);
+        private Point camera = new Point(0, 0);
         private readonly int cellSize = 32;
         private Bitmap cachedGrid;
 
@@ -77,13 +77,16 @@ namespace WebClashServer.Editors
 
         private void CacheGrid()
         {
-            cachedGrid = new Bitmap(canvas.Width, canvas.Height);
+            cachedGrid = new Bitmap(
+                canvas.Width + cellSize * 2, 
+                canvas.Height + cellSize * 2
+            );
             using (Graphics g = Graphics.FromImage(cachedGrid))
             {
                 //Render grid
 
-                int widthCells = canvas.Width / cellSize + 1;
-                int heightCells = canvas.Height / cellSize + 1;
+                int widthCells  = (int)Math.Ceiling((double)cachedGrid.Width / cellSize);
+                int heightCells = (int)Math.Ceiling((double)cachedGrid.Height / cellSize);
 
                 //Render cells
 
@@ -98,29 +101,6 @@ namespace WebClashServer.Editors
                                 cellSize
                             )
                         );
-            }
-        }
-
-        private void canvasMouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                oldMouse = canvas.PointToClient(MousePosition);
-
-                curElement = grabElement();
-            }
-            else
-            {
-                int el = grabElement();
-
-                if (el != -1)
-                {
-                    dialogSystem.items[elements[el].id] = null;
-
-                    elements[el] = null;
-
-                    canvas.Invalidate();
-                }
             }
         }
 
@@ -237,23 +217,63 @@ namespace WebClashServer.Editors
             }
         }
 
+        private void canvasMouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                oldMouse = canvas.PointToClient(MousePosition);
+                curElement = grabElement();
+
+                moving = true;
+            }
+            else
+            {
+                int el = grabElement();
+
+                if (el != -1)
+                {
+                    if (Logger.Question("Do you want to delete dialog entry #" + el + "?"))
+                    {
+                        dialogSystem.items[elements[el].id] = null;
+                        elements[el] = null;
+
+                        canvas.Invalidate();
+                    }
+                }
+            }
+        }
+
         private void canvasMouseUp(object sender, MouseEventArgs e)
         {
             curElement = -1;
+            moving = false;
         }
 
         private void canvasMouseMove(object sender, MouseEventArgs e)
         {
-            if (curElement != -1)
+            if (moving)
             {
                 Point mouse = canvas.PointToClient(MousePosition);
 
-                elements[curElement].p.X += mouse.X-oldMouse.X;
-                elements[curElement].p.Y += mouse.Y-oldMouse.Y;
+                if (curElement != -1)
+                {
+                    elements[curElement].p.X += mouse.X - oldMouse.X;
+                    elements[curElement].p.Y += mouse.Y - oldMouse.Y;
+
+                    canvas.Invalidate();
+                }
+                else
+                {
+                    camera.X += mouse.X - oldMouse.X;
+                    camera.Y += mouse.Y - oldMouse.Y;
+
+                    if (camera.X > 0)
+                        camera.X = 0;
+
+                    canvas.Invalidate();
+                }
 
                 oldMouse = mouse;
-
-                canvas.Invalidate();
             }
         }
 
@@ -267,7 +287,10 @@ namespace WebClashServer.Editors
                     continue;
 
                 if (new Rectangle(
-                        ca.p,
+                        new Point(
+                            ca.p.X + camera.X, 
+                            ca.p.Y + camera.Y
+                        ),
                         ca.Size
                     ).Contains(
                         canvas.PointToClient(MousePosition)
@@ -289,7 +312,13 @@ namespace WebClashServer.Editors
 
             //Draw grid
 
-            g.DrawImage(cachedGrid, new Point(0, 0));
+            g.DrawImage(
+                cachedGrid,
+                new Point(
+                    -cellSize + camera.X % cellSize, 
+                    -cellSize + camera.Y % cellSize
+                )
+            );
 
             //Draw all elements
 
@@ -304,32 +333,36 @@ namespace WebClashServer.Editors
             {
                 //Setup rectangle and pen
 
-                Rectangle r = new Rectangle(ca.p, ca.Size);
+                Rectangle r = new Rectangle(
+                    new Point(ca.p.X + camera.X, ca.p.Y + camera.Y), 
+                    ca.Size
+                );
+                AdjustableArrowCap cap = new AdjustableArrowCap(4, 4);
                 Pen p = new Pen(Brushes.Black, 2)
                 {
-                    CustomEndCap = new AdjustableArrowCap(4, 4)
+                    CustomEndCap = cap
                 };
 
                 if (dialogSystem.items[ca.id].entry)
                     g.DrawLine(
                         p,
                         0,
-                        ca.p.Y + ca.Size.Height / 2,
-                        ca.p.X,
-                        ca.p.Y + ca.Size.Height / 2
+                        r.Y + r.Height / 2,
+                        r.X,
+                        r.Y + r.Height / 2
                     );
 
                 for (int i = 0; i < dialogSystem.items[ca.id].options.Count; i++)
                 {
                     if (dialogSystem.items[ca.id].options[i].next == -1)
                     {
-                        int x = ca.p.X + ca.Size.Width,
-                            y = ca.p.Y + ca.Size.Height / 2;
+                        int x = r.X + r.Width,
+                            y = r.Y + r.Height / 2;
 
                         g.DrawLine(
                             p,
                             x, y,
-                            x + ca.Size.Width / 2,
+                            x + r.Width / 4,
                             y
                         );
 
@@ -338,7 +371,7 @@ namespace WebClashServer.Editors
                             DefaultFont,
                             Brushes.Black,
                             new Point(
-                                x + ca.Size.Width / 2 + 4,
+                                x + r.Width / 4 + 4,
                                 y - 6
                             )
                         );
@@ -350,42 +383,42 @@ namespace WebClashServer.Editors
                         if (target == null)
                             continue;
 
+                        Pen arrowPen = 
+                            ca.IsEvent 
+                            ? (
+                                i == 0 
+                                ? new Pen(Color.Green, 2) { CustomEndCap = cap } 
+                                : new Pen(Color.Red, 2)   { CustomEndCap = cap }
+                            ) 
+                            : p;
+
                         //Construct source and destination points
 
                         Point source = new Point(
-                            ca.p.X + ca.Size.Width,
-                            ca.p.Y + ca.Size.Height / 2
+                            r.X + r.Width,
+                            r.Y + r.Height / 2
                         );
 
                         Point destination = new Point(
-                            target.p.X,
-                            target.p.Y + target.Size.Height / 2
+                            target.p.X + camera.X,
+                            target.p.Y + camera.Y + target.Size.Height / 2
                         );
 
-                        //Draw curved or straight based on if
-                        //the destination is above or below the
-                        //source - otherwise draw straight line
+                        //Construct curved line points
 
-                        if (source.Y != destination.Y)
-                        {
-                            Point[] points = new Point[]
-                            {
-                                source,
-                                new Point(
-                                    source.X + (int)((float)(destination.X - source.X) * .25),
-                                    source.Y + (int)((float)(destination.Y - source.Y) * .75)
-                                ),
-                                destination
-                            };
+                        Point[] points = new Point[]
+{
+                            source,
+                            new Point(
+                                source.X + (int)((float)(destination.X - source.X) * .25),
+                                source.Y + (int)((float)(destination.Y - source.Y) * .75)
+                            ),
+                            destination
+                        };
 
-                            g.DrawCurve(p, points, .75f);
-                        }
-                        else
-                            g.DrawLine(
-                                p,
-                                source,
-                                destination
-                            );
+                        //Draw curved arrow
+
+                        g.DrawCurve(arrowPen, points, .75f);
                     }
                 }
 
