@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Runtime.InteropServices.ComTypes;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using WebClashServer.Classes;
 using WebClashServer.Input;
@@ -15,6 +18,8 @@ namespace WebClashServer.Editors
         
         private int curElement = -1;
         private Point oldMouse = new Point(-1, -1);
+        private readonly int cellSize = 32;
+        private Bitmap cachedGrid;
 
         public Dialogue(List<DialogueItem> items, List<CanvasElement> elements, DialogueType dialogueType)
         {
@@ -28,6 +33,10 @@ namespace WebClashServer.Editors
 
             if (elements != null)
                 this.elements = elements;
+
+            //Cache grid
+
+            CacheGrid();
 
             //If not an item enable certain options
             //only applicable to NPCs
@@ -53,7 +62,10 @@ namespace WebClashServer.Editors
         private void Dialogue_Load(object sender, EventArgs e)
         {
             canvas.Paint += new PaintEventHandler(paintCanvas);
-            canvas.Resize += (object s, EventArgs ea) => { canvas.Invalidate();  };
+            canvas.Resize += (object s, EventArgs ea) => {
+                CacheGrid();
+                canvas.Invalidate();  
+            };
 
             canvas.MouseDown += new MouseEventHandler(canvasMouseDown);
             canvas.MouseUp += new MouseEventHandler(canvasMouseUp);
@@ -61,6 +73,32 @@ namespace WebClashServer.Editors
             canvas.MouseDoubleClick += new MouseEventHandler(openDialogueItem);
 
             canvas.Invalidate();
+        }
+
+        private void CacheGrid()
+        {
+            cachedGrid = new Bitmap(canvas.Width, canvas.Height);
+            using (Graphics g = Graphics.FromImage(cachedGrid))
+            {
+                //Render grid
+
+                int widthCells = canvas.Width / cellSize + 1;
+                int heightCells = canvas.Height / cellSize + 1;
+
+                //Render cells
+
+                for (int x = 0; x < widthCells; x++)
+                    for (int y = 0; y < heightCells; y++)
+                        g.DrawRectangle(
+                            new Pen(Color.FromArgb(48, 0, 0, 0), 1),
+                            new Rectangle(
+                                x * cellSize,
+                                y * cellSize,
+                                cellSize,
+                                cellSize
+                            )
+                        );
+            }
         }
 
         private void canvasMouseDown(object sender, MouseEventArgs e)
@@ -243,10 +281,15 @@ namespace WebClashServer.Editors
         private void paintCanvas(object sender, PaintEventArgs pea)
         {
             Graphics g = pea.Graphics;
+            g.SmoothingMode = SmoothingMode.HighQuality;
 
             //Clear canvas
 
             g.Clear(Color.FromKnownColor(KnownColor.ControlLight));
+
+            //Draw grid
+
+            g.DrawImage(cachedGrid, new Point(0, 0));
 
             //Draw all elements
 
@@ -262,11 +305,10 @@ namespace WebClashServer.Editors
                 //Setup rectangle and pen
 
                 Rectangle r = new Rectangle(ca.p, ca.Size);
-                Pen p = new Pen(Brushes.Black, 2);
-
-                //Draw arrow(s)
-
-                p.CustomEndCap = new AdjustableArrowCap(4, 4);
+                Pen p = new Pen(Brushes.Black, 2)
+                {
+                    CustomEndCap = new AdjustableArrowCap(4, 4)
+                };
 
                 if (dialogSystem.items[ca.id].entry)
                     g.DrawLine(
@@ -297,7 +339,7 @@ namespace WebClashServer.Editors
                             Brushes.Black,
                             new Point(
                                 x + ca.Size.Width / 2 + 4,
-                                y - 4
+                                y - 6
                             )
                         );
                     }
@@ -308,33 +350,98 @@ namespace WebClashServer.Editors
                         if (target == null)
                             continue;
 
-                        g.DrawLine(
-                            p,
+                        //Construct source and destination points
+
+                        Point source = new Point(
                             ca.p.X + ca.Size.Width,
-                            ca.p.Y + ca.Size.Height / 2,
+                            ca.p.Y + ca.Size.Height / 2
+                        );
+
+                        Point destination = new Point(
                             target.p.X,
                             target.p.Y + target.Size.Height / 2
                         );
+
+                        //Draw curved or straight based on if
+                        //the destination is above or below the
+                        //source - otherwise draw straight line
+
+                        if (source.Y != destination.Y)
+                        {
+                            Point[] points = new Point[]
+                            {
+                                source,
+                                new Point(
+                                    source.X + (int)((float)(destination.X - source.X) * .25),
+                                    source.Y + (int)((float)(destination.Y - source.Y) * .75)
+                                ),
+                                destination
+                            };
+
+                            g.DrawCurve(p, points, .75f);
+                        }
+                        else
+                            g.DrawLine(
+                                p,
+                                source,
+                                destination
+                            );
                     }
                 }
 
                 //Draw rectangle
 
-                g.FillRectangle(Brushes.WhiteSmoke, r);
+                //Filling
+
+                g.FillRectangle(
+                    ca.IsEvent ? Brushes.Silver : Brushes.WhiteSmoke,
+                    r
+                );
+
+                //Shadow
+
+                g.DrawLine(
+                    new Pen(new SolidBrush(Color.FromArgb(75, 0, 0, 0)), 3), 
+                    new Point(r.X, r.Y + r.Height), 
+                    new Point(r.X + r.Width, r.Y + r.Height)
+                );
+
+                //Border
+
                 g.DrawRectangle(Pens.Black, r);
 
                 //Draw content
 
-                int offset = 4;
+                int padding = 4;
+                int idMargin = 2;
+
+                int idHeight = 12 + idMargin * 2;
+
+                //Bold ID
+
                 g.DrawString(
-                    "#" + ca.id + ": " + (ca.IsEvent ? dialogSystem.items[ca.id].eventType : dialogSystem.items[ca.id].text),
-                    DefaultFont,
+                    "#" + ca.id,
+                    new Font(DefaultFont, FontStyle.Bold),
                     Brushes.Black,
                     new Rectangle(
-                        r.X + offset,
-                        r.Y + offset,
-                        r.Width - offset,
-                        r.Height - offset
+                        r.X + padding,
+                        r.Y + padding,
+                        r.Width - padding,
+                        idHeight
+                    )
+                );
+
+                //Draw text
+
+                g.DrawString(
+                    ca.IsEvent ? FormatEventType(dialogSystem.items[ca.id].eventType) : dialogSystem.items[ca.id].text,
+                    ca.IsEvent ? DefaultFont : new Font(DefaultFont, FontStyle.Italic),
+                    Brushes.Black,
+                    new Rectangle(
+                        r.X + padding,
+                        r.Y + padding + idHeight,
+                        r.Width - padding,
+                        r.Height - padding - idHeight
                     )
                 );
             }
@@ -342,6 +449,15 @@ namespace WebClashServer.Editors
             {
                 //...
             }
+        }
+
+        private string FormatEventType(string eventType)
+        {
+            return Regex.Replace(
+                eventType,
+                @"((?<=\p{Ll})\p{Lu})|((?!\A)\p{Lu}(?>\p{Ll}))",
+                " $0"
+            ) + " Event";
         }
 
         private void newItemToolStripMenuItem_Click(object sender, EventArgs e)
@@ -370,8 +486,7 @@ namespace WebClashServer.Editors
         {
             CanvasEventElement cee = new CanvasEventElement(
                 new Point(20, canvas.Height / 2 - 40),
-                dialogSystem,
-                et
+                dialogSystem
             );
 
             dialogSystem.items[cee.id].eventType = Enum.GetName(typeof(EventType), et);
@@ -547,9 +662,9 @@ namespace WebClashServer.Editors
             get
             {
                 if (!IsEvent)
-                    return new Size(100, 80); //Normal element Size
+                    return new Size(120, 80); //Normal element Size
                 else
-                    return new Size(130, 20); //Event element Size
+                    return new Size(120, 40); //Event element Size
             }
         }
 
@@ -567,7 +682,8 @@ namespace WebClashServer.Editors
 
     public class CanvasEventElement : CanvasElement
     {
-        public CanvasEventElement(Point p, DialogueSystem ds, EventType tp) : base(p, ds.addDialogueItem(true))
+        public CanvasEventElement(Point p, DialogueSystem ds) 
+            : base(p, ds.addDialogueItem(true))
         {
             IsEvent = true;
         }
