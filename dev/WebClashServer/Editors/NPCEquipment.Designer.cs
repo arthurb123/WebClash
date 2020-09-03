@@ -28,10 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NPCEquipment));
             this.canvas = new System.Windows.Forms.PictureBox();
-            this.animation = new System.Windows.Forms.Timer(this.components);
             this.equipmentSource = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.delete = new System.Windows.Forms.LinkLabel();
@@ -58,12 +56,6 @@
             this.canvas.Size = new System.Drawing.Size(200, 200);
             this.canvas.TabIndex = 6;
             this.canvas.TabStop = false;
-            // 
-            // animation
-            // 
-            this.animation.Enabled = true;
-            this.animation.Interval = 1000;
-            this.animation.Tick += new System.EventHandler(this.animation_Tick);
             // 
             // equipmentSource
             // 
@@ -230,7 +222,6 @@
 
         #endregion
         private System.Windows.Forms.PictureBox canvas;
-        private System.Windows.Forms.Timer animation;
         private System.Windows.Forms.TextBox equipmentSource;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.LinkLabel delete;

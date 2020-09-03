@@ -73,6 +73,7 @@
   <ItemGroup>
     <Compile Include="Classes\ActionSystem.cs" />
     <Compile Include="Classes\DialogueSystem.cs" />
+    <Compile Include="Classes\General.cs" />
     <Compile Include="Classes\Logger.cs" />
     <Compile Include="Classes\PluginSystem.cs" />
     <Compile Include="Editors\ActionElement.cs">
@@ -87,11 +88,23 @@
     <Compile Include="Editors\Actions.Designer.cs">
       <DependentUpon>Actions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\CharacterAnimations.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\CharacterAnimations.Designer.cs">
+      <DependentUpon>CharacterAnimations.cs</DependentUpon>
+    </Compile>
     <Compile Include="Editors\CharacterSelection.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Editors\CharacterSelection.Designer.cs">
       <DependentUpon>CharacterSelection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editors\SheetSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\SheetSelection.Designer.cs">
+      <DependentUpon>SheetSelection.cs</DependentUpon>
     </Compile>
     <Compile Include="Editors\StatusEffects.cs">
       <SubType>Form</SubType>
@@ -251,8 +264,14 @@
     <EmbeddedResource Include="Editors\Actions.resx">
       <DependentUpon>Actions.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Editors\CharacterAnimations.resx">
+      <DependentUpon>CharacterAnimations.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Editors\CharacterSelection.resx">
       <DependentUpon>CharacterSelection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\SheetSelection.resx">
+      <DependentUpon>SheetSelection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\StatusEffects.resx">
       <DependentUpon>StatusEffects.cs</DependentUpon>

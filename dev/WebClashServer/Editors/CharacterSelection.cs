@@ -16,7 +16,6 @@ namespace WebClashServer.Editors
         private Character currentCharacter;
 
         private Image charImage;
-        private int animFrame = 0;
 
         private string selected;
 
@@ -111,8 +110,6 @@ namespace WebClashServer.Editors
                 }
 
                 charImage = Image.FromFile(Program.main.clientLocation + src);
-
-                animation.Interval = (1000 / 60) * currentCharacter.animation.speed;
             }
             catch (Exception exc)
             {
@@ -138,26 +135,20 @@ namespace WebClashServer.Editors
 
             //Draw sprite
 
-            if (currentCharacter.animation.direction == "horizontal")
-                g.DrawImage(
-                    charImage, 
-                    new Rectangle(sp.X, sp.Y, currentCharacter.width, currentCharacter.height), 
-                    animFrame * currentCharacter.width, 
-                    0,
-                    currentCharacter.width,
-                    currentCharacter.height, 
-                    GraphicsUnit.Pixel
-                );
-            else if (currentCharacter.animation.direction == "vertical")
-                g.DrawImage(
-                    charImage, 
-                    new Rectangle(sp.X, sp.Y, currentCharacter.width, currentCharacter.height), 
-                    0, 
-                    animFrame * currentCharacter.height, 
-                    currentCharacter.width,
-                    currentCharacter.height, 
-                    GraphicsUnit.Pixel
-                );
+            g.DrawImage(
+                charImage,
+                new Rectangle(
+                    sp.X, 
+                    sp.Y, 
+                    currentCharacter.width, 
+                    currentCharacter.height
+                ),
+                currentCharacter.width,
+                0,
+                currentCharacter.width,
+                currentCharacter.height,
+                GraphicsUnit.Pixel
+            );
         }
 
         public string GetResult()
@@ -166,23 +157,6 @@ namespace WebClashServer.Editors
                 return "";
 
             return characters[current];
-        }
-
-        private void animation_Tick(object sender, EventArgs e)
-        {
-            if (charImage == null)
-            {
-                animFrame = 0;
-
-                return;
-            }
-
-            animFrame++;
-
-            if (animFrame * currentCharacter.width >= charImage.Width)
-                animFrame = 0;
-
-            canvas.Invalidate();
         }
     }
 }

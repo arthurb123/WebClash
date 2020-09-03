@@ -138,26 +138,20 @@ namespace WebClashServer.Editors
 
             //Draw sprite
 
-            if (character.animation.direction == "horizontal")
-                g.DrawImage(
-                    charImage, 
-                    new Rectangle(sp.X, sp.Y, character.width, character.height), 
-                    animFrame * character.width, 
-                    0, 
+            g.DrawImage(
+                charImage,
+                new Rectangle(
+                    sp.X, 
+                    sp.Y, 
                     character.width, 
-                    character.height, 
-                    GraphicsUnit.Pixel
-                );
-            else if (character.animation.direction == "vertical")
-                g.DrawImage(
-                    charImage, 
-                    new Rectangle(sp.X, sp.Y, character.width, character.height), 
-                    0, 
-                    animFrame * character.height, 
-                    character.width, 
-                    character.height, 
-                    GraphicsUnit.Pixel
-                );
+                    character.height
+                ),
+                character.width,
+                0,
+                character.width,
+                character.height,
+                GraphicsUnit.Pixel
+            );
 
             //Draw all equipment besides main and offhand
 
@@ -198,8 +192,13 @@ namespace WebClashServer.Editors
             for (int i = 0; i < possibleMains.Count; i++)
                 g.DrawImage(
                     possibleMains[i].image,
-                    new Rectangle(sp.X, sp.Y, character.width, character.height),
-                    animFrame * character.width,
+                    new Rectangle(
+                        sp.X, 
+                        sp.Y, 
+                        character.width, 
+                        character.height
+                    ),
+                    character.width,
                     0,
                     character.width,
                     character.height,
@@ -211,8 +210,13 @@ namespace WebClashServer.Editors
             for (int i = 0; i < possibleOffhands.Count; i++)
                 g.DrawImage(
                     possibleOffhands[i].image,
-                    new Rectangle(sp.X, sp.Y, character.width, character.height),
-                    animFrame * character.width,
+                    new Rectangle(
+                        sp.X, 
+                        sp.Y, 
+                        character.width, 
+                        character.height
+                    ),
+                    character.width,
                     0,
                     character.width,
                     character.height,
@@ -233,31 +237,12 @@ namespace WebClashServer.Editors
 
                 charImage = Image.FromFile(Program.main.clientLocation + src);
 
-                animation.Interval = (1000 / 60) * character.animation.speed;
-
                 character.src = src;
             }
             catch (Exception exc)
             {
                 Logger.Error("Could not load character image: ", exc);
             }
-
-            canvas.Invalidate();
-        }
-
-        private void animation_Tick(object sender, EventArgs e)
-        {
-            if (charImage == null)
-            {
-                animFrame = 0;
-
-                return;
-            }
-
-            animFrame++;
-
-            if (animFrame * character.width >= charImage.Width)
-                animFrame = 0;
 
             canvas.Invalidate();
         }

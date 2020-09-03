@@ -24,7 +24,7 @@ const game = {
             .Loops(function() {
                 //Animate
 
-                animation.animateMoving(this, this._statusEffectsMatrix);
+                animation.animate(this, this._statusEffectsMatrix);
 
                 //Handle nameplate
 
@@ -215,6 +215,10 @@ const game = {
 
             this._castingBar.Show();
             this._castingIcon.Show();
+
+            //Set casting animation state
+
+            animation.setAnimationState(go, 'casting');
         };
 
         //Add context menu
@@ -288,8 +292,9 @@ const game = {
                 player.setMovement(game.players[id], character.movement);
             }
 
-            game.players[id]._animation = character.animation;
-            game.players[id]._animation.cur = 0;
+            game.players[id]._animations = character.animations;
+            game.players[id]._animations.cur = 0;
+            game.players[id]._animations.frame = 0;
 
             game.players[id]._sounds = character.sounds;
 
@@ -593,7 +598,7 @@ const game = {
             .Loops(function() {
                 //Animate moving
 
-                animation.animateMoving(this, this._statusEffectsMatrix);
+                animation.animate(this, this._statusEffectsMatrix);
 
                 //Handle nameplate
 
@@ -812,6 +817,10 @@ const game = {
 
             this._castingBar.Show();
             this._castingIcon.Show();
+
+            //Set casting animation state
+
+            animation.setAnimationState(go, 'casting');
         };
 
         //Add and show NPC
@@ -825,8 +834,9 @@ const game = {
 
             game.npcs[id].SIZE = game.npcs[id].Sprite().Size();
 
-            game.npcs[id]._animation = character.animation;
-            game.npcs[id]._animation.cur = 0;
+            game.npcs[id]._animations = character.animations;
+            game.npcs[id]._animations.cur = 0;
+            game.npcs[id]._animations.frame = 0;
 
             game.npcs[id]._sounds = character.sounds;
 
@@ -1691,12 +1701,12 @@ const game = {
             });
         }
 
-        //Force frame for owner
+        //Start attack animation
 
         if (data.ownerType === 'player') 
-            animation.forceFrame.start(game.players[data.owner]);
+            animation.setAnimationState(game.players[data.owner], 'attacking');
         else 
-            animation.forceFrame.start(game.npcs[data.owner]);
+            animation.setAnimationState(game.npcs[data.owner], 'attacking');
 
         //Play action sound if possible
 

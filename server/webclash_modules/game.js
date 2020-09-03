@@ -1068,7 +1068,47 @@ exports.loadAllCharacters = function(cb)
 exports.loadCharacter = function(location)
 {
     try {
-        return JSON.parse(fs.readFileSync(location, 'utf-8'));
+        let character = JSON.parse(fs.readFileSync(location, 'utf-8'));
+
+        //Check if it is a character that has been created
+        //using an older version of WebClash
+
+        if (character.animations == undefined) {
+            output.give(
+                'The character \'' + location + '\' does ' +
+                'not use the new animation system, this ' +
+                'character has not been loaded.'
+            );
+            return;
+        }
+
+        //Convert all character animations speeds
+        //from milliseconds to frame time (60 updates 
+        //per second)
+
+        for (let anim in character.animations)
+            character.animations[anim].speed /= 1000/60;
+
+        //Check character animations, if an animation
+        //uses another - copy over other animation data
+
+        for (let anim in character.animations) {
+            if (character.animations[anim].useOther) {
+                let other = character.animations[anim].other.toLowerCase();
+
+                if (character.animations[other]) {
+                    character.animations[anim].speed  = character.animations[other].speed;
+                    character.animations[anim].frames = deepcopy(character.animations[other].frames);
+                }
+            }
+
+            //Delete unwanted data
+
+            delete character.animations[anim].useOther;
+            delete character.animations[anim].other;
+        }
+
+        return character;
     }
     catch (err)
     {

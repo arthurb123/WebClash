@@ -7,9 +7,12 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Timers;
+using System.Diagnostics;
 using WebClashServer.Classes;
 
 using Action = WebClashServer.Classes.Action;
+using Timer = System.Timers.Timer;
 
 namespace WebClashServer.Editors
 {
@@ -35,6 +38,9 @@ namespace WebClashServer.Editors
         private Dictionary<Element, bool> finished = new Dictionary<Element, bool>();
         private Dictionary<string, Image> savedImages = new Dictionary<string, Image>();
 
+        private Timer animationTimer;
+        private Stopwatch stopwatch;
+
         private bool dataHasChanged = false;
 
         public Actions()
@@ -58,6 +64,13 @@ namespace WebClashServer.Editors
                 actionList.SelectedItem = actionList.Items[0];
             else
                 newAction_LinkClicked(sender, null);
+
+            stopwatch = Stopwatch.StartNew();
+
+            animationTimer = new Timer(1000f/60);
+            animationTimer.Elapsed += animationTimer_Tick;
+            animationTimer.AutoReset = true;
+            animationTimer.Start();
 
             canvas.Invalidate();
         }
@@ -782,6 +795,11 @@ namespace WebClashServer.Editors
         {
             if (current == null)
                 return;
+            
+            //Get delta
+
+            int elapsed = (int)((stopwatch.ElapsedTicks / TimeSpan.TicksPerMillisecond) / (1000f/60));
+            stopwatch = Stopwatch.StartNew();
 
             //Check if all elements have finished
 
@@ -830,7 +848,7 @@ namespace WebClashServer.Editors
 
                 if (remainingDelays[cur] > 0)
                 {
-                    remainingDelays[cur]--;
+                    remainingDelays[cur] -= elapsed;
                     continue;
                 }
 

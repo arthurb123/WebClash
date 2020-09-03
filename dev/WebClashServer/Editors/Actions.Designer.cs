@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Actions));
             this.canvas = new System.Windows.Forms.PictureBox();
             this.save = new System.Windows.Forms.LinkLabel();
-            this.animationTimer = new System.Windows.Forms.Timer(this.components);
             this.heal = new System.Windows.Forms.NumericUpDown();
             this.label14 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -95,12 +94,6 @@
             this.save.Text = "Save";
             this.save.VisitedLinkColor = System.Drawing.Color.Blue;
             this.save.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.save_LinkClicked);
-            // 
-            // animationTimer
-            // 
-            this.animationTimer.Enabled = true;
-            this.animationTimer.Interval = 16;
-            this.animationTimer.Tick += new System.EventHandler(this.animationTimer_Tick);
             // 
             // heal
             // 
@@ -488,7 +481,6 @@
         #endregion
         private System.Windows.Forms.PictureBox canvas;
         private System.Windows.Forms.LinkLabel save;
-        private System.Windows.Forms.Timer animationTimer;
         private System.Windows.Forms.NumericUpDown heal;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.GroupBox groupBox2;

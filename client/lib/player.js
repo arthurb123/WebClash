@@ -302,7 +302,9 @@ const player = {
                         return;
                     }
 
-                    player.cancelCastAction();
+                    if (player.casting != undefined)
+                        player.cancelCastAction();
+
                     player.moving = true;
 
                     let maxVel = movement.max * player.statusEffectsMatrix['movementSpeedFactor'];
@@ -430,6 +432,10 @@ const player = {
         //Set UI
 
         ui.actionbar.setCasting(slot, castingTime);
+
+        //Set casting animation state
+
+        animation.setAnimationState(game.players[game.player], 'casting');
     },
     cancelCastAction: function() {
         //remove currently casting slot
@@ -444,6 +450,10 @@ const player = {
         //Remove UI
 
         ui.actionbar.removeCasting(this.casting);
+
+        //Force idle animation state
+
+        animation.setAnimationState(game.players[game.player], 'idle');
     },
     removeAction: function(slot)
     {
@@ -597,7 +607,8 @@ const player = {
         if (this.MOVEMENT.VX != 0 || this.MOVEMENT.VY != 0) {
             //Cancel casting
 
-            player.cancelCastAction();
+            if (player.casting != undefined)
+                player.cancelCastAction();
 
             //Handle movement
 
@@ -641,7 +652,7 @@ const player = {
 
         //Animate
 
-        animation.animateMoving(this, player.statusEffectsMatrix);   
+        animation.animate(this, player.statusEffectsMatrix);   
     },
     //This gets called before rendering the player
     preDraws: function() 

@@ -1,140 +1,94 @@
 const animation = {
-    animateMoving: function(target, statusEffectsMatrix)
+    singleAnimations: ['attacking'],
+    animate: function(target, statusEffectsMatrix)
     {
         //Check if valid
 
-        if (target._animation === undefined ||
-            target._direction === undefined ||
-            target._moving === undefined ||
-            target.Sprite() === undefined)
+        if (target._animations === undefined ||
+            target._direction  === undefined ||
+            target._moving     === undefined ||
+            target.Sprite()    === undefined)
             return;
 
-        //Check facing direction
+        //Animate based on state
 
-        if (target._animation.direction === 'horizontal')
-            target.Sprite().CLIP.Y = target._direction*target.SIZE.H;
-        else if (target._animation.direction === 'vertical')
-            target.Sprite().CLIP.X = target._direction*target.SIZE.W;
+        if (target._moving) {
+            //Check if walking or running
 
-        //Check if a forced frame is active
-        //If so handle the forced frame
+            if (statusEffectsMatrix['movementSpeedFactor'] <= 1) //Walking
+                this.setAnimationState(target, 'walking');
+            else                                                 //Running
+                this.setAnimationState(target, 'running');
+        } else                                                   //Idle
+            this.setAnimationState(target, 'idle');
 
-        if (target._animation.forced) {
-            if (target._animation.forcedCur >= this.forceFrame.standard)
-                this.forceFrame.reset(target);
-            else
-                target._animation.forcedCur++;
+        //Increment timer
 
-            return;
-        }
+        target._animations.cur++;
 
-        //Check if moving
+        //Check if timer exceeds state speed
 
-        if (!target._moving && !target._animation.alwaysAnimate)
-        {
-            if (target._animation.direction === 'horizontal')
-                target.Sprite().CLIP.X = 0;
-            else if (target._animation.direction === 'vertical')
-                target.Sprite().CLIP.Y = 0;
+        let anim = target._animations[target._animations.state];
+        if (target._animations.cur >= anim.speed) {
+            target._animations.cur = 0;
+            target._animations.frame++;
 
-            return;
-        }
+            //Check frame exceeding
 
-        //Evaluate
+            if (target._animations.frame >= anim.frames[target._direction].length) {
+                target._animations.frame = 0;
 
-        let delta = 1;
+                //Check if a single animation, if so
+                //force to the idle state
 
-        if (statusEffectsMatrix != undefined)
-            delta *= statusEffectsMatrix['movementSpeedFactor'];
-
-        target._animation.cur+=delta;
-
-        if (target._animation.cur >= target._animation.speed)
-        {
-            //Horizontal animating
-
-            if (target._animation.direction === 'horizontal')
-            {
-                target.Sprite().CLIP.X+=target.SIZE.W;
-
-                if (target.Sprite().CLIP.X >= target.Sprite().IMG.width)
-                    target.Sprite().CLIP.X = 0;
+                if (this.singleAnimations.indexOf(target._animations.state) !== -1)
+                    this.setAnimationState(target, 'idle', true);
             }
-
-            //Vertical animating
-
-            else if (target._animation.direction === 'vertical')
-            {
-                target.Sprite().CLIP.Y+=target.SIZE.H;
-
-                if (target.Sprite().CLIP.Y >= target.Sprite().IMG.height)
-                    target.Sprite().CLIP.Y = 0;
-            }
-
-            //Reset
-
-            target._animation.cur = 0;
         }
+
+        //Set clip
+
+        let sprite = target.Sprite();
+        let frame = anim.frames[target._direction][target._animations.frame];
+
+        sprite.CLIP.X = frame.x;
+        sprite.CLIP.Y = frame.y;
     },
-    forceFrame:
-    {
-        start: function(target) {
-            //Check if target is valid
+    setAnimationState: function(target, state, force) {
+        //If forced, always overwrite state
 
-            if (target == undefined || target._animation == undefined)
-                return;
+        if (force) {
+            target._animations.cur = 0;
+            target._animations.frame = 0;
 
-            //If moving and no forced frame exists reset clip
+            target._animations.state = state;
+            return;
+        }
 
-            if (target._moving && !target._animation.forced) {
-                if (target._animation.direction === 'horizontal')
-                    target.Sprite().CLIP.X = 0;
-                else if (target._animation.direction === 'vertical')
-                    target.Sprite().CLIP.Y = 0;
-            }
+        //Idle may never overwrite casting
+        //or attacking
 
-            //Set forced frame to true
+        if (state === 'idle' &&
+            (target._animations.state === 'casting' ||
+             target._animations.state === 'attacking'))
+            return;
 
-            target._animation.forced = true;
+        //Walking and running may never overwrite
+        //attacking
 
-            //Always use frame 0 if there is not any
-            //animation available, otherwise always go
-            //for the first frame (frame 1)
+        if ((state === 'walking' || state === 'walking') &&
+            target._animations.state === 'attacking')
+            return;
 
-            let frame;
-            
-            if (target._animation.direction === 'horizontal') {
-                if (target.Sprite().CLIP.X === 0)
-                    frame = 1;
-                else 
-                    frame = 2;
+        //If state differs or an attack follows up
+        //another attack, clear the animation state
 
-                target.Sprite().CLIP.X += frame * target.SIZE.W;
+        if (target._animations.state !== state ||
+            state === 'attacking') {
+            target._animations.cur = 0;
+            target._animations.frame = 0;
+        }
 
-                if (target.Sprite().CLIP.X >= target.Sprite().IMG.width)
-                        target.Sprite().CLIP.X -= target.Sprite().IMG.width;
-            }
-            else if (target._animation.direction === 'vertical') {
-                if (target.Sprite().CLIP.Y === 0)
-                    frame = 1;
-                else 
-                    frame = 2;
-                    
-                target.Sprite().CLIP.Y += frame * target.SIZE.H;
-
-                if (target.Sprite().CLIP.Y >= target.Sprite().IMG.height)
-                        target.Sprite().CLIP.Y -= target.Sprite().IMG.height;
-            }
-
-            //Reset timer
-
-            target._animation.forcedCur = 0;
-        },
-        reset: function(target) {
-            //Set forced frame to false
-
-            target._animation.forced = false;
-        },
-        standard: 12 //This influences the duration of the forced frame
-    },
+        target._animations.state = state;
+    }
 };

@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Characters));
             this.label1 = new System.Windows.Forms.Label();
             this.charSelect = new System.Windows.Forms.ComboBox();
@@ -44,13 +43,9 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.animationGroupBox = new System.Windows.Forms.GroupBox();
-            this.alwaysAnimate = new System.Windows.Forms.CheckBox();
-            this.speed = new System.Windows.Forms.NumericUpDown();
-            this.label7 = new System.Windows.Forms.Label();
-            this.direction = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.presentAnimations = new System.Windows.Forms.Label();
+            this.setupAnimations = new System.Windows.Forms.Button();
             this.canvas = new System.Windows.Forms.PictureBox();
-            this.animation = new System.Windows.Forms.Timer(this.components);
             this.save = new System.Windows.Forms.LinkLabel();
             this.colliderGroupBox = new System.Windows.Forms.GroupBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -75,7 +70,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).BeginInit();
             this.animationGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.speed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.colliderGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.collY)).BeginInit();
@@ -149,7 +143,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(120, 49);
+            this.label5.Location = new System.Drawing.Point(231, 49);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(13, 15);
             this.label5.TabIndex = 7;
@@ -157,7 +151,7 @@
             // 
             // height
             // 
-            this.height.Location = new System.Drawing.Point(139, 47);
+            this.height.Location = new System.Drawing.Point(250, 47);
             this.height.Maximum = new decimal(new int[] {
             640,
             0,
@@ -181,7 +175,7 @@
             // 
             // width
             // 
-            this.width.Location = new System.Drawing.Point(50, 47);
+            this.width.Location = new System.Drawing.Point(161, 47);
             this.width.Maximum = new decimal(new int[] {
             640,
             0,
@@ -230,11 +224,11 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 49);
+            this.label3.Location = new System.Drawing.Point(61, 49);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(31, 15);
+            this.label3.Size = new System.Drawing.Size(87, 15);
             this.label3.TabIndex = 1;
-            this.label3.Text = "Size";
+            this.label3.Text = "Character Size";
             // 
             // label2
             // 
@@ -247,84 +241,34 @@
             // 
             // animationGroupBox
             // 
-            this.animationGroupBox.Controls.Add(this.alwaysAnimate);
-            this.animationGroupBox.Controls.Add(this.speed);
-            this.animationGroupBox.Controls.Add(this.label7);
-            this.animationGroupBox.Controls.Add(this.direction);
-            this.animationGroupBox.Controls.Add(this.label6);
+            this.animationGroupBox.Controls.Add(this.presentAnimations);
+            this.animationGroupBox.Controls.Add(this.setupAnimations);
             this.animationGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.animationGroupBox.Location = new System.Drawing.Point(15, 123);
             this.animationGroupBox.Name = "animationGroupBox";
             this.animationGroupBox.Size = new System.Drawing.Size(373, 73);
             this.animationGroupBox.TabIndex = 5;
             this.animationGroupBox.TabStop = false;
-            this.animationGroupBox.Text = "Animation";
+            this.animationGroupBox.Text = "Animations";
             // 
-            // alwaysAnimate
+            // presentAnimations
             // 
-            this.alwaysAnimate.AutoSize = true;
-            this.alwaysAnimate.Location = new System.Drawing.Point(131, 48);
-            this.alwaysAnimate.Name = "alwaysAnimate";
-            this.alwaysAnimate.Size = new System.Drawing.Size(111, 19);
-            this.alwaysAnimate.TabIndex = 11;
-            this.alwaysAnimate.Text = "Always Animate";
-            this.alwaysAnimate.UseVisualStyleBackColor = true;
-            this.alwaysAnimate.CheckedChanged += new System.EventHandler(this.alwaysAnimate_CheckedChanged);
+            this.presentAnimations.Location = new System.Drawing.Point(40, 46);
+            this.presentAnimations.Name = "presentAnimations";
+            this.presentAnimations.Size = new System.Drawing.Size(302, 19);
+            this.presentAnimations.TabIndex = 3;
+            this.presentAnimations.Text = "-";
+            this.presentAnimations.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // speed
+            // setupAnimations
             // 
-            this.speed.Location = new System.Drawing.Point(265, 20);
-            this.speed.Maximum = new decimal(new int[] {
-            640,
-            0,
-            0,
-            0});
-            this.speed.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.speed.Name = "speed";
-            this.speed.Size = new System.Drawing.Size(64, 21);
-            this.speed.TabIndex = 8;
-            this.speed.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.speed.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-            this.speed.ValueChanged += new System.EventHandler(this.speed_ValueChanged);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(216, 22);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(43, 15);
-            this.label7.TabIndex = 10;
-            this.label7.Text = "Speed";
-            // 
-            // direction
-            // 
-            this.direction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.direction.FormattingEnabled = true;
-            this.direction.Items.AddRange(new object[] {
-            "Horizontal",
-            "Vertical"});
-            this.direction.Location = new System.Drawing.Point(90, 19);
-            this.direction.Name = "direction";
-            this.direction.Size = new System.Drawing.Size(110, 23);
-            this.direction.TabIndex = 9;
-            this.direction.SelectedIndexChanged += new System.EventHandler(this.direction_SelectedIndexChanged);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(28, 22);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(56, 15);
-            this.label6.TabIndex = 8;
-            this.label6.Text = "Direction";
+            this.setupAnimations.Location = new System.Drawing.Point(108, 20);
+            this.setupAnimations.Name = "setupAnimations";
+            this.setupAnimations.Size = new System.Drawing.Size(162, 23);
+            this.setupAnimations.TabIndex = 2;
+            this.setupAnimations.Text = "Setup Animations";
+            this.setupAnimations.UseVisualStyleBackColor = true;
+            this.setupAnimations.Click += new System.EventHandler(this.setupAnimations_Click);
             // 
             // canvas
             // 
@@ -335,12 +279,6 @@
             this.canvas.Size = new System.Drawing.Size(200, 200);
             this.canvas.TabIndex = 6;
             this.canvas.TabStop = false;
-            // 
-            // animation
-            // 
-            this.animation.Enabled = true;
-            this.animation.Interval = 1000;
-            this.animation.Tick += new System.EventHandler(this.animation_Tick);
             // 
             // save
             // 
@@ -641,8 +579,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.height)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).EndInit();
             this.animationGroupBox.ResumeLayout(false);
-            this.animationGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.speed)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
             this.colliderGroupBox.ResumeLayout(false);
             this.colliderGroupBox.PerformLayout();
@@ -678,11 +614,6 @@
         private System.Windows.Forms.PictureBox canvas;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.NumericUpDown height;
-        private System.Windows.Forms.ComboBox direction;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.NumericUpDown speed;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Timer animation;
         private System.Windows.Forms.LinkLabel save;
         private System.Windows.Forms.GroupBox colliderGroupBox;
         private System.Windows.Forms.Label label11;
@@ -699,10 +630,11 @@
         private System.Windows.Forms.GroupBox soundGroupBox;
         private System.Windows.Forms.Button onHitSounds;
         private System.Windows.Forms.Button onDeathSounds;
-        private System.Windows.Forms.CheckBox alwaysAnimate;
         private System.Windows.Forms.GroupBox miscGroupBox;
         private System.Windows.Forms.TextBox particleSource;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.CheckBox damageParticles;
+        private System.Windows.Forms.Button setupAnimations;
+        private System.Windows.Forms.Label presentAnimations;
     }
 }

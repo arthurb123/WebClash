@@ -2,10 +2,130 @@
   "src": "res/characters/169.png",
   "width": 16,
   "height": 16,
-  "animation": {
-    "direction": "horizontal",
-    "speed": 8,
-    "alwaysAnimate": true
+  "animations": {
+    "idle": {
+      "speed": 120,
+      "frames": [
+        [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 16,
+            "y": 0
+          },
+          {
+            "x": 32,
+            "y": 0
+          },
+          {
+            "x": 48,
+            "y": 0
+          }
+        ],
+        [
+          {
+            "x": 0,
+            "y": 16
+          },
+          {
+            "x": 16,
+            "y": 16
+          },
+          {
+            "x": 32,
+            "y": 16
+          },
+          {
+            "x": 48,
+            "y": 16
+          }
+        ],
+        [
+          {
+            "x": 0,
+            "y": 32
+          },
+          {
+            "x": 16,
+            "y": 32
+          },
+          {
+            "x": 32,
+            "y": 32
+          },
+          {
+            "x": 48,
+            "y": 32
+          }
+        ],
+        [
+          {
+            "x": 0,
+            "y": 48
+          },
+          {
+            "x": 16,
+            "y": 48
+          },
+          {
+            "x": 32,
+            "y": 48
+          },
+          {
+            "x": 48,
+            "y": 48
+          }
+        ]
+      ],
+      "useOther": false,
+      "other": ""
+    },
+    "walking": {
+      "speed": 100,
+      "frames": [
+        [],
+        [],
+        [],
+        []
+      ],
+      "useOther": true,
+      "other": "Idle"
+    },
+    "running": {
+      "speed": 100,
+      "frames": [
+        [],
+        [],
+        [],
+        []
+      ],
+      "useOther": true,
+      "other": "Idle"
+    },
+    "casting": {
+      "speed": 100,
+      "frames": [
+        [],
+        [],
+        [],
+        []
+      ],
+      "useOther": true,
+      "other": "Idle"
+    },
+    "attacking": {
+      "speed": 100,
+      "frames": [
+        [],
+        [],
+        [],
+        []
+      ],
+      "useOther": true,
+      "other": "Idle"
+    }
   },
   "collider": {
     "x": -8,

@@ -302,6 +302,8 @@ const client = {
 
             if (data.remove !== undefined)
                 game.removeNPC(data.id);
+            if (data.character !== undefined)
+                game.setNPCCharacter(data.id, data.character);
             if (data.pos !== undefined)
                 game.npcs[data.id].POS = data.pos;
             if (data.type !== undefined)
@@ -322,48 +324,30 @@ const client = {
                 game.npcs[data.id]._inCombat = data.inCombat;
             if (data.statusEffects !== undefined)
                 game.setNPCStatusEffects(data.id, data.statusEffects);
-            if (data.character !== undefined) {
-                manager.getSprite(data.character.src, function(sprite) {
-                    game.npcs[data.id].Sprite(sprite);
-                    game.npcs[data.id].Sprite().Clip(0, 0, data.character.width, data.character.height);
-    
-                    game.npcs[data.id].SIZE = game.npcs[data.id].Sprite().Size();
-    
-                    game.npcs[data.id]._animation = data.character.animation;
-                    game.npcs[data.id]._animation.cur = 0;
-    
-                    game.npcs[data.id]._sounds = data.character.sounds;
-
-                    game.npcs[data.id]._damageParticles = {
-                        exists: data.character.damageParticles,
-                        src: data.character.particleSrc
-                    };
-                });
-            }
         });
         channel.on('GAME_ACTION_UPDATE', function (data) {
             //Check if the recieved data is valid
 
-             if (data === undefined)
-                 return;
+            if (data === undefined)
+                return;
 
-             //Check if in-game
+            //Check if in-game
 
-             if (!client.inGame)
-                 return;
+            if (!client.inGame)
+                return;
 
-             //Check if removal package
+            //Check if removal package
 
-             if (data.remove != undefined &&
-                 data.remove) {
-                 game.removeAction(data.id);
+            if (data.remove != undefined &&
+                data.remove) {
+                game.removeAction(data.id);
 
-                 return;
-             }
+                return;
+            }
 
-             //Handle data
+            //Handle data
 
-             game.createAction(data);
+            game.createAction(data);
         });
         channel.on('GAME_ACTION_SLOT', function(data) {
             //Check if the recieved data is valid
@@ -633,8 +617,11 @@ const client = {
             if (game.players[data] != undefined) {
                 game.players[data]._castingBar.Hide();
                 game.players[data]._castingIcon.Hide();
-            }
 
+                //Force idle animation state
+
+                animation.setAnimationState(game.players[data], 'idle', true);
+            }
         });
         channel.on('GAME_NPC_CAST_ACTION', function(data) {
             if (game.npcs[data.npc] != undefined) {

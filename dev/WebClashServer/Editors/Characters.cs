@@ -11,14 +11,10 @@ namespace WebClashServer.Editors
 {
     public partial class Characters : Form
     {
-        Character current = new Character();
-
-        int animFrame = 0;
-
-        Image charImage;
+        private Character current = new Character();
+        private Image currentImage;
 
         private Pen colliderPen = new Pen(Brushes.Purple, 2);
-
         private bool dataHasChanged = false;
 
         public Characters()
@@ -99,12 +95,8 @@ namespace WebClashServer.Editors
             width.Value = current.width;
             height.Value = current.height;
 
-            AttemptSetCharImage(current.src);
+            AttemptSetCharacterImage(current.src);
             src.Text = current.src;
-
-            direction.SelectedItem = current.animation.direction.First().ToString().ToUpper() + current.animation.direction.Substring(1);
-            speed.Value = current.animation.speed;
-            alwaysAnimate.Checked = current.animation.alwaysAnimate;
 
             collX.Value = current.collider.x;
             collY.Value = current.collider.y;
@@ -117,6 +109,8 @@ namespace WebClashServer.Editors
             particleSource.Enabled = current.damageParticles;
             particleSource.Text = current.particleSrc;
 
+            CheckPresentAnimations();
+
             canvas.Invalidate();
         }
 
@@ -126,42 +120,54 @@ namespace WebClashServer.Editors
 
             g.Clear(Color.FromKnownColor(KnownColor.ControlLight));
 
-            if (charImage == null)
+            if (currentImage == null)
                 return;
 
-            Point sp = new Point(canvas.Width / 2 - current.width / 2, canvas.Height / 2 - current.height / 2);
+            Point sp = new Point(
+                canvas.Width / 2 - current.width / 2, 
+                canvas.Height / 2 - current.height / 2
+            );
 
             //Draw sprite
 
-            if (current.animation.direction == "horizontal")
-                g.DrawImage(charImage, new Rectangle(sp.X, sp.Y, current.width, current.height), animFrame * current.width, 0, current.width, current.height, GraphicsUnit.Pixel);
-            else if (current.animation.direction == "vertical")
-                g.DrawImage(charImage, new Rectangle(sp.X, sp.Y, current.width, current.height), 0, animFrame * current.height, current.width, current.height, GraphicsUnit.Pixel);
+            g.DrawImage(
+                currentImage, 
+                new Rectangle(
+                    sp.X, 
+                    sp.Y, 
+                    current.width, 
+                    current.height
+                ), 
+                0, 0, 
+                current.width, current.height,
+                GraphicsUnit.Pixel
+            );
 
             //Draw collider
 
-            g.DrawRectangle(colliderPen, new Rectangle(
-                sp.X + current.collider.x,
-                sp.Y + current.collider.y,
-                current.collider.width,
-                current.collider.height
-            ));
+            g.DrawRectangle(
+                colliderPen, 
+                new Rectangle(
+                    sp.X + current.collider.x,
+                    sp.Y + current.collider.y,
+                    current.collider.width,
+                    current.collider.height
+                )
+            );
         }
 
-        private void AttemptSetCharImage(string src)
+        private void AttemptSetCharacterImage(string src)
         {
             try
             {
                 if (!File.Exists(Program.main.clientLocation + src))
                 {
-                    charImage = null;
+                    currentImage = null;
 
                     return;
                 }
 
-                charImage = Image.FromFile(Program.main.clientLocation + src);
-
-                animation.Interval = (1000 / 60) * current.animation.speed;
+                currentImage = Image.FromFile(Program.main.clientLocation + src);
 
                 current.src = src;
             }
@@ -173,21 +179,49 @@ namespace WebClashServer.Editors
             canvas.Invalidate();
         }
 
-        private void animation_Tick(object sender, EventArgs e)
+        private void CheckPresentAnimations()
         {
-            if (charImage == null)
-            {
-                animFrame = 0;
+            //Check for present animations
 
-                return;
+            int present = 0;
+            if (CheckPresentAnimation(current.animations.idle))
+                present++;
+            if (CheckPresentAnimation(current.animations.walking))
+                present++;
+            if (CheckPresentAnimation(current.animations.running))
+                present++;
+            if (CheckPresentAnimation(current.animations.casting))
+                present++;
+            if (CheckPresentAnimation(current.animations.attacking))
+                present++;
+
+            //Give feedback to user on amount of animations present
+
+            if (present == 5)
+            {
+                presentAnimations.Text = "All Animations Available";
+                presentAnimations.ForeColor = Color.Green;
+            }
+            else
+            {
+                presentAnimations.Text = "Missing " + (5 - present) + "/5 Animations";
+                presentAnimations.ForeColor = Color.Red;
+            }
+        }
+
+        private bool CheckPresentAnimation(AnimationSheet sheet)
+        {
+            if (sheet.useOther)
+            {
+                AnimationSheet other = CharacterAnimations.GrabSheet(current, sheet.other);
+
+                if (other == null)
+                    return false;
+
+                return CheckPresentAnimation(other);
             }
 
-            animFrame++;
-
-            if (animFrame * current.width >= charImage.Width)
-                animFrame = 0;
-
-            canvas.Invalidate();
+            return !sheet.IsEmpty();
         }
 
         private void charSelect_SelectedIndexChanged(object sender, EventArgs e)
@@ -200,7 +234,7 @@ namespace WebClashServer.Editors
 
         private void src_TextChanged(object sender, EventArgs e)
         {
-            AttemptSetCharImage(src.Text);
+            AttemptSetCharacterImage(src.Text);
         }
 
         private void width_ValueChanged(object sender, EventArgs e)
@@ -217,11 +251,15 @@ namespace WebClashServer.Editors
             canvas.Invalidate();
         }
 
-        private void speed_ValueChanged(object sender, EventArgs e)
+        private void setupAnimations_Click(object sender, EventArgs e)
         {
-            current.animation.speed = (int)speed.Value;
+            CharacterAnimations charAnimations = new CharacterAnimations(current, currentImage, name.Text);
 
-            animation.Interval = (1000 / 60) * current.animation.speed;
+            charAnimations.FormClosed += new FormClosedEventHandler((_, __) =>
+            {
+                CheckPresentAnimations();
+            });
+            charAnimations.ShowDialog();
         }
 
         private void save_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -275,11 +313,6 @@ namespace WebClashServer.Editors
             dataHasChanged = true;
         }
 
-        private void alwaysAnimate_CheckedChanged(object sender, EventArgs e)
-        {
-            current.animation.alwaysAnimate = alwaysAnimate.Checked;
-        }
-
         private void collX_ValueChanged(object sender, EventArgs e)
         {
             current.collider.x = (int)collX.Value;
@@ -311,13 +344,6 @@ namespace WebClashServer.Editors
         private void maxVelocity_ValueChanged(object sender, EventArgs e)
         {
             current.movement.max = float.Parse(maxVelocity.Value.ToString("0.00"));
-        }
-
-        private void direction_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            current.animation.direction = direction.SelectedItem.ToString().ToLower();
-
-            canvas.Invalidate();
         }
 
         private void onHitSounds_Click(object sender, EventArgs e)
@@ -362,10 +388,7 @@ namespace WebClashServer.Editors
 
     public class Character
     {
-        public Character()
-        {
-
-        }
+        public Character() { }
 
         public Character(string source)
         {
@@ -376,9 +399,10 @@ namespace WebClashServer.Editors
                 width = temp.width;
                 height = temp.height;
 
+                animations = temp.animations;
+
                 src = temp.src;
 
-                animation = temp.animation;
                 collider = temp.collider;
                 movement = temp.movement;
 
@@ -400,9 +424,9 @@ namespace WebClashServer.Editors
         public int width = 64,
                    height = 64;
 
-        //Animation
+        //Animation sheets
 
-        public Animation animation = new Animation();
+        public Animations animations = new Animations();
 
         //Collider
 
@@ -422,13 +446,47 @@ namespace WebClashServer.Editors
         public string particleSrc = "";
     }
 
-    public class Animation
+    public class Animations
     {
-        public string direction = "horizontal";
+        //Animation sheets
 
-        public int speed = 8;
+        public AnimationSheet idle      = new AnimationSheet("Idle");
+        public AnimationSheet walking   = new AnimationSheet("Walking");
+        public AnimationSheet running   = new AnimationSheet("Running");
+        public AnimationSheet casting   = new AnimationSheet("Casting");
+        public AnimationSheet attacking = new AnimationSheet("Attacking");
+    }
 
-        public bool alwaysAnimate = false;
+    public class AnimationSheet
+    {
+        [JsonIgnore]
+        public string name = "";
+
+        public AnimationSheet(string name)
+        {
+            this.name = name;
+        }
+
+        public bool IsEmpty()
+        {
+            for (int fl = 0; fl < frames.Length; fl++)
+                if (frames[fl].Length != 0)
+                    return false;
+
+            return true;
+        }
+
+        public int speed = 100;
+        public Point2D[][] frames = new Point2D[][]
+        {
+            new Point2D[0],
+            new Point2D[0],
+            new Point2D[0],
+            new Point2D[0]
+        };
+
+        public bool useOther = false;
+        public string other = "";
     }
 
     public class Collider

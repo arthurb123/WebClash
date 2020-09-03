@@ -28,11 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CharacterSelection));
             this.characterList = new System.Windows.Forms.ListBox();
             this.canvas = new System.Windows.Forms.PictureBox();
-            this.animation = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.SuspendLayout();
             // 
@@ -54,11 +52,6 @@
             this.canvas.Size = new System.Drawing.Size(200, 200);
             this.canvas.TabIndex = 7;
             this.canvas.TabStop = false;
-            // 
-            // animation
-            // 
-            this.animation.Enabled = true;
-            this.animation.Tick += new System.EventHandler(this.animation_Tick);
             // 
             // CharacterSelection
             // 
@@ -84,6 +77,5 @@
 
         private System.Windows.Forms.ListBox characterList;
         private System.Windows.Forms.PictureBox canvas;
-        private System.Windows.Forms.Timer animation;
     }
 }
