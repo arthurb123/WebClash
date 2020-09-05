@@ -493,7 +493,7 @@ const player = {
         //give the player feedback
         
         if (ui.actionbar.onCooldown[slot] != undefined) {
-            if (ui.actionbar.onCooldown[slot] >= 45)
+            if (ui.actionbar.onCooldown[slot] > 60)
                 ui.floaties.errorFloaty(
                     game.players[game.player], 
                     player.actions[slot].name + ' is on cooldown.'
@@ -613,7 +613,7 @@ const player = {
             //Check if cached frame sprite is available
 
             if (!frame._cachedSprite) {
-                let canvas = new lx.Canvas(frame.w, frame.h);
+                let canvas = new lx.Canvas(frame.w * frame.scale, frame.h * frame.scale);
 
                 canvas.Draw((gfx) => {
                     gfx.beginPath();
@@ -638,14 +638,8 @@ const player = {
 
                     gfx.lineWidth = 2;
                     gfx.strokeStyle = '#43BFC7';
-                    gfx.globalAlpha = '.75';
+                    gfx.globalAlpha = .75;
                     gfx.stroke();
-
-                    //TODO: Check for projectile, if so
-                    //      draw an arrow for the projectile
-                    //      direction
-
-                    //...
                 });
 
                 frame._cachedSprite = new lx.Sprite(canvas);
@@ -685,9 +679,55 @@ const player = {
                 sprite, 
                 x, 
                 y + h * squashFactor, 
-                w, 
-                h * (1 - squashFactor)
+                sprite.Size().W, 
+                sprite.Size().H * (1 - squashFactor)
             );
+
+            //If projectile, draw arrow
+
+            //TODO: Clean this up, use
+            //      lx.Draw when implemented
+
+            if (frame.type === 'projectile') {
+                lx.CONTEXT.GRAPHICS.save();
+
+                //Get projectile distance
+
+                let scale = lx.Scale();
+                let projectileDistance = (tiled.tile.width + tiled.tile.height) / 2 * scale;
+
+                //Get direction unit vector
+
+                let dx = (x + w / 2) - (pos.X + size.W / 2);
+                let dy = (y + h / 2) - (pos.Y + size.H / 2);
+
+                let len = Math.sqrt(dx * dx + dy * dy);
+                dx /= len;
+                dy /= len;
+
+                //Calculate end position in screen space
+
+                let screenPos = lx.GAME.TRANSLATE_FROM_FOCUS({ X: x, Y: y });
+                let startX = screenPos.X + w * scale / 2 + h * squashFactor;
+                let startY = screenPos.Y + h * scale / 2;
+                let endX = startX + projectileDistance * dx
+                let endY = startY + projectileDistance * dy;
+
+                //Draw arrow
+
+                lx.CONTEXT.GRAPHICS.beginPath();
+
+                lx.CONTEXT.GRAPHICS.moveTo(startX, startY);
+                lx.CONTEXT.GRAPHICS.lineTo(endX, endY);
+
+                lx.CONTEXT.GRAPHICS.lineCap = 'round';
+                lx.CONTEXT.GRAPHICS.lineWidth = 2 * scale;
+                lx.CONTEXT.GRAPHICS.strokeStyle = '#43BFC7';
+                lx.CONTEXT.GRAPHICS.globalAlpha = .75;
+                lx.CONTEXT.GRAPHICS.stroke();
+
+                lx.CONTEXT.GRAPHICS.restore();
+            }
         }
     },
 

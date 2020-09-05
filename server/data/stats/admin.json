@@ -1,12 +1,12 @@
 {
  "map": "1",
- "char_name": "player_male",
+ "char_name": "player_female",
  "pos": {
-  "X": -480,
-  "Y": 816
+  "X": -73,
+  "Y": 388
  },
  "moving": false,
- "direction": 2,
+ "direction": 3,
  "health": {
   "cur": 100,
   "max": 100
@@ -16,12 +16,12 @@
   "max": 100
  },
  "currency": 0,
- "level": 3,
+ "level": 5,
  "stats": {
-  "exp": 4,
-  "points": 0,
+  "exp": 0,
+  "points": 4,
   "attributes": {
-   "power": 3,
+   "power": 1,
    "toughness": 1,
    "vitality": 1,
    "agility": 1,
@@ -32,22 +32,165 @@
  "killed": false,
  "actions": [
   {
-   "name": "Slash"
+   "name": "Swingfest"
   },
   {
    "name": "Combust"
-  }
+  },
+  null,
+  null
  ],
  "statusEffects": {},
  "inventory": [
-  "Ring of Arrows",
+  "Iron Helm",
+  "Iron Helm",
   "Healing Slab",
-  null
+  "Iron Helm",
+  "Magic Axe",
+  null,
+  "Healing Slab",
+  "Iron Helm",
+  "Healing Slab",
+  "Ring of Arrows",
+  "Sword"
  ],
  "equipment": {
-  "main": "Sword",
+  "main": "Captain's Axe",
   "offhand": "Magic Axe"
  },
- "quests": {},
- "gvars": {}
+ "quests": {
+  "Eric's Cleanup": {
+   "objectives": [
+    {
+     "type": "kill",
+     "killObjective": {
+      "npc": "Ghoul",
+      "amount": 3,
+      "cur": 3,
+      "resetOnDeath": false
+     },
+     "gatherObjective": null,
+     "talkObjective": null
+    },
+    {
+     "type": "talk",
+     "killObjective": null,
+     "gatherObjective": null,
+     "talkObjective": {
+      "npc": "Eric",
+      "dialog": [
+       {
+        "text": "Thanks for helping me kill those ghouls.\nNext time I should put in a little less effort,\n'cause I am tired now!",
+        "portrait": "res/portraits/1.png",
+        "entry": true,
+        "isEvent": false,
+        "options": [
+         {
+          "text": "I did everything!",
+          "next": 1
+         },
+         {
+          "text": "Exit",
+          "next": 2
+         }
+        ],
+        "eventType": "",
+        "repeatable": false,
+        "giveItemEvent": null,
+        "loadMapEvent": null,
+        "affectPlayerEvent": null,
+        "spawnNPCEvent": null,
+        "turnHostileEvent": null,
+        "showQuestEvent": null,
+        "showShopEvent": null,
+        "advanceQuestEvent": null,
+        "getVariableEvent": null,
+        "setVariableEvent": null
+       },
+       {
+        "text": "Yeah yeah, you adventurers always like to take all the credit - don't ya? Now leave.",
+        "portrait": "res/portraits/1.png",
+        "entry": false,
+        "isEvent": false,
+        "options": [
+         {
+          "text": "Exit",
+          "next": 2
+         }
+        ],
+        "eventType": "",
+        "repeatable": false,
+        "giveItemEvent": null,
+        "loadMapEvent": null,
+        "affectPlayerEvent": null,
+        "spawnNPCEvent": null,
+        "turnHostileEvent": null,
+        "showQuestEvent": null,
+        "showShopEvent": null,
+        "advanceQuestEvent": null,
+        "getVariableEvent": null,
+        "setVariableEvent": null
+       },
+       {
+        "text": "",
+        "portrait": "",
+        "entry": false,
+        "isEvent": true,
+        "options": [
+         {
+          "text": "",
+          "next": -1
+         },
+         {
+          "text": "",
+          "next": -1
+         }
+        ],
+        "eventType": "AdvanceQuest",
+        "repeatable": true,
+        "giveItemEvent": null,
+        "loadMapEvent": null,
+        "affectPlayerEvent": null,
+        "spawnNPCEvent": null,
+        "turnHostileEvent": null,
+        "showQuestEvent": null,
+        "showShopEvent": null,
+        "advanceQuestEvent": {
+         "entry": false
+        },
+        "getVariableEvent": null,
+        "setVariableEvent": null
+       }
+      ],
+      "dialogElements": [
+       {
+        "p": "24, 101",
+        "id": 0,
+        "isEvent": false,
+        "size": "100, 80"
+       },
+       {
+        "p": "200, 31",
+        "id": 1,
+        "isEvent": false,
+        "size": "100, 80"
+       },
+       {
+        "p": "389, 132",
+        "id": 2,
+        "isEvent": true,
+        "size": "110, 20"
+       }
+      ]
+     }
+    }
+   ],
+   "id": 1,
+   "pinned": true,
+   "finished": false
+  }
+ },
+ "gvars": {
+  "0EricGiveItem4": true
+ }
 }

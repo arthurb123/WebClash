@@ -2,10 +2,11 @@
 .github/
 .vs/
 obf_client/
-server/logs
-server/node_modules
+server/logs/
+server/node_modules/
 server/data/accounts/
 server/data/stats/
+server/data/banks/
 dev/WebClashServer/bin/
 dev/WebClashServer/obj/
 dev/WebClashServer/.vs/

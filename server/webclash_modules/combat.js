@@ -411,10 +411,10 @@ exports.convertActionData = function(actionData, name, direction, character, pvp
         for (let e = 0; e < actionData.elements.length; e++) {
             let h = actionData.elements[e].h*actionData.elements[e].scale;
 
-             actionData.elements[e].y = collection[name].sh-actionData.elements[e].y-h+character.height*2;
+            actionData.elements[e].y = collection[name].sh-actionData.elements[e].y-h+character.height*2;
 
-             if (actionData.elements[e].type === 'projectile')
-                 actionData.elements[e].projectileSpeed.y *= -1;
+            if (actionData.elements[e].type === 'projectile')
+                actionData.elements[e].projectileSpeed.y *= -1;
         }
 
     //Set action data position
@@ -465,6 +465,7 @@ exports.getActionElementFrames = function(name)
             y: action.elements[e].y,
             w: action.elements[e].w,
             h: action.elements[e].h,
+            type: action.elements[e].type,
             scale: action.elements[e].scale
         });
 
