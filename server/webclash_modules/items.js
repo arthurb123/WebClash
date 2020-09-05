@@ -167,7 +167,7 @@ exports.addPlayerItem = function(id, name)
 
     //Sync player item
 
-    server.syncInventoryItem(slot, id, game.players[id].channel);
+    server.syncPlayerInventoryItem(slot, id, game.players[id].channel);
 
     return true;
 };
@@ -300,7 +300,7 @@ exports.removePlayerItem = function(id, name)
 
             //Sync to player
 
-            server.syncInventoryItem(i, id, game.players[id].channel, false);
+            server.syncPlayerInventoryItem(i, id, game.players[id].channel, false);
 
             break;
         }
@@ -356,7 +356,7 @@ exports.setPlayerEquipment = function(id, item)
 
     //Sync equipment to player
 
-    server.syncEquipmentItem(equippable, id, game.players[id].channel, false);
+    server.syncPlayerEquipmentItem(equippable, id, game.players[id].channel);
 
     //Return true
 
@@ -399,11 +399,11 @@ exports.unequipPlayerEquipment = function(id, slot) {
 
     //Sync to others
 
-    server.syncPlayerPartially(id, 'equipment', game.players[id].channel, true);
+    server.syncPlayerPartially(id, 'equipment', game.players[id].channel, false);
 
     //Sync to player
 
-    server.syncEquipmentItem(slot, id, game.players[id].channel, false);
+    server.syncPlayerEquipmentItem(slot, id, game.players[id].channel);
 
     //Return item sound sources
 

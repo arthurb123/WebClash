@@ -125,13 +125,13 @@ exports.refreshPlayer = function(channel, id)
 
             for (let i = 0; i < game.players[id].inventory.length; i++)
                 if (game.players[id].inventory[i] != undefined)
-                    server.syncInventoryItem(i, id, channel, false);
+                    server.syncPlayerInventoryItem(i, id, channel, false);
 
             //Sync equipment
 
             for (let equipment in game.players[id].equipment) {
                 if (equipment != undefined)
-                    server.syncEquipmentItem(equipment, id, channel, false);
+                    server.syncPlayerEquipmentItem(equipment, id, channel, false);
             };
         });
     }
@@ -240,12 +240,47 @@ exports.addPlayer = function(channel)
     }
 };
 
+exports.checkPlayerIntegrity = function(id) {
+    try {
+        //Checks player for data that does not exist
+        //on the server anymore
+
+        //Check for no longer available actions
+
+        for (let action in game.players[id].actions)
+            if (game.players[id].actions[action])
+                if (combat.getAction(game.players[id].actions[action].name) == undefined)
+                    delete game.players[id].actions[action];
+
+        //Check for no longer available items
+
+        for (let item in game.players[id].inventory)
+            if (game.players[id].inventory[item])
+                if (items.getItem(game.players[id].inventory[item]) == undefined)
+                    delete game.players[id].inventory[item];
+
+        //Check for no longer available equipment
+
+        for (let equippable in game.players[id].equipment)
+            if (game.players[id].equipment[equippable])
+                if (items.getItem(game.players[id].equipment[equippable]) == undefined)
+                    delete game.players[id].equipment[equippable];
+    }
+    catch (err) {
+        output.giveError('Could not check player integrity: ', err);
+    }
+};
+
 exports.setupPlayer = function(channel)
 {
     try {
         //Shorten name
 
         let id = channel.name;
+
+        //Check player for integrity
+
+        this.checkPlayerIntegrity(id);
 
         //Sync player to itself
 
@@ -262,16 +297,11 @@ exports.setupPlayer = function(channel)
 
         //Sync inventory
 
-        for (let i = 0; i < game.players[id].inventory.length; i++)
-            if (game.players[id].inventory[i] != undefined)
-                server.syncInventoryItem(i, id, channel, false);
+        server.syncPlayerInventory(id, channel);
 
         //Sync equipment
 
-        for (let equipment in game.players[id].equipment) {
-            if (equipment != undefined)
-                server.syncEquipmentItem(equipment, id, channel, false);
-        };
+        server.syncPlayerEquipment(id, channel);
 
         //Sync equipment to others
 
@@ -1050,10 +1080,21 @@ exports.loadAllCharacters = function(cb)
     let location = 'characters';
 
     fs.readdir(location, (err, files) => {
+        if (err) {
+            output.giveError('Could not load characters: ', err);
+            return;
+        }
+
         let count = 0;
 
         files.forEach(file => {
-            game.characters[file.substr(0, file.lastIndexOf('.'))] = game.loadCharacter(location + '/' + file);
+            let name = file.substr(0, file.lastIndexOf('.'));
+
+            let character = game.loadCharacter(location + '/' + file);
+            if (character == undefined)
+                return;
+
+            game.characters[name] = character;
 
             count++;
         });
@@ -1150,7 +1191,7 @@ exports.calculateFace = function(pos, width, height, direction)
         Y: pos.Y
     };
 
-    //Get supposed pos based on direction
+    //Get supposed position based on direction
 
     switch (direction)
     {

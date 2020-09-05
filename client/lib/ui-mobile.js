@@ -748,7 +748,7 @@ const ui = {
                 if (player.actions[a] == undefined)
                     return;
 
-                if (ui.actionbar.selectedAction === a) 
+                if (ui.actionbar.selectedAction === a)
                     ui.actionbar.selectedAction = -1;
                 else {
                     if (ui.actionbar.selectedAction !== -1) {
@@ -759,7 +759,15 @@ const ui = {
                         oldSlot.style.opacity = ui.actionbar.standardOpacity;
                     }
 
+                    if (player.actions[ui.actionbar.selectedAction])
+                        delete player.actions[a].renderFrames;
+
                     ui.actionbar.selectedAction = a;
+                    player.actions[a].renderFrames = true;
+
+                    setTimeout(() => {
+                        delete player.actions[a].renderFrames;
+                    }, 1000);
                 }
 
                 slot.style.border =

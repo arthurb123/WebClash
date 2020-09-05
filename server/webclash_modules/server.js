@@ -1258,7 +1258,8 @@ exports.syncPlayerPartially = function(id, type, channel, broadcast)
                 if (game.players[id].actions[a] == undefined)
                     continue;
 
-                data.actions[a] =combat.createPlayerSlotAction(game.players[id].actions[a]);
+                if (combat.getAction(game.players[id].actions[a].name) != undefined)
+                    data.actions[a] = combat.createPlayerSlotAction(game.players[id].actions[a]);
             }
             break;
         case 'statusEffects':
@@ -1270,7 +1271,7 @@ exports.syncPlayerPartially = function(id, type, channel, broadcast)
             for (let equipment in game.players[id].equipment) {
                 let item = items.getItem(game.players[id].equipment[equipment]);
 
-                if (item === undefined || item.equippableSource.length == 0)
+                if (item == undefined || item.equippableSource.length === 0)
                     continue;
 
                 data.equipment[equipment] = item.equippableSource;
@@ -1520,6 +1521,91 @@ exports.syncPlayerCancelCast = function(id, channel, broadcast)
     }
 };
 
+//Sync single action slot (for specific player) function
+
+exports.syncPlayerActionSlot = function(slot, id, channel)
+{
+    let data = {
+        slot: slot
+    };
+
+    if (game.players[id].actions[slot] != undefined)
+    {
+        data.action = combat.createPlayerSlotAction(game.players[id].actions[slot]);
+
+        if (data.action === undefined) {
+            data.remove = true;
+            delete data.slot;
+        }
+    }
+    else
+        data.remove = true;
+
+    channel.emit('GAME_ACTION_SLOT_UPDATE', data);
+};
+
+//Sync whole inventory item (for specific player) function
+
+exports.syncPlayerInventory = function(id, channel)
+{
+    for (let i = 0; i < game.players[id].inventory.length; i++)
+        if (game.players[id].inventory[i] != undefined)
+            server.syncPlayerInventoryItem(i, id, channel, false);
+};
+
+//Sync single inventory item (for specific player) function
+
+exports.syncPlayerInventoryItem = function(slot, id, channel)
+{
+    let data = {
+        slot: slot
+    };
+
+    if (game.players[id].inventory[slot] !== undefined)
+    {
+        data.item = items.getConvertedItem(game.players[id].inventory[slot]);
+
+        if (data.item === undefined) {
+            data.remove = true;
+            delete data.item;
+        }
+    }
+    else
+        data.remove = true;
+
+    channel.emit('GAME_INVENTORY_SLOT_UPDATE', data);
+};
+
+exports.syncPlayerEquipment = function(id, channel)
+{
+    for (let equipment in game.players[id].equipment)
+        if (equipment != undefined)
+            server.syncPlayerEquipmentItem(equipment, id, channel);
+};
+
+//Sync single equipment item function, if channel is undefined it will be globally emitted
+
+exports.syncPlayerEquipmentItem = function(equippable, id, channel)
+{
+    let data;
+
+    if (game.players[id].equipment[equippable] !== undefined) {
+        data = items.getConvertedItem(game.players[id].equipment[equippable]);
+
+        if (data === undefined)
+            data = {
+                equippable: equippable,
+                remove: true
+            };
+    } else
+        data = {
+            equippable: equippable,
+            remove: true
+        };
+
+    channel.emit('GAME_EQUIPMENT_SLOT_UPDATE', data);
+};
+
 //Sync NPC action casting function, if channel is undefined it will be globally emitted
 
 exports.syncNPCActionCast = function(map, id, icon, targetTime, channel, broadcast)
@@ -1594,75 +1680,6 @@ exports.removeActionElement = function(id, map, channel, broadcast)
             channel.broadcast.emit('GAME_ACTION_UPDATE', data);
     }
 };
-
-//Sync single action slot (for specific player) function
-
-exports.syncActionSlot = function(slot, id, channel)
-{
-    let data = {
-        slot: slot
-    };
-
-    if (game.players[id].actions[slot] != undefined)
-    {
-        data.action =combat.createPlayerSlotAction(game.players[id].actions[slot]);
-
-        if (data.action === undefined)
-            return;
-    }
-    else
-        data.remove = true;
-
-    channel.emit('GAME_ACTION_SLOT', data);
-};
-
-//Sync single inventory item (for specific player) function
-
-exports.syncInventoryItem = function(slot, id, channel)
-{
-    let data = {
-        slot: slot
-    };
-
-    if (game.players[id].inventory[slot] !== undefined)
-    {
-        data.item = items.getConvertedItem(game.players[id].inventory[slot]);
-
-        if (data.item === undefined)
-            return;
-    }
-    else
-        data.remove = true;
-
-    channel.emit('GAME_INVENTORY_UPDATE', data);
-}
-
-//Sync single equipment item function, if channel is undefined it will be globally emitted
-
-exports.syncEquipmentItem = function(equippable, id, channel, broadcast)
-{
-    let data;
-
-    if (game.players[id].equipment[equippable] !== undefined) {
-        data = items.getConvertedItem(game.players[id].equipment[equippable]);
-
-        if (data === undefined)
-            return;
-    } else
-        data = {
-            equippable: equippable,
-            remove: true
-        };
-
-    if (channel === undefined)
-        io.room(data.map).emit('GAME_EQUIPMENT_UPDATE', data);
-    else {
-        if (broadcast === undefined || !broadcast)
-            channel.emit('GAME_EQUIPMENT_UPDATE', data);
-        else
-            channel.broadcast.emit('GAME_EQUIPMENT_UPDATE', data);
-    }
-}
 
 //Sync single item function, if channel is undefined it will be globally emitted
 

@@ -179,7 +179,7 @@ const player = {
             centerY = lx.GetDimensions().height/2;
 
         if (properties.lockCamera) {
-            let pos = lx.GAME.TRANSLATE_FROM_FOCUS(game.players[game.player].POS);
+            let pos = game.players[game.player].ScreenPosition();
 
             centerX = pos.X+game.players[game.player].SIZE.W/2;
             centerY = pos.Y+game.players[game.player].SIZE.H/2;
@@ -592,6 +592,105 @@ const player = {
                 return i;
     },
 
+    renderActionElements: function(elements) {
+        if (elements == undefined)
+            return;
+
+        //Squash factor that determines the
+        //circle height squash, this gives
+        //the illusion that there is depth
+
+        let squashFactor = .25;
+
+        //Grab player position and size
+
+        let pos  = game.players[game.player].Position();
+        let size = game.players[game.player].Size();
+
+        for (let f = 0; f < elements.frames.length; f++) {
+            let frame = elements.frames[f];
+
+            //Check if cached frame sprite is available
+
+            if (!frame._cachedSprite) {
+                let canvas = new lx.Canvas(frame.w, frame.h);
+
+                canvas.Draw((gfx) => {
+                    gfx.beginPath();
+
+                    gfx.ellipse(
+                        frame.w / 2, 
+                        frame.h / 2, 
+                        frame.w * frame.scale / 2, 
+                        frame.h * frame.scale / 2,
+                        Math.PI / 4, 
+                        0, 
+                        2 * Math.PI
+                    );
+
+                    //Draw filling
+
+                    gfx.fillStyle = '#43BFC7';
+                    gfx.globalAlpha = .25;
+                    gfx.fill();
+
+                    //Draw border
+
+                    gfx.lineWidth = 2;
+                    gfx.strokeStyle = '#43BFC7';
+                    gfx.globalAlpha = '.75';
+                    gfx.stroke();
+
+                    //TODO: Check for projectile, if so
+                    //      draw an arrow for the projectile
+                    //      direction
+
+                    //...
+                });
+
+                frame._cachedSprite = new lx.Sprite(canvas);
+            }
+
+            let sprite = frame._cachedSprite;
+
+            //Change position based on player
+            //direction
+
+            let x = frame.x;
+            let y = frame.y;
+            let w = frame.w * frame.scale;
+            let h = frame.h * frame.scale;
+
+            let direction = game.players[game.player]._direction;
+            switch (direction) {
+                case 1:
+                case 2:
+                    x = frame.y;
+                    y = frame.x;
+
+                    if (direction === 1)
+                        x = elements.sw - x - w;
+                    break;
+                case 3:
+                    y = elements.sh - frame.y - h;
+                    break;
+            }
+
+            //Final translation
+
+            x += pos.X + size.W / 2 - elements.sw / 2;
+            y += pos.Y + size.H / 2 - elements.sh / 2;
+
+            lx.DrawSprite(
+                sprite, 
+                x, 
+                y + h * squashFactor, 
+                w, 
+                h * (1 - squashFactor)
+            );
+        }
+    },
+
     update: function()
     {
         //Update property interaction
@@ -657,6 +756,13 @@ const player = {
     //This gets called before rendering the player
     preDraws: function() 
     {
+        //Draw action elements, if necessary
+
+        for (let a = 0; a < player.actions.length; a++)
+            if (player.actions[a]
+            &&  player.actions[a].renderFrames)
+                player.renderActionElements(player.actions[a].elements);
+
         //Set and render equipment based on direction
 
         let equipment = [];

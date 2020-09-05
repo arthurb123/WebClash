@@ -349,7 +349,7 @@ const client = {
 
             game.createAction(data);
         });
-        channel.on('GAME_ACTION_SLOT', function(data) {
+        channel.on('GAME_ACTION_SLOT_UPDATE', function(data) {
             //Check if the recieved data is valid
 
              if (data === undefined)
@@ -371,7 +371,7 @@ const client = {
 
              ui.actionbar.reloadAction(data.slot);
         });
-        channel.on('GAME_INVENTORY_UPDATE', function(data) {
+        channel.on('GAME_INVENTORY_SLOT_UPDATE', function(data) {
              //Check if the recieved data is valid
 
              if (data === undefined)
@@ -393,7 +393,7 @@ const client = {
 
              ui.inventory.reloadItem(data.slot);
         });
-        channel.on('GAME_EQUIPMENT_UPDATE', function(data) {
+        channel.on('GAME_EQUIPMENT_SLOT_UPDATE', function(data) {
              //Check if the recieved data is valid
 
              if (data === undefined)

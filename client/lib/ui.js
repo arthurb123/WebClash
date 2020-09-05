@@ -649,9 +649,15 @@ const ui = {
         },
         appendActionEventListener: function(slot, a) {
             slot.addEventListener('mouseover', function() {
+                if (player.actions[a] != undefined)
+                    player.actions[a].renderFrames = true;
+
                 ui.actionbar.showDisplayBox(a);
             });
             slot.addEventListener('mouseleave', function() {
+                if (player.actions[a] != undefined)
+                    player.actions[a].renderFrames = false;
+
                 ui.actionbar.removeDisplayBox();
             });
         },

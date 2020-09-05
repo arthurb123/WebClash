@@ -443,6 +443,34 @@ exports.convertActionData = function(actionData, name, direction, character, pvp
     return actionData;
 };
 
+exports.getActionElementFrames = function(name) 
+{
+    //Get action
+
+    let action = this.getAction(name);
+
+    //Setup data
+
+    let data = {
+        sw: action.sw,
+        sh: action.sh,
+        frames: []
+    };
+
+    //Format elements
+
+    for (let e = 0; e < action.elements.length; e++)
+        data.frames.push({
+            x: action.elements[e].x,
+            y: action.elements[e].y,
+            w: action.elements[e].w,
+            h: action.elements[e].h,
+            scale: action.elements[e].scale
+        });
+
+    return data;
+};
+
 exports.hasPlayerAction = function(name, id)
 {
     //Check if player exists
@@ -505,7 +533,7 @@ exports.addPlayerAction = function(name, id, uses)
 
             done = true;
 
-            server.syncActionSlot(a, id, game.players[id].channel);
+            server.syncPlayerActionSlot(a, id, game.players[id].channel);
 
             break;
         }
@@ -611,18 +639,19 @@ exports.createPlayerSlotAction = function(action)
     //Format data
 
     return {
-        name: action.name,
-        uses: action.uses,
-        max: action.max,
-        description: collection[name].description,
-        cooldown: collection[name].cooldown,
         castingTime: collection[name].castingTime,
-        scaling: this.calculateAverageScalingFromAction(name),
-        sounds: collection[name].sounds,
+        cooldown: collection[name].cooldown,
+        description: collection[name].description,
+        elements: this.getActionElementFrames(name),
         heal: collection[name].heal,
         mana: collection[name].mana,
-        src: collection[name].src
-    };
+        max: action.max,
+        name: action.name,
+        scaling: this.calculateAverageScalingFromAction(name),
+        sounds: collection[name].sounds,
+        src: collection[name].src,
+        uses: action.uses
+    }
 };
 
 exports.canPlayerPerformAction = function(slot, id, name) {
