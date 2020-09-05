@@ -1,12 +1,12 @@
 {
- "pass": "6686bc4f9f590da3c25f62d5e07309049b984030cbc6595529a9efcaedf75a17",
- "salt": "4ihyzkaakbv5xxhmgpte5hkynrdubqp",
+ "pass": "d0e14c148c5ac24c870b8afa287a9e30fb27f47b141587fac77cdb5dab3c8d6a",
+ "salt": "zjf375t1j731jp7n8s1l4wt2wntv0mp",
  "created": true,
  "settings": {
   "audio": {
-   "main": 0,
-   "sound": 50,
-   "music": 50
+   "main": 50,
+   "music": 50,
+   "sound": 50
   }
  }
 }

@@ -1170,7 +1170,7 @@ exports.getPlayerCharacters = function()
             src: char.src,
             width: char.width,
             height: char.height,
-            animation: char.animation
+            animations: char.animations
         };
     }
     

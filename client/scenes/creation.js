@@ -14,17 +14,24 @@ const creationScene = new lx.Scene(function() {
         char.height *= scale;
 
         //Wait for sprite to load, when done
-        //create a tilesheet from the loaded sprite
-        //This tilesheet will then be converted to
-        //an animation for easier usage
+        //create an animation using the walking
+        //animation
 
         manager.getSprite(char.src, function(sprite) {
-            if (char.animation.direction === 'horizontal')
-                char.sprite = lx.CreateHorizontalTileSheet(sprite, char.width/scale, char.height/scale);
-            else
-                char.sprite = lx.CreateVerticalTileSheet(sprite, char.width/scale, char.height/scale);
+            let frames = [];
 
-            char.animation = new lx.Animation(char.sprite[0], char.animation.speed);
+            for (let f = 0; f < char.animations.walking.frames[0].length; f++)
+                frames.push(
+                    new lx.Sprite(
+                        sprite.IMG, 
+                        char.animations.walking.frames[0][f].x,
+                        char.animations.walking.frames[0][f].y,
+                        char.width / scale,
+                        char.height / scale
+                    )
+                );
+
+            char.animation = new lx.Animation(frames, char.animations.walking.speed);
         });
 
         //Set max height based on the largest
