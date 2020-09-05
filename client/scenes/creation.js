@@ -41,6 +41,7 @@ const creationScene = new lx.Scene(function() {
         if (char.height > maxHeight)
             maxHeight = char.height;
     }
+    
     //Create current character
 
     let currentCharacter = 0;

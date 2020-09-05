@@ -136,8 +136,12 @@ namespace WebClashServer.Editors
 
             Point sp = new Point(canvas.Width / 2 - character.width / 2, canvas.Height / 2 - character.height / 2);
 
+            //TODO: Change NPC equipment for frame perfect
+            //      equipment fitting using the new animation system
+
             //Draw sprite
 
+            Point2D idleFrame = Characters.GetDefaultIdleFrame(character);
             g.DrawImage(
                 charImage,
                 new Rectangle(
@@ -146,8 +150,8 @@ namespace WebClashServer.Editors
                     character.width, 
                     character.height
                 ),
-                character.width,
-                0,
+                idleFrame.x,
+                idleFrame.y,
                 character.width,
                 character.height,
                 GraphicsUnit.Pixel
@@ -179,8 +183,8 @@ namespace WebClashServer.Editors
                     g.DrawImage(
                         equipmentImages[i].image,
                         new Rectangle(sp.X, sp.Y, character.width, character.height),
-                        animFrame * character.width,
-                        0,
+                        idleFrame.x,
+                        idleFrame.y,
                         character.width,
                         character.height,
                         GraphicsUnit.Pixel

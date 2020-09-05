@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Actions));
             this.canvas = new System.Windows.Forms.PictureBox();
             this.save = new System.Windows.Forms.LinkLabel();
@@ -298,7 +297,7 @@
             // 
             // changeCharacter
             // 
-            this.changeCharacter.Location = new System.Drawing.Point(396, 500);
+            this.changeCharacter.Location = new System.Drawing.Point(396, 12);
             this.changeCharacter.Name = "changeCharacter";
             this.changeCharacter.Size = new System.Drawing.Size(139, 23);
             this.changeCharacter.TabIndex = 18;
@@ -310,7 +309,7 @@
             // 
             this.characterName.AutoSize = true;
             this.characterName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.characterName.Location = new System.Drawing.Point(542, 505);
+            this.characterName.Location = new System.Drawing.Point(542, 17);
             this.characterName.Name = "characterName";
             this.characterName.Size = new System.Drawing.Size(24, 13);
             this.characterName.TabIndex = 19;

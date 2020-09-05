@@ -293,12 +293,14 @@ namespace WebClashServer.Editors
 
                 //Render character
 
+                Point2D idleFrame = Characters.GetDefaultIdleFrame(currentCharacter);
                 g.DrawImage(
                     charImage, 
                     new Rectangle(
                         sp.X, sp.Y, 
-                        currentCharacter.width, currentCharacter.height), 
-                    0, 0,
+                        currentCharacter.width, currentCharacter.height
+                    ), 
+                    idleFrame.x, idleFrame.y,
                     currentCharacter.width, currentCharacter.height, 
                     GraphicsUnit.Pixel
                 );
@@ -386,7 +388,7 @@ namespace WebClashServer.Editors
                     {
                         Pen p = new Pen(Color.FromArgb(125, Color.Black), 6)
                         {
-                            EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor
+                            EndCap = LineCap.ArrowAnchor
                         };
 
                         int x = (int)(cur.x + (cur.w * cur.scale) / 2),

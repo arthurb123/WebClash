@@ -130,15 +130,17 @@ namespace WebClashServer.Editors
 
             //Draw sprite
 
+            Point2D idleFrame = GetDefaultIdleFrame(current);
             g.DrawImage(
                 currentImage, 
                 new Rectangle(
-                    sp.X, 
-                    sp.Y, 
+                    sp.X,
+                    sp.Y,
                     current.width, 
                     current.height
-                ), 
-                0, 0, 
+                ),
+                idleFrame.x,
+                idleFrame.y,
                 current.width, current.height,
                 GraphicsUnit.Pixel
             );
@@ -383,6 +385,14 @@ namespace WebClashServer.Editors
         public bool GetChanged()
         {
             return dataHasChanged;
+        }
+
+        public static Point2D GetDefaultIdleFrame(Character character)
+        {
+            if (character.animations.idle.frames[0].Length > 0)
+                return character.animations.idle.frames[0][0];
+
+            return new Point2D(0, 0);
         }
     }
 

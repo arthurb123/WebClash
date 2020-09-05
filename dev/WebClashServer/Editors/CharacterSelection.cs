@@ -135,6 +135,7 @@ namespace WebClashServer.Editors
 
             //Draw sprite
 
+            Point2D idleFrame = Characters.GetDefaultIdleFrame(currentCharacter);
             g.DrawImage(
                 charImage,
                 new Rectangle(
@@ -143,8 +144,8 @@ namespace WebClashServer.Editors
                     currentCharacter.width, 
                     currentCharacter.height
                 ),
-                currentCharacter.width,
-                0,
+                idleFrame.x,
+                idleFrame.y,
                 currentCharacter.width,
                 currentCharacter.height,
                 GraphicsUnit.Pixel
