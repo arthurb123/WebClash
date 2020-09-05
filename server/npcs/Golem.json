@@ -33,12 +33,12 @@
         },
         {
           "action": "Combust",
-          "range": 2,
+          "range": 4,
           "extraCooldown": 21
         },
         {
           "action": "Dehydrate",
-          "range": 2,
+          "range": 4,
           "extraCooldown": 18
         }
       ],

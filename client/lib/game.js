@@ -21,6 +21,10 @@ const game = {
         //Instantiate Lynx2D GameObject for other player
 
         let go = new lx.GameObject(undefined, 0, 0, 0, 0)
+            .OnMouse(0, function() {
+                if (player.setTarget(go, name))
+                    lx.StopMouse(0);
+            })
             .Loops(function() {
                 //Animate
 
@@ -32,7 +36,10 @@ const game = {
                     this._nameplate.Offset(this.Size().W/2, -12);
 
                     if (this._level !== undefined)
-                        this._nameplate.Text('lvl ' + this._level + ' - ' + this.name);
+                        this._nameplate.Text(
+                            'lvl ' + this._level + ' - ' + this.name
+                            + (player.target === name ? '*' : '')
+                        );
                 }
 
                 //Handle party
@@ -306,6 +313,9 @@ const game = {
     },
     setPlayerHealth: function(id, health)
     {
+        if (this.players[id] == undefined)
+            return;
+
         if (this.players[id]._health !== undefined) {
             let delta = -(this.players[id]._health.cur-health.cur);
 
@@ -393,6 +403,9 @@ const game = {
     },
     setPlayerMana: function(id, mana)
     {
+        if (this.players[id] == undefined)
+            return;
+
         let delta = 0;
         if (this.players[id]._mana != undefined)
             delta = -(this.players[id]._mana.cur-mana.cur);
@@ -617,7 +630,10 @@ const game = {
     
                     if (this._stats !== undefined &&
                         this._type === 'hostile')
-                        this._nameplate.Text('lvl ' + this._stats.level + ' - ' + this.name);
+                        this._nameplate.Text(
+                            'lvl ' + this._stats.level + ' - ' + this.name
+                            + (player.target === id ? '*' : '')
+                        );
                 }
 
                 //Handle healthbar
@@ -866,6 +882,14 @@ const game = {
                 //Request dialog
 
                 channel.emit('CLIENT_REQUEST_DIALOG', id);
+            });
+        }
+        else if (type === 'hostile') {
+            let go = this.npcs[id];
+
+            this.npcs[id].OnMouse(0, function() {
+                if (player.setTarget(go, id))
+                    lx.StopMouse(0);
             });
         }
     },
@@ -1777,6 +1801,65 @@ const game = {
                 damageParticle.Show(2);
             }
         });
+    },
+    calculateTileDistance: function(pos1, pos2, tilewidth, tileheight) {
+        let dx = Math.abs((pos1.X-pos2.X)/tilewidth),
+            dy = Math.abs((pos1.Y-pos2.Y)/tileheight);
+
+        return { x: dx, y: dy };
+    },
+    getPlayerActionPosition: function(targetType) {
+        let targetPos;
+
+        let typeOf = typeof player.target;
+        switch (true) {
+            case typeOf === 'undefined' || 
+                (targetType === 'friendly' && typeOf === 'undefined') || 
+                 targetType === 'none':
+                if (targetType === 'hostile')
+                    return;
+
+                let pos  = game.players[game.player].Position();
+                let size = game.players[game.player].Size();
+
+                targetPos = {
+                    X: pos.X + size.W / 2,
+                    Y: pos.Y + size.H / 2
+                };
+                break;
+            case typeOf === 'string' && 
+                (targetType === 'friendly' || 
+                (targetType === 'hostile' && tiled.pvp)):
+                if (!game.players[player.target]) {
+                    player.target = undefined;
+                    return;
+                }
+
+                let ppos  = game.players[player.target].Position();
+                let psize = game.players[player.target].Size();
+
+                targetPos = {
+                    X: ppos.X + psize.W / 2,
+                    Y: ppos.Y + psize.H / 2
+                };
+                break;
+            case typeOf === 'number' && targetType === 'hostile':
+                if (!game.npcs[player.target]) {
+                    player.target = undefined;
+                    return;
+                }
+
+                let npos  = game.npcs[player.target].Position();
+                let nsize = game.npcs[player.target].Size();
+
+                targetPos = {
+                    X: npos.X + nsize.W / 2,
+                    Y: npos.Y + nsize.H / 2
+                };
+                break;
+        }
+
+        return targetPos;
     },
 
     initialize: function(isMobile)

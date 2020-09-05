@@ -664,6 +664,10 @@ exports.respawnPlayer = function(id)
 
 exports.onPlayerDeath = function(id, pvpKiller)
 {
+    //Reset player target
+
+    game.players[id].channel.emit('GAME_PLAYER_RESET_TARGET');
+
     //Check for all on player death events
 
     let deathEvents = gameplay.onPlayerDeath,

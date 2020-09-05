@@ -20,6 +20,10 @@ namespace WebClashServer.Classes
 
                 name = temp.name;
 
+                targetType = temp.targetType;
+
+                maxRange = temp.maxRange;
+
                 heal = temp.heal;
 
                 mana = temp.mana;
@@ -65,21 +69,22 @@ namespace WebClashServer.Classes
                    sh = 448;
 
         public string name = "New Action";
-
         public string src = "";
-
         public string description = "";
 
         public Element[] elements = new Element[0];
 
         public PossibleSound[] sounds = new PossibleSound[0];
 
-        public int heal = 0,
-                    mana = 0;
+        public string targetType = "none";
+        public int maxRange = 1;
 
-        public int cooldown = 0;
-        public int castingTime = 0;
-    }
+        public int heal = 0,
+                   mana = 0;
+
+        public int cooldown = 0,
+                   castingTime = 0;
+    };
 
     //Element
 
@@ -113,7 +118,7 @@ namespace WebClashServer.Classes
         {
             return MemberwiseClone();
         }
-    }
+    };
 
     public class Scaling
     {
@@ -124,11 +129,11 @@ namespace WebClashServer.Classes
             wisdom = 0.0f,
             toughness = 0.0f,
             vitality = 0.0f;
-    }
+    };
 
     public class Frame
     {
         public int cur = 0;
         public int frame = 0;
-    }
+    };
 }

@@ -254,9 +254,9 @@ const tiled = {
 
             tiled.pvp = map.pvp;
 
-            //Reset the Lynx2D controller target
+            //Restore player focus
 
-            lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
+            player.restoreFocus();
 
             //Start BGM
 

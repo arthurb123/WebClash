@@ -384,6 +384,19 @@ exports.getPartyMembers = function(name) {
     return result;
 };
 
+exports.isMemberOfParty = function(id, name) {
+    if (!this.inParty(id))
+        return false;
+
+    let members = this.getPartyMembers(id);
+
+    for (let m in members)
+        if (members[m] === 'participant' && m === name)
+            return true;
+
+    return false;
+};
+
 exports.sendPartyMessage = function(name, message) {
     if (this.inParty(name)) {
         let members = this.getPartyMembers(name);

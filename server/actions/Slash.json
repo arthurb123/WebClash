@@ -28,7 +28,9 @@
         "vitality": 0.0
       },
       "delay": 0,
-      "statusEffect": ""
+      "statusEffect": "",
+      "snappedX": true,
+      "snappedY": true
     }
   ],
   "sounds": [
@@ -42,6 +44,8 @@
       "src": "res/sounds/actions/swing/swing3.wav"
     }
   ],
+  "targetType": "none",
+  "maxRange": 1,
   "heal": 0,
   "mana": 0,
   "cooldown": 21,

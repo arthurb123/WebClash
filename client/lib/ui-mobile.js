@@ -13,6 +13,7 @@ const ui = {
         this.statusEffects.create();
         this.equipment.create();
         this.status.create();
+        this.target.create();
         this.settings.create();
         this.profile.create();
         this.journal.create();
@@ -29,6 +30,11 @@ const ui = {
     },
     hide: function() {
         view.dom.style.visibility = 'hidden';
+    },
+    setBox: function() {
+        //No saving capabilities are necessary on mobile
+
+        return;
     },
 
     //UI elements
@@ -1559,6 +1565,145 @@ const ui = {
             el.style.width = (value/max)*100 + '%';
 
             t_el.innerHTML = value;
+        }
+    },
+    target:
+    {
+        visible: false,
+        create: function() {
+            this.box = document.createElement('div');
+            this.box.id = 'status_box';
+            this.box.style = 
+                'text-align: center; position: absolute; top: 50%; left: 100%;' +
+                'margin-left: -10px; margin-top: -10px; transform: translate(-100%, -50%);' +
+                'width: 10%; height: auto;';
+
+            view.dom.appendChild(this.box);
+
+            //Setup loop
+
+            lx.Loops(() => {
+                if (this.loop != undefined)
+                    this.loop();
+            });
+
+            //Hide box by default
+
+            this.box.style.visibility = 'hidden';
+        },
+        createContents: function(go) {
+            this.box.clear();
+
+            //Bar creation methods
+
+            const createName = function(type) {
+                let name = document.createElement('p');
+                name.id = 'target_name';
+                name.classList.add('info');
+                name.style.fontSize = '12px';
+
+                switch (true) {
+                    case type === 'hostile' || type === 'friendly' && tiled.pvp:
+                        name.style.color = '#E87651';
+                        break;
+                    case type === 'friendly':
+                        name.style.color = 'whitesmoke';
+                        break;
+                }
+
+                return name;
+            };
+            const createInnerBar = function(id, color) {
+                let inner = document.createElement('div');
+                inner.id = id;
+                inner.classList.add('bar_content');
+                inner.style = 'background-color: ' + color + '; width: 100%;';
+                return inner;
+            };
+            const createInnerText = function(id) {
+                let text = document.createElement('p');
+                text.id = id;
+                text.classList.add('info');
+                text.style = 'transform: translate(0, -80%); margin: 0; font-size: 9px;';
+                return text;
+            };
+            const createBar = function(type) {
+                let bar = document.createElement('div');
+                bar.id = 'target_' + type + '_box';
+                bar.classList.add('bar');
+                bar.style = 'text-align: center; height: 9px; margin-top: 2px;';
+
+                let color = type === 'health' ? '#E87651' : '#2B92ED';
+                bar.appendChild(createInnerBar('target_' + type, color));
+                bar.appendChild(createInnerText('target_' + type + '_text'));
+
+                return bar;
+            };
+
+            //Add name
+
+            this.box.appendChild(createName(go._type), false);
+            this.setName(
+                go.name + " (lvl " + 
+                (typeof player.target === 'string' ? go._level : go._stats.level) + 
+                ")"
+            );
+
+            //Add health
+
+            this.box.appendChild(createBar('health'), false);
+            this.setHealth(go._health.cur, go._health.max);
+
+            //Add mana
+
+            if (go._mana != undefined) {
+                this.box.appendChild(createBar('mana'), false);
+                this.setMana(go._mana.cur, go._mana.max);
+            }
+
+            //Create loop method
+
+            this.loop = () => {
+                if (go == undefined || go._health.cur <= 0) {
+                    ui.target.hide();
+                    return;
+                }
+
+                ui.target.setHealth(go._health.cur, go._health.max);
+                if (go._mana != undefined)
+                    ui.target.setMana(go._mana.cur, go._mana.max);
+            };
+        },
+        setName: function(name) {
+            let el = document.getElementById('target_name');
+
+            el.innerHTML = name;
+        },
+        setHealth: function(value, max) {
+            let el = document.getElementById('target_health'),
+                t_el = document.getElementById('target_health_text');
+
+            el.style.width = (value/max)*100 + '%';
+
+            t_el.innerHTML = value;
+        },
+        setMana: function(value, max) {
+            let el = document.getElementById('target_mana'),
+                t_el = document.getElementById('target_mana_text');
+
+            el.style.width = (value/max)*100 + '%';
+
+            t_el.innerHTML = value;
+        },
+        show: function(go) {
+            this.createContents(go);
+
+            this.box.style.visibility = 'visible';
+        },
+        hide: function() {
+            delete this.loop;
+
+            this.box.style.visibility = 'hidden';
         }
     },
     loot:

@@ -28,7 +28,9 @@
         "vitality": 0.0
       },
       "delay": 6,
-      "statusEffect": ""
+      "statusEffect": "",
+      "snappedX": true,
+      "snappedY": true
     },
     {
       "x": 192,
@@ -53,7 +55,9 @@
         "vitality": 0.0
       },
       "delay": 0,
-      "statusEffect": ""
+      "statusEffect": "",
+      "snappedX": false,
+      "snappedY": false
     },
     {
       "x": 224,
@@ -78,7 +82,9 @@
         "vitality": 0.0
       },
       "delay": 12,
-      "statusEffect": ""
+      "statusEffect": "",
+      "snappedX": false,
+      "snappedY": false
     }
   ],
   "sounds": [
@@ -89,6 +95,8 @@
       "src": "res/sounds/misc/random6.wav"
     }
   ],
+  "targetType": "none",
+  "maxRange": 1,
   "heal": 0,
   "mana": 0,
   "cooldown": 15,

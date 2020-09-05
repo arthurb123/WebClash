@@ -15,6 +15,7 @@ const player = {
         go.Loops(player.update)
           .Draws(player.draws)
           .PreDraws(player.preDraws)
+          .OnMouse(0, player.onMouse)
           .MovementDecelerates(false)
           .Focus();
 
@@ -107,6 +108,10 @@ const player = {
 
         player.statusEffectsMatrix = game.calculateStatusEffectsMatrix(player.statusEffects);
 
+        //Create action element rendering loop
+
+        player.createActionElementRenderingLoop();
+
         //Check if a camera should be created
 
         if (properties.lockCamera)
@@ -152,6 +157,33 @@ const player = {
 
             ui.show();
         }]);
+    },
+    setTarget: function(go, target) {
+        if (player.target === target)
+            return false;
+
+        player.target = target;
+        player.faceMouse();
+
+        if (go != undefined)
+            go.ShowColorOverlay('rgba(255, 255, 255, .5)', 5);
+
+        //Show or hide target UI
+        //based on the target
+
+        if (target == undefined)
+            this.resetTarget();
+        else if (go != undefined)
+            ui.target.show(go);
+
+        return true;
+    },
+    resetTarget: function() {
+        delete player.target;
+
+        //Hide target UI
+
+        ui.target.hide();
     },
 
     forceDirection:
@@ -229,9 +261,22 @@ const player = {
 
         game.players[game.player].Movement(0, 0);
 
+        //Reset player target
+
+        player.resetTarget();
+
         //Remove controller targeting
 
         lx.CONTEXT.CONTROLLER.TARGET = undefined;
+    },
+    restoreFocus: function() {
+        //Reset the Lynx2D controller target
+
+        lx.CONTEXT.CONTROLLER.TARGET = game.players[game.player];
+
+        //Create the player action element rendering loop
+
+        player.createActionElementRenderingLoop();
     },
     propertyInteraction:
     {
@@ -438,6 +483,9 @@ const player = {
         animation.setAnimationState(game.players[game.player], 'casting');
     },
     cancelCastAction: function() {
+        if (player.casting == undefined)
+            return;
+
         //remove currently casting slot
 
         player.casting = undefined;
@@ -479,15 +527,6 @@ const player = {
         if (player.moving && castingTime > 0)
             return;
 
-        //Check if already casting another spell,
-        //if so cancel casting - if it is the same
-        //spell simply return
-
-        if (player.casting !== slot)
-            player.cancelCastAction();
-        else if (player.casting === slot)
-            return;
-
         //Check if cooldown and the cooldown
         //is significantly large enough to
         //give the player feedback
@@ -513,13 +552,78 @@ const player = {
             return;
         }
 
+        //Check if already casting another spell,
+        //if so cancel casting - if it is the same
+        //spell simply return
+
+        if (player.casting !== slot)
+            player.cancelCastAction();
+        else if (player.casting === slot)
+            return;
+
+        //Check if action requires a target,
+        //in this case only if a hostile target
+        //is required
+
+        if (player.actions[slot].targetType === 'hostile') {
+            if (player.target == undefined) {
+                ui.floaties.errorFloaty(
+                    game.players[game.player], 
+                    'No target selected.'
+                );
+
+                return;
+            }
+        }
+
+        if (player.actions[slot].targetType !== 'none') {
+            let targetPos = game.getPlayerActionPosition(player.actions[slot].targetType);
+
+            let pos  = game.players[game.player].Position();
+            let size = game.players[game.player].Size();
+
+            if (targetPos == undefined)
+                targetPos = { 
+                    X: pos.X + size.W / 2,
+                    Y: pos.Y + size.H / 2
+                };
+
+            let distance = game.calculateTileDistance(
+                { 
+                    X: pos.X + size.W / 2,
+                    Y: pos.Y + size.H / 2
+                }, 
+                targetPos, 
+                tiled.tile.width, 
+                tiled.tile.height
+            );
+
+            if (distance.x > player.actions[slot].maxRange ||
+                distance.y > player.actions[slot].maxRange) {
+                ui.floaties.errorFloaty(
+                    game.players[game.player], 
+                    'Out of range.'
+                );
+
+                return;
+            }
+        }
+
+        //Check if target exists
+
+        if (player.target == undefined && player.actions[slot].targetType !== 'friendly')
+            return;
+
         //Face mouse
 
         player.faceMouse();
 
         //Send action request
 
-        channel.emit('CLIENT_PLAYER_ACTION', slot);
+        channel.emit('CLIENT_PLAYER_ACTION', {
+            slot: slot,
+            target: player.target
+        });
     },
 
     setStatusEffects: function(statusEffects) {
@@ -592,6 +696,18 @@ const player = {
                 return i;
     },
 
+    createActionElementRenderingLoop: function() {
+        //Setup action element drawing
+
+        lx.OnLayerDraw(2, () => {
+            //Draw action elements, if necessary
+
+            for (let a = 0; a < player.actions.length; a++)
+                if (player.actions[a]
+                &&  player.actions[a].renderFrames)
+                    player.renderActionElements(player.actions[a].elements);
+        });
+    },
     renderActionElements: function(elements) {
         if (elements == undefined)
             return;
@@ -602,10 +718,11 @@ const player = {
 
         let squashFactor = .25;
 
-        //Grab player position and size
+        //Grab target position
 
-        let pos  = game.players[game.player].Position();
-        let size = game.players[game.player].Size();
+        let pos = game.getPlayerActionPosition(elements.targetType);
+        if (pos == undefined)
+            return;
 
         for (let f = 0; f < elements.frames.length; f++) {
             let frame = elements.frames[f];
@@ -647,33 +764,36 @@ const player = {
 
             let sprite = frame._cachedSprite;
 
-            //Change position based on player
-            //direction
-
             let x = frame.x;
             let y = frame.y;
             let w = frame.w * frame.scale;
             let h = frame.h * frame.scale;
 
-            let direction = game.players[game.player]._direction;
-            switch (direction) {
-                case 1:
-                case 2:
-                    x = frame.y;
-                    y = frame.x;
+            //Change position based on player
+            //direction, if the target type
+            //is none
 
-                    if (direction === 1)
-                        x = elements.sw - x - w;
-                    break;
-                case 3:
-                    y = elements.sh - frame.y - h;
-                    break;
+            if (elements.targetType === 'none') {
+                let direction = game.players[game.player]._direction;
+                switch (direction) {
+                    case 1:
+                    case 2:
+                        x = frame.y;
+                        y = frame.x;
+
+                        if (direction === 1)
+                            x = elements.sw - x - w;
+                        break;
+                    case 3:
+                        y = elements.sh - frame.y - h;
+                        break;
+                }
             }
 
             //Final translation
 
-            x += pos.X + size.W / 2 - elements.sw / 2;
-            y += pos.Y + size.H / 2 - elements.sh / 2;
+            x += pos.X - elements.sw / 2;
+            y += pos.Y - elements.sh / 2;
 
             lx.DrawSprite(
                 sprite, 
@@ -698,8 +818,8 @@ const player = {
 
                 //Get direction unit vector
 
-                let dx = (x + w / 2) - (pos.X + size.W / 2);
-                let dy = (y + h / 2) - (pos.Y + size.H / 2);
+                let dx = (x + w / 2) - pos.X;
+                let dy = (y + h / 2) - pos.Y;
 
                 let len = Math.sqrt(dx * dx + dy * dy);
                 dx /= len;
@@ -796,13 +916,6 @@ const player = {
     //This gets called before rendering the player
     preDraws: function() 
     {
-        //Draw action elements, if necessary
-
-        for (let a = 0; a < player.actions.length; a++)
-            if (player.actions[a]
-            &&  player.actions[a].renderFrames)
-                player.renderActionElements(player.actions[a].elements);
-
         //Set and render equipment based on direction
 
         let equipment = [];
@@ -867,6 +980,10 @@ const player = {
 
             lx.DrawSprite(equipment[i], this.POS.X, this.POS.Y);
         }
+    },
+    onMouse: function() {
+        if (player.setTarget(game.players[game.player], undefined))
+            lx.StopMouse(0);
     },
 
     sync: function(type) {

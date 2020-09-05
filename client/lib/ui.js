@@ -18,6 +18,7 @@ const ui = {
         this.statusEffects.create();
         this.chat.create();
         this.party.create();
+        this.target.create();
 
         this.loot.create();
         this.dialog.create();
@@ -258,7 +259,8 @@ const ui = {
             //Set display based on quest or normal
             //dialog panel
 
-            if (this.cur[id].minLevel != undefined)  //Quest panel
+            if (this.cur[id].minLevel != undefined || //Quest panel,
+                this.cur[id].portrait == undefined)   //or no portrait available
                 contentEl.style.display = 'inherit';
             else //Normal dialog panel
                 contentEl.style.display = 'flex';
@@ -419,7 +421,7 @@ const ui = {
                         if (tagCloseOpen === -1)
                             continue;
 
-                        //Check fi the closing bracket of the closing tag is present
+                        //Check if the closing bracket of the closing tag is present
 
                         let tagCloseClose = text.indexOf('>', tagCloseOpen);
                         if (tagCloseClose === -1)
@@ -1695,6 +1697,141 @@ const ui = {
             t_el.innerHTML = value;
         }
     },
+    target:
+    {
+        create: function() {
+            this.box = new UIBox('target', 'target_box', lx.GetDimensions().width/2-98, 30, 196, undefined);
+
+            this.box.setResizable(false);
+            this.box.setMovable(true);
+            this.box.setTextAlign('center');
+
+            //Setup loop
+
+            lx.Loops(() => {
+                if (this.loop != undefined)
+                    this.loop();
+            });
+
+            //Hide box by default
+
+            this.box.hide();
+        },
+        createContents: function(go) {
+            this.box.clear();
+
+            //Bar creation methods
+
+            const createName = function(type) {
+                let name = document.createElement('p');
+                name.id = 'target_name';
+                name.classList.add('info');
+                name.style.fontSize = '12px';
+
+                switch (true) {
+                    case type === 'hostile' || type === 'friendly' && tiled.pvp:
+                        name.style.color = '#E87651';
+                        break;
+                    case type === 'friendly':
+                        name.style.color = 'whitesmoke';
+                        break;
+                }
+
+                return name;
+            };
+            const createInnerBar = function(id, color) {
+                let inner = document.createElement('div');
+                inner.id = id;
+                inner.classList.add('bar_content');
+                inner.style = 'background-color: ' + color + '; width: 100%;';
+                return inner;
+            };
+            const createInnerText = function(id) {
+                let text = document.createElement('p');
+                text.id = id;
+                text.classList.add('info');
+                text.style = 'transform: translate(0, -80%); margin: 0; font-size: 10px;';
+                return text;
+            };
+            const createBar = function(type) {
+                let bar = document.createElement('div');
+                bar.id = 'target_' + type + '_box';
+                bar.classList.add('bar');
+                bar.style = 'text-align: center;';
+
+                let color = type === 'health' ? '#E87651' : '#2B92ED';
+                bar.appendChild(createInnerBar('target_' + type, color));
+                bar.appendChild(createInnerText('target_' + type + '_text'));
+
+                return bar;
+            };
+
+            //Add name
+
+            this.box.addElement(createName(go._type), false);
+            this.setName(
+                go.name + " (lvl " + 
+                (typeof player.target === 'string' ? go._level : go._stats.level) + 
+                ")"
+            );
+
+            //Add health
+
+            this.box.addElement(createBar('health'), false);
+            this.setHealth(go._health.cur, go._health.max);
+
+            //Add mana
+
+            if (go._mana != undefined) {
+                this.box.addElement(createBar('mana'), false);
+                this.setMana(go._mana.cur, go._mana.max);
+            }
+
+            //Create loop method
+
+            this.loop = () => {
+                if (go == undefined || go._health.cur <= 0) {
+                    ui.target.hide();
+                    return;
+                }
+
+                ui.target.setHealth(go._health.cur, go._health.max);
+                if (go._mana != undefined)
+                    ui.target.setMana(go._mana.cur, go._mana.max);
+            };
+        },
+        setName: function(name) {
+            let el = document.getElementById('target_name');
+
+            el.innerHTML = name;
+        },
+        setHealth: function(value, max) {
+            let el = document.getElementById('target_health'),
+                t_el = document.getElementById('target_health_text');
+
+            el.style.width = (value/max)*100 + '%';
+
+            t_el.innerHTML = value;
+        },
+        setMana: function(value, max) {
+            let el = document.getElementById('target_mana'),
+                t_el = document.getElementById('target_mana_text');
+
+            el.style.width = (value/max)*100 + '%';
+
+            t_el.innerHTML = value;
+        },
+        show: function(go) {
+            this.createContents(go);
+
+            this.box.show();
+        },
+        hide: function() {
+            delete this.loop;
+
+            this.box.hide();
+        }
+    },
     settings:
     {
         visible: false,
@@ -2675,7 +2812,7 @@ const ui = {
     {
         loops: [],
         create: function() {
-            this.box = new UIBox('status_effects', 'status_effects_box', lx.GetDimensions().width/2, 30, undefined, undefined);
+            this.box = new UIBox('status_effects', 'status_effects_box', lx.GetDimensions().width/4, 30, undefined, undefined);
             this.box.setResizable(false);
             this.box.setMovable(true);
             this.box.setTextAlign('center');

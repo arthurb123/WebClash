@@ -275,8 +275,15 @@ const UIBox = function(parent, id, x, y, width, height, appendToBody) {
     };
 
     this.resize = function() {
-        this.element.style.width = this.size.width + 'px';
-        this.element.style.height = this.size.height + 'px';
+        if (this.size.width == undefined)
+            this.element.style.width = 'auto';
+        else
+            this.element.style.width = this.size.width + 'px';
+
+        if (this.size.height == undefined)
+            this.element.style.height = 'auto';
+        else
+            this.element.style.height = this.size.height + 'px';
     };
 
     //Save function

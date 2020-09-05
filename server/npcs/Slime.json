@@ -28,7 +28,7 @@
       "actions": [
         {
           "action": "Dehydrate",
-          "range": 1,
+          "range": 4,
           "extraCooldown": 0
         }
       ],

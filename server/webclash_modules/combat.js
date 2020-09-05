@@ -128,6 +128,7 @@ exports.updateCasting = function(dt) {
                     playerCasting[p].slot, 
                     p, 
                     playerCasting[p].action, 
+                    playerCasting[p].target,
                     playerCasting[p].pvp
                 );
 
@@ -150,7 +151,8 @@ exports.updateCasting = function(dt) {
                     parseInt(map), 
                     parseInt(npc),
                     npcCasting[map][npc].possibleAction,
-                    npcCasting[map][npc].action
+                    npcCasting[map][npc].action,
+                    npcCasting[map][npc].target
                 );
 
                 //Delete casting timer entry for NPC
@@ -380,54 +382,65 @@ exports.convertActionData = function(actionData, name, direction, character, pvp
          for (let e = 0; e < actionData.elements.length; e++) {
             let w = actionData.elements[e].w*actionData.elements[e].scale;
 
-             let x = actionData.elements[e].x;
+            if (actionData.targetType === 'none') {
+                let x = actionData.elements[e].x;
 
-             actionData.elements[e].x = actionData.elements[e].y;
-             actionData.elements[e].y = x+character.height;
+                actionData.elements[e].x = actionData.elements[e].y;
+                actionData.elements[e].y = x + character.height;
+            }
 
-             if (direction == 1) {
-                 actionData.elements[e].x = collection[name].sw-actionData.elements[e].x-w+character.width;
+            if (direction == 1) {
+                if (actionData.targetType === 'none')
+                    actionData.elements[e].x = collection[name].sw - actionData.elements[e].x - w + character.width;
 
-                 if (actionData.elements[e].type === 'projectile') {
-                     let y = actionData.elements[e].projectileSpeed.y;
+                if (actionData.elements[e].type === 'projectile') {
+                    let y = actionData.elements[e].projectileSpeed.y;
 
-                     actionData.elements[e].projectileSpeed.y = actionData.elements[e].projectileSpeed.x;
-                     actionData.elements[e].projectileSpeed.x = -y;
-                 }
-             }
-             else {
-                 actionData.elements[e].x -= character.width;
+                    actionData.elements[e].projectileSpeed.y = actionData.elements[e].projectileSpeed.x;
+                    actionData.elements[e].projectileSpeed.x = -y;
+                }
+            }
+            else {
+                if (actionData.targetType === 'none')
+                    actionData.elements[e].x -= character.width;
 
-                 if (actionData.elements[e].type === 'projectile') {
-                     let y = actionData.elements[e].projectileSpeed.y;
+                if (actionData.elements[e].type === 'projectile') {
+                    let y = actionData.elements[e].projectileSpeed.y;
 
-                     actionData.elements[e].projectileSpeed.y = actionData.elements[e].projectileSpeed.x;
-                     actionData.elements[e].projectileSpeed.x = y;
-                 }
-             }
-         }
+                    actionData.elements[e].projectileSpeed.y = actionData.elements[e].projectileSpeed.x;
+                    actionData.elements[e].projectileSpeed.x = y;
+                }
+            }
+        }
 
     if (direction == 3)
         for (let e = 0; e < actionData.elements.length; e++) {
-            let h = actionData.elements[e].h*actionData.elements[e].scale;
-
-            actionData.elements[e].y = collection[name].sh-actionData.elements[e].y-h+character.height*2;
+            if (actionData.targetType === 'none') {
+                let h = actionData.elements[e].h * actionData.elements[e].scale;
+                actionData.elements[e].y = collection[name].sh - actionData.elements[e].y - h + character.height * 2;
+            }
 
             if (actionData.elements[e].type === 'projectile')
                 actionData.elements[e].projectileSpeed.y *= -1;
         }
 
-    //Set action data position
+    //Transform action data position, based
+    //on the target type
 
-    actionData.pos.X += character.width/2-collection[name].sw/2;
-    actionData.pos.Y += -collection[name].sh/2-character.height/2;
+    if (actionData.targetType === 'none') {
+        actionData.pos.X += character.width/2-collection[name].sw/2;
+        actionData.pos.Y += -collection[name].sh/2-character.height/2;
+    } else {
+        actionData.pos.X -= collection[name].sw / 2;
+        actionData.pos.Y -= collection[name].sh / 2;
+    }
 
     //Set action data sounds
 
     actionData.sounds = collection[name].sounds;
     actionData.centerPosition = {
-        X: actionData.pos.X+collection[name].sw/2,
-        Y: actionData.pos.Y+collection[name].sh/2
+        X: actionData.pos.X+collection[name].sw / 2,
+        Y: actionData.pos.Y+collection[name].sh / 2
     };
 
     //Set action data action
@@ -454,6 +467,7 @@ exports.getActionElementFrames = function(name)
     let data = {
         sw: action.sw,
         sh: action.sh,
+        targetType: action.targetType,
         frames: []
     };
 
@@ -647,15 +661,21 @@ exports.createPlayerSlotAction = function(action)
         heal: collection[name].heal,
         mana: collection[name].mana,
         max: action.max,
-        name: action.name,
+        name: name,
         scaling: this.calculateAverageScalingFromAction(name),
+        targetType: collection[name].targetType,
+        maxRange: collection[name].maxRange,
         sounds: collection[name].sounds,
         src: collection[name].src,
         uses: action.uses
     }
 };
 
-exports.canPlayerPerformAction = function(slot, id, name) {
+exports.canPlayerPerformAction = function(slot, id, target, name, pvp) {
+    //Grab action
+
+    let action = this.getAction(name);
+
     //Check if already casting the same spell
 
     if (playerCasting[id] != undefined &&
@@ -669,8 +689,8 @@ exports.canPlayerPerformAction = function(slot, id, name) {
 
     //Check if player has the necessary mana
 
-    if (collection[name].mana !== 0)
-        if (game.players[id].mana.cur+collection[name].mana < 0)
+    if (action.mana !== 0)
+        if (game.players[id].mana.cur+action.mana < 0)
             return false;
 
     //Check if player has enough usages
@@ -680,11 +700,45 @@ exports.canPlayerPerformAction = function(slot, id, name) {
         game.players[id].actions[slot].uses <= 0)
         return false;
 
+    //Check if player is in range if
+    //the target type is not none
+
+    if (action.targetType !== 'none') {
+        let map = game.players[id].map_id;
+
+        //Check player target
+
+        target = this.checkPlayerTarget(id, action.targetType, target, pvp);
+        if (target == undefined)
+            return false;
+
+        let targetPos = this.getPlayerActionPosition(id, action.targetType, target, pvp);
+
+        let tw = tiled.maps[map].tilewidth;
+        let th = tiled.maps[map].tileheight;
+
+        let distance = game.calculateTileDistance(
+            game.players[id].pos, 
+            targetPos,
+            tw,
+            th
+        );
+
+        if (distance.x > action.maxRange ||
+            distance.y > action.maxRange)
+            return false;
+    }
+
     return true;
 };
 
-exports.performPlayerAction = function(slot, id, pvp) {
+exports.performPlayerAction = function(slot, id, target, pvp) {
     try {
+        //Check if slot exists
+
+        if (!game.players[id].actions[slot])
+            return;
+
         //Grab action name
 
         let name = game.players[id].actions[slot].name;
@@ -696,7 +750,7 @@ exports.performPlayerAction = function(slot, id, pvp) {
 
         //Check if player can perform the action
 
-        if (!this.canPlayerPerformAction(slot, id, name))
+        if (!this.canPlayerPerformAction(slot, id, target, name, pvp))
             return false;
 
         //Start casting
@@ -706,6 +760,7 @@ exports.performPlayerAction = function(slot, id, pvp) {
             pvp: (pvp == undefined ? false : pvp),
             timer: castingTime,
             immediate: (castingTime === 0),
+            target: target,
             slot: slot,
             action: name,
             pos: {
@@ -723,7 +778,7 @@ exports.performPlayerAction = function(slot, id, pvp) {
     }
 };
 
-exports.performNPCAction = function(possibleAction, map, id) {
+exports.performNPCAction = function(possibleAction, map, id, target) {
     try {
         //Start casting
 
@@ -737,7 +792,8 @@ exports.performNPCAction = function(possibleAction, map, id) {
             timer: castingTime,
             immediate: (castingTime === 0),
             possibleAction: possibleAction,
-            action: name
+            action: name,
+            target: target
         };
 
         return true;
@@ -780,7 +836,87 @@ exports.isNPCCasting = function(map, id) {
             !npcCasting[map][id].immediate);
 };
 
-exports.createPlayerAction = function(slot, id, name, pvp)
+exports.checkPlayerTarget = function(id, targetType, target, pvp) {
+    let map = game.players[id].map_id;
+
+    //Check if the target is valid
+
+    switch (true) {
+        case targetType === 'hostile' && pvp:
+        case targetType === 'friendly':
+            //Defer to player itself if no target
+            //was specified
+
+            if ((target == undefined ||                     //No target available
+                typeof target === 'number' ||               //NPC target
+                (typeof target === 'string' && pvp          //Player target and PvP zone
+                && !parties.isMemberOfParty(id, target)))   //In PvP zone, player target is in the same party 
+                && targetType === 'friendly')               //It is a friendly action, in a PvP zone
+                target = id;
+
+            if (target == undefined)
+                return;
+
+            if (game.players[target].map_id !== map ||
+                game.players[target].killed) {
+                    //Send remove target package
+                    
+                    game.players[id].channel.emit('GAME_PLAYER_RESET_TARGET');
+
+                    return;
+                }
+            break;
+        case targetType === 'hostile':
+            if (target == undefined || typeof target === 'string')
+                return;
+
+            if (npcs.onMap[map] == undefined ||
+                npcs.onMap[map][target] == undefined ||
+                npcs.onMap[map][target].killed) {
+                //Send remove target package
+
+                game.players[id].channel.emit('GAME_PLAYER_RESET_TARGET');
+
+                return;
+            }
+            break;
+    }
+
+    return target;
+};
+
+exports.getPlayerActionPosition = function(id, targetType, target, pvp) {
+    let map = game.players[id].map_id;
+
+    let pos;
+    switch (true) {
+        case targetType === 'none':
+            pos = game.calculateFace(
+                game.players[id].pos,
+                game.players[id].character.width,
+                game.players[id].character.height,
+                game.players[id].direction
+            );
+            break;
+        case targetType === 'hostile' && pvp:
+        case targetType === 'friendly':
+            pos = {
+                X: game.players[target].pos.X + game.players[target].character.width / 2,
+                Y: game.players[target].pos.Y + game.players[target].character.height / 2
+            };
+            break;
+        case targetType === 'hostile':
+            pos = {
+                X: npcs.onMap[map][target].pos.X + npcs.onMap[map][target].data.character.width / 2,
+                Y: npcs.onMap[map][target].pos.Y + npcs.onMap[map][target].data.character.height / 2
+            };
+            break;
+    }
+
+    return pos;
+};
+
+exports.createPlayerAction = function(slot, id, name, target, pvp)
 {
     try {
         //Check if player still exists
@@ -788,9 +924,20 @@ exports.createPlayerAction = function(slot, id, name, pvp)
         if (game.players[id] == undefined) 
             return;
 
+        //Get the action and map of the player
+
+        let map = game.players[id].map_id;
+        let action = this.getAction(name);
+
+        //Check if the target is valid
+
+        target = this.checkPlayerTarget(id, action.targetType, target, pvp);
+        if (target == undefined)
+            return;
+
         //Delta player mana usage
 
-        game.deltaManaPlayer(id, collection[name].mana);
+        game.deltaManaPlayer(id, action.mana);
 
         //Decrement action usage if possible
 
@@ -805,15 +952,11 @@ exports.createPlayerAction = function(slot, id, name, pvp)
 
         let actionData = this.convertActionData(
             {
-                pos: game.calculateFace(
-                    game.players[id].pos,
-                    game.players[id].character.width,
-                    game.players[id].character.height,
-                    game.players[id].direction
-                ),
-                map: game.players[id].map_id,
-                elements: deepcopy(collection[name].elements),
+                pos: this.getPlayerActionPosition(id, action.targetType, target, pvp),
+                map: map,
+                elements: deepcopy(action.elements),
                 ownerType: 'player',
+                targetType: action.targetType,
                 owner: id
             },
             name,
@@ -850,7 +993,7 @@ exports.createPlayerAction = function(slot, id, name, pvp)
     }
 };
 
-exports.createNPCAction = function(map, id, possibleAction, name)
+exports.createNPCAction = function(map, id, possibleAction, name, target)
 {
     try {
         //Check if NPC still exists
@@ -858,19 +1001,66 @@ exports.createNPCAction = function(map, id, possibleAction, name)
         if (npcs.onMap[map][id] == undefined)
             return false;
 
+        //Get the action
+
+        let action = this.getAction(name);
+
+        //Check if the target is valid
+
+        switch (action.targetType) {
+            case 'friendly':
+                //Defer to NPC itself if no target
+                //was specified
+
+                if (npcs.onMap[map][id].killed)
+                    return;
+                break;
+            case 'hostile':
+                if (target == undefined)
+                    return;
+
+                if (game.players[target].map_id !== map ||
+                    game.players[target].killed)
+                    return;
+                break;
+        }
+
         //Generate action data
 
-        let actionData = this.convertActionData(
-            {
-                pos: game.calculateFace(
+        //Action position is based on the
+        //the target type
+
+        let pos;
+        switch (action.targetType) {
+            case 'none':
+                pos = game.calculateFace(
                     npcs.onMap[map][id].pos,
                     npcs.onMap[map][id].data.character.width,
                     npcs.onMap[map][id].data.character.height,
                     npcs.onMap[map][id].direction
-                ),
+                );
+                break;
+            case 'friendly':
+                pos = {
+                    X: npcs.onMap[map][id].pos.X + npcs.onMap[map][id].data.character.width / 2,
+                    Y: npcs.onMap[map][id].pos.Y + npcs.onMap[map][id].data.character.height / 2
+                };
+                break;
+            case 'hostile':
+                pos = {
+                    X: game.players[target].pos.X + game.players[target].character.width / 2,
+                    Y: game.players[target].pos.Y + game.players[target].character.height / 2
+                };
+                break;
+        }
+
+        let actionData = this.convertActionData(
+            {
+                pos: pos,
                 map: map,
-                elements: deepcopy(collection[name].elements),
+                elements: deepcopy(action.elements),
                 ownerType: 'npc',
+                targetType: action.targetType,
                 owner: id
             },
             name,
@@ -884,7 +1074,7 @@ exports.createNPCAction = function(map, id, possibleAction, name)
 
         //Set NPC cooldown
 
-        let cooldown = (collection[name].cooldown + possibleAction.extraCooldown);
+        let cooldown = (action.cooldown + possibleAction.extraCooldown);
         cooldown *= npcs.onMap[map][id].statusEffectsMatrix['cooldownTimeFactor'];
 
         npcs.onMap[map][id].combat_cooldown.start(
@@ -911,6 +1101,7 @@ exports.instantiatePlayerActionElement = function(actionData, actionElement) {
         collection[name], 
         true
     );
+
     if (actionData.pvp)
         this.damagePlayers(
             game.players[id].attributes,

@@ -734,14 +734,14 @@ exports.updateNPCCombat = function(map, id, dt)
     };
 
     if (this.onMap[map].direction == 0)
-        npos.Y+=this.onMap[map][id].data.character.height;
+        npos.Y += this.onMap[map][id].data.character.height;
     else if (this.onMap[map].direction == 2)
-        npos.X+=this.onMap[map][id].data.character.width;
+        npos.X += this.onMap[map][id].data.character.width;
 
     let dx = Math.round((ppos.X-npos.X)/tiled.maps[map].tilewidth),
         dy = Math.round((ppos.Y-npos.Y)/tiled.maps[map].tileheight);
 
-    //Check which ability is in range
+    //Check which ability is not on cooldown
 
     let nextAction = -1;
 
@@ -891,11 +891,12 @@ exports.updateNPCCombat = function(map, id, dt)
     if (combat.performNPCAction(
         actionData,
         map,
-        id
+        id,
+        this.onMap[map][id].target
     )) {
         //Grab the actual action
 
-        let action =combat.getAction(actionData.action);
+        let action = combat.getAction(actionData.action);
 
         //Sync casting time
 

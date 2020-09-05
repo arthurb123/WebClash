@@ -321,15 +321,15 @@ exports.handleChannel = function(channel)
 
             let result;
             if (!tiled.maps[game.players[id].map_id].pvp)
-                result =combat.performPlayerAction(data, id, false);
+                result = combat.performPlayerAction(data.slot, id, data.target, false);
             else
-                result =combat.performPlayerAction(data, id, true);
+                result = combat.performPlayerAction(data.slot, id, data.target, true);
 
             //Emit casting action packages to self and others
 
             if (result) {
-                server.syncPlayerActionCast(data, id, channel);
-                server.syncPlayerActionCast(data, id, channel, true);
+                server.syncPlayerActionCast(data.slot, id, channel);
+                server.syncPlayerActionCast(data.slot, id, channel, true);
             }
         }
         catch (err)

@@ -6,8 +6,8 @@
   "description": "Give me that moisture.",
   "elements": [
     {
-      "x": 200,
-      "y": 240,
+      "x": 202,
+      "y": 204,
       "w": 48,
       "h": 48,
       "scale": 1.0,
@@ -28,7 +28,9 @@
         "vitality": 0.0
       },
       "delay": 0,
-      "statusEffect": "Dehydrated"
+      "statusEffect": "Dehydrated",
+      "snappedX": true,
+      "snappedY": true
     }
   ],
   "sounds": [
@@ -36,6 +38,8 @@
       "src": "res/sounds/actions/magic/water1.wav"
     }
   ],
+  "targetType": "hostile",
+  "maxRange": 4,
   "heal": 0,
   "mana": -5,
   "cooldown": 30,

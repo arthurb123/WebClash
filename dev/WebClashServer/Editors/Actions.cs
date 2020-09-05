@@ -145,11 +145,15 @@ namespace WebClashServer.Editors
 
             description.Text = current.description;
 
+            targetType.SelectedItem = current.targetType[0].ToString().ToUpper() + current.targetType.Substring(1, current.targetType.Length - 1);
+            maxRange.Value = current.maxRange;
+            maxRange.Enabled = current.targetType != "none";
+
             heal.Value = current.heal;
             mana.Value = current.mana;
 
-            castingTime.Value = (int)Math.Round((double)current.castingTime * (1000d / 60));
-            cooldown.Value = (int)Math.Round((double)current.cooldown * (1000d / 60));
+            castingTime.Value = (int)Math.Round(current.castingTime * (1000d / 60));
+            cooldown.Value = (int)Math.Round(current.cooldown * (1000d / 60));
 
             if (current.elements.Length > 0)
                 GrabElement(0);
@@ -617,9 +621,21 @@ namespace WebClashServer.Editors
             current.name = name.Text;
         }
 
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        private void description_TextChanged(object sender, EventArgs e)
         {
             current.description = description.Text;
+        }
+
+        private void targetType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            current.targetType = targetType.SelectedItem.ToString().ToLower();
+
+            maxRange.Enabled = current.targetType != "none";
+        }
+
+        private void maxRange_ValueChanged(object sender, EventArgs e)
+        {
+            current.maxRange = (int)maxRange.Value;
         }
 
         private void heal_ValueChanged(object sender, EventArgs e)
@@ -880,12 +896,15 @@ namespace WebClashServer.Editors
                     if (img == null)
                         continue;
 
-                    if (cur.direction == "horizontal" &&
-                        elementFrames[cur].frame * cur.w >= img.Width)
-                        finished[cur] = true;
-                    else if (cur.direction == "vertical" &&
-                        elementFrames[cur].frame * cur.h >= img.Height)
-                        finished[cur] = true;
+                    lock (img)
+                    {
+                        if (cur.direction == "horizontal" &&
+                            elementFrames[cur].frame * cur.w >= img.Width)
+                            finished[cur] = true;
+                        else if (cur.direction == "vertical" &&
+                            elementFrames[cur].frame * cur.h >= img.Height)
+                            finished[cur] = true;
+                    }
 
                     //Set animation timer to zero
 

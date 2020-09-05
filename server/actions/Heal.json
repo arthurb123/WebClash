@@ -28,7 +28,9 @@
         "vitality": 0.0
       },
       "delay": 0,
-      "statusEffect": "Test"
+      "statusEffect": "Test",
+      "snappedX": false,
+      "snappedY": false
     }
   ],
   "sounds": [
@@ -36,6 +38,8 @@
       "src": "res/sounds/actions/magic/magic2.wav"
     }
   ],
+  "targetType": "friendly",
+  "maxRange": 4,
   "heal": 15,
   "mana": -10,
   "cooldown": 300,
