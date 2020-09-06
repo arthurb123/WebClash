@@ -104,7 +104,7 @@ const manager = {
         //other manipulations)
 
         else {
-            let copy = new lx.Sprite(this.sprites[src].IMG);
+            let copy = new lx.Sprite(this.sprites[src].Image());
 
             if (cb == undefined)
                 return copy;

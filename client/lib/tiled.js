@@ -681,7 +681,7 @@ const tiled = {
 
                     //Add sprites and frames to end result
 
-                    let actualSprite = new lx.Sprite(sprite.IMG.src, tc.x, tc.y, tileset.tilewidth, tileset.tileheight);
+                    let actualSprite = new lx.Sprite(sprite.Image().src, tc.x, tc.y, tileset.tilewidth, tileset.tileheight);
                     actualSprite.Opacity((opacity != undefined ? opacity : 1));
 
                     sprites.push(actualSprite);

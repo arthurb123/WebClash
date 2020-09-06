@@ -864,49 +864,47 @@ const player = {
 
             //If projectile, draw arrow
 
-            //TODO: Clean this up, use
-            //      lx.Draw when implemented
+            if (frame.type === 'projectile')
+                lx.Draw(function(gfx) {
+                    gfx.save();
 
-            if (frame.type === 'projectile') {
-                lx.CONTEXT.GRAPHICS.save();
+                    //Get projectile distance
 
-                //Get projectile distance
+                    let scale = lx.Scale();
+                    let projectileDistance = (tiled.tile.width + tiled.tile.height) / 2 * scale;
 
-                let scale = lx.Scale();
-                let projectileDistance = (tiled.tile.width + tiled.tile.height) / 2 * scale;
+                    //Get direction unit vector
 
-                //Get direction unit vector
+                    let dx = (x + w / 2) - pos.X;
+                    let dy = (y + h / 2) - pos.Y;
 
-                let dx = (x + w / 2) - pos.X;
-                let dy = (y + h / 2) - pos.Y;
+                    let len = Math.sqrt(dx * dx + dy * dy);
+                    dx /= len;
+                    dy /= len;
 
-                let len = Math.sqrt(dx * dx + dy * dy);
-                dx /= len;
-                dy /= len;
+                    //Calculate end position in screen space
 
-                //Calculate end position in screen space
+                    let screenPos = lx.GAME.TRANSLATE_FROM_FOCUS({ X: x, Y: y });
+                    let startX = screenPos.X + w * scale / 2 + h * squashFactor;
+                    let startY = screenPos.Y + h * scale / 2;
+                    let endX = startX + projectileDistance * dx
+                    let endY = startY + projectileDistance * dy;
 
-                let screenPos = lx.GAME.TRANSLATE_FROM_FOCUS({ X: x, Y: y });
-                let startX = screenPos.X + w * scale / 2 + h * squashFactor;
-                let startY = screenPos.Y + h * scale / 2;
-                let endX = startX + projectileDistance * dx
-                let endY = startY + projectileDistance * dy;
+                    //Draw arrow
 
-                //Draw arrow
+                    gfx.beginPath();
 
-                lx.CONTEXT.GRAPHICS.beginPath();
+                    gfx.moveTo(startX, startY);
+                    gfx.lineTo(endX, endY);
 
-                lx.CONTEXT.GRAPHICS.moveTo(startX, startY);
-                lx.CONTEXT.GRAPHICS.lineTo(endX, endY);
+                    gfx.lineCap = 'round';
+                    gfx.lineWidth = 2 * scale;
+                    gfx.strokeStyle = '#43BFC7';
+                    gfx.globalAlpha = .75;
+                    gfx.stroke();
 
-                lx.CONTEXT.GRAPHICS.lineCap = 'round';
-                lx.CONTEXT.GRAPHICS.lineWidth = 2 * scale;
-                lx.CONTEXT.GRAPHICS.strokeStyle = '#43BFC7';
-                lx.CONTEXT.GRAPHICS.globalAlpha = .75;
-                lx.CONTEXT.GRAPHICS.stroke();
-
-                lx.CONTEXT.GRAPHICS.restore();
-            }
+                    gfx.restore();
+                });
         }
     },
 

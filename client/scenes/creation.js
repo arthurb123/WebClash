@@ -23,7 +23,7 @@ const creationScene = new lx.Scene(function() {
             for (let f = 0; f < char.animations.walking.frames[0].length; f++)
                 frames.push(
                     new lx.Sprite(
-                        sprite.IMG, 
+                        sprite.Image(), 
                         char.animations.walking.frames[0][f].x,
                         char.animations.walking.frames[0][f].y,
                         char.width / scale,
