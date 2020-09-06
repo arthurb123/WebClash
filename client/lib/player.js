@@ -691,18 +691,26 @@ const player = {
                 //Play a possible sound effect,
                 //if available
 
-                if (statusEffects[effect].sounds.length > 0) {
-                    let sound = Math.round(Math.random() * (statusEffects[effect].sounds.length - 1));
-                    sound = statusEffects[effect].sounds[sound];
+                game.playStatusEffectSoundEffect(
+                    statusEffects[effect].sounds,
+                    game.npcs[id].Position(),
+                    game.npcs[id].Size()
+                );
+            }
+            else {
+                //Play a possible sound effect,
+                //if available
 
-                    let pos  = game.players[game.player].Position();
-                    let size = game.players[game.player].Size();
+                if (this.statusEffects[effect].elapsed > statusEffects[effect].elapsed)
+                    this.playStatusEffectSoundEffect(
+                        statusEffects[effect].sounds,
+                        game.npcs[id].Position(),
+                        game.npcs[id].Size()
+                    );
 
-                    audio.playSoundAtPosition(sound, { 
-                        X: pos.X + size.W / 2, 
-                        Y: pos.Y + size.H / 2 
-                    });
-                }
+                //Set elapsed
+
+                this.statusEffects[effect].elapsed = statusEffects[effect].elapsed;
             }
         }
 

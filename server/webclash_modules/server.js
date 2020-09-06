@@ -1396,8 +1396,10 @@ exports.syncNPCPartially = function(map, id, type, channel)
             break;
         case 'inCombat':
             data.inCombat = (npcs.onMap[map][id].target !== -1);
+            break;
         case 'showNameplate':
             data.showNameplate = npcs.onMap[map][id].data.showNameplate;
+            break;
     }
 
     //Emit

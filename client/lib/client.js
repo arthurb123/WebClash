@@ -323,8 +323,8 @@ const client = {
             if (data.inCombat != undefined)
                 game.npcs[data.id]._inCombat = data.inCombat;
             if (data.showNameplate != undefined)
-                game.npcs[data.id]._showNamplate = data.showNameplate;
-            if (data.statusEffects !== undefined)
+                game.npcs[data.id]._showNameplate = data.showNameplate;
+            if (data.statusEffects != undefined)
                 game.setNPCStatusEffects(data.id, data.statusEffects);
         });
         channel.on('GAME_ACTION_UPDATE', function (data) {

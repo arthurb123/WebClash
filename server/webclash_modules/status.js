@@ -260,7 +260,7 @@ exports.updateStatusEffects = function(dt) {
 
                 //Check if dead
 
-                if (npc.killed)
+                if (npcs.onMap[m][n] == undefined || npc.killed)
                     continue;
 
                 //Update all status effects
@@ -333,7 +333,7 @@ exports.updateStatusEffects = function(dt) {
         if (tick)
             elapsed = 0;
         else
-            elapsed+=dt;
+            elapsed += dt;
     }
     catch (err) {
         output.giveError('Could not update status effects: ', err);

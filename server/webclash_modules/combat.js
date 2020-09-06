@@ -842,7 +842,7 @@ exports.checkPlayerTarget = function(id, targetType, target, pvp) {
     //Check if the target is valid
 
     switch (true) {
-        case targetType === 'hostile' && pvp:
+        case targetType === 'hostile' && (typeof target === 'string' && pvp):
         case targetType === 'friendly':
             //Defer to player itself if no target
             //was specified
@@ -854,7 +854,7 @@ exports.checkPlayerTarget = function(id, targetType, target, pvp) {
                 && targetType === 'friendly')               //It is a friendly action, in a PvP zone
                 target = id;
 
-            if (target == undefined)
+            if (target == undefined || game.players[target] == undefined)
                 return;
 
             if (game.players[target].map_id !== map ||
@@ -898,7 +898,7 @@ exports.getPlayerActionPosition = function(id, targetType, target, pvp) {
                 game.players[id].direction
             );
             break;
-        case targetType === 'hostile' && pvp:
+        case targetType === 'hostile' && (typeof target === 'string' && pvp):
         case targetType === 'friendly':
             pos = {
                 X: game.players[target].pos.X + game.players[target].character.width / 2,

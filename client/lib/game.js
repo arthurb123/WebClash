@@ -492,19 +492,12 @@ const game = {
 
                 //Play a possible sound effect,
                 //if available
-
-                if (statusEffects[effect].sounds.length > 0) {
-                    let sound = Math.round(Math.random() * (statusEffects[effect].sounds.length - 1));
-                    sound = statusEffects[effect].sounds[sound];
-
-                    let pos  = game.players[id].Position();
-                    let size = game.players[id].Size();
-
-                    audio.playSoundAtPosition(sound, { 
-                        X: pos.X + size.W / 2, 
-                        Y: pos.Y + size.H / 2 
-                    });
-                }
+                
+                this.playStatusEffectSoundEffect(
+                    statusEffects[effect].sounds,
+                    this.players[id].Position(),
+                    this.players[id].Size()
+                );
 
                 //Create status effect element
 
@@ -529,6 +522,19 @@ const game = {
                     .Show();
 
                 adjustElements = true;
+            }
+            else {
+                //Play a possible sound effect,
+                //if available
+
+                if (this.players[id]._statusEffectElements[effect]._elapsed > statusEffects[effect].elapsed) 
+                    this.playStatusEffectSoundEffect(
+                        statusEffects[effect].sounds,
+                        this.players[id].Position(),
+                        this.players[id].Size()
+                    );
+
+                this.players[id]._statusEffectElements[effect]._elapsed = statusEffects[effect].elapsed;
             }
         }
 
@@ -1005,18 +1011,11 @@ const game = {
                 //Play a possible sound effect,
                 //if available
 
-                if (statusEffects[effect].sounds.length > 0) {
-                    let sound = Math.round(Math.random() * (statusEffects[effect].sounds.length - 1));
-                    sound = statusEffects[effect].sounds[sound];
-
-                    let pos  = this.npcs[id].Position();
-                    let size = this.npcs[id].Size();
-
-                    audio.playSoundAtPosition(sound, { 
-                        X: pos.X + size.W / 2, 
-                        Y: pos.Y + size.H / 2 
-                    });
-                }
+                this.playStatusEffectSoundEffect(
+                    statusEffects[effect].sounds,
+                    this.npcs[id].Position(),
+                    this.npcs[id].Size()
+                );
 
                 //Create status effect element
 
@@ -1041,6 +1040,19 @@ const game = {
                     .Show();
 
                 adjustElements = true;
+            }
+            else {
+                //Play a possible sound effect,
+                //if available
+
+                if (this.npcs[id]._statusEffectElements[effect]._elapsed > statusEffects[effect].elapsed)
+                    this.playStatusEffectSoundEffect(
+                        statusEffects[effect].sounds,
+                        this.npcs[id].Position(),
+                        this.npcs[id].Size()
+                    );
+
+                this.npcs[id]._statusEffectElements[effect]._elapsed = statusEffects[effect].elapsed;
             }
         }
 
@@ -1517,11 +1529,11 @@ const game = {
 
         //Setup countdown timer
 
-        let elapsed  = statusEffect.elapsed;
-        let duration = statusEffect.duration;
+        slot._elapsed  = statusEffect.elapsed;
+        slot._duration = statusEffect.duration;
 
         slot.Loops(function() {
-            let remaining = duration - elapsed;
+            let remaining = this._duration - this._elapsed;
 
             //Check if finished
 
@@ -1541,11 +1553,11 @@ const game = {
 
             //Adjust countdown progress
 
-            slot.Progress((remaining / duration) * 100);
+            slot.Progress((remaining / this._duration) * 100);
 
             //Increment elapsed
 
-            elapsed++;
+            this._elapsed++;
         });
 
         return slot;
@@ -1592,6 +1604,17 @@ const game = {
             }
             else
                 pos.X += elementSize + padding;
+        }
+    },
+    playStatusEffectSoundEffect(soundEffects, position, size) {
+        if (soundEffects.length > 0) {
+            let sound = Math.round(Math.random() * (soundEffects.length - 1));
+            sound = soundEffects[sound];
+
+            audio.playSoundAtPosition(sound, { 
+                X: position.X + size.W / 2, 
+                Y: position.Y + size.H / 2 
+            });
         }
     },
 
