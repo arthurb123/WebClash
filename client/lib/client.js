@@ -322,6 +322,8 @@ const client = {
                 game.npcs[data.id]._aggressive = data.aggressive;
             if (data.inCombat != undefined)
                 game.npcs[data.id]._inCombat = data.inCombat;
+            if (data.showNameplate != undefined)
+                game.npcs[data.id]._showNamplate = data.showNameplate;
             if (data.statusEffects !== undefined)
                 game.setNPCStatusEffects(data.id, data.statusEffects);
         });

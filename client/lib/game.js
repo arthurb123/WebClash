@@ -615,7 +615,11 @@ const game = {
 
                 //Handle nameplate
 
-                if (this._nameplate != undefined) {
+                if (!this._showNameplate)
+                    this._nameplate.Hide();
+                else if (this._nameplate != undefined) {
+                    this._nameplate.Show();
+
                     if (this._nameplate.Offset().X === 0)
                         this._nameplate.Offset(this.Size().W/2, -12);
     
@@ -783,14 +787,12 @@ const game = {
 
         //Create nameplate
 
-        if (name.length > 0) {
-            go._nameplate = new lx.UIText(name, 0, 0, 14)
-                .Alignment('center')
-                .Follows(go)
-                .Show();
+        go._nameplate = new lx.UIText(name, 0, 0, 14)
+            .Alignment('center')
+            .Follows(go)
+            .Show();
 
-            go._nameplate.SetShadow('rgba(0,0,0,.85)', 0, .85);
-        }
+        go._nameplate.SetShadow('rgba(0,0,0,.85)', 0, .85);
 
         //Create casting progress bar
 
@@ -1875,6 +1877,10 @@ const game = {
             .Initialize(document.title)
             .Smoothing(false)
             .Start(60);
+
+        //Enable vertical sync by default
+
+        lx.VerticalSync(true);
 
         //Check if is mobile
 

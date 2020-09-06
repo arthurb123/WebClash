@@ -1356,9 +1356,6 @@ exports.syncNPCPartially = function(map, id, type, channel)
         name: npcs.onMap[map][id].data.name
     };
 
-    if (!npcs.onMap[map][id].data.showNameplate)
-        data.name = '';
-
     //Get specific data type
 
     switch (type)
@@ -1399,6 +1396,8 @@ exports.syncNPCPartially = function(map, id, type, channel)
             break;
         case 'inCombat':
             data.inCombat = (npcs.onMap[map][id].target !== -1);
+        case 'showNameplate':
+            data.showNameplate = npcs.onMap[map][id].data.showNameplate;
     }
 
     //Emit
@@ -1432,6 +1431,7 @@ exports.syncNPC = function(map, id, channel)
     this.syncNPCPartially(map, id, 'type', channel);
     this.syncNPCPartially(map, id, 'aggressive', channel);
     this.syncNPCPartially(map, id, 'inCombat', channel);
+    this.syncNPCPartially(map, id, 'showNameplate', channel);
 
     //Some NPCs don't have stats, so we dont send it if
     //it is empty. Otherwise send stats and other combat
