@@ -662,6 +662,12 @@ const ui = {
 
                 ui.actionbar.removeDisplayBox();
             });
+            slot.addEventListener('click', function() {
+                if (player.actions[a] == undefined)
+                    return;
+
+                player.performAction(a, true);
+            });
         },
         addLoops: function(cb) {
             for (let l = 0; l < this.loops.length+1; l++)
@@ -1791,6 +1797,7 @@ const ui = {
 
             this.loop = () => {
                 if (go == undefined || go._health.cur <= 0) {
+                    delete player.target;
                     ui.target.hide();
                     return;
                 }
@@ -1921,6 +1928,7 @@ const ui = {
                     ui.actionbar.box.reset();
                     ui.equipment.box.reset();
                     ui.party.box.reset();
+                    ui.target.box.reset();
     
                     ui.boxes = {};
     

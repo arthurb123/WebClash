@@ -1814,7 +1814,7 @@ const game = {
         let typeOf = typeof player.target;
         switch (true) {
             case typeOf === 'undefined' || 
-                (targetType === 'friendly' && typeOf === 'undefined') || 
+                (targetType === 'friendly' && typeOf !== 'string') || 
                  targetType === 'none':
                 if (targetType === 'hostile')
                     return;

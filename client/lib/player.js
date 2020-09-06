@@ -33,45 +33,96 @@ const player = {
         if (!game.isMobile) {
             //Mouse event handlers
 
+            let holdingLeft = false;
             lx.OnMouse(0, function(data) {
-                if (data.state == 0 ||
-                    lx.CONTEXT.CONTROLLER.MOUSE.BUTTONS[1])
+                if (data.state === 0) {
+                    holdingLeft = false;
                     return;
+                }
 
-                player.performAction(0);
-            });
-            lx.OnMouse(2, function(data) {
-                if (data.state == 0 ||
-                    lx.CONTEXT.CONTROLLER.MOUSE.BUTTONS[0])
-                    return;
-
-                player.performAction(1);
-            });
-
-            //Key event handlers
-
-            for (let i = 1; i < 6; i++)
-                lx.OnKey(i, function(data) {
-                    if (data.state == 0 || 
-                        ui.chat.isTyping())
-                        return;
-
-                    player.performAction(i+1);
-                });
-        }
-        else {
-            //Mobile mouse event handler
-
-            lx.OnMouse(0, function(data) {
                 if (ui.dialog.showing   || 
                     ui.profile.showing  || 
                     ui.settings.showing || 
                     ui.journal.showing  ||
-                    data.state === 0)
+                    lx.CONTEXT.CONTROLLER.MOUSE.BUTTONS[1])
                     return;
 
-                if (ui.actionbar.selectedAction !== -1)
+                if (holdingLeft &&
+                    ui.actionbar.onCooldown[0] != undefined)
+                    return;
+
+                player.performAction(0);
+                holdingLeft = true;
+            });
+
+            let holdingRight = false;
+            lx.OnMouse(2, function(data) {
+                if (data.state === 0) {
+                    holdingRight = false;
+                    return;
+                }
+
+                if (ui.dialog.showing   || 
+                    ui.profile.showing  || 
+                    ui.settings.showing || 
+                    ui.journal.showing  ||
+                    lx.CONTEXT.CONTROLLER.MOUSE.BUTTONS[0])
+                    return;
+
+                if (holdingRight &&
+                    ui.actionbar.onCooldown[1] != undefined)
+                    return;
+
+                player.performAction(1);
+                holdingRight = true;
+            });
+
+            //Key event handlers
+
+            for (let i = 1; i < 6; i++) {
+                let holding = false;
+                lx.OnKey(i, function(data) {
+                    if (data.state === 0) {
+                        holding = false;
+                        return;
+                    }
+
+                    if (ui.chat.isTyping())
+                        return;
+
+                    if (holding &&
+                        ui.actionbar.onCooldown[i+1] != undefined)
+                        return;
+
+                    player.performAction(i+1);
+                    holding = true;
+                });
+            }
+        }
+        else {
+            //Mobile mouse event handler
+
+            let holding = false;
+            lx.OnMouse(0, function(data) {
+                if (data.state === 0) {
+                    holding = false;
+                    return;
+                }
+
+                if (ui.dialog.showing   || 
+                    ui.profile.showing  || 
+                    ui.settings.showing || 
+                    ui.journal.showing)
+                    return;
+
+                if (ui.actionbar.selectedAction !== -1) {
+                    if (holding &&
+                        ui.actionbar.onCooldown[ui.actionbar.selectedAction] != undefined)
+                        return;
+
                     player.performAction(ui.actionbar.selectedAction);
+                    holding = true;
+                }
             });
         }
 
@@ -509,7 +560,7 @@ const player = {
 
         ui.actionbar.reloadAction(slot);
     },
-    performAction: function(slot)
+    performAction: function(slot, skipFacing)
     {
         //Check if valid
 
@@ -532,11 +583,10 @@ const player = {
         //give the player feedback
         
         if (ui.actionbar.onCooldown[slot] != undefined) {
-            if (ui.actionbar.onCooldown[slot] > 60)
-                ui.floaties.errorFloaty(
-                    game.players[game.player], 
-                    player.actions[slot].name + ' is on cooldown.'
-                );
+            ui.floaties.errorFloaty(
+                game.players[game.player], 
+                player.actions[slot].name + ' is on cooldown.'
+            );
 
             return;
         }
@@ -614,9 +664,10 @@ const player = {
         if (player.target == undefined && player.actions[slot].targetType !== 'friendly')
             return;
 
-        //Face mouse
+        //Face mouse, if necessary
 
-        player.faceMouse();
+        if (!skipFacing)
+            player.faceMouse();
 
         //Send action request
 
