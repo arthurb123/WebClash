@@ -51,7 +51,7 @@ namespace WebClashServer.Editors
             {
                 Logger.Error("Could not load dialog list", exc);
             }
-            
+
             if (current == -1 &&
                 dialogs.Count > 0)
                 dialogueList.SelectedItem = dialogueList.Items[0];
@@ -115,14 +115,15 @@ namespace WebClashServer.Editors
                 return;
 
             Dialogue mapDialogue = new Dialogue(
-                dialogs[current].dialog.ToList(), 
-                dialogs[current].dialogElements.ToList(), 
+                dialogs[current].dialog.ToList(),
+                dialogs[current].dialogElements.ToList(),
                 DialogueType.Map
             );
 
             mapDialogue.Text = "Edit dialogue for '" + dialogs[current].name + "'";
 
-            mapDialogue.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            mapDialogue.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 dialogs[current].dialog = mapDialogue.dialogSystem.items.ToArray();
                 dialogs[current].dialogElements = mapDialogue.elements.ToArray();
             };

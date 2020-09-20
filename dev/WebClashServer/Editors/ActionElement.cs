@@ -236,7 +236,7 @@ namespace WebClashServer.Editors
 
         private void delay_ValueChanged(object sender, EventArgs e)
         {
-            current.delay = (int)Math.Round((double)delay.Value / (1000d/60d));
+            current.delay = (int)Math.Round((double)delay.Value / (1000d / 60d));
         }
 
         private void animationEnabled_CheckedChanged(object sender, EventArgs e)

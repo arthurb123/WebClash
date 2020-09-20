@@ -60,10 +60,10 @@ namespace WebClashServer.Editors
         {
             if (mapName == string.Empty)
                 return;
-           
+
             current = new Map(Program.main.serverLocation + "/maps/" + mapName + ".json");
             currentMetadata = new MapMetadata(Program.main.serverLocation + "/maps/" + mapName + ".metadata.json");
-            
+
             mapSize.Text = current.width + "x" + current.height;
             mapTilesets.Text = current.tilesets.Length.ToString();
 
@@ -178,7 +178,7 @@ namespace WebClashServer.Editors
 
         private bool CheckTileset(Tileset ts)
         {
-            string clientLocation = Program.main.clientLocation + "/res/tilesets/";
+            string clientLocation = Program.main.ClientLocation + "/res/tilesets/";
 
             int s = ts.image.LastIndexOf("/") + 1;
 
@@ -207,7 +207,7 @@ namespace WebClashServer.Editors
 
                     ImportTilesets();
 
-                    SaveBGMSource("");
+                    SaveBgmSource("");
                     SaveMapType("Protected");
                     SaveMapAlwaysDark(false);
                     SaveMapDayNight(false);
@@ -261,7 +261,8 @@ namespace WebClashServer.Editors
                 dayNight.Enabled = false;
                 alwaysDark.Enabled = false;
                 return;
-            } else
+            }
+            else
             {
                 mapType.Enabled = true;
                 bgmSource.Enabled = true;
@@ -317,16 +318,17 @@ namespace WebClashServer.Editors
 
                                 continue;
                             }
-                                
+
                         }
 
-                        if (temp == null) {
+                        if (temp == null)
+                        {
                             Logger.Error("Tileset '" + name + "' could not be imported.");
 
                             continue;
                         }
 
-                        string clientLocation = Program.main.clientLocation + "/res/tilesets/";
+                        string clientLocation = Program.main.ClientLocation + "/res/tilesets/";
 
                         temp.Save(clientLocation + name);
 
@@ -374,10 +376,10 @@ namespace WebClashServer.Editors
             if (mapList.SelectedIndex == -1 || bgmSource.Text.Length == 0)
                 return;
 
-            SaveBGMSource(bgmSource.Text);
+            SaveBgmSource(bgmSource.Text);
         }
 
-        private void SaveBGMSource(string bgmSourceString)
+        private void SaveBgmSource(string bgmSourceString)
         {
             if (bgmSourceString == currentMetadata.bgmSource)
                 return;
@@ -500,7 +502,7 @@ namespace WebClashServer.Editors
         private void SaveMetadata()
         {
             File.WriteAllText(
-                Program.main.serverLocation + "/maps/" + mapList.SelectedItem.ToString() + ".metadata.json", 
+                Program.main.serverLocation + "/maps/" + mapList.SelectedItem.ToString() + ".metadata.json",
                 JsonConvert.SerializeObject(currentMetadata)
             );
 
@@ -515,7 +517,7 @@ namespace WebClashServer.Editors
 
     public class Map
     {
-        public Map (string src)
+        public Map(string src)
         {
             try
             {

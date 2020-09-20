@@ -43,7 +43,7 @@ namespace WebClashServer.Editors
                     string src = sounds[i].src;
 
                     if (ls != -1)
-                        src = "..." + sounds[i].src.Substring(ls, sounds[i].src.Length-ls);
+                        src = "..." + sounds[i].src.Substring(ls, sounds[i].src.Length - ls);
 
                     soundList.Items.Add((i + 1) + ". " + src);
                 }
@@ -52,7 +52,7 @@ namespace WebClashServer.Editors
             {
                 Logger.Error("Could not load sound list: ", exc);
             }
-            
+
             if (current == -1 &&
                 sounds.Count > 0)
                 soundList.SelectedItem = soundList.Items[0];
@@ -106,9 +106,10 @@ namespace WebClashServer.Editors
             if (current == -1)
                 return;
 
-            string serverLocation = Program.main.clientLocation + sounds[current].src;
+            string serverLocation = Program.main.ClientLocation + sounds[current].src;
 
-            if (!File.Exists(serverLocation)) {
+            if (!File.Exists(serverLocation))
+            {
                 Logger.Error("The sound file could not be found, make sure it refers to an existing sound file.");
 
                 return;

@@ -129,6 +129,7 @@ exports.updateCasting = function(dt) {
                     p, 
                     playerCasting[p].action, 
                     playerCasting[p].target,
+                    playerCasting[p].angle,
                     playerCasting[p].pvp
                 );
 
@@ -341,106 +342,71 @@ exports.updateProjectiles = function(dt) {
             }
 };
 
-exports.convertActionData = function(actionData, name, direction, character, pvp)
+exports.convertActionData = function(actionData, name, angle, pvp)
 {
-    //Convert projectiles
+    //Calculate center
 
-    for (let e = 0; e < actionData.elements.length; e++)
+    let cx = collection[name].sw / 2;
+    let cy = collection[name].sh / 2;
+
+    //Calculate angles
+
+    let cos = Math.cos(angle),
+        sin = Math.sin(angle);
+
+    for (let e = 0; e < actionData.elements.length; e++) {
+        //Calculate distance to center
+
+        let w = actionData.elements[e].w*actionData.elements[e].scale,
+            h = actionData.elements[e].h*actionData.elements[e].scale;
+
+        let dx = actionData.elements[e].y+h/2-cy,
+            dy = actionData.elements[e].x+w/2-cx;
+
+        //Rotate around center
+        //if no target is necessary
+
+        if (actionData.targetType === 'none') {
+            let nx = cos * dx - sin * dy;
+            let ny = sin * dx + cos * dy;
+
+            actionData.elements[e].x = nx - w/2;
+            actionData.elements[e].y = ny - h/2;
+        }
+        else {
+            actionData.elements[e].x -= cx;
+            actionData.elements[e].y -= cy;
+        }
+
+        //Calculate projectile direction
+        //based on rotation
+
         if (actionData.elements[e].type === 'projectile') {
-            let w = actionData.elements[e].w*actionData.elements[e].scale,
-                h = actionData.elements[e].h*actionData.elements[e].scale;
+            let nx = cos * dx - sin * dy;
+            let ny = sin * dx + cos * dy;
 
-            let dx = actionData.elements[e].x+w/2-collection[name].sw/2,
-                dy = actionData.elements[e].y+h/2-collection[name].sh/2
+            let length = Math.sqrt(nx * nx + ny * ny);
+            nx /= length;
+            ny /= length;
 
-            let wl = collection[name].sw/6,
-                hl = collection[name].sh/6;
-
-            if (dx > wl)
-                dx = wl;
-            else if (dx < -wl)
-                dx = -wl;
-
-            if (dy > hl)
-                dy = hl;
-            else if (dy < -hl)
-                dy = -hl;
+            let tw = tiled.maps[actionData.map].tileheight,
+                th = tiled.maps[actionData.map].tileheight;
 
             actionData.elements[e].projectileSpeed = {
-                x: dx/wl*actionData.elements[e].projectileSpeed,
-                y: dy/hl*actionData.elements[e].projectileSpeed
+                x: actionData.elements[e].projectileSpeed * nx,
+                y: actionData.elements[e].projectileSpeed * ny
             };
 
-            actionData.elements[e].projectileDistance =
-                actionData.elements[e].projectileDistance * 
-                (tiled.maps[actionData.map].tilewidth + tiled.maps[actionData.map].tileheight)/2;
+            actionData.elements[e].projectileDistance *= (tw + th) / 2;
         }
-
-    //Positional correcting
-
-    if (direction == 1 || direction == 2)
-         for (let e = 0; e < actionData.elements.length; e++) {
-            let w = actionData.elements[e].w*actionData.elements[e].scale;
-
-            if (actionData.targetType === 'none') {
-                let x = actionData.elements[e].x;
-
-                actionData.elements[e].x = actionData.elements[e].y;
-                actionData.elements[e].y = x + character.height;
-            }
-
-            if (direction == 1) {
-                if (actionData.targetType === 'none')
-                    actionData.elements[e].x = collection[name].sw - actionData.elements[e].x - w + character.width;
-
-                if (actionData.elements[e].type === 'projectile') {
-                    let y = actionData.elements[e].projectileSpeed.y;
-
-                    actionData.elements[e].projectileSpeed.y = actionData.elements[e].projectileSpeed.x;
-                    actionData.elements[e].projectileSpeed.x = -y;
-                }
-            }
-            else {
-                if (actionData.targetType === 'none')
-                    actionData.elements[e].x -= character.width;
-
-                if (actionData.elements[e].type === 'projectile') {
-                    let y = actionData.elements[e].projectileSpeed.y;
-
-                    actionData.elements[e].projectileSpeed.y = actionData.elements[e].projectileSpeed.x;
-                    actionData.elements[e].projectileSpeed.x = y;
-                }
-            }
-        }
-
-    if (direction == 3)
-        for (let e = 0; e < actionData.elements.length; e++) {
-            if (actionData.targetType === 'none') {
-                let h = actionData.elements[e].h * actionData.elements[e].scale;
-                actionData.elements[e].y = collection[name].sh - actionData.elements[e].y - h + character.height * 2;
-            }
-
-            if (actionData.elements[e].type === 'projectile')
-                actionData.elements[e].projectileSpeed.y *= -1;
-        }
-
-    //Transform action data position, based
-    //on the target type
-
-    if (actionData.targetType === 'none') {
-        actionData.pos.X += character.width/2-collection[name].sw/2;
-        actionData.pos.Y += -collection[name].sh/2-character.height/2;
-    } else {
-        actionData.pos.X -= collection[name].sw / 2;
-        actionData.pos.Y -= collection[name].sh / 2;
     }
 
     //Set action data sounds
 
     actionData.sounds = collection[name].sounds;
     actionData.centerPosition = {
-        X: actionData.pos.X+collection[name].sw / 2,
-        Y: actionData.pos.Y+collection[name].sh / 2
+        X: actionData.pos.X+cx,
+        Y: actionData.pos.Y+cy
     };
 
     //Set action data action
@@ -732,7 +698,7 @@ exports.canPlayerPerformAction = function(slot, id, target, name, pvp) {
     return true;
 };
 
-exports.performPlayerAction = function(slot, id, target, pvp) {
+exports.performPlayerAction = function(slot, id, target, angle, pvp) {
     try {
         //Check if slot exists
 
@@ -757,12 +723,13 @@ exports.performPlayerAction = function(slot, id, target, pvp) {
 
         let castingTime = collection[name].castingTime * game.players[id].statusEffectsMatrix['castingTimeFactor'];
         playerCasting[id] = {
-            pvp: (pvp == undefined ? false : pvp),
             timer: castingTime,
             immediate: (castingTime === 0),
+            pvp: (pvp == undefined ? false : pvp),
             target: target,
             slot: slot,
             action: name,
+            angle: angle,
             pos: {
                 X: game.players[id].pos.X,
                 Y: game.players[id].pos.Y
@@ -891,12 +858,10 @@ exports.getPlayerActionPosition = function(id, targetType, target, pvp) {
     let pos;
     switch (true) {
         case targetType === 'none':
-            pos = game.calculateFace(
-                game.players[id].pos,
-                game.players[id].character.width,
-                game.players[id].character.height,
-                game.players[id].direction
-            );
+            pos = {
+                X: game.players[id].pos.X + game.players[id].character.width / 2,
+                Y: game.players[id].pos.Y + game.players[id].character.height / 2
+            };
             break;
         case targetType === 'hostile' && (typeof target === 'string' && pvp):
         case targetType === 'friendly':
@@ -916,7 +881,7 @@ exports.getPlayerActionPosition = function(id, targetType, target, pvp) {
     return pos;
 };
 
-exports.createPlayerAction = function(slot, id, name, target, pvp)
+exports.createPlayerAction = function(slot, id, name, target, angle, pvp)
 {
     try {
         //Check if player still exists
@@ -960,8 +925,7 @@ exports.createPlayerAction = function(slot, id, name, target, pvp)
                 owner: id
             },
             name,
-            game.players[id].direction,
-            game.players[id].character,
+            angle,
             pvp
         );
 
@@ -1030,29 +994,28 @@ exports.createNPCAction = function(map, id, possibleAction, name, target)
         //Action position is based on the
         //the target type
 
-        let pos;
-        switch (action.targetType) {
-            case 'none':
-                pos = game.calculateFace(
-                    npcs.onMap[map][id].pos,
-                    npcs.onMap[map][id].data.character.width,
-                    npcs.onMap[map][id].data.character.height,
-                    npcs.onMap[map][id].direction
-                );
-                break;
-            case 'friendly':
-                pos = {
-                    X: npcs.onMap[map][id].pos.X + npcs.onMap[map][id].data.character.width / 2,
-                    Y: npcs.onMap[map][id].pos.Y + npcs.onMap[map][id].data.character.height / 2
-                };
-                break;
-            case 'hostile':
-                pos = {
-                    X: game.players[target].pos.X + game.players[target].character.width / 2,
-                    Y: game.players[target].pos.Y + game.players[target].character.height / 2
-                };
-                break;
-        }
+        let self = {
+            X: npcs.onMap[map][id].pos.X + npcs.onMap[map][id].data.character.width / 2,
+            Y: npcs.onMap[map][id].pos.Y + npcs.onMap[map][id].data.character.height / 2
+        }, pos = self;
+
+        if (action.targetType === 'hostile')
+            pos = {
+                X: game.players[target].pos.X + game.players[target].character.width / 2,
+                Y: game.players[target].pos.Y + game.players[target].character.height / 2
+            };
+
+        //Calculate angle towards target
+
+        let targetPos = {
+            X: game.players[target].pos.X + game.players[target].character.width / 2,
+            Y: game.players[target].pos.Y + game.players[target].character.height / 2
+        };
+        let delta = {
+            dx: targetPos.X - self.X,
+            dy: targetPos.Y - self.Y
+        };
+        let angle = Math.atan2(delta.dy, delta.dx);
 
         let actionData = this.convertActionData(
             {
@@ -1064,8 +1027,7 @@ exports.createNPCAction = function(map, id, possibleAction, name, target)
                 owner: id
             },
             name,
-            npcs.onMap[map][id].direction,
-            npcs.onMap[map][id].data.character
+            angle
         );
 
         //Add to active actions

@@ -38,8 +38,8 @@ namespace WebClashServer.Options
 
                 case PluginStringProperty psp:
                     TextInput ti = new TextInput(
-                        "Edit '" + psp.name + "'", 
-                        "Change the property value", 
+                        "Edit '" + psp.name + "'",
+                        "Change the property value",
                         psp.value
                     );
                     if (ti.ShowDialog() == DialogResult.OK)

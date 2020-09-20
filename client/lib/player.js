@@ -214,7 +214,7 @@ const player = {
             return false;
 
         player.target = target;
-        player.faceMouse();
+        player.faceMouse(this.lookAtMouse());
 
         if (go != undefined)
             go.ShowColorOverlay('rgba(255, 255, 255, .5)', 5);
@@ -254,8 +254,7 @@ const player = {
         cur: 0,
         standard: 12
     },
-    faceMouse: function()
-    {
+    lookAtMouse: function() {
         //Calculate center point
 
         let centerX = lx.GetDimensions().width/2,
@@ -273,16 +272,23 @@ const player = {
         let dx = lx.CONTEXT.CONTROLLER.MOUSE.POS.X-centerX,
             dy = lx.CONTEXT.CONTROLLER.MOUSE.POS.Y-centerY;
 
+        return { 
+            dx: dx, 
+            dy: dy 
+        };
+    },
+    faceMouse: function(angle)
+    {
         //Calculate new direction
 
         let newDirection;
-        if (Math.abs(dx) > Math.abs(dy))
-            if (dx > 0) 
+        if (Math.abs(angle.dx) > Math.abs(angle.dy))
+            if (angle.dx > 0) 
                 newDirection = 2;
             else 
                 newDirection = 1;
         else
-            if (dy > 0) 
+            if (angle.dy > 0) 
                 newDirection = 0;
             else 
                 newDirection = 3;
@@ -292,6 +298,7 @@ const player = {
         if (game.players[game.player]._moving ||
             newDirection !== game.players[game.player]._direction) {
             this.forceDirection.start(newDirection);
+
             this.sync('direction');
         }
     },
@@ -664,16 +671,25 @@ const player = {
         if (player.target == undefined && player.actions[slot].targetType !== 'friendly')
             return;
 
+        //Get looking direction at mouse
+
+        let mouseDelta = this.lookAtMouse();
+
         //Face mouse, if necessary
 
         if (!skipFacing)
-            player.faceMouse();
+            player.faceMouse(mouseDelta);
+
+        //Calculate looking angle
+
+        let angle = Math.atan2(mouseDelta.dy, mouseDelta.dx);
 
         //Send action request
 
         channel.emit('CLIENT_PLAYER_ACTION', {
             slot: slot,
-            target: player.target
+            target: player.target,
+            angle: angle
         });
     },
 
@@ -693,8 +709,8 @@ const player = {
 
                 game.playStatusEffectSoundEffect(
                     statusEffects[effect].sounds,
-                    game.npcs[id].Position(),
-                    game.npcs[id].Size()
+                    game.players[game.player].Position(),
+                    game.players[game.player].Size()
                 );
             }
             else {
@@ -702,10 +718,10 @@ const player = {
                 //if available
 
                 if (this.statusEffects[effect].elapsed > statusEffects[effect].elapsed)
-                    this.playStatusEffectSoundEffect(
+                    game.playStatusEffectSoundEffect(
                         statusEffects[effect].sounds,
-                        game.npcs[id].Position(),
-                        game.npcs[id].Size()
+                        game.players[game.player].Position(),
+                        game.players[game.player].Size()
                     );
 
                 //Set elapsed

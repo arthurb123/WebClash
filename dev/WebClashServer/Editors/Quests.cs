@@ -50,7 +50,7 @@ namespace WebClashServer
                 {
                     string q = quests[i].Replace('\\', '/');
 
-                    questList.Items.Add((i+1) + ". " + q.Substring(q.LastIndexOf('/') + 1, q.LastIndexOf('.') - q.LastIndexOf('/') - 1));
+                    questList.Items.Add((i + 1) + ". " + q.Substring(q.LastIndexOf('/') + 1, q.LastIndexOf('.') - q.LastIndexOf('/') - 1));
                 }
             }
             catch (Exception exc)
@@ -84,7 +84,7 @@ namespace WebClashServer
 
             for (int i = 0; i < current.objectives.Length; i++)
             {
-                string name = (i+1) + ". ";
+                string name = (i + 1) + ". ";
 
                 switch (current.objectives[i].type)
                 {
@@ -135,7 +135,7 @@ namespace WebClashServer
                         current.objectives[objectiveList.SelectedIndex].gatherObjective = null;
                         break;
 
-                    //...
+                        //...
                 };
 
                 LoadObjectives();
@@ -158,7 +158,7 @@ namespace WebClashServer
 
         private void newLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string i = (questList.Items.Count+1) + ". " + string.Empty;
+            string i = (questList.Items.Count + 1) + ". " + string.Empty;
 
             questList.Items.Add(i);
             questList.SelectedItem = i;
@@ -187,7 +187,7 @@ namespace WebClashServer
 
             dataHasChanged = true;
         }
-        
+
         private void minLevel_ValueChanged(object sender, EventArgs e)
         {
             if (current == null)
@@ -280,7 +280,8 @@ namespace WebClashServer
         {
             ItemSelection itemSelection = new ItemSelection("Set rewards for '" + name.Text + "'", current.rewards.items, false);
 
-            itemSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            itemSelection.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 current.rewards.items = itemSelection.GetSelection();
             };
 
@@ -304,7 +305,7 @@ namespace WebClashServer
             try
             {
                 Quest temp = JsonConvert.DeserializeObject<Quest>(File.ReadAllText(src));
- 
+
                 description = temp.description;
 
                 minLevel = temp.minLevel;
@@ -318,7 +319,7 @@ namespace WebClashServer
                 Logger.Error("Could not construct quest instance: ", exc);
             }
         }
-        
+
         public int minLevel = 0;
 
         public string description = "";
@@ -336,7 +337,7 @@ namespace WebClashServer
 
         public PossibleItem[] items = new PossibleItem[0];
     }
-    
+
     public class QuestObjective
     {
         public string type = "";

@@ -90,7 +90,7 @@ namespace WebClashServer.Tools
                 "of experience required to level is based on the value\n" +
                 "increment times the growth factor and the difference between\n" +
                 "the 2nd and current level; plus the previous amount of experience.\n" +
-                "So to reach level 3 from level 2 with a starting value of 8,\n" + 
+                "So to reach level 3 from level 2 with a starting value of 8,\n" +
                 "a value increment of 6 and a growth factor of 1.50\n" +
                 "would require 8 + 6 * 1.5 * (3-2) = 17 experience."
             );

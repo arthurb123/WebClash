@@ -15,26 +15,26 @@ namespace WebClashServer
     {
         //Server variables
 
-        private bool    running             = false;
-        private bool    shouldRestart       = false;
-        private bool    serverLocationValid = false;
-        private Process p                   = null;
+        private bool running = false;
+        private bool shouldRestart = false;
+        private bool serverLocationValid = false;
+        private Process p = null;
 
-        public string serverLocation       = Application.StartupPath + "/server";
-        public string clientLocation       { get { return serverLocation + "/" + properties.clientLocation + "/"; } }
-        public string nodeLocation         = "";
+        public string serverLocation = Application.StartupPath + "/server";
+        public string ClientLocation { get { return serverLocation + "/" + properties.clientLocation + "/"; } }
+        public string nodeLocation = "";
         public ServerProperties properties = null;
 
         //Forms
 
-        Characters    characters    = new Characters();
-        Maps          maps          = new Maps();
-        NPCs          npcs          = new NPCs();
-        Actions       actions       = new Actions();
-        Items         items         = new Items();
-        Quests        quests        = new Quests();
+        Characters characters = new Characters();
+        Maps maps = new Maps();
+        NPCs npcs = new NPCs();
+        Actions actions = new Actions();
+        Items items = new Items();
+        Quests quests = new Quests();
         StatusEffects effects = new StatusEffects();
-        Plugins       plugins       = new Plugins();
+        Plugins plugins = new Plugins();
 
         public Main()
         {
@@ -42,8 +42,8 @@ namespace WebClashServer
 
             inputCommand.KeyDown += new KeyEventHandler((object s, KeyEventArgs kea) =>
             {
-                if (kea.KeyCode == Keys.Enter && 
-                    running && 
+                if (kea.KeyCode == Keys.Enter &&
+                    running &&
                     p != null)
                 {
                     if (inputCommand.Text.IndexOf("shutdown") == -1)
@@ -71,7 +71,7 @@ namespace WebClashServer
 
         private void InstallDependencies()
         {
-            string dependenciesBat = Application.StartupPath + "/" +  serverLocation + "/install_dependencies.bat";
+            string dependenciesBat = Application.StartupPath + "/" + serverLocation + "/install_dependencies.bat";
 
             if (!File.Exists(serverLocation + "/install_dependencies.bat"))
             {
@@ -140,10 +140,10 @@ namespace WebClashServer
 
             StartNodeProcess("node.exe", "index.js", true);
 
-            running          = true;
+            running = true;
             startButton.Text = "Stop";
-            output.Text      = "";
-            status.Text      = "Server has been started.";
+            output.Text = "";
+            status.Text = "Server has been started.";
         }
 
         private void StartNodeProcess(string target, string arguments, bool checkDependencies = true, Action exitCallback = null)
@@ -152,7 +152,7 @@ namespace WebClashServer
 
             if (nodeLocation == "")
             {
-                nodeLocation = getNodeJSLocation();
+                nodeLocation = GetNodeJsLocation();
 
                 if (nodeLocation == "")
                 {
@@ -181,7 +181,7 @@ namespace WebClashServer
                     return;
                 }
             }
-            
+
             //Start node process
 
             StartProcess(nodeLocation + "/" + target, arguments, exitCallback);
@@ -248,10 +248,10 @@ namespace WebClashServer
 
         private void FinalShutDownProcedure()
         {
-            status.Text      = "Server has been stopped.";
+            status.Text = "Server has been stopped.";
             startButton.Text = "Start";
-            running          = false;
-            p                = null;
+            running = false;
+            p = null;
 
             if (shouldRestart)
             {
@@ -350,10 +350,10 @@ namespace WebClashServer
 
             //Check if the client location is valid
 
-            if (!Directory.Exists(clientLocation))
+            if (!Directory.Exists(ClientLocation))
             {
                 Logger.Error(
-                    "The client location \"" + clientLocation + "\" is invalid! " +
+                    "The client location \"" + ClientLocation + "\" is invalid! " +
                     "Please make sure the client location in the server properties file is valid."
                 );
             }
@@ -400,7 +400,7 @@ namespace WebClashServer
             }
         }
 
-        private string getNodeJSLocation()
+        private string GetNodeJsLocation()
         {
             string result = "";
 
@@ -414,11 +414,11 @@ namespace WebClashServer
             if (result == "")
             {
                 DialogResult manuallySelect = MessageBox.Show(
-                    "NodeJS could not be found, do you want to manually select the installation folder?", 
-                    "WebClash - Question", 
+                    "NodeJS could not be found, do you want to manually select the installation folder?",
+                    "WebClash - Question",
                     MessageBoxButtons.YesNo
                 );
-                
+
                 if (manuallySelect == DialogResult.Yes)
                     using (FolderBrowserDialog dialog = new FolderBrowserDialog())
                         if (dialog.ShowDialog() == DialogResult.OK)
@@ -476,7 +476,8 @@ namespace WebClashServer
             else
                 characters = new Characters();
 
-            characters.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            characters.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 if (characters.GetChanged())
                     RestartServerOnChange("characters");
             };
@@ -497,7 +498,8 @@ namespace WebClashServer
             else
                 maps = new Maps();
 
-            maps.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            maps.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 if (maps.GetChanged())
                     RestartServerOnChange("maps");
             };
@@ -518,7 +520,8 @@ namespace WebClashServer
             else
                 npcs = new NPCs();
 
-            npcs.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            npcs.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 if (npcs.GetChanged())
                     RestartServerOnChange("NPCs");
             };
@@ -539,7 +542,8 @@ namespace WebClashServer
             else
                 actions = new Actions();
 
-            actions.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            actions.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 if (actions.GetChanged())
                     RestartServerOnChange("actions");
             };
@@ -560,14 +564,15 @@ namespace WebClashServer
             else
                 items = new Items();
 
-            items.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            items.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 if (items.GetChanged())
                     RestartServerOnChange("items");
             };
 
             items.Show();
         }
-        
+
         private void questsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!CheckServerLocation())
@@ -581,7 +586,8 @@ namespace WebClashServer
             else
                 quests = new Quests();
 
-            quests.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            quests.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 if (quests.GetChanged())
                     RestartServerOnChange("quests");
             };
@@ -602,7 +608,8 @@ namespace WebClashServer
             else
                 effects = new StatusEffects();
 
-            effects.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            effects.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 if (effects.GetChanged())
                     RestartServerOnChange("status effects");
             };
@@ -659,12 +666,12 @@ namespace WebClashServer
 
                 //Setup copying method
 
-                Action<DirectoryInfo, DirectoryInfo> CopyFilesRecursively = null;
-                CopyFilesRecursively = new Action<DirectoryInfo, DirectoryInfo>(
+                Action<DirectoryInfo, DirectoryInfo> copyFilesRecursively = null;
+                copyFilesRecursively = new Action<DirectoryInfo, DirectoryInfo>(
                     (DirectoryInfo source, DirectoryInfo target) =>
                     {
                         foreach (DirectoryInfo dir in source.GetDirectories())
-                            CopyFilesRecursively(dir, target.CreateSubdirectory(dir.Name));
+                            copyFilesRecursively(dir, target.CreateSubdirectory(dir.Name));
                         foreach (FileInfo file in source.GetFiles())
                             file.CopyTo(Path.Combine(target.FullName, file.Name));
                     }
@@ -672,7 +679,7 @@ namespace WebClashServer
 
                 //Check if obfuscated client already exists
 
-                string obfClientLocation = clientLocation + "/../obf_client";
+                string obfClientLocation = ClientLocation + "/../obf_client";
 
                 if (Directory.Exists(obfClientLocation))
                 {
@@ -683,8 +690,8 @@ namespace WebClashServer
                 //Copy client
 
                 AddOutput("Copying client..");
-                CopyFilesRecursively(
-                    new DirectoryInfo(clientLocation),
+                copyFilesRecursively(
+                    new DirectoryInfo(ClientLocation),
                     new DirectoryInfo(obfClientLocation)
                 );
 
@@ -762,10 +769,10 @@ namespace WebClashServer
         {
             MessageBox.Show(
                 "WebClash, an ORPG suite for the browser.\nThis binary serves as the design tool for WebClash.\n" +
-                "Usable for personal and commercial usage.\n\nCreated by Arthur Baars 2020\nwww.github.com/arthurb123/webclash", 
+                "Usable for personal and commercial usage.\n\nCreated by Arthur Baars 2020\nwww.github.com/arthurb123/webclash",
 
-                "WebClash - About", 
-                MessageBoxButtons.OK, 
+                "WebClash - About",
+                MessageBoxButtons.OK,
                 MessageBoxIcon.Information
             );
         }

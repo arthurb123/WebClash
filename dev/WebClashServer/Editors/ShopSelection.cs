@@ -41,7 +41,8 @@ namespace WebClashServer.Editors
                 {
                     itemSelect.Enabled = false;
                     itemPrice.Enabled = false;
-                } else
+                }
+                else
                 {
                     itemSelect.Enabled = true;
                     itemPrice.Enabled = true;

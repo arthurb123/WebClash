@@ -9,7 +9,7 @@ namespace WebClashServer.Editors
     public partial class DialogueProperties : Form
     {
         public DialogueItem current;
-        
+
         public DialogueProperties(DialogueItem di)
         {
             InitializeComponent();
@@ -22,8 +22,8 @@ namespace WebClashServer.Editors
             dialogue.Text = current.text;
 
             entryPoint.Checked = current.entry;
-            
-            loadOptions();
+
+            LoadOptions();
         }
 
         private void DialogueItem_Load(object sender, EventArgs e)
@@ -40,14 +40,14 @@ namespace WebClashServer.Editors
         {
             try
             {
-                if (!File.Exists(Program.main.clientLocation + src))
+                if (!File.Exists(Program.main.ClientLocation + src))
                 {
                     current.portrait = null;
 
                     return;
                 }
 
-                portrait.BackgroundImage = Image.FromFile(Program.main.clientLocation + src);
+                portrait.BackgroundImage = Image.FromFile(Program.main.ClientLocation + src);
 
                 current.portrait = src;
             }
@@ -67,7 +67,7 @@ namespace WebClashServer.Editors
             current.entry = entryPoint.Checked;
         }
 
-        private void loadOptions()
+        private void LoadOptions()
         {
             optionList.Items.Clear();
 
@@ -87,9 +87,9 @@ namespace WebClashServer.Editors
         {
             current.options.Add(new DialogueOption(-1));
 
-            loadOptions();
+            LoadOptions();
         }
-        
+
         private void optionList_SelectedIndexChanged(object sender, EventArgs e)
         {
             optionText.Text = current.options[optionList.SelectedIndex].text;
@@ -101,7 +101,7 @@ namespace WebClashServer.Editors
         {
             current.options.RemoveAt(optionList.SelectedIndex);
 
-            loadOptions();
+            LoadOptions();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -109,7 +109,7 @@ namespace WebClashServer.Editors
             current.options[optionList.SelectedIndex].text = optionText.Text;
             current.options[optionList.SelectedIndex].next = (int)optionNext.Value;
 
-            loadOptions();
+            LoadOptions();
         }
     }
 }

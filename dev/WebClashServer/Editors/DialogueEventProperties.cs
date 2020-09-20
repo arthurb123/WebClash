@@ -42,27 +42,27 @@ namespace WebClashServer.Editors
                 case "SpawnNPC":
                     spawnNPCPanel.Visible = true;
 
-                    LoadSpawnNPCOptions();
+                    LoadSpawnNpcOptions();
                     break;
                 case "ShowQuest":
                     showQuestPanel.Visible = true;
 
-                    loadShowQuestOptions();
+                    LoadShowQuestOptions();
                     break;
                 case "AdvanceQuest":
                     advanceQuestPanel.Visible = true;
 
-                    loadAdvanceQuestOptions();
+                    LoadAdvanceQuestOptions();
                     break;
                 case "SetVariable":
                     playerVariablePanel.Visible = true;
 
-                    loadPlayerVariableOptions(true);
+                    LoadPlayerVariableOptions(true);
                     break;
                 case "GetVariable":
                     playerVariablePanel.Visible = true;
 
-                    loadPlayerVariableOptions(false);
+                    LoadPlayerVariableOptions(false);
                     break;
             }
 
@@ -86,7 +86,7 @@ namespace WebClashServer.Editors
         {
             current.options[0].next = (int)nextIndex.Value;
         }
-        
+
         private void nextIndex1_ValueChanged(object sender, EventArgs e)
         {
             current.options[1].next = (int)nextIndex1.Value;
@@ -272,20 +272,20 @@ namespace WebClashServer.Editors
 
         //Spawn NPC event
 
-        private void LoadSpawnNPCOptions()
+        private void LoadSpawnNpcOptions()
         {
-            LoadNPCList();
+            LoadNpcList();
 
-            npcList.SelectedItem = current.spawnNPCEvent.name;
+            npcList.SelectedItem = current.spawnNpcEvent.name;
 
-            LoadNPCProfileList();
+            LoadNpcProfileList();
 
-            npcProfileList.SelectedItem = current.spawnNPCEvent.profile;
-            npcAmount.Value = current.spawnNPCEvent.amount;
-            npcHostile.Checked = current.spawnNPCEvent.hostile;
+            npcProfileList.SelectedItem = current.spawnNpcEvent.profile;
+            npcAmount.Value = current.spawnNpcEvent.amount;
+            npcHostile.Checked = current.spawnNpcEvent.hostile;
         }
 
-        private void LoadNPCList()
+        private void LoadNpcList()
         {
             npcList.Items.Clear();
 
@@ -312,7 +312,7 @@ namespace WebClashServer.Editors
             }
         }
 
-        private void LoadNPCProfileList()
+        private void LoadNpcProfileList()
         {
             npcProfileList.Items.Clear();
 
@@ -320,13 +320,13 @@ namespace WebClashServer.Editors
             {
                 //Check if the NPC is valid
 
-                if (current.spawnNPCEvent.name == "" ||
-                    current.spawnNPCEvent.name == null)
+                if (current.spawnNpcEvent.name == "" ||
+                    current.spawnNpcEvent.name == null)
                     return;
 
                 //Load the NPC
 
-                NPC npc = new NPC(Program.main.serverLocation + "/npcs/" + current.spawnNPCEvent.name + ".json");
+                Npc npc = new Npc(Program.main.serverLocation + "/npcs/" + current.spawnNpcEvent.name + ".json");
 
                 //Construct the profile list
 
@@ -342,30 +342,30 @@ namespace WebClashServer.Editors
 
         private void npcList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            current.spawnNPCEvent.name    = npcList.SelectedItem.ToString();
-            npcProfileList.SelectedItem   = 0;
+            current.spawnNpcEvent.name = npcList.SelectedItem.ToString();
+            npcProfileList.SelectedItem = 0;
 
-            LoadNPCProfileList();
+            LoadNpcProfileList();
         }
 
         private void npcProfileList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            current.spawnNPCEvent.profile = (int)npcProfileList.SelectedItem;
+            current.spawnNpcEvent.profile = (int)npcProfileList.SelectedItem;
         }
 
         private void npcAmount_ValueChanged(object sender, EventArgs e)
         {
-            current.spawnNPCEvent.amount = (int)npcAmount.Value;
+            current.spawnNpcEvent.amount = (int)npcAmount.Value;
         }
 
         private void npcHostile_CheckedChanged(object sender, EventArgs e)
         {
-            current.spawnNPCEvent.hostile = npcHostile.Checked;
+            current.spawnNpcEvent.hostile = npcHostile.Checked;
         }
 
         //Show quest event
 
-        private void loadShowQuestOptions()
+        private void LoadShowQuestOptions()
         {
             LoadQuestList();
 
@@ -406,7 +406,7 @@ namespace WebClashServer.Editors
 
         //Advance quest event
 
-        private void loadAdvanceQuestOptions()
+        private void LoadAdvanceQuestOptions()
         {
             advanceQuestEntryPoint.Checked = current.advanceQuestEvent.entry;
         }
@@ -418,7 +418,7 @@ namespace WebClashServer.Editors
 
         //Player variable event
 
-        private void loadPlayerVariableOptions(bool set)
+        private void LoadPlayerVariableOptions(bool set)
         {
             if (set)
             {

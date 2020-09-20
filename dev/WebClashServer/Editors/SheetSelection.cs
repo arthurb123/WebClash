@@ -15,7 +15,7 @@ namespace WebClashServer.Editors
         private Direction currentDirection;
 
         private Point camera = Point.Empty;
-        private Point oldMP = Point.Empty;
+        private Point oldMp = Point.Empty;
         private bool moving = false;
 
         public SheetSelection(Character character, AnimationSheet sheet, Image image, string animation, Direction direction)
@@ -67,7 +67,7 @@ namespace WebClashServer.Editors
             //Draw spritesheet
 
             g.DrawImage(
-                currentImage, 
+                currentImage,
                 new Rectangle(
                     camera.X, camera.Y,
                     currentImage.Width, currentImage.Height
@@ -138,7 +138,7 @@ namespace WebClashServer.Editors
                         CreateFrame();
                     else
                     {
-                        oldMP = e.Location;
+                        oldMp = e.Location;
                         moving = true;
                     }
 
@@ -146,7 +146,7 @@ namespace WebClashServer.Editors
                 case MouseButtons.Middle:
                     //Allow for camera movement
 
-                    oldMP = e.Location;
+                    oldMp = e.Location;
                     moving = true;
 
                     break;
@@ -159,7 +159,7 @@ namespace WebClashServer.Editors
                         RemoveFrame();
                     else
                     {
-                        oldMP = e.Location;
+                        oldMp = e.Location;
                         moving = true;
                     }
 
@@ -172,10 +172,10 @@ namespace WebClashServer.Editors
             if (!moving)
                 return;
 
-            camera.X += e.X - oldMP.X;
-            camera.Y += e.Y - oldMP.Y;
+            camera.X += e.X - oldMp.X;
+            camera.Y += e.Y - oldMp.Y;
 
-            oldMP = e.Location;
+            oldMp = e.Location;
 
             canvas.Invalidate();
         }

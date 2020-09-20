@@ -8,7 +8,7 @@ using WebClashServer.Classes;
 
 namespace WebClashServer.Editors
 {
-    public partial class NPCEquipment : Form
+    public partial class NpcEquipment : Form
     {
         //Character and animation
 
@@ -24,7 +24,7 @@ namespace WebClashServer.Editors
         private List<EquipmentImage> equipmentImages = new List<EquipmentImage>();
         private int current = -1;
 
-        public NPCEquipment(string title, string charName, Equipment[] equipment)
+        public NpcEquipment(string title, string charName, Equipment[] equipment)
         {
             InitializeComponent();
 
@@ -57,7 +57,8 @@ namespace WebClashServer.Editors
                     isGeneric.Enabled = false;
                     isMainHand.Enabled = false;
                     isOffHand.Enabled = false;
-                } else
+                }
+                else
                 {
                     moveDown.Enabled = true;
                     moveUp.Enabled = true;
@@ -82,7 +83,7 @@ namespace WebClashServer.Editors
                             src += " (OH)";
                     }
 
-                    equipmentList.Items.Add((i+1) + ". " + src);
+                    equipmentList.Items.Add((i + 1) + ". " + src);
                 }
 
                 LoadGearImages();
@@ -104,7 +105,7 @@ namespace WebClashServer.Editors
         {
             for (int i = 0; i < equipment.Count; i++)
             {
-                string serverLocation = Program.main.clientLocation + equipment[i].source;
+                string serverLocation = Program.main.ClientLocation + equipment[i].source;
 
                 if (!File.Exists(serverLocation))
                     continue;
@@ -145,9 +146,9 @@ namespace WebClashServer.Editors
             g.DrawImage(
                 charImage,
                 new Rectangle(
-                    sp.X, 
-                    sp.Y, 
-                    character.width, 
+                    sp.X,
+                    sp.Y,
+                    character.width,
                     character.height
                 ),
                 idleFrame.x,
@@ -162,7 +163,7 @@ namespace WebClashServer.Editors
             List<EquipmentImage> possibleMains = new List<EquipmentImage>();
             List<EquipmentImage> possibleOffhands = new List<EquipmentImage>();
 
-            for (int i = 0; i < equipmentImages.Count; i++) 
+            for (int i = 0; i < equipmentImages.Count; i++)
                 if (equipmentImages[i] != null && equipmentImages[i].image != null)
                 {
                     //Skip main and offhand
@@ -197,9 +198,9 @@ namespace WebClashServer.Editors
                 g.DrawImage(
                     possibleMains[i].image,
                     new Rectangle(
-                        sp.X, 
-                        sp.Y, 
-                        character.width, 
+                        sp.X,
+                        sp.Y,
+                        character.width,
                         character.height
                     ),
                     character.width,
@@ -215,9 +216,9 @@ namespace WebClashServer.Editors
                 g.DrawImage(
                     possibleOffhands[i].image,
                     new Rectangle(
-                        sp.X, 
-                        sp.Y, 
-                        character.width, 
+                        sp.X,
+                        sp.Y,
+                        character.width,
                         character.height
                     ),
                     character.width,
@@ -232,14 +233,14 @@ namespace WebClashServer.Editors
         {
             try
             {
-                if (!File.Exists(Program.main.clientLocation + src))
+                if (!File.Exists(Program.main.ClientLocation + src))
                 {
                     charImage = null;
 
                     return;
                 }
 
-                charImage = Image.FromFile(Program.main.clientLocation + src);
+                charImage = Image.FromFile(Program.main.ClientLocation + src);
 
                 character.src = src;
             }
@@ -337,7 +338,7 @@ namespace WebClashServer.Editors
             ReloadGearList();
         }
 
-        private void swapEquipment(int indexA, int indexB)
+        private void SwapEquipment(int indexA, int indexB)
         {
             Equipment tmpGear = equipment[indexA];
             equipment[indexA] = equipment[indexB];
@@ -361,12 +362,12 @@ namespace WebClashServer.Editors
 
             if (current == equipment.Count - 1)
             {
-                swapEquipment(current, 0);
+                SwapEquipment(current, 0);
                 equipmentList.SelectedIndex = 0;
             }
             else
             {
-                swapEquipment(current, current + 1);
+                SwapEquipment(current, current + 1);
                 equipmentList.SelectedIndex = current + 1;
             }
         }
@@ -378,12 +379,12 @@ namespace WebClashServer.Editors
 
             if (current == 0)
             {
-                swapEquipment(current, equipment.Count-1);
-                equipmentList.SelectedIndex = equipment.Count-1;
+                SwapEquipment(current, equipment.Count - 1);
+                equipmentList.SelectedIndex = equipment.Count - 1;
             }
             else
             {
-                swapEquipment(current, current - 1);
+                SwapEquipment(current, current - 1);
                 equipmentList.SelectedIndex = current - 1;
             }
         }

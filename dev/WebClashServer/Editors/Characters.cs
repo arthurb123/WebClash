@@ -124,7 +124,7 @@ namespace WebClashServer.Editors
                 return;
 
             Point sp = new Point(
-                canvas.Width / 2 - current.width / 2, 
+                canvas.Width / 2 - current.width / 2,
                 canvas.Height / 2 - current.height / 2
             );
 
@@ -132,11 +132,11 @@ namespace WebClashServer.Editors
 
             Point2D idleFrame = GetDefaultIdleFrame(current);
             g.DrawImage(
-                currentImage, 
+                currentImage,
                 new Rectangle(
                     sp.X,
                     sp.Y,
-                    current.width, 
+                    current.width,
                     current.height
                 ),
                 idleFrame.x,
@@ -148,7 +148,7 @@ namespace WebClashServer.Editors
             //Draw collider
 
             g.DrawRectangle(
-                colliderPen, 
+                colliderPen,
                 new Rectangle(
                     sp.X + current.collider.x,
                     sp.Y + current.collider.y,
@@ -162,14 +162,14 @@ namespace WebClashServer.Editors
         {
             try
             {
-                if (!File.Exists(Program.main.clientLocation + src))
+                if (!File.Exists(Program.main.ClientLocation + src))
                 {
                     currentImage = null;
 
                     return;
                 }
 
-                currentImage = Image.FromFile(Program.main.clientLocation + src);
+                currentImage = Image.FromFile(Program.main.ClientLocation + src);
 
                 current.src = src;
             }
@@ -352,7 +352,8 @@ namespace WebClashServer.Editors
         {
             SoundSelection soundSelection = new SoundSelection("Set hit sounds for '" + name.Text + "'", current.sounds.hitSounds);
 
-            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 current.sounds.hitSounds = soundSelection.GetSelection();
             };
 
@@ -363,7 +364,8 @@ namespace WebClashServer.Editors
         {
             SoundSelection soundSelection = new SoundSelection("Set death sounds for '" + name.Text + "'", current.sounds.deathSounds);
 
-            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 current.sounds.deathSounds = soundSelection.GetSelection();
             };
 
@@ -460,10 +462,10 @@ namespace WebClashServer.Editors
     {
         //Animation sheets
 
-        public AnimationSheet idle      = new AnimationSheet("Idle");
-        public AnimationSheet walking   = new AnimationSheet("Walking");
-        public AnimationSheet running   = new AnimationSheet("Running");
-        public AnimationSheet casting   = new AnimationSheet("Casting");
+        public AnimationSheet idle = new AnimationSheet("Idle");
+        public AnimationSheet walking = new AnimationSheet("Walking");
+        public AnimationSheet running = new AnimationSheet("Running");
+        public AnimationSheet casting = new AnimationSheet("Casting");
         public AnimationSheet attacking = new AnimationSheet("Attacking");
     }
 

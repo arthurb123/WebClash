@@ -13,7 +13,7 @@ namespace WebClashServer.Editors
     {
         public DialogueSystem dialogSystem = new DialogueSystem();
         public List<CanvasElement> elements = new List<CanvasElement>();
-        
+
         private int curElement = -1;
         private bool moving = false;
         private Point oldMouse = new Point(-1, -1);
@@ -27,7 +27,7 @@ namespace WebClashServer.Editors
 
             //Load dialogue system
 
-            dialogSystem.loadSystem(items);
+            dialogSystem.LoadSystem(items);
 
             //Set canvas elements
 
@@ -43,10 +43,10 @@ namespace WebClashServer.Editors
 
             switch (dialogueType)
             {
-                case DialogueType.NPC:
+                case DialogueType.Npc:
                     turnHostileToolStripMenuItem.Enabled = true;
                     break;
-                case DialogueType.NPCQuest:
+                case DialogueType.NpcQuest:
                     turnHostileToolStripMenuItem.Enabled = true;
                     advanceQuestToolStripMenuItem.Enabled = true;
                     break;
@@ -61,16 +61,17 @@ namespace WebClashServer.Editors
 
         private void Dialogue_Load(object sender, EventArgs e)
         {
-            canvas.Paint += new PaintEventHandler(paintCanvas);
-            canvas.Resize += (object s, EventArgs ea) => {
+            canvas.Paint += new PaintEventHandler(PaintCanvas);
+            canvas.Resize += (object s, EventArgs ea) =>
+            {
                 CacheGrid();
-                canvas.Invalidate();  
+                canvas.Invalidate();
             };
 
-            canvas.MouseDown += new MouseEventHandler(canvasMouseDown);
-            canvas.MouseUp += new MouseEventHandler(canvasMouseUp);
-            canvas.MouseMove += new MouseEventHandler(canvasMouseMove);
-            canvas.MouseDoubleClick += new MouseEventHandler(openDialogueItem);
+            canvas.MouseDown += new MouseEventHandler(CanvasMouseDown);
+            canvas.MouseUp += new MouseEventHandler(CanvasMouseUp);
+            canvas.MouseMove += new MouseEventHandler(CanvasMouseMove);
+            canvas.MouseDoubleClick += new MouseEventHandler(OpenDialogueItem);
 
             canvas.Invalidate();
         }
@@ -78,14 +79,14 @@ namespace WebClashServer.Editors
         private void CacheGrid()
         {
             cachedGrid = new Bitmap(
-                canvas.Width + cellSize * 2, 
+                canvas.Width + cellSize * 2,
                 canvas.Height + cellSize * 2
             );
             using (Graphics g = Graphics.FromImage(cachedGrid))
             {
                 //Render grid
 
-                int widthCells  = (int)Math.Ceiling((double)cachedGrid.Width / cellSize);
+                int widthCells = (int)Math.Ceiling((double)cachedGrid.Width / cellSize);
                 int heightCells = (int)Math.Ceiling((double)cachedGrid.Height / cellSize);
 
                 //Render cells
@@ -104,14 +105,14 @@ namespace WebClashServer.Editors
             }
         }
 
-        private void openDialogueItem(object sender, MouseEventArgs e)
+        private void OpenDialogueItem(object sender, MouseEventArgs e)
         {
-            int item = grabElement();
+            int item = GrabElement();
 
             if (item == -1)
                 return;
 
-            if (!elements[item].IsEvent)
+            if (!elements[item].isEvent)
             {
                 DialogueProperties dp = new DialogueProperties(dialogSystem.items[elements[item].id]);
 
@@ -158,7 +159,7 @@ namespace WebClashServer.Editors
                     //Open shop selection
 
                     ShopSelection ss = new ShopSelection("Shop event #" + elements[item].id, dialogSystem.items[elements[item].id].showShopEvent);
-                    
+
                     ss.FormClosed += (object s, FormClosedEventArgs fcea) =>
                     {
                         dialogSystem.items[elements[item].id].showShopEvent = ss.GetResult();
@@ -217,18 +218,18 @@ namespace WebClashServer.Editors
             }
         }
 
-        private void canvasMouseDown(object sender, MouseEventArgs e)
+        private void CanvasMouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
                 oldMouse = canvas.PointToClient(MousePosition);
-                curElement = grabElement();
+                curElement = GrabElement();
 
                 moving = true;
             }
             else
             {
-                int el = grabElement();
+                int el = GrabElement();
 
                 if (el != -1)
                 {
@@ -243,13 +244,13 @@ namespace WebClashServer.Editors
             }
         }
 
-        private void canvasMouseUp(object sender, MouseEventArgs e)
+        private void CanvasMouseUp(object sender, MouseEventArgs e)
         {
             curElement = -1;
             moving = false;
         }
 
-        private void canvasMouseMove(object sender, MouseEventArgs e)
+        private void CanvasMouseMove(object sender, MouseEventArgs e)
         {
             if (moving)
             {
@@ -277,9 +278,9 @@ namespace WebClashServer.Editors
             }
         }
 
-        private int grabElement()
+        private int GrabElement()
         {
-            for (int i = elements.Count-1; i >= 0; i--)
+            for (int i = elements.Count - 1; i >= 0; i--)
             {
                 CanvasElement ca = elements[i];
 
@@ -288,7 +289,7 @@ namespace WebClashServer.Editors
 
                 if (new Rectangle(
                         new Point(
-                            ca.p.X + camera.X, 
+                            ca.p.X + camera.X,
                             ca.p.Y + camera.Y
                         ),
                         ca.Size
@@ -301,7 +302,7 @@ namespace WebClashServer.Editors
             return -1;
         }
 
-        private void paintCanvas(object sender, PaintEventArgs pea)
+        private void PaintCanvas(object sender, PaintEventArgs pea)
         {
             Graphics g = pea.Graphics;
             g.SmoothingMode = SmoothingMode.HighQuality;
@@ -315,7 +316,7 @@ namespace WebClashServer.Editors
             g.DrawImage(
                 cachedGrid,
                 new Point(
-                    -cellSize + camera.X % cellSize, 
+                    -cellSize + camera.X % cellSize,
                     -cellSize + camera.Y % cellSize
                 )
             );
@@ -324,17 +325,17 @@ namespace WebClashServer.Editors
 
             foreach (CanvasElement ca in elements)
                 if (ca != null)
-                    drawDialogueItem(g, ca);
+                    DrawDialogueItem(g, ca);
         }
 
-        private void drawDialogueItem(Graphics g, CanvasElement ca)
+        private void DrawDialogueItem(Graphics g, CanvasElement ca)
         {
             try
             {
                 //Setup rectangle and pen
 
                 Rectangle r = new Rectangle(
-                    new Point(ca.p.X + camera.X, ca.p.Y + camera.Y), 
+                    new Point(ca.p.X + camera.X, ca.p.Y + camera.Y),
                     ca.Size
                 );
                 AdjustableArrowCap cap = new AdjustableArrowCap(4, 4);
@@ -383,13 +384,13 @@ namespace WebClashServer.Editors
                         if (target == null)
                             continue;
 
-                        Pen arrowPen = 
-                            ca.IsEvent 
+                        Pen arrowPen =
+                            ca.isEvent
                             ? (
-                                i == 0 
-                                ? new Pen(Color.Green, 2) { CustomEndCap = cap } 
-                                : new Pen(Color.Red, 2)   { CustomEndCap = cap }
-                            ) 
+                                i == 0
+                                ? new Pen(Color.Green, 2) { CustomEndCap = cap }
+                                : new Pen(Color.Red, 2) { CustomEndCap = cap }
+                            )
                             : p;
 
                         //Construct source and destination points
@@ -407,7 +408,7 @@ namespace WebClashServer.Editors
                         //Construct curved line points
 
                         Point[] points = new Point[]
-{
+                        {
                             source,
                             new Point(
                                 source.X + (int)((float)(destination.X - source.X) * .25),
@@ -427,15 +428,15 @@ namespace WebClashServer.Editors
                 //Filling
 
                 g.FillRectangle(
-                    ca.IsEvent ? Brushes.Silver : Brushes.WhiteSmoke,
+                    ca.isEvent ? Brushes.Silver : Brushes.WhiteSmoke,
                     r
                 );
 
                 //Shadow
 
                 g.DrawLine(
-                    new Pen(new SolidBrush(Color.FromArgb(75, 0, 0, 0)), 3), 
-                    new Point(r.X, r.Y + r.Height), 
+                    new Pen(new SolidBrush(Color.FromArgb(75, 0, 0, 0)), 3),
+                    new Point(r.X, r.Y + r.Height),
                     new Point(r.X + r.Width, r.Y + r.Height)
                 );
 
@@ -467,8 +468,8 @@ namespace WebClashServer.Editors
                 //Draw text
 
                 g.DrawString(
-                    ca.IsEvent ? FormatEventType(dialogSystem.items[ca.id].eventType) : dialogSystem.items[ca.id].text,
-                    ca.IsEvent ? DefaultFont : new Font(DefaultFont, FontStyle.Italic),
+                    ca.isEvent ? FormatEventType(dialogSystem.items[ca.id].eventType) : dialogSystem.items[ca.id].text,
+                    ca.isEvent ? DefaultFont : new Font(DefaultFont, FontStyle.Italic),
                     Brushes.Black,
                     new Rectangle(
                         r.X + padding,
@@ -498,7 +499,7 @@ namespace WebClashServer.Editors
             bool done = false;
             CanvasElement ca = new CanvasElement(
                 new Point(20, canvas.Height / 2 - 40),
-                dialogSystem.addDialogueItem(false)
+                dialogSystem.AddDialogueItem(false)
             );
 
             for (int i = 0; i < elements.Count; i++)
@@ -515,7 +516,7 @@ namespace WebClashServer.Editors
             canvas.Invalidate();
         }
 
-        private void addCanvasEventElement(EventType et)
+        private void AddCanvasEventElement(EventType et)
         {
             CanvasEventElement cee = new CanvasEventElement(
                 new Point(20, canvas.Height / 2 - 40),
@@ -539,7 +540,7 @@ namespace WebClashServer.Editors
                     dialogSystem.items[cee.id].affectPlayerEvent = new AffectPlayerEvent();
                     break;
                 case "SpawnNPC":
-                    dialogSystem.items[cee.id].spawnNPCEvent = new SpawnNPCEvent();
+                    dialogSystem.items[cee.id].spawnNpcEvent = new SpawnNpcEvent();
                     break;
                 case "TurnHostile":
                     dialogSystem.items[cee.id].turnHostileEvent = new TurnHostileEvent();
@@ -595,70 +596,70 @@ namespace WebClashServer.Editors
 
         private void giveItemToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addCanvasEventElement(EventType.GiveItem);
+            AddCanvasEventElement(EventType.GiveItem);
 
             canvas.Invalidate();
         }
 
         private void giveStatusEffectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addCanvasEventElement(EventType.GiveStatusEffect);
+            AddCanvasEventElement(EventType.GiveStatusEffect);
 
             canvas.Invalidate();
         }
 
         private void loadMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addCanvasEventElement(EventType.LoadMap);
+            AddCanvasEventElement(EventType.LoadMap);
 
             canvas.Invalidate();
         }
 
         private void affectPlayerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addCanvasEventElement(EventType.AffectPlayer);
+            AddCanvasEventElement(EventType.AffectPlayer);
 
             canvas.Invalidate();
         }
 
         private void spawnNPCToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addCanvasEventElement(EventType.SpawnNPC);
+            AddCanvasEventElement(EventType.SpawnNpc);
 
             canvas.Invalidate();
         }
 
         private void showQuestToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addCanvasEventElement(EventType.ShowQuest);
+            AddCanvasEventElement(EventType.ShowQuest);
 
             canvas.Invalidate();
         }
 
         private void TurnHostileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addCanvasEventElement(EventType.TurnHostile);
+            AddCanvasEventElement(EventType.TurnHostile);
 
             canvas.Invalidate();
         }
 
         private void ShowShopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addCanvasEventElement(EventType.ShowShop);
+            AddCanvasEventElement(EventType.ShowShop);
 
             canvas.Invalidate();
         }
 
         private void showBankToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addCanvasEventElement(EventType.ShowBank);
+            AddCanvasEventElement(EventType.ShowBank);
 
             canvas.Invalidate();
         }
 
         private void advanceQuestToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addCanvasEventElement(EventType.AdvanceQuest);
+            AddCanvasEventElement(EventType.AdvanceQuest);
 
             canvas.Invalidate();
         }
@@ -667,14 +668,14 @@ namespace WebClashServer.Editors
 
         private void GetVariableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addCanvasEventElement(EventType.GetVariable);
+            AddCanvasEventElement(EventType.GetVariable);
 
             canvas.Invalidate();
         }
 
         private void SetVariableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addCanvasEventElement(EventType.SetVariable);
+            AddCanvasEventElement(EventType.SetVariable);
 
             canvas.Invalidate();
         }
@@ -682,8 +683,8 @@ namespace WebClashServer.Editors
 
     public enum DialogueType
     {
-        NPC = 0,
-        NPCQuest,
+        Npc = 0,
+        NpcQuest,
         Item,
         Map,
     }
@@ -694,7 +695,7 @@ namespace WebClashServer.Editors
         {
             get
             {
-                if (!IsEvent)
+                if (!isEvent)
                     return new Size(120, 80); //Normal element Size
                 else
                     return new Size(120, 40); //Event element Size
@@ -710,15 +711,15 @@ namespace WebClashServer.Editors
         public Point p = default;
         public int id = 0;
 
-        public bool IsEvent = false;
+        public bool isEvent = false;
     }
 
     public class CanvasEventElement : CanvasElement
     {
-        public CanvasEventElement(Point p, DialogueSystem ds) 
-            : base(p, ds.addDialogueItem(true))
+        public CanvasEventElement(Point p, DialogueSystem ds)
+            : base(p, ds.AddDialogueItem(true))
         {
-            IsEvent = true;
+            isEvent = true;
         }
     }
 
@@ -727,7 +728,7 @@ namespace WebClashServer.Editors
         GiveItem = 0,
         LoadMap,
         AffectPlayer,
-        SpawnNPC,
+        SpawnNpc,
         TurnHostile,
         ShowQuest,
         ShowShop,

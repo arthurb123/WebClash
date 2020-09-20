@@ -10,8 +10,8 @@ namespace WebClashServer.Editors
 {
     public partial class NPCs : Form
     {
-        private NPC current;
-        private NPCProfile currentProfile;
+        private Npc current;
+        private NpcProfile currentProfile;
         private string oldName;
 
         private bool dataHasChanged = false;
@@ -23,7 +23,7 @@ namespace WebClashServer.Editors
 
         private void NPCs_Load(object sender, EventArgs e)
         {
-            ReloadNPCs();
+            ReloadNpCs();
 
             if (npcList.Items.Count > 0)
                 npcList.SelectedItem = npcList.Items[0];
@@ -31,7 +31,7 @@ namespace WebClashServer.Editors
                 newLink_LinkClicked(sender, null);
         }
 
-        private void ReloadNPCs()
+        private void ReloadNpCs()
         {
             npcList.Items.Clear();
 
@@ -50,7 +50,7 @@ namespace WebClashServer.Editors
                     string npc = npcs[n].Replace('\\', '/');
                     npc = npc.Substring(npc.LastIndexOf('/') + 1, npc.LastIndexOf('.') - npc.LastIndexOf('/') - 1);
 
-                    npcList.Items.Add((n+1) + ". " + npc);
+                    npcList.Items.Add((n + 1) + ". " + npc);
                 }
             }
             catch (Exception exc)
@@ -59,7 +59,7 @@ namespace WebClashServer.Editors
             }
         }
 
-        private void ReloadNPCProfiles()
+        private void ReloadNpcProfiles()
         {
             profileSelect.Items.Clear();
 
@@ -68,16 +68,16 @@ namespace WebClashServer.Editors
                     profileSelect.Items.Add(p);
         }
 
-        private void LoadNPC(string npcName)
+        private void LoadNpc(string npcName)
         {
             try
             {
                 string loc = Program.main.serverLocation + "/npcs/" + npcName + ".json";
 
                 if (npcName == string.Empty)
-                    current = new NPC();
+                    current = new Npc();
                 else
-                    current = new NPC(loc);
+                    current = new Npc(loc);
 
                 //Check if the NPC makes use of the
                 //profile system or not, if not ask
@@ -91,12 +91,12 @@ namespace WebClashServer.Editors
                     lines.Insert(3, "\"profiles\": [{\n");
                     lines.Insert(lines.Count - 1, "}]\n");
 
-                    text = String.Join(string.Empty, lines);
+                    text = string.Join(string.Empty, lines);
                     File.WriteAllText(loc, text);
 
                     //Reload the NPC
 
-                    LoadNPC(npcName);
+                    LoadNpc(npcName);
                     return;
                 }
 
@@ -108,9 +108,9 @@ namespace WebClashServer.Editors
                     name.Text = npcName;
                     oldName = name.Text;
 
-                    ReloadNPCProfiles();
+                    ReloadNpcProfiles();
 
-                    profileSelect.SelectedItem = FindFirstNPCProfile();
+                    profileSelect.SelectedItem = FindFirstNpcProfile();
                 }
             }
             catch (Exception exc)
@@ -119,7 +119,7 @@ namespace WebClashServer.Editors
             }
         }
 
-        private int FindFirstNPCProfile()
+        private int FindFirstNpcProfile()
         {
             for (int p = 0; p < current.profiles.Length; p++)
                 if (current.profiles[p] != null)
@@ -135,10 +135,10 @@ namespace WebClashServer.Editors
                     "A new profile was created for the NPC '" + current.name + "', as no other profiles were found."
                 );
 
-            return FindFirstNPCProfile();
+            return FindFirstNpcProfile();
         }
 
-        private void LoadNPCProfile(int profile)
+        private void LoadNpcProfile(int profile)
         {
             //Check if the profile is valid
 
@@ -207,7 +207,7 @@ namespace WebClashServer.Editors
             if (currentProfile.health != null)
                 health.Value = currentProfile.health.max;
 
-            checkTypeEnabled();
+            CheckTypeEnabled();
 
             characterName.Text = "Character: " + currentProfile.character;
         }
@@ -240,7 +240,7 @@ namespace WebClashServer.Editors
             npcList.Items.Add(i);
             npcList.SelectedItem = i;
 
-            LoadNPC(string.Empty);
+            LoadNpc(string.Empty);
         }
 
         private void saveLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -259,7 +259,7 @@ namespace WebClashServer.Editors
 
             Logger.Message("NPC has been saved!");
 
-            ReloadNPCs();
+            ReloadNpCs();
 
             npcList.SelectedItem = name.Text;
 
@@ -279,7 +279,7 @@ namespace WebClashServer.Editors
 
             File.Delete(Program.main.serverLocation + "/npcs/" + oldName + ".json");
 
-            ReloadNPCs();
+            ReloadNpCs();
 
             if (npcList.Items.Count > 0)
                 npcList.SelectedItem = npcList.Items[0];
@@ -297,18 +297,18 @@ namespace WebClashServer.Editors
             string n = npcList.SelectedItem.ToString();
             n = n.Substring(n.IndexOf(" ") + 1, n.Length - n.IndexOf(" ") - 1);
 
-            LoadNPC(n);
+            LoadNpc(n);
         }
 
         private void addProfile_Click(object sender, EventArgs e)
         {
             //Convert the current profile array to a list
 
-            List<NPCProfile> profiles = current.profiles.ToList();
+            List<NpcProfile> profiles = current.profiles.ToList();
 
             //Create a profile with some default values
 
-            NPCProfile profile = new NPCProfile()
+            NpcProfile profile = new NpcProfile()
             {
                 character = currentProfile.character
             };
@@ -344,7 +344,7 @@ namespace WebClashServer.Editors
 
             //Reload the profiles
 
-            ReloadNPCProfiles();
+            ReloadNpcProfiles();
 
             //Load the new (next) profile
 
@@ -377,19 +377,19 @@ namespace WebClashServer.Editors
 
             //Reload the profiles
 
-            ReloadNPCProfiles();
+            ReloadNpcProfiles();
 
             //Open the first found profile
 
-            profileSelect.SelectedItem = FindFirstNPCProfile();
+            profileSelect.SelectedItem = FindFirstNpcProfile();
         }
 
         private void profile_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadNPCProfile((int)profileSelect.SelectedItem);
+            LoadNpcProfile((int)profileSelect.SelectedItem);
         }
 
-        private void checkTypeEnabled()
+        private void CheckTypeEnabled()
         {
             if (currentProfile.type != "friendly")
             {
@@ -410,7 +410,7 @@ namespace WebClashServer.Editors
             if (typeFriendly.Checked)
                 currentProfile.type = "friendly";
 
-            checkTypeEnabled();
+            CheckTypeEnabled();
         }
 
         private void typeHostile_CheckedChanged(object sender, EventArgs e)
@@ -418,7 +418,7 @@ namespace WebClashServer.Editors
             if (typeHostile.Checked)
                 currentProfile.type = "hostile";
 
-            checkTypeEnabled();
+            CheckTypeEnabled();
         }
 
         private void aggressive_CheckedChanged(object sender, EventArgs e)
@@ -437,7 +437,7 @@ namespace WebClashServer.Editors
         {
             current.name = name.Text;
         }
-        
+
         private void showNameplate_CheckedChanged(object sender, EventArgs e)
         {
             currentProfile.showNameplate = showNameplate.Checked;
@@ -529,7 +529,8 @@ namespace WebClashServer.Editors
         {
             ActionSelection actionSelection = new ActionSelection("Set actions for '" + current.name + "'", currentProfile.actions);
 
-            actionSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            actionSelection.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 currentProfile.actions = actionSelection.GetSelection();
             };
 
@@ -540,7 +541,8 @@ namespace WebClashServer.Editors
         {
             ItemSelection itemSelection = new ItemSelection("Set items for '" + current.name + "'", currentProfile.items);
 
-            itemSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            itemSelection.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 currentProfile.items = itemSelection.GetSelection();
             };
 
@@ -550,14 +552,15 @@ namespace WebClashServer.Editors
         private void dialogButton_Click(object sender, EventArgs e)
         {
             Dialogue npcDialogue = new Dialogue(
-                currentProfile.dialog.ToList(), 
-                currentProfile.dialogElements.ToList(), 
-                DialogueType.NPC
+                currentProfile.dialog.ToList(),
+                currentProfile.dialogElements.ToList(),
+                DialogueType.Npc
             );
 
             npcDialogue.Text = "Edit dialogue for '" + current.name + "'";
 
-            npcDialogue.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            npcDialogue.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 currentProfile.dialog = npcDialogue.dialogSystem.items.ToArray();
                 currentProfile.dialogElements = npcDialogue.elements.ToArray();
             };
@@ -567,13 +570,14 @@ namespace WebClashServer.Editors
 
         private void equipmentButton_Click(object sender, EventArgs e)
         {
-            NPCEquipment npcEquipment = new NPCEquipment(
-                "Edit equipment for '" + current.name + "'", 
-                currentProfile.character, 
+            NpcEquipment npcEquipment = new NpcEquipment(
+                "Edit equipment for '" + current.name + "'",
+                currentProfile.character,
                 currentProfile.equipment
             );
 
-            npcEquipment.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            npcEquipment.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 currentProfile.equipment = npcEquipment.GetSelection();
             };
 
@@ -586,15 +590,15 @@ namespace WebClashServer.Editors
         }
     }
 
-    public class NPC
+    public class Npc
     {
-        public NPC() { }
+        public Npc() { }
 
-        public NPC(string source)
+        public Npc(string source)
         {
             try
             {
-                NPC temp = JsonConvert.DeserializeObject<NPC>(File.ReadAllText(source));
+                Npc temp = JsonConvert.DeserializeObject<Npc>(File.ReadAllText(source));
 
                 name = temp.name;
 
@@ -607,10 +611,10 @@ namespace WebClashServer.Editors
         }
 
         public string name = "";
-        public NPCProfile[] profiles = new NPCProfile[0];
+        public NpcProfile[] profiles = new NpcProfile[0];
     }
 
-    public class NPCProfile
+    public class NpcProfile
     {
         public bool showNameplate = true;
 

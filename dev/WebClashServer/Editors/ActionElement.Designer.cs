@@ -633,7 +633,7 @@
             // 
             this.projectileSpeed.Location = new System.Drawing.Point(119, 29);
             this.projectileSpeed.Maximum = new decimal(new int[] {
-            50,
+            999999999,
             0,
             0,
             0});
@@ -667,9 +667,9 @@
             this.label19.AutoSize = true;
             this.label19.Location = new System.Drawing.Point(21, 25);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(38, 26);
+            this.label19.Size = new System.Drawing.Size(62, 26);
             this.label19.TabIndex = 2;
-            this.label19.Text = "Speed\r\n(1-50)";
+            this.label19.Text = "Speed\r\n(Pixels/tick)";
             // 
             // propertyType
             // 

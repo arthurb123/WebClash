@@ -48,7 +48,7 @@ namespace WebClashServer
                     ".json"
                 };
 
-                string[] items = 
+                string[] items =
                     Directory.GetFiles(Program.main.serverLocation + "/items", "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
 
@@ -56,7 +56,7 @@ namespace WebClashServer
                 {
                     string it = items[i].Replace('\\', '/');
 
-                    itemList.Items.Add((i+1) + ". " + it.Substring(it.LastIndexOf('/') + 1, it.LastIndexOf('.') - it.LastIndexOf('/') - 1));
+                    itemList.Items.Add((i + 1) + ". " + it.Substring(it.LastIndexOf('/') + 1, it.LastIndexOf('.') - it.LastIndexOf('/') - 1));
                 }
             }
             catch (Exception exc)
@@ -168,12 +168,12 @@ namespace WebClashServer
 
             string t = itemList.SelectedItem.ToString();
 
-            LoadItem(t.Substring(t.IndexOf(" ")+1, t.Length - t.IndexOf(" ")-1));
+            LoadItem(t.Substring(t.IndexOf(" ") + 1, t.Length - t.IndexOf(" ") - 1));
         }
 
         private void newLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string i = (itemList.Items.Count+1) + ". " + string.Empty;
+            string i = (itemList.Items.Count + 1) + ". " + string.Empty;
 
             itemList.Items.Add(i);
             itemList.SelectedItem = i;
@@ -241,7 +241,7 @@ namespace WebClashServer
 
         private void SetRarities()
         {
-            foreach(Rarity rty in Enum.GetValues(typeof(Rarity)))
+            foreach (Rarity rty in Enum.GetValues(typeof(Rarity)))
                 rarity.Items.Add(rty.ToString());
         }
 
@@ -253,7 +253,7 @@ namespace WebClashServer
 
         public string FirstCharToUpper(string input)
         {
-            if (!String.IsNullOrEmpty(input))
+            if (!string.IsNullOrEmpty(input))
                 return input.First().ToString().ToUpper() + input.Substring(1);
 
             return input;
@@ -266,7 +266,7 @@ namespace WebClashServer
 
         private void AttemptSetIcon()
         {
-            string serverLocation = Program.main.clientLocation + src.Text;
+            string serverLocation = Program.main.ClientLocation + src.Text;
 
             if (!File.Exists(serverLocation))
             {
@@ -312,7 +312,7 @@ namespace WebClashServer
         {
             current.value = (int)value.Value;
         }
-        
+
         private void minLevel_ValueChanged(object sender, EventArgs e)
         {
             current.minLevel = (int)minLevel.Value;
@@ -322,7 +322,8 @@ namespace WebClashServer
         {
             SoundSelection soundSelection = new SoundSelection("Set sounds for item '" + name.Text + "'", current.sounds);
 
-            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 current.sounds = soundSelection.GetSelection();
             };
 
@@ -472,7 +473,8 @@ namespace WebClashServer
 
             dialogue.Text = "Edit dialogue for '" + name.Text + "'";
 
-            dialogue.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            dialogue.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 current.dialog = dialogue.dialogSystem.items.ToArray();
                 current.dialogElements = dialogue.elements.ToArray();
             };
@@ -615,7 +617,7 @@ namespace WebClashServer
         Torso,
         Hands,
         Legs,
-        Feet, 
+        Feet,
         Main,
         Offhand
     }

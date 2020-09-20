@@ -53,7 +53,7 @@ namespace WebClashServer.Editors
             {
                 Logger.Error("Could not load layer list: ", exc);
             }
-            
+
             if (current == -1 &&
                 layers.Count > 0)
                 layerList.SelectedItem = layerList.Items[0];
@@ -74,7 +74,7 @@ namespace WebClashServer.Editors
         }
 
 
-        private void swapLayers(int indexA, int indexB)
+        private void SwapLayers(int indexA, int indexB)
         {
             MapLayer tmpLayer = layers[indexA];
             layers[indexA] = layers[indexB];
@@ -90,13 +90,13 @@ namespace WebClashServer.Editors
 
             if (current < layers.Count - 1)
             {
-                if (!layers[current].hover && layers[current+1].hover)
+                if (!layers[current].hover && layers[current + 1].hover)
                 {
                     Logger.Error("Could not move layer down, as hover layers should always be on top.");
                     return;
                 }
 
-                swapLayers(current, current + 1);
+                SwapLayers(current, current + 1);
                 layerList.SelectedIndex = current + 1;
             }
         }
@@ -106,14 +106,15 @@ namespace WebClashServer.Editors
             if (current == -1 || layers.Count == 1)
                 return;
 
-            if (current > 0) {
+            if (current > 0)
+            {
                 if (layers[current].hover && !layers[current - 1].hover)
                 {
                     Logger.Error("Could not move layer up, as hover layers should always be on top.");
                     return;
                 }
 
-                swapLayers(current, current - 1);
+                SwapLayers(current, current - 1);
                 layerList.SelectedIndex = current - 1;
             }
         }
@@ -136,7 +137,7 @@ namespace WebClashServer.Editors
 
     public class MapLayer
     {
-        public MapLayer (string name, bool hover)
+        public MapLayer(string name, bool hover)
         {
             this.name = name;
             this.hover = hover;

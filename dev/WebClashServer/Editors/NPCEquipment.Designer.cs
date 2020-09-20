@@ -1,6 +1,6 @@
 ﻿namespace WebClashServer.Editors
 {
-    partial class NPCEquipment
+    partial class NpcEquipment
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NPCEquipment));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NpcEquipment));
             this.canvas = new System.Windows.Forms.PictureBox();
             this.equipmentSource = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -209,7 +209,7 @@
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(340, 495);
             this.MinimumSize = new System.Drawing.Size(340, 495);
-            this.Name = "NPCEquipment";
+            this.Name = "NpcEquipment";
             this.Text = "WebClash - NPC Equipment";
             this.Load += new System.EventHandler(this.NPCGear_Load);
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();

@@ -70,7 +70,7 @@
           "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
-          "spawnNPCEvent": null,
+          "spawnNpcEvent": null,
           "turnHostileEvent": null,
           "showQuestEvent": null,
           "showShopEvent": null,
@@ -100,7 +100,7 @@
           "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
-          "spawnNPCEvent": {
+          "spawnNpcEvent": {
             "name": "Soldier",
             "profile": 0,
             "amount": 4,
@@ -135,7 +135,7 @@
           "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
-          "spawnNPCEvent": null,
+          "spawnNpcEvent": null,
           "turnHostileEvent": null,
           "showQuestEvent": null,
           "showShopEvent": null,
@@ -165,7 +165,7 @@
           "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
-          "spawnNPCEvent": null,
+          "spawnNpcEvent": null,
           "turnHostileEvent": null,
           "showQuestEvent": {
             "name": "Village Rescue (Pt. 1)"
@@ -197,7 +197,7 @@
           "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
-          "spawnNPCEvent": null,
+          "spawnNpcEvent": null,
           "turnHostileEvent": null,
           "showQuestEvent": {
             "name": "Village Rescue (Pt. 2)"
@@ -229,7 +229,7 @@
           "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
-          "spawnNPCEvent": null,
+          "spawnNpcEvent": null,
           "turnHostileEvent": null,
           "showQuestEvent": null,
           "showShopEvent": null,
@@ -259,7 +259,7 @@
           "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
-          "spawnNPCEvent": null,
+          "spawnNpcEvent": null,
           "turnHostileEvent": {},
           "showQuestEvent": null,
           "showShopEvent": null,
@@ -285,7 +285,7 @@
           "giveStatusEffectEvent": null,
           "loadMapEvent": null,
           "affectPlayerEvent": null,
-          "spawnNPCEvent": null,
+          "spawnNpcEvent": null,
           "turnHostileEvent": null,
           "showQuestEvent": null,
           "showShopEvent": null,

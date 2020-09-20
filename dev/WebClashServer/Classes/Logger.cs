@@ -10,7 +10,7 @@ namespace WebClashServer.Classes
         public static void Error(string message, Exception exc = null)
         {
             MessageBox.Show(
-                message + (exc != null ? exc.Message + exc.StackTrace : ""), 
+                message + (exc != null ? exc.Message + exc.StackTrace : ""),
                 "WebClash - Error"
             );
         }

@@ -40,7 +40,8 @@ namespace WebClashServer.Editors
                     actionSelect.Enabled = false;
                     range.Enabled = false;
                     extraCooldown.Enabled = false;
-                } else
+                }
+                else
                 {
                     actionSelect.Enabled = true;
                     range.Enabled = true;
@@ -108,7 +109,7 @@ namespace WebClashServer.Editors
                 actionSelect.SelectedItem = actions[current].action;
 
             range.Value = actions[current].range;
-            extraCooldown.Value = actions[current].extraCooldown*16;
+            extraCooldown.Value = actions[current].extraCooldown * 16;
         }
 
         private void actionSelect_SelectedIndexChanged(object sender, EventArgs e)

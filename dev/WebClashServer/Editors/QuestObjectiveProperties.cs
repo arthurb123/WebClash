@@ -23,7 +23,7 @@ namespace WebClashServer.Editors
         {
             LoadObjectiveTypes();
 
-            LoadNPCSelection();
+            LoadNpcSelection();
 
             LoadItemSelection();
 
@@ -95,7 +95,7 @@ namespace WebClashServer.Editors
 
         //General methods for selection loading
 
-        private void LoadNPCSelection()
+        private void LoadNpcSelection()
         {
             killNpcSelection.Items.Clear();
             talkNpcSelection.Items.Clear();
@@ -215,12 +215,13 @@ namespace WebClashServer.Editors
             Dialogue talkDialogue = new Dialogue(
                 current.talkObjective.dialog.ToList(),
                 current.talkObjective.dialogElements.ToList(),
-                DialogueType.NPCQuest
+                DialogueType.NpcQuest
             );
 
             talkDialogue.Text = Text + " dialog for '" + current.talkObjective.npc + "'";
 
-            talkDialogue.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            talkDialogue.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 current.talkObjective.dialog = talkDialogue.dialogSystem.items.ToArray();
                 current.talkObjective.dialogElements = talkDialogue.elements.ToArray();
             };

@@ -7,7 +7,7 @@ namespace WebClashServer.Classes
     {
         public List<DialogueItem> items = new List<DialogueItem>();
 
-        public void loadSystem(List<DialogueItem> items)
+        public void LoadSystem(List<DialogueItem> items)
         {
             if (items == null ||
                 items.Count == 0)
@@ -16,7 +16,7 @@ namespace WebClashServer.Classes
             this.items = items;
         }
 
-        public int addDialogueItem(bool isEvent)
+        public int AddDialogueItem(bool isEvent)
         {
             for (int i = 0; i < items.Count; i++)
                 if (items[i] == null)
@@ -52,7 +52,7 @@ namespace WebClashServer.Classes
         public bool isEvent = false;
 
         public List<DialogueOption> options;
-        
+
         //Event stuff
 
         public string eventType = "";
@@ -69,7 +69,7 @@ namespace WebClashServer.Classes
 
         public AffectPlayerEvent affectPlayerEvent = null;
 
-        public SpawnNPCEvent spawnNPCEvent = null;
+        public SpawnNpcEvent spawnNpcEvent = null;
 
         public TurnHostileEvent turnHostileEvent = null;
 
@@ -133,7 +133,7 @@ namespace WebClashServer.Classes
         public int currencyDifference = 0;
     }
 
-    public class SpawnNPCEvent
+    public class SpawnNpcEvent
     {
         public string name = "";
 

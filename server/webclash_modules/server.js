@@ -319,11 +319,13 @@ exports.handleChannel = function(channel)
             //Try to create an action based
             //on the map conditions (if PvP map)
 
-            let result;
-            if (!tiled.maps[game.players[id].map_id].pvp)
-                result = combat.performPlayerAction(data.slot, id, data.target, false);
-            else
-                result = combat.performPlayerAction(data.slot, id, data.target, true);
+            let result = combat.performPlayerAction(
+                data.slot, 
+                id, 
+                data.target, 
+                data.angle,
+                tiled.maps[game.players[id].map_id].pvp
+            );
 
             //Emit casting action packages to self and others
 

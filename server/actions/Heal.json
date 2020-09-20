@@ -29,8 +29,8 @@
       },
       "delay": 0,
       "statusEffect": "Test",
-      "snappedX": false,
-      "snappedY": false
+      "snappedX": true,
+      "snappedY": true
     }
   ],
   "sounds": [

@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Timers;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Timers;
 using System.Windows.Forms;
-using System.Diagnostics;
 using WebClashServer.Classes;
-
 using Timer = System.Timers.Timer;
 
 namespace WebClashServer.Editors
 {
     public partial class CharacterAnimations : Form
     {
-        public static CharacterAnimations Instance;
+        public static CharacterAnimations instance;
 
         private Character current = null;
         private Image currentImage = null;
@@ -32,7 +31,7 @@ namespace WebClashServer.Editors
         public CharacterAnimations(Character character, Image image, string name)
         {
             InitializeComponent();
-            Instance = this;
+            instance = this;
 
             current = character;
             currentImage = image;
@@ -196,12 +195,12 @@ namespace WebClashServer.Editors
 
         public static void ResetAnimationTimers()
         {
-            Instance.elapsed = 0;
+            instance.elapsed = 0;
 
-            Instance.upFrame = 0;
-            Instance.downFrame = 0;
-            Instance.leftFrame = 0;
-            Instance.rightFrame = 0;
+            instance.upFrame = 0;
+            instance.downFrame = 0;
+            instance.leftFrame = 0;
+            instance.rightFrame = 0;
         }
 
         private void speed_ValueChanged(object sender, EventArgs e)
@@ -318,7 +317,7 @@ namespace WebClashServer.Editors
 
             elapsed += (int)(stopwatch.ElapsedTicks / TimeSpan.TicksPerMillisecond);
             stopwatch = Stopwatch.StartNew();
-            
+
             if (elapsed >= sheet.speed)
             {
                 upFrame++;

@@ -102,14 +102,14 @@ namespace WebClashServer.Editors
         {
             try
             {
-                if (!File.Exists(Program.main.clientLocation + src))
+                if (!File.Exists(Program.main.ClientLocation + src))
                 {
                     charImage = null;
 
                     return;
                 }
 
-                charImage = Image.FromFile(Program.main.clientLocation + src);
+                charImage = Image.FromFile(Program.main.ClientLocation + src);
             }
             catch (Exception exc)
             {
@@ -129,7 +129,7 @@ namespace WebClashServer.Editors
                 return;
 
             Point sp = new Point(
-                canvas.Width / 2 - currentCharacter.width / 2, 
+                canvas.Width / 2 - currentCharacter.width / 2,
                 canvas.Height / 2 - currentCharacter.height / 2
             );
 
@@ -139,9 +139,9 @@ namespace WebClashServer.Editors
             g.DrawImage(
                 charImage,
                 new Rectangle(
-                    sp.X, 
-                    sp.Y, 
-                    currentCharacter.width, 
+                    sp.X,
+                    sp.Y,
+                    currentCharacter.width,
                     currentCharacter.height
                 ),
                 idleFrame.x,

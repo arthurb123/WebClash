@@ -2,15 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Timers;
-using System.Diagnostics;
 using WebClashServer.Classes;
-
 using Action = WebClashServer.Classes.Action;
 using Timer = System.Timers.Timer;
 
@@ -30,7 +28,7 @@ namespace WebClashServer.Editors
 
         private bool moving = false;
         private bool disableSnapping = false;
-        private Point oldMP = default;
+        private Point oldMp = default;
         private Bitmap cachedGrid = null;
 
         private Dictionary<Element, Frame> elementFrames = new Dictionary<Element, Frame>();
@@ -50,11 +48,11 @@ namespace WebClashServer.Editors
 
         private void Actions_Load(object sender, EventArgs e)
         {
-            canvas.Paint += new PaintEventHandler(paintCanvas);
-            canvas.Resize += new EventHandler(resizeCanvas);
-            canvas.MouseDown += new MouseEventHandler(mouseDownCanvas);
-            canvas.MouseMove += new MouseEventHandler(mouseMoveCanvas);
-            canvas.MouseUp += new MouseEventHandler(mouseUpCanvas);
+            canvas.Paint += new PaintEventHandler(PaintCanvas);
+            canvas.Resize += new EventHandler(ResizeCanvas);
+            canvas.MouseDown += new MouseEventHandler(MouseDownCanvas);
+            canvas.MouseMove += new MouseEventHandler(MouseMoveCanvas);
+            canvas.MouseUp += new MouseEventHandler(MouseUpCanvas);
 
             CacheGrid();
             ReloadActions();
@@ -67,7 +65,7 @@ namespace WebClashServer.Editors
 
             stopwatch = Stopwatch.StartNew();
 
-            animationTimer = new Timer(1000f/60);
+            animationTimer = new Timer(1000f / 60);
             animationTimer.Elapsed += animationTimer_Tick;
             animationTimer.AutoReset = true;
             animationTimer.Start();
@@ -193,14 +191,14 @@ namespace WebClashServer.Editors
         {
             try
             {
-                if (!File.Exists(Program.main.clientLocation + src))
+                if (!File.Exists(Program.main.ClientLocation + src))
                 {
                     charImage = null;
 
                     return;
                 }
 
-                charImage = Image.FromFile(Program.main.clientLocation + src);
+                charImage = Image.FromFile(Program.main.ClientLocation + src);
             }
             catch (Exception exc)
             {
@@ -214,10 +212,10 @@ namespace WebClashServer.Editors
         {
             if (!savedImages.ContainsKey(src))
             {
-                if (!File.Exists(Program.main.clientLocation + src))
+                if (!File.Exists(Program.main.ClientLocation + src))
                     return null;
 
-                savedImages[src] = Image.FromFile(Program.main.clientLocation + src);
+                savedImages[src] = Image.FromFile(Program.main.ClientLocation + src);
             }
 
             return savedImages[src];
@@ -272,7 +270,7 @@ namespace WebClashServer.Editors
             }
         }
 
-        private void paintCanvas(object sender, PaintEventArgs e)
+        private void PaintCanvas(object sender, PaintEventArgs e)
         {
             if (current == null)
                 return;
@@ -287,7 +285,7 @@ namespace WebClashServer.Editors
                 //Calculate character center point
 
                 Point sp = new Point(
-                    canvas.Width / 2 - currentCharacter.width / 2, 
+                    canvas.Width / 2 - currentCharacter.width / 2,
                     canvas.Height / 2 - currentCharacter.height / 2
                 );
 
@@ -299,13 +297,13 @@ namespace WebClashServer.Editors
 
                 Point2D idleFrame = Characters.GetDefaultIdleFrame(currentCharacter);
                 g.DrawImage(
-                    charImage, 
+                    charImage,
                     new Rectangle(
-                        sp.X, sp.Y, 
+                        sp.X, sp.Y,
                         currentCharacter.width, currentCharacter.height
-                    ), 
+                    ),
                     idleFrame.x, idleFrame.y,
-                    currentCharacter.width, currentCharacter.height, 
+                    currentCharacter.width, currentCharacter.height,
                     GraphicsUnit.Pixel
                 );
 
@@ -365,26 +363,26 @@ namespace WebClashServer.Editors
                             g.DrawImage(img, r, 0, elementFrames[cur].frame * cur.h, cur.w, cur.h, GraphicsUnit.Pixel);
                     }
 
-                    //Draw rectangle
+                //Draw rectangle
 
-                    DrawRectangle:
-                        if (cur == current.elements[curElement])
-                        {
-                            //Draw position text
+                DrawRectangle:
+                    if (cur == current.elements[curElement])
+                    {
+                        //Draw position text
 
-                            g.DrawString(
-                                "#" + (curElement + 1) + " (" + r.X + ", " + r.Y + ")",
-                                new Font("Verdana", 10),
-                                Brushes.Black,
-                                new Point(2, 2)
-                            );
+                        g.DrawString(
+                            "#" + (curElement + 1) + " (" + r.X + ", " + r.Y + ")",
+                            new Font("Verdana", 10),
+                            Brushes.Black,
+                            new Point(2, 2)
+                        );
 
-                            //Draw rectangle
+                        //Draw rectangle
 
-                            g.DrawRectangle(new Pen(Color.DeepPink, 1), r);
-                        }
-                        else
-                            g.DrawRectangle(new Pen(Color.Blue, 1), r);
+                        g.DrawRectangle(new Pen(Color.DeepPink, 1), r);
+                    }
+                    else
+                        g.DrawRectangle(new Pen(Color.Blue, 1), r);
 
                     //Draw projectile arrow (if projectile)
 
@@ -424,12 +422,12 @@ namespace WebClashServer.Editors
             }
         }
 
-        private void resizeCanvas(object sender, EventArgs e)
+        private void ResizeCanvas(object sender, EventArgs e)
         {
             CacheGrid();
         }
 
-        private void mouseDownCanvas(object sender, EventArgs e)
+        private void MouseDownCanvas(object sender, EventArgs e)
         {
             Point mp = canvas.PointToClient(MousePosition);
 
@@ -446,14 +444,14 @@ namespace WebClashServer.Editors
                 {
                     GrabElement(i);
                     moving = true;
-                    oldMP = mp;
+                    oldMp = mp;
 
                     break;
                 }
             }
         }
 
-        private void mouseMoveCanvas(object sender, EventArgs e)
+        private void MouseMoveCanvas(object sender, EventArgs e)
         {
             //If moving an element, handle movement
 
@@ -465,8 +463,8 @@ namespace WebClashServer.Editors
 
                 //Calculate new position
 
-                float dx = mp.X - oldMP.X;
-                float dy = mp.Y - oldMP.Y;
+                float dx = mp.X - oldMp.X;
+                float dy = mp.Y - oldMp.Y;
 
                 float x = current.elements[curElement].x + dx;
                 float y = current.elements[curElement].y + dy;
@@ -528,7 +526,7 @@ namespace WebClashServer.Editors
 
                 //Set old mouse position
 
-                oldMP = new Point(mp.X, mp.Y);
+                oldMp = new Point(mp.X, mp.Y);
 
                 //Repaint canvas
 
@@ -536,7 +534,7 @@ namespace WebClashServer.Editors
             }
         }
 
-        private void mouseUpCanvas(object sender, EventArgs e)
+        private void MouseUpCanvas(object sender, EventArgs e)
         {
             moving = false;
         }
@@ -662,7 +660,8 @@ namespace WebClashServer.Editors
         {
             SoundSelection soundSelection = new SoundSelection("Set sounds for action '" + current.name + "'", current.sounds);
 
-            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 current.sounds = soundSelection.GetSelection();
             };
 
@@ -671,7 +670,7 @@ namespace WebClashServer.Editors
 
         private void AttemptSetIcon()
         {
-            string serverLocation = Program.main.clientLocation + icon.Text;
+            string serverLocation = Program.main.ClientLocation + icon.Text;
 
             if (!File.Exists(serverLocation))
             {
@@ -813,10 +812,10 @@ namespace WebClashServer.Editors
         {
             if (current == null)
                 return;
-            
+
             //Get delta
 
-            int elapsed = (int)((stopwatch.ElapsedTicks / TimeSpan.TicksPerMillisecond) / (1000f/60));
+            int elapsed = (int)((stopwatch.ElapsedTicks / TimeSpan.TicksPerMillisecond) / (1000f / 60));
             stopwatch = Stopwatch.StartNew();
 
             //Check if all elements have finished

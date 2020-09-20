@@ -48,7 +48,7 @@ namespace WebClashServer
                 {
                     string se = effects[i].Replace('\\', '/');
 
-                    statusEffectList.Items.Add((i+1) + ". " + se.Substring(se.LastIndexOf('/') + 1, se.LastIndexOf('.') - se.LastIndexOf('/') - 1));
+                    statusEffectList.Items.Add((i + 1) + ". " + se.Substring(se.LastIndexOf('/') + 1, se.LastIndexOf('.') - se.LastIndexOf('/') - 1));
                 }
             }
             catch (Exception exc)
@@ -94,12 +94,12 @@ namespace WebClashServer
 
             string t = statusEffectList.SelectedItem.ToString();
 
-            LoadStatusEffect(t.Substring(t.IndexOf(" ")+1, t.Length - t.IndexOf(" ")-1));
+            LoadStatusEffect(t.Substring(t.IndexOf(" ") + 1, t.Length - t.IndexOf(" ") - 1));
         }
 
         private void newLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string i = (statusEffectList.Items.Count+1) + ". " + string.Empty;
+            string i = (statusEffectList.Items.Count + 1) + ". " + string.Empty;
 
             statusEffectList.Items.Add(i);
             statusEffectList.SelectedItem = i;
@@ -144,7 +144,7 @@ namespace WebClashServer
 
         private void AttemptSetIcon()
         {
-            string serverLocation = Program.main.clientLocation + src.Text;
+            string serverLocation = Program.main.ClientLocation + src.Text;
 
             if (!File.Exists(serverLocation))
             {
@@ -161,7 +161,8 @@ namespace WebClashServer
         {
             SoundSelection soundSelection = new SoundSelection("Set sounds for status effect '" + name.Text + "'", current.sounds);
 
-            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) => {
+            soundSelection.FormClosed += (object s, FormClosedEventArgs fcea) =>
+            {
                 current.sounds = soundSelection.GetSelection();
             };
 

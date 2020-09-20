@@ -210,7 +210,7 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
             //Check if the player already owns event NPC(s)
             //with the same name as the NPC to be spawned
 
-            if (npcs.ownsEventNPC(map, dialogEvent.spawnNPCEvent.name, id))
+            if (npcs.ownsEventNPC(map, dialogEvent.spawnNpcEvent.name, id))
                 return;
 
             //(Otherwise) Spawn event NPCs for the specified amount
@@ -220,15 +220,15 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
                 y: game.players[id].pos.Y+game.players[id].character.height,
             };
 
-            for (let i = 0; i < dialogEvent.spawnNPCEvent.amount; i++)
+            for (let i = 0; i < dialogEvent.spawnNpcEvent.amount; i++)
                 npcs.createEventNPC(
                     map,
-                    dialogEvent.spawnNPCEvent.name,
-                    dialogEvent.spawnNPCEvent.profile,
+                    dialogEvent.spawnNpcEvent.name,
+                    dialogEvent.spawnNpcEvent.profile,
                     pos.x,
                     pos.y,
                     id,
-                    dialogEvent.spawnNPCEvent.hostile
+                    dialogEvent.spawnNpcEvent.hostile
                 );
 
             break;
