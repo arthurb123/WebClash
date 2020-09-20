@@ -622,7 +622,8 @@ const player = {
         //in this case only if a hostile target
         //is required
 
-        if (player.actions[slot].targetType === 'hostile') {
+        if (player.actions[slot].targetType === 'hostile' ||
+            player.actions[slot].targetType === 'none') {
             if (player.target == undefined) {
                 ui.floaties.errorFloaty(
                     game.players[game.player], 

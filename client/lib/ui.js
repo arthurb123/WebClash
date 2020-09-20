@@ -3215,7 +3215,7 @@ const ui = {
 
             t.Follows(target);
             t.Alignment('center');
-            t.SHADOW = true;
+            t.SetShadow('rgba(0,0,0,.625)', 0, 2);
 
             this.error.uitext = t.Show();
             this.error.movement.y = this.error.movement.sy;
@@ -3233,7 +3233,7 @@ const ui = {
 
             t.Follows(target);
             t.Alignment('center');
-            t.SHADOW = true;
+            t.SetShadow('rgba(0,0,0,.625)', 0, 2);
 
             this.add(t, 32);
         },
@@ -3249,7 +3249,7 @@ const ui = {
 
             t.Follows(target);
             t.Alignment('center');
-            t.SHADOW = true;
+            t.SetShadow('rgba(0,0,0,.625)', 0, 2);
 
             this.add(t, 32);
         },
@@ -3265,7 +3265,7 @@ const ui = {
 
             t.Follows(target);
             t.Alignment('center');
-            t.SHADOW = true;
+            t.SetShadow('rgba(0,0,0,.625)', 0, 2);
 
             this.add(t, 32);
         },
@@ -3281,7 +3281,7 @@ const ui = {
 
             t.Follows(target);
             t.Alignment('center');
-            t.SHADOW = true;
+            t.SetShadow('rgba(0,0,0,.625)', 0, 2);
 
             this.add(t, 32);
         },
@@ -3297,7 +3297,7 @@ const ui = {
 
             t.Follows(target);
             t.Alignment('center');
-            t.SHADOW = true;
+            t.SetShadow('rgba(0,0,0,.625)', 0, 2);
 
             this.add(t, 32);
         }

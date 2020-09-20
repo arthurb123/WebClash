@@ -179,7 +179,7 @@ const game = {
             .Follows(go)
             .Show();
 
-        go._nameplate.SetShadow('rgba(0, 0, 0, .85)', 0, .85);
+        go._nameplate.SetShadow('rgba(0,0,0,.625)', 0, 2);
 
         //Add casting progress bar
 
@@ -798,7 +798,7 @@ const game = {
             .Follows(go)
             .Show();
 
-        go._nameplate.SetShadow('rgba(0,0,0,.85)', 0, .85);
+        go._nameplate.SetShadow('rgba(0,0,0,.625)', 0, 2);
 
         //Create casting progress bar
 
@@ -1377,7 +1377,7 @@ const game = {
             //Add name label
 
             worldItem._nameplate = new lx.UIText(name, worldItem.Size().W/2, dy, 12, ui.inventory.getItemColor(data.rarity));
-            worldItem._nameplate.SetShadow('rgba(0,0,0,.85)', 0, .85);
+            worldItem._nameplate.SetShadow('rgba(0,0,0,.625)', 0, 2);
 
             //Set owner
 
