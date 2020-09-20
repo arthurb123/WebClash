@@ -18,12 +18,12 @@
         "toughness": 3,
         "agility": 1,
         "wisdom": 2,
-        "intelligence": 5,
+        "intelligence": 4,
         "vitality": 0
       },
       "health": {
-        "cur": 125,
-        "max": 125
+        "cur": 115,
+        "max": 115
       },
       "actions": [
         {
@@ -45,11 +45,15 @@
       "items": [
         {
           "item": "Healing Slab",
-          "dropChance": 2
+          "dropChance": 3
         },
         {
-          "item": "Weird Greens",
+          "item": "Fine Greens",
           "dropChance": 1
+        },
+        {
+          "item": "Awful Greens",
+          "dropChance": 2
         }
       ],
       "equipment": [],

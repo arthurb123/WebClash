@@ -954,6 +954,35 @@ exports.handleChannel = function(channel)
         }
     });
 
+    channel.on('CLIENT_NPC_INTERACTION', function(data) {
+        try {
+            //Check if in-game and data is valid
+
+            if (!isInGame(true) || data == undefined)
+                return;
+
+            //Shorten channel name
+
+            let id = channel.name;
+
+            //Get map index
+
+            let map = game.players[id].map_id;
+
+            //If in "dialog" range, handle any
+            //necessary interactions
+
+            if (npcs.inDialogRange(map, data, game.players[id].pos.X, game.players[id].pos.Y)) {
+                //Check for quest gather objective turn-in
+
+                quests.evaluateQuestObjective(id, 'gather', npcs.onMap[map][data].name);
+            }
+        }
+        catch (err) {
+            output.giveError('Could not handle NPC interaction: ', err);
+        }
+    });
+
     channel.on('CLIENT_REQUEST_DIALOG', function(data) {
         try {
             //Check if in-game and data is valid
@@ -972,6 +1001,10 @@ exports.handleChannel = function(channel)
             //If in dialog range respond with the dialog
 
             if (npcs.inDialogRange(map, data, game.players[id].pos.X, game.players[id].pos.Y)) {
+                //Check for quest gather objective turn-in
+
+                quests.evaluateQuestObjective(id, 'gather', npcs.onMap[map][data].name);
+
                 //Check if NPC should provide quest dialog, this method
                 //otherwise returns the default dialog by the NPC
 

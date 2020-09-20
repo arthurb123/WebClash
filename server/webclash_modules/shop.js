@@ -118,7 +118,8 @@ exports.sellItem = function(player, item, owner) {
     //Item
     if (isNaN(owner))
         if (items.getItem(owner).dialog == undefined ||
-            items.getItem(owner).dialog.length === 0)
+            items.getItem(owner).dialog.length === 0 ||
+            owner === item) //Check to not sell the item through which selling is happening!
             return false;
 
     //NPC
@@ -127,13 +128,17 @@ exports.sellItem = function(player, item, owner) {
             npcs.onMap[map][owner].data.dialog.length === 0)
             return false;
 
-    //Sell item for it's currency value
+    //Grab item and check if valid
+    //sellable item
 
     item = items.getItem(item);
 
     if (item.value == undefined ||
-        item.value <= 0)
+        item.value <= 0 ||
+        item.type === 'quest')
         return false;
+
+    //Sell item for it's currency value
 
     game.deltaCurrencyPlayer(player, item.value);
 

@@ -1397,13 +1397,23 @@ exports.evaluateLootTable = function(map, id)
 
     //Loop through loot table
 
+    let lootTable = this.onMap[map][id].data.items;
     for (let l = 0; l < looters.length; l++) 
-        for (let i = 0; i < this.onMap[map][id].data.items.length; i++)
+        for (let i = 0; i < lootTable.length; i++)
         {
+            //Check if the item is a quest item,
+            //if so check if the player has the
+            //necessary quest
+
+            let item = items.getItem(lootTable[i].item);
+            if (item.type === 'quest')
+                if (!quests.hasPlayerQuest(looters[l], item.quest))
+                    continue;
+                    
             //Create chance
 
             let chance = Math.random();
-            let dropChance = 1/this.onMap[map][id].data.items[i].dropChance;
+            let dropChance = 1 / lootTable[i].dropChance;
 
             //Adjust drop chance using status effect matrix
 
@@ -1420,7 +1430,7 @@ exports.evaluateLootTable = function(map, id)
                     map,
                     this.onMap[map][id].pos.X+this.onMap[map][id].data.character.width/2,
                     this.onMap[map][id].pos.Y+this.onMap[map][id].data.character.height,
-                    this.onMap[map][id].data.items[i].item
+                    lootTable[i].item
                 );
             }
         }

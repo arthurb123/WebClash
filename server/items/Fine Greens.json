@@ -1,0 +1,29 @@
+{
+  "source": "res/items/4.png",
+  "type": "quest",
+  "rarity": "rare",
+  "value": 0,
+  "minLevel": 0,
+  "sounds": [],
+  "description": "Fine looking greens, I wonder what purpose they serve..",
+  "heal": 0,
+  "mana": 0,
+  "currency": 0,
+  "consumableAction": "",
+  "consumableActionUses": 1,
+  "equippable": "none",
+  "equippableSource": "",
+  "equippableAction": "",
+  "stats": {
+    "power": 0,
+    "toughness": 0,
+    "vitality": 0,
+    "intelligence": 0,
+    "wisdom": 0,
+    "agility": 0
+  },
+  "dialog": [],
+  "dialogElements": [],
+  "consumableDialog": false,
+  "quest": "Big Bastard"
+}

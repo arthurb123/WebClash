@@ -468,7 +468,7 @@ const player = {
 
         for (let q in this.quests)
             if (quests[q] == undefined)
-                ui.chat.addMessage('Completed "' + q + '"!');
+                ui.chat.addMessage('Completed quest "' + q + '"!');
 
         //Set quests
 

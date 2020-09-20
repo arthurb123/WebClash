@@ -93,7 +93,10 @@ const manager = {
             //Callback result (preferred way)
 
             else {
-                this.sprites[src] = new lx.Sprite(src, cb);
+                new lx.Sprite(src, (sprite) => {
+                    manager.sprites[src] = sprite;
+                    cb(sprite);
+                });
                 return;
             }
         }

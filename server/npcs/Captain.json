@@ -50,7 +50,7 @@
       ],
       "dialog": [
         {
-          "text": "This village now belongs to me!!",
+          "text": "This village now belongs to me! Fear me, poor adventurer!",
           "portrait": "res/portraits/2.png",
           "entry": true,
           "isEvent": false,
@@ -209,7 +209,7 @@
           "setVariableEvent": null
         },
         {
-          "text": "You are making a mistake here!!",
+          "text": "You are making a mistake here!",
           "portrait": "res/portraits/2.png",
           "entry": false,
           "isEvent": false,
@@ -219,7 +219,7 @@
               "next": 6
             },
             {
-              "text": "Maybe I am",
+              "text": "Maybe I am..",
               "next": -1
             }
           ],
@@ -269,13 +269,13 @@
           "setVariableEvent": null
         },
         {
-          "text": "Yeah maybe not..",
+          "text": "Yeah maybe not..\nFine, I will go look for another village to conquer!",
           "portrait": "res/portraits/2.png",
           "entry": false,
           "isEvent": false,
           "options": [
             {
-              "text": "Lol loser",
+              "text": "Good luck with that.",
               "next": -1
             }
           ],
@@ -299,50 +299,50 @@
         {
           "p": "33, 102",
           "id": 0,
-          "IsEvent": false,
-          "Size": "100, 80"
+          "isEvent": false,
+          "Size": "120, 80"
         },
         {
-          "p": "576, 23",
+          "p": "779, 68",
           "id": 1,
-          "IsEvent": true,
-          "Size": "130, 20"
+          "isEvent": true,
+          "Size": "120, 40"
         },
         {
-          "p": "384, 6",
+          "p": "381, 19",
           "id": 2,
-          "IsEvent": false,
-          "Size": "100, 80"
+          "isEvent": false,
+          "Size": "120, 80"
         },
         {
-          "p": "173, 88",
+          "p": "204, 82",
           "id": 3,
-          "IsEvent": true,
-          "Size": "130, 20"
+          "isEvent": true,
+          "Size": "120, 40"
         },
         {
           "p": "383, 145",
           "id": 4,
-          "IsEvent": true,
-          "Size": "130, 20"
+          "isEvent": true,
+          "Size": "120, 40"
         },
         {
           "p": "585, 138",
           "id": 5,
-          "IsEvent": false,
-          "Size": "100, 80"
+          "isEvent": false,
+          "Size": "120, 80"
         },
         {
-          "p": "755, 129",
+          "p": "779, 116",
           "id": 6,
-          "IsEvent": true,
-          "Size": "130, 20"
+          "isEvent": true,
+          "Size": "120, 40"
         },
         {
-          "p": "566, 247",
+          "p": "585, 227",
           "id": 7,
-          "IsEvent": false,
-          "Size": "100, 80"
+          "isEvent": false,
+          "Size": "120, 80"
         }
       ]
     }

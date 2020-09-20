@@ -17,9 +17,11 @@
       "type": "gather",
       "killObjective": null,
       "gatherObjective": {
-        "item": "Weird Greens",
+        "item": "Fine Greens",
         "amount": 1,
-        "cur": 0
+        "cur": 0,
+        "turnIn": true,
+        "turnInTarget": "Eric"
       },
       "talkObjective": null
     },
@@ -48,6 +50,7 @@
             "eventType": "",
             "repeatable": false,
             "giveItemEvent": null,
+            "giveStatusEffectEvent": null,
             "loadMapEvent": null,
             "affectPlayerEvent": null,
             "spawnNpcEvent": null,
@@ -73,6 +76,7 @@
             "eventType": "",
             "repeatable": false,
             "giveItemEvent": null,
+            "giveStatusEffectEvent": null,
             "loadMapEvent": null,
             "affectPlayerEvent": null,
             "spawnNpcEvent": null,
@@ -102,6 +106,7 @@
             "eventType": "AdvanceQuest",
             "repeatable": true,
             "giveItemEvent": null,
+            "giveStatusEffectEvent": null,
             "loadMapEvent": null,
             "affectPlayerEvent": null,
             "spawnNpcEvent": null,
@@ -121,19 +126,19 @@
             "p": "28, 107",
             "id": 0,
             "isEvent": false,
-            "size": "100, 80"
+            "Size": "120, 80"
           },
           {
             "p": "224, 46",
             "id": 1,
             "isEvent": false,
-            "size": "100, 80"
+            "Size": "120, 80"
           },
           {
             "p": "407, 137",
             "id": 2,
             "isEvent": true,
-            "size": "110, 20"
+            "Size": "120, 40"
           }
         ]
       }

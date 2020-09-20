@@ -1094,19 +1094,29 @@ const ui = {
             }
         },
         dropItem: function(slot) {
-            if (player.inventory[slot] !== undefined) {
+            const drop = () => {
                 //Play item sound if possible
 
                 if (player.inventory[slot].sounds != undefined) {
-                   let sound = audio.getRandomSound(player.inventory[slot].sounds);
+                    let sound = audio.getRandomSound(player.inventory[slot].sounds);
 
-                   if (sound != undefined)
-                      audio.playSound(sound);
+                    if (sound != undefined)
+                    audio.playSound(sound);
                 }
 
                 //Send to server
 
                 channel.emit('CLIENT_DROP_ITEM', slot);
+            };
+
+            if (player.inventory[slot] !== undefined) {
+                if (player.inventory[slot].type === 'quest') 
+                    ui.dialogs.yesNo("Dropping a quest item will destroy it, do you want to destroy the item?", (result) => {
+                        if (result)
+                            drop();
+                    });
+                else
+                    drop();
 
                 //Remove box
 
@@ -1155,7 +1165,7 @@ const ui = {
             let color = this.getItemColor(item.rarity);
             let note = '';
 
-            if (ui.shop.visible)
+            if (ui.shop.visible && item.type !== 'quest')
                 note = '(Click to sell)';
             else if (ui.bank.visible)
                 note = '(Click to deposit)';
@@ -1248,12 +1258,12 @@ const ui = {
             displayBox.style = 'position: absolute; top: ' + y + 'px; left: ' + x + 'px; min-width: 120px; max-width: 160px; width: auto; padding: 4px; padding-bottom: 8px; height: auto; text-align: center;';
             displayBox.innerHTML =
                     '<font class="header" style="font-size: 14px; color: ' + color + ';">' + item.name + '</font><br>' +
-                    '<font class="info" style="font-size: 10px;">' + (item.minLevel > 0 ? ' lvl ' + item.minLevel + ' ' : '') + type + '</font><br>' +
+                    '<font class="info" style="font-size: 10px;">' + (item.type !== 'quest' ? (item.minLevel > 0 ? ' lvl ' + item.minLevel + ' ' : '') : '') + type + '</font>' +
                     action +
                     '<font class="info" style="position: relative; top: 6px;">' + item.description + '</font><br>' +
                     stats +
                     (note !== '' ? '<font class="info" style="position: relative; top: 10px; font-size: 11px; margin-top: 5px;">' + note + '</font><br>' : '') +
-                    '<font class="info" style="position: relative; top: 10px; font-size: 10px; color: yellow;">' + item.value + ' ' + game.aliases.currency + '</font><br>';
+                    (item.type !== 'quest' ? '<font class="info" style="position: relative; top: 10px; font-size: 10px; color: yellow;">' + item.value + ' ' + game.aliases.currency + '</font><br>' : '');
 
             displayBox._slot = slot;
             displayBox._minLevel = item.minLevel;
@@ -2642,11 +2652,17 @@ const ui = {
                     switch (objective.type) {
                         case 'kill':
                             objective = objective.killObjective;
-                            objective_result = objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's');
+                            objective_result = 'Kill ' + objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's') + '.';
                             break;
                         case 'gather':
                             objective = objective.gatherObjective;
-                            objective_result = objective.cur + '/' + objective.amount + ' ' + objective.item + (objective.amount === 1 ? '' : 's');
+                            if (objective.cur < objective.amount ||
+                                !objective.turnIn)
+                                objective_result = 
+                                    'Gather ' + objective.cur + '/' + objective.amount + ' ' + objective.item + (objective.amount === 1 ? '' : 's');
+                            else if (objective.turnIn)
+                                objective_result = 
+                                    'Turn-in ' + objective.item + ' at ' + objective.turnInTarget + '.';
                             break;
                         case 'talk':
                             objective = objective.talkObjective;

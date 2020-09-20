@@ -163,7 +163,7 @@ exports.addPlayerItem = function(id, name)
 
     //Evaluate item for gather objectives
 
-    quests.evaluateQuestObjective(id, 'gather', name);
+    quests.evaluateQuestObjective(id, 'gather');
 
     //Sync player item
 
@@ -296,7 +296,7 @@ exports.removePlayerItem = function(id, name)
 
             //Evaluate item for gather objectives
 
-            quests.evaluateQuestObjective(id, 'gather', name);
+            quests.evaluateQuestObjective(id, 'gather');
 
             //Sync to player
 
@@ -304,6 +304,12 @@ exports.removePlayerItem = function(id, name)
 
             break;
         }
+};
+
+exports.removePlayerItems = function(id, name, amount)
+{
+    for (let i = 0; i < amount; i++)
+        this.removePlayerItem(id, name);
 };
 
 exports.setPlayerEquipment = function(id, item)
@@ -459,13 +465,17 @@ exports.dropPlayerItem = function(id, slot, ownerOverride) {
     else
         name = game.players[id].inventory[slot];
 
-    items.createMapItem(
-        (ownerOverride == undefined ? -1 : ownerOverride),
-        game.players[id].map_id,
-        game.players[id].pos.X+game.players[id].character.width/2,
-        game.players[id].pos.Y+game.players[id].character.height,
-        name
-    );
+    //Check if not a quest item
+
+    let item = items.getItem(name);
+    if (item.type !== 'quest')
+        items.createMapItem(
+            (ownerOverride == undefined ? -1 : ownerOverride),
+            game.players[id].map_id,
+            game.players[id].pos.X+game.players[id].character.width/2,
+            game.players[id].pos.Y+game.players[id].character.height,
+            name
+        );
 
     //Remove item from player inventory
     //or equipment at specific slot and
@@ -714,8 +724,14 @@ exports.updateMaps = function()
                     //Check if item should be released of it's owner
 
                     if (this.onMap[m][i].timer.cur >= this.onMap[m][i].timer.releaseTime &&
-                        this.onMap[m][i].item.owner != -1)
-                        this.releaseMapItemFromOwner(m, i);
+                        this.onMap[m][i].item.owner != -1) {
+                        //Check if a quest item
+
+                        if (this.onMap[m][i].item.type === 'quest')
+                            this.removeItem(m, i);
+                        else
+                            this.releaseMapItemFromOwner(m, i);
+                    }
 
                     //Check if item should be removed
 

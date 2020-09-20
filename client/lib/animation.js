@@ -4,7 +4,8 @@ const animation = {
     {
         //Check if valid
 
-        if (target._animations === undefined ||
+        if (target             === undefined ||
+            target._animations === undefined ||
             target._direction  === undefined ||
             target._moving     === undefined ||
             target.Sprite()    === undefined)
@@ -55,6 +56,12 @@ const animation = {
         sprite.CLIP.Y = frame.y;
     },
     setAnimationState: function(target, state, force) {
+        //Check if valid
+
+        if (target             === undefined ||
+            target._animations === undefined)
+            return;
+
         //If forced, always overwrite state
 
         if (force) {

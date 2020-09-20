@@ -365,6 +365,9 @@ namespace WebClashServer
 
         public int amount = 1;
         public int cur = 0;
+
+        public bool turnIn = false;
+        public string turnInTarget = "";
     }
 
     public class QuestObjectiveTalk

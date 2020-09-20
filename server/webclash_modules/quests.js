@@ -103,8 +103,16 @@ exports.getQuestIndex = function(name)
     return -1;
 };
 
+exports.hasPlayerQuest = function(id, name) 
+{
+    return game.players[id].quests[name] != undefined;
+};
+
 exports.getPlayerQuestObjective = function(id, name)
 {
+    if (!this.hasPlayerQuest(id, name))
+        return -1;
+
     return game.players[id].quests[name].objectives[game.players[id].quests[name].id];
 };
 
@@ -225,7 +233,7 @@ exports.acceptQuest = function(id, name)
     //Gather conditions
 
     if (game.players[id].quests[name].objectives[0].type === 'gather')
-        this.evaluateQuestObjective(id, 'gather', game.players[id].quests[name].objectives[0].gatherObjective.item);
+        this.evaluateQuestObjective(id, 'gather');
 
     //Sync to player
 
@@ -270,32 +278,40 @@ exports.evaluateQuestObjective = function(id, type, target, questOverride)
 
             if (objective.killObjective != undefined &&
                 objective.killObjective.npc === target) {
-                objective.killObjective.cur++;
+                let killObjective = objective.killObjective;
+                killObjective.cur++;
 
                 sync = true;
 
-                if (objective.killObjective.cur >= objective.killObjective.amount)
+                if (killObjective.cur >= killObjective.amount)
                   this.advanceQuest(id, quest);
             }
 
             //Gather objective
 
-            if (objective.gatherObjective != undefined &&
-                objective.gatherObjective.item === target) {
-                objective.gatherObjective.cur = items.getPlayerItemAmount(id, objective.gatherObjective.item);
+            else if (objective.gatherObjective != undefined) {
+                let gatherObjective = objective.gatherObjective;
+                gatherObjective.cur = items.getPlayerItemAmount(id, objective.gatherObjective.item);
 
                 sync = true;
 
-                if (objective.gatherObjective.cur >= objective.gatherObjective.amount)
-                    this.advanceQuest(id, quest);
-                else
-                    game.players[id].quests[quest].finished = false;
+                if (gatherObjective.cur >= gatherObjective.amount) {
+                    if (!gatherObjective.turnIn || gatherObjective.turnInTarget === target) {
+                        this.advanceQuest(id, quest);
+
+                        items.removePlayerItems(
+                            id, 
+                            gatherObjective.item, 
+                            gatherObjective.amount
+                        );
+                    }
+                }
             }
 
             //Talk objective
 
-            if (objective.talkObjective != undefined &&
-                objective.talkObjective.npc === target) {
+            else if (objective.talkObjective != undefined &&
+                     objective.talkObjective.npc === target) {
                 sync = true;
 
                 this.advanceQuest(id, quest);

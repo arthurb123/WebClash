@@ -89,6 +89,11 @@
             this.dialogConsumable = new System.Windows.Forms.CheckBox();
             this.dialogButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.questItemPanel = new System.Windows.Forms.Panel();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.questSelection = new System.Windows.Forms.ComboBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minLevel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.value)).BeginInit();
@@ -111,6 +116,8 @@
             this.equipmentPanel.SuspendLayout();
             this.dialogPanel.SuspendLayout();
             this.dialogSettings.SuspendLayout();
+            this.questItemPanel.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // itemList
@@ -805,11 +812,64 @@
             this.panel2.TabIndex = 23;
             this.panel2.Visible = false;
             // 
+            // questItemPanel
+            // 
+            this.questItemPanel.AutoSize = true;
+            this.questItemPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.questItemPanel.Controls.Add(this.groupBox2);
+            this.questItemPanel.Location = new System.Drawing.Point(126, 251);
+            this.questItemPanel.Name = "questItemPanel";
+            this.questItemPanel.Size = new System.Drawing.Size(319, 62);
+            this.questItemPanel.TabIndex = 24;
+            this.questItemPanel.Visible = false;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.questSelection);
+            this.groupBox2.Controls.Add(this.label22);
+            this.groupBox2.Controls.Add(this.panel3);
+            this.groupBox2.Location = new System.Drawing.Point(0, 0);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(316, 59);
+            this.groupBox2.TabIndex = 21;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Quest Settings";
+            // 
+            // questSelection
+            // 
+            this.questSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.questSelection.FormattingEnabled = true;
+            this.questSelection.Location = new System.Drawing.Point(114, 23);
+            this.questSelection.Name = "questSelection";
+            this.questSelection.Size = new System.Drawing.Size(125, 21);
+            this.questSelection.TabIndex = 25;
+            this.questSelection.SelectedIndexChanged += new System.EventHandler(this.questSelection_SelectedIndexChanged);
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(72, 27);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(35, 13);
+            this.label22.TabIndex = 24;
+            this.label22.Text = "Quest";
+            // 
+            // panel3
+            // 
+            this.panel3.AutoSize = true;
+            this.panel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.panel3.Location = new System.Drawing.Point(45, 26);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(0, 0);
+            this.panel3.TabIndex = 23;
+            this.panel3.Visible = false;
+            // 
             // Items
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(451, 431);
+            this.Controls.Add(this.questItemPanel);
             this.Controls.Add(this.dialogPanel);
             this.Controls.Add(this.equipmentPanel);
             this.Controls.Add(this.consumablePanel);
@@ -854,6 +914,9 @@
             this.dialogPanel.ResumeLayout(false);
             this.dialogSettings.ResumeLayout(false);
             this.dialogSettings.PerformLayout();
+            this.questItemPanel.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -921,5 +984,10 @@
         private System.Windows.Forms.Button dialogButton;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button itemSounds;
+        private System.Windows.Forms.Panel questItemPanel;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.ComboBox questSelection;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Panel panel3;
     }
 }

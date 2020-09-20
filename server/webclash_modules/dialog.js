@@ -148,15 +148,20 @@ exports.handleEvents = function(id, channel, dialogEvent, clientData) {
         //Give item event
 
         case 'GiveItem':
+            //Check if enough inventory slots are available
+
+            let freeSlots = items.getPlayerFreeSlots(id);
+            if (dialogEvent.giveItemEvent.amount > freeSlots) {
+                server.syncChatMessage(
+                    "You need " + (dialogEvent.giveItemEvent.amount - freeSlots) + " more free inventory slot(s).",
+                    channel
+                );
+                return;
+            }
+
             //Add item(s)
 
             let done = false;
-
-            //TODO: Check if player has enough room
-            //      for all dialog items, if not
-            //      this should be reported back to the
-            //      player. Right now this can be exploited..
-
             for (let a = 0; a < dialogEvent.giveItemEvent.amount; a++) {
                 if (items.addPlayerItem(id, dialogEvent.giveItemEvent.item))
                     done = true;

@@ -144,6 +144,11 @@ const UIBox = function(parent, id, x, y, width, height, appendToBody) {
             width: width,
             height: height
         };
+
+        if (width != undefined)
+            this.element.style.minWidth = width + 'px';
+        if (height != undefined)
+            this.element.style.minHeight = height + 'px';
     };
 
     this.setMaximumSize = function(width, height) {
@@ -151,6 +156,11 @@ const UIBox = function(parent, id, x, y, width, height, appendToBody) {
             width: width,
             height: height
         };
+
+        if (width != undefined)
+            this.element.style.maxWidth = width + 'px';
+        if (height != undefined)
+            this.element.style.maxHeight = height + 'px';
     };
 
     this.setTextAlign = function(alignment) {

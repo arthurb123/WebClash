@@ -876,21 +876,27 @@ const game = {
 
         this.npcs[id]._type = type;
 
-        if (type === 'friendly' &&
-            hasDialog)
+        if (type === 'friendly')
         {
-            //Check if dialog texture already exists
+            if (hasDialog) {
+                //Check if dialog texture already exists
 
-            if (this.npcs[id]._dialogTexture != undefined)
-                return;
+                if (this.npcs[id]._dialogTexture != undefined)
+                    return;
 
-            //Give NPC a dialog texture
+                //Give NPC a dialog texture
 
-            this.giveDialogTexture(this.npcs[id], function() {
-                //Request dialog
+                this.giveDialogTexture(this.npcs[id], function() {
+                    //Request dialog
 
-                channel.emit('CLIENT_REQUEST_DIALOG', id);
-            });
+                    channel.emit('CLIENT_REQUEST_DIALOG', id);
+                });
+            }
+            else {
+                this.npcs[id].OnMouse(0, function() {
+                    channel.emit('CLIENT_NPC_INTERACTION', id);
+                });
+            }
         }
         else if (type === 'hostile') {
             let go = this.npcs[id];
@@ -1333,7 +1339,9 @@ const game = {
 
         //Create item name
 
-        let name = data.name + ' (' + data.value + game.aliases.currency[0].toLowerCase() + ')';
+        let name = data.name; 
+        if (data.type !== 'quest')
+            name += ' (' + data.value + game.aliases.currency[0].toLowerCase() + ')';
 
         //Check if world item already exists
 

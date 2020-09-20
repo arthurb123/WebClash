@@ -26,6 +26,7 @@ namespace WebClashServer
         {
             ReloadItems();
             ReloadActions();
+            ReloadQuests();
 
             SetTypes();
             SetRarities();
@@ -97,6 +98,34 @@ namespace WebClashServer
             }
         }
 
+        private void ReloadQuests()
+        {
+            questSelection.Items.Clear();
+
+            try
+            {
+                List<string> ext = new List<string>()
+                {
+                    ".json"
+                };
+
+                string[] quests = Directory.GetFiles(Program.main.serverLocation + "/quests", "*.*", SearchOption.AllDirectories)
+                    .Where(s => ext.Contains(Path.GetExtension(s))).ToArray();
+
+                foreach (string q in quests)
+                {
+                    string a = q.Replace('\\', '/');
+                    a = a.Substring(a.LastIndexOf('/') + 1, a.LastIndexOf('.') - a.LastIndexOf('/') - 1);
+
+                    questSelection.Items.Add(a);
+                }
+            }
+            catch (Exception exc)
+            {
+                Logger.Error("Could not load quests: ", exc);
+            }
+        }
+
         private void LoadItem(string itemName)
         {
             if (itemName == string.Empty)
@@ -158,6 +187,10 @@ namespace WebClashServer
 
             dialogConsumable.Checked = current.consumableDialog;
 
+            //Quest settings
+
+            questSelection.SelectedItem = current.quest;
+
             AttemptSetIcon();
         }
 
@@ -208,7 +241,6 @@ namespace WebClashServer
 
             dataHasChanged = true;
         }
-
 
         private void delete_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -281,26 +313,16 @@ namespace WebClashServer
 
         private void type_SelectedIndexChanged(object sender, EventArgs e)
         {
-            current.type = type.SelectedItem.ToString().ToLower();
+            string itemType = type.SelectedItem.ToString();
+            current.type = itemType.ToLower();
 
-            if (type.SelectedItem.ToString() == ItemType.Consumable.ToString())
-            {
-                consumablePanel.Visible = true;
-                equipmentPanel.Visible = false;
-                dialogPanel.Visible = false;
-            }
-            else if (type.SelectedItem.ToString() == ItemType.Equipment.ToString())
-            {
-                consumablePanel.Visible = false;
-                equipmentPanel.Visible = true;
-                dialogPanel.Visible = false;
-            }
-            else if (type.SelectedItem.ToString() == ItemType.Dialog.ToString())
-            {
-                consumablePanel.Visible = false;
-                equipmentPanel.Visible = false;
-                dialogPanel.Visible = true;
-            }
+            consumablePanel.Visible = itemType == ItemType.Consumable.ToString();
+            equipmentPanel.Visible = itemType == ItemType.Equipment.ToString();
+            dialogPanel.Visible = itemType == ItemType.Dialog.ToString();
+            questItemPanel.Visible = itemType == ItemType.Quest.ToString();
+
+            value.Enabled = itemType != ItemType.Quest.ToString();
+            minLevel.Enabled = itemType != ItemType.Quest.ToString();
         }
 
         private void rarity_SelectedIndexChanged(object sender, EventArgs e)
@@ -487,6 +509,16 @@ namespace WebClashServer
             current.consumableDialog = dialogConsumable.Checked;
         }
 
+        //Quest item settings
+
+        private void questSelection_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (current == null)
+                return;
+
+            current.quest = questSelection.SelectedItem.ToString();
+        }
+
         public bool GetChanged()
         {
             return dataHasChanged;
@@ -541,6 +573,10 @@ namespace WebClashServer
                 dialogElements = temp.dialogElements;
 
                 consumableDialog = temp.consumableDialog;
+
+                //Quest settings
+
+                quest = temp.quest;
             }
             catch (Exception exc)
             {
@@ -582,6 +618,10 @@ namespace WebClashServer
         public CanvasElement[] dialogElements = new CanvasElement[0];
 
         public bool consumableDialog = false;
+
+        //Quest item settings
+
+        public string quest = "";
     }
 
     public class Stats
@@ -598,7 +638,8 @@ namespace WebClashServer
     {
         Consumable = 0,
         Equipment,
-        Dialog
+        Dialog,
+        Quest,
     }
 
     public enum Rarity

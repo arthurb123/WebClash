@@ -775,7 +775,7 @@ const client = {
         channel.on('CLIENT_ACCEPT_QUEST_RESPONSE', function(data) {
             //Add chat message
 
-            ui.chat.addMessage('Accepted "' + data + '".');
+            ui.chat.addMessage('Accepted quest "' + data + '".');
         });
         channel.on('CLIENT_ABANDON_QUEST_RESPONSE', function(data) {
             //Delete current quest
@@ -784,7 +784,7 @@ const client = {
 
             //Add chat message
 
-            ui.chat.addMessage('Abandoned "' + data + '".');
+            ui.chat.addMessage('Abandoned quest "' + data + '".');
 
             //Reload UI
 

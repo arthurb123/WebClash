@@ -1142,19 +1142,29 @@ const ui = {
             }
         },
         dropItem: function(slot) {
-            if (player.inventory[slot] !== undefined) {
-                 //Play item sound if possible
+            const drop = () => {
+                //Play item sound if possible
 
-                 if (player.inventory[slot].sounds != undefined) {
+                if (player.inventory[slot].sounds != undefined) {
                     let sound = audio.getRandomSound(player.inventory[slot].sounds);
 
                     if (sound != undefined)
-                       audio.playSound(sound);
-                 }
+                    audio.playSound(sound);
+                }
 
                 //Send to server
 
                 channel.emit('CLIENT_DROP_ITEM', slot);
+            };
+
+            if (player.inventory[slot] !== undefined) {
+                if (player.inventory[slot].type === 'quest') 
+                    ui.dialogs.yesNo("Dropping a quest item will destroy it, do you want to destroy the item?", (result) => {
+                        if (result)
+                            drop();
+                    });
+                else
+                    drop();
 
                 //Remove box
 
@@ -1220,7 +1230,7 @@ const ui = {
                 case 'dialog':
                     break;
                 default:
-                    if (ui.shop.visible) {
+                    if (ui.shop.visible && item.type !== 'quest') {
                         note = '(Click to sell)';
                     }
                     else if (ui.bank.visible) {
@@ -1317,12 +1327,12 @@ const ui = {
             displayBox.style = 'position: absolute; top: 0px; left: 0px; min-width: 120px; max-width: 160px; width: auto; padding: 10px; padding-bottom: 16px; height: auto; text-align: center;';
             displayBox.innerHTML =
                     '<font class="header" style="font-size: 14px; color: ' + color + ';">' + item.name + '</font><br>' +
-                    '<font class="info" style="font-size: 10px;">' + (item.minLevel > 0 ? ' lvl ' + item.minLevel + ' ' : '') + type + '</font>' +
+                    '<font class="info" style="font-size: 10px;">' + (item.type !== 'quest' ? (item.minLevel > 0 ? ' lvl ' + item.minLevel + ' ' : '') : '') + type + '</font>' +
                     action +
                     '<p class="info" style="position: relative; top: 6px;">' + item.description + '</p>' +
                     stats +
                     (note !== '' ? '<font class="info" style="position: relative; top: 10px; font-size: 11px; margin-top: 5px;">' + note + '</font><br>' : '') +
-                    '<font class="info" style="position: relative; top: 10px; font-size: 11px; color: yellow;">' + item.value + ' ' + game.aliases.currency + '</font><br>';
+                    (item.type !== 'quest' ? '<font class="info" style="position: relative; top: 10px; font-size: 11px; color: yellow;">' + item.value + ' ' + game.aliases.currency + '</font><br>' : '');
 
             //Append
 
@@ -2674,11 +2684,38 @@ const ui = {
     {
         max_pinned: 3,
         create: function() {
-            this.box = new UIBox('quests', 'quests_box', lx.GetDimensions().width-165, lx.GetDimensions().height/2-100, 120, undefined);
+            this.box = new UIBox('quests', 'quests_box', lx.GetDimensions().width-185, lx.GetDimensions().height/2-100, 140, undefined);
             this.box.setResizable(false);
             this.box.setTextAlign('center');
 
             this.box.hide();
+        },
+        parseQuestObjective: function(objective) {
+            let objective_result = '';
+
+            switch (objective.type) {
+                case 'kill':
+                    objective = objective.killObjective;
+                    objective_result = 
+                        'Kill ' + objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's') + '.';
+                    break;
+                case 'gather':
+                    objective = objective.gatherObjective;
+                    if (objective.cur < objective.amount ||
+                        !objective.turnIn)
+                        objective_result = 
+                            'Gather ' + objective.cur + '/' + objective.amount + ' ' + objective.item + (objective.amount === 1 ? '' : 's');
+                    else if (objective.turnIn)
+                        objective_result = 
+                            'Turn-in ' + objective.item + ' at ' + objective.turnInTarget + '.';
+                    break;
+                case 'talk':
+                    objective = objective.talkObjective;
+                    objective_result = 'Talk to ' + objective.npc + '.';
+                    break;
+            }
+
+            return objective_result;
         },
         generateQuestDom: function(name, quest, full) {
             //Get references and setup variables
@@ -2689,30 +2726,20 @@ const ui = {
 
             //If quest is not finished, get (completed) objectives
 
-            if (!quest.finished)
-                for (let i = 0; i <= quest.id; i++) {
-                    let objective = objectives[i],
-                        objective_result = '';
+            if (!quest.finished) {
+                if (full)
+                    for (let i = 0; i <= quest.id; i++) {
+                        let objective = objectives[i],
+                            objective_result = this.parseQuestObjective(objective);
 
-                    switch (objective.type) {
-                        case 'kill':
-                            objective = objective.killObjective;
-                            objective_result = objective.cur + '/' + objective.amount + ' ' + objective.npc + (objective.amount === 1 ? '' : 's');
-                            break;
-                        case 'gather':
-                            objective = objective.gatherObjective;
-                            objective_result = objective.cur + '/' + objective.amount + ' ' + objective.item + (objective.amount === 1 ? '' : 's');
-                            break;
-                        case 'talk':
-                            objective = objective.talkObjective;
-                            objective_result = 'Talk to ' + objective.npc + '.';
+                        if (i != quest.id)
+                            objective_result = '<del>' + objective_result + '</del><br>';
+
+                        progress += objective_result;
                     }
-
-                    if (i != quest.id)
-                        objective_result = '<del>' + objective_result + '</del><br>';
-
-                    progress += objective_result;
-                }
+                else
+                    progress = this.parseQuestObjective(objectives[quest.id]);
+            }
 
             //Dynamically determine necessary padding
 
@@ -2730,7 +2757,7 @@ const ui = {
             //Add name
 
             result.innerHTML +=
-                    '<p class="info"><b>' + name + '</b></p>';
+                    '<p class="info" style="white-space: pre-line;"><b>' + name + '</b></p>';
 
             //Add progress if it exists
 
