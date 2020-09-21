@@ -930,7 +930,7 @@ exports.checkNPCFacingCollision = function(map, id)
     //Setup delta overestimation factor,
     //this smoothes out collisions and
     //prevents NPCs from getting stuck in
-    //unique scenarios
+    //rare occasions
 
     let deltaFactor = 1.15;
 

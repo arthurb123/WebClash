@@ -965,20 +965,21 @@ exports.checkRectangleInMap = function(map, rect)
         h: this.maps[map].height*this.maps[map].tileheight
     };
 
-    //Check if in the boundary
+    //Check if the collider rectangle is
+    //inside of the boundary
 
-    return this.checkRectangularCollision(boundary, rect);
+    return !(rect.x < boundary.x ||
+             rect.y < boundary.y ||
+             rect.x + rect.w > boundary.x + boundary.w ||
+             rect.y + rect.h > boundary.y + boundary.h);
 };
 
 exports.checkRectangularCollision = function(rect1, rect2)
 {
-    if (rect1.x < rect2.x + rect2.w &&
-        rect1.x + rect1.w > rect2.x &&
-        rect1.y < rect2.y + rect2.h &&
-        rect1.h + rect1.y > rect2.y)
-        return true;
-
-    return false;
+    return !(rect2.x > rect1.x + rect1.w
+          || rect2.x + rect2.w < rect1.x
+          || rect2.y > rect1.y + rect1.h
+          || rect2.y + rect2.h < rect1.y);
 };
 
 exports.generateRequestIdentifier = function(map_id, player_id) {
