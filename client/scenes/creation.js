@@ -71,7 +71,11 @@ const creationScene = new lx.Scene(function() {
     //the currently selected character
 
     lx.Loops(function() {
-        if (playerCharacters[currentCharacter].animation.UPDATE != undefined)
+        let char = playerCharacters[currentCharacter];
+
+        if (char != undefined &&
+            char.animation != undefined &&
+            playerCharacters[currentCharacter].animation.UPDATE != undefined)
             playerCharacters[currentCharacter].animation.UPDATE();
     });
 
@@ -92,7 +96,9 @@ const creationScene = new lx.Scene(function() {
         for (let p = currentCharacter; p < playerCharacters.length; p++) {
             let char = playerCharacters[p];
 
-            if (char.animation.GET_CURRENT_FRAME == undefined)
+            if (char == undefined ||
+                char.animation == undefined ||
+                char.animation.GET_CURRENT_FRAME == undefined)
                 continue;
 
             char.animation.GET_CURRENT_FRAME().RENDER({
