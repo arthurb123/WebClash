@@ -351,6 +351,7 @@ const ui = {
 
             let portraitDiv = document.createElement('div');
 
+            let widthMargin = 12;
             if (this.cur[id].minLevel == undefined) { //Normal dialog panel
                 portraitDiv.style.marginTop = 'auto';
                 portraitDiv.style.marginBottom = 'auto';
@@ -370,7 +371,6 @@ const ui = {
 
             //Set portrait (if available)
 
-            let widthMargin = 12;
             if (this.cur[id].portrait != undefined) {
                 let portrait = document.createElement('img');
                 portrait.classList.add('portrait');
