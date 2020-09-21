@@ -180,7 +180,7 @@ const ui = {
             box.classList.add('box');
             box.style = 'visibility: hidden; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); min-width: 260px; max-width: 380px; max-height: auto; text-align: center; padding: 0px;';
             
-            let content = document.createElement('p');
+            let content = document.createElement('div');
             content.id = 'dialog_box_content';
             content.style = 'position: relative; left: 5%; top: 2px; white-space: pre-line; word-break: break-word; overflow-y: hidden; overflow-x: hidden; width: 90%; height: auto; font-size: 14px; margin-bottom: 15px;';
 
@@ -267,7 +267,6 @@ const ui = {
 
             //Create portrait div
 
-            let widthMargin = 12;
             let portraitDiv = document.createElement('div');
 
             if (this.cur[id].minLevel == undefined) { //Normal dialog panel
@@ -289,12 +288,18 @@ const ui = {
 
             //Set portrait (if available)
 
+            let widthMargin = 12;
             if (this.cur[id].portrait != undefined) {
                 let portrait = document.createElement('img');
                 portrait.classList.add('portrait');
                 portrait.src = this.cur[id].portrait;
                 
+                portraitDiv.style.marginRight = widthMargin + 'px';
                 portraitDiv.appendChild(portrait);
+            } else {
+                portraitDiv.style.paddingTop = '4px';
+                portraitDiv.style.marginBottom = '-12px';
+                widthMargin = 0;
             }
 
             //Append portrait to content
@@ -309,8 +314,13 @@ const ui = {
 
             let text = document.createElement('div');
             text.style.height = '100%';
+            text.style.maxWidth = '100%';
             text.style.overflowX = 'hidden';
             text.style.overflowY = 'auto';
+
+            if (this.cur[id].portrait != undefined)
+                text.style.paddingTop = '14px';
+
             contentEl.appendChild(text);
 
             if (this.cur[id].minLevel != undefined) { //Quest panel
@@ -384,6 +394,46 @@ const ui = {
                     ui.dialog.hideDialog();
                 });
         },
+        parseDOMFromText(text) {
+            let domElements = [];
+            let domParser = new DOMParser();
+
+            for (let c = 0; c < text.length; c++) {
+                //Check if valid opening DOM tag
+
+                if (text[c] !== '<' || 
+                    text[c] === '<' && c+1 < text.length && text[c+1] === '/')
+                    continue;
+
+                //Check if opening bracket of the closing tag is present
+
+                let tagCloseOpen = text.indexOf('</', c+1);
+                if (tagCloseOpen === -1)
+                    continue;
+
+                //Check if the closing bracket of the closing tag is present
+
+                let tagCloseClose = text.indexOf('>', tagCloseOpen);
+                if (tagCloseClose === -1)
+                    continue;
+
+                //Try to parse as DOM element
+
+                let length = tagCloseClose - c + 1;
+                let stringToParse = text.substr(c, length);
+                try {
+                    domElements[c] = {
+                        element: domParser.parseFromString(stringToParse, 'text/html').body.firstChild,
+                        length: length
+                    };
+                }
+                catch (err) {
+                    console.log('Failed to parse DOM element found in dialog "' + stringToParse + '": ' + err);
+                }
+            }
+
+            return domElements;
+        },
         setDialogText(target, text, widthMargin) {
             switch (properties.dialogTextMode) {
                 case 'immediate':
@@ -397,7 +447,7 @@ const ui = {
                     target.style.visibility = 'hidden';
                     target.innerHTML = text;
                     target.style.height = getComputedStyle(target).height;
-                    target.style.width  = parseInt(getComputedStyle(target).width) + widthMargin*2 + 'px';
+                    target.style.width = parseInt(getComputedStyle(target).width) + widthMargin*2 + 'px';
 
                     //Reset
 
@@ -406,41 +456,7 @@ const ui = {
 
                     //Grab DOM elements from text
 
-                    let domElements = [];
-                    let domParser = new DOMParser();
-                    for (let c = 0; c < text.length; c++) {
-                        //Check if valid opening DOM tag
-
-                        if (text[c] !== '<' || 
-                            text[c] === '<' && c+1 < text.length && text[c+1] === '/')
-                            continue;
-
-                        //Check if opening bracket of the closing tag is present
-
-                        let tagCloseOpen = text.indexOf('</', c+1);
-                        if (tagCloseOpen === -1)
-                            continue;
-
-                        //Check if the closing bracket of the closing tag is present
-
-                        let tagCloseClose = text.indexOf('>', tagCloseOpen);
-                        if (tagCloseClose === -1)
-                            continue;
-
-                        //Try to parse as DOM element
-
-                        let length = tagCloseClose - c + 1;
-                        let stringToParse = text.substr(c, length);
-                        try {
-                            domElements[c] = {
-                                element: domParser.parseFromString(stringToParse, 'text/html').body.firstChild,
-                                length: length
-                            };
-                        }
-                        catch (err) {
-                            console.log('Failed to parse DOM element found in dialog "' + stringToParse + '": ' + err);
-                        }
-                    }
+                    let domElements = this.parseDOMFromText(text);
 
                     //Setup character timer
 

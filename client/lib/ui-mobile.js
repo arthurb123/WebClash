@@ -341,14 +341,14 @@ const ui = {
             //Set display based on quest or normal
             //dialog panel
 
-            if (this.cur[id].minLevel != undefined)  //Quest panel
+            if (this.cur[id].minLevel != undefined || //Quest panel,
+                this.cur[id].portrait == undefined)   //or no portrait available
                 contentEl.style.display = 'inherit';
             else //Normal dialog panel
                 contentEl.style.display = 'flex';
 
             //Create portrait div
 
-            let widthMargin = 12;
             let portraitDiv = document.createElement('div');
 
             if (this.cur[id].minLevel == undefined) { //Normal dialog panel
@@ -370,12 +370,18 @@ const ui = {
 
             //Set portrait (if available)
 
+            let widthMargin = 12;
             if (this.cur[id].portrait != undefined) {
                 let portrait = document.createElement('img');
                 portrait.classList.add('portrait');
                 portrait.src = this.cur[id].portrait;
                 
+                portraitDiv.style.marginRight = widthMargin + 'px';
                 portraitDiv.appendChild(portrait);
+            } else {
+                portraitDiv.style.paddingTop = '4px';
+                portraitDiv.style.marginBottom = '-12px';
+                widthMargin = 0;
             }
 
             //Append portrait to content
@@ -390,8 +396,13 @@ const ui = {
 
             let text = document.createElement('div');
             text.style.height = '100%';
+            text.style.maxWidth = '100%';
             text.style.overflowX = 'hidden';
             text.style.overflowY = 'auto';
+
+            if (this.cur[id].portrait != undefined)
+                text.style.paddingTop = '14px';
+
             contentEl.appendChild(text);
 
             if (this.cur[id].minLevel != undefined) { //Quest panel
@@ -465,6 +476,46 @@ const ui = {
                     ui.dialog.hideDialog();
                 });
         },
+        parseDOMFromText(text) {
+            let domElements = [];
+            let domParser = new DOMParser();
+
+            for (let c = 0; c < text.length; c++) {
+                //Check if valid opening DOM tag
+
+                if (text[c] !== '<' || 
+                    text[c] === '<' && c+1 < text.length && text[c+1] === '/')
+                    continue;
+
+                //Check if opening bracket of the closing tag is present
+
+                let tagCloseOpen = text.indexOf('</', c+1);
+                if (tagCloseOpen === -1)
+                    continue;
+
+                //Check if the closing bracket of the closing tag is present
+
+                let tagCloseClose = text.indexOf('>', tagCloseOpen);
+                if (tagCloseClose === -1)
+                    continue;
+
+                //Try to parse as DOM element
+
+                let length = tagCloseClose - c + 1;
+                let stringToParse = text.substr(c, length);
+                try {
+                    domElements[c] = {
+                        element: domParser.parseFromString(stringToParse, 'text/html').body.firstChild,
+                        length: length
+                    };
+                }
+                catch (err) {
+                    console.log('Failed to parse DOM element found in dialog "' + stringToParse + '": ' + err);
+                }
+            }
+
+            return domElements;
+        },
         setDialogText(target, text, widthMargin) {
             switch (properties.dialogTextMode) {
                 case 'immediate':
@@ -487,41 +538,7 @@ const ui = {
 
                     //Grab DOM elements from text
 
-                    let domElements = [];
-                    let domParser = new DOMParser();
-                    for (let c = 0; c < text.length; c++) {
-                        //Check if valid opening DOM tag
-
-                        if (text[c] !== '<' || 
-                            text[c] === '<' && c+1 < text.length && text[c+1] === '/')
-                            continue;
-
-                        //Check if opening bracket of the closing tag is present
-
-                        let tagCloseOpen = text.indexOf('</', c+1);
-                        if (tagCloseOpen === -1)
-                            continue;
-
-                        //Check fi the closing bracket of the closing tag is present
-
-                        let tagCloseClose = text.indexOf('>', tagCloseOpen);
-                        if (tagCloseClose === -1)
-                            continue;
-
-                        //Try to parse as DOM element
-
-                        let length = tagCloseClose - c + 1;
-                        let stringToParse = text.substr(c, length);
-                        try {
-                            domElements[c] = {
-                                element: domParser.parseFromString(stringToParse, 'text/html').body.firstChild,
-                                length: length
-                            };
-                        }
-                        catch (err) {
-                            console.log('Failed to parse DOM element found in dialog "' + stringToParse + '": ' + err);
-                        }
-                    }
+                    let domElements = this.parseDOMFromText(text);
 
                     //Setup character timer
 
