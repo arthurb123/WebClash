@@ -1909,10 +1909,6 @@ const game = {
             .Smoothing(false)
             .Start(60);
 
-        //Enable vertical sync by default
-
-        lx.VerticalSync(true);
-
         //Check if is mobile
 
         this.isMobile = isMobile;

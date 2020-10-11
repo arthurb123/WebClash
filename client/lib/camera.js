@@ -13,13 +13,14 @@ const camera = {
         go.GetViewport = () => {
             //Calculate scaled screen size
 
-            let scaledWidth = lx.GetDimensions().width/lx.GAME.SCALE;
-            let scaledHeight =  lx.GetDimensions().height/lx.GAME.SCALE;
+            let scaledWidth  = lx.GetDimensions().width/lx.GAME.SCALE;
+            let scaledHeight = lx.GetDimensions().height/lx.GAME.SCALE;
 
             //Create viewport object
 
             let targetPos  = target.Position();
             let targetSize = target.Size();
+
             let viewport = {
                 X: targetPos.X+targetSize.W/2-scaledWidth/2,
                 Y: targetPos.Y+targetSize.H/2-scaledHeight/2,
@@ -80,7 +81,7 @@ const camera = {
             let viewport = go.GetViewport();
 
             //Set camera position according to viewport
-            
+
             go.Position(
                 viewport.X+viewport.W/2,
                 viewport.Y+viewport.H/2
